@@ -1,0 +1,30 @@
+@(cats: List[Cat])(implicit flash: Flash)
+
+@main("Cat database") {
+  <h2>Insert a kitty cat here:</h2>
+
+  <p class="form-error">@flash.get("message")</p>
+
+  <form action="/insert" method="POST">
+    <input name="name" type="text" placeholder="name your feline friend"/>
+    <input name="color" type="text" placeholder="enter the color of this kitty cat"/>
+    <input name="age" type="number" placeholder="age of cat" />
+    <input type="submit"/>
+  </form>
+
+  <h2>Previously inserted cats:</h2>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Color</th>
+      <th>Age</th>
+    </tr>
+    @for(c <- cats){ 
+    <tr>
+      <td>@c.name</td>
+      <td>@c.color</td>
+      <td>@c.age</td>
+    </tr>
+    }
+  </table>
+}
