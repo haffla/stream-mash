@@ -17,7 +17,6 @@ class AuthController extends Controller
         with HasDatabaseConfig[JdbcProfile]{
 
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
-  val IS_AUTHENTICATED_IDENTIFIER = "is_authenticated"
   import driver.api._
 
   case class UserData(name: String, password: String)
@@ -49,23 +48,14 @@ class AuthController extends Controller
                 isAuthentic = true
       )
     )
-    Await.result(existingUser, 1.second)
+    Await.result(existingUser, 3.second)
     if(isAuthentic)
-      Ok("Alles klar").withSession(IS_AUTHENTICATED_IDENTIFIER -> "")
+      Ok("Alles klar").withSession("username" -> user.name)
     else
-      Ok("Nein")
+      Ok(views.html.auth.login()).flashing("message" -> "Username or password wrong")
   }
 
   def loginPage = Action { implicit request =>
     Ok(views.html.auth.login())
-  }
-
-  object Authenticated extends ActionBuilder[Request] {
-    def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[Result]) = {
-      if(request.session.get(IS_AUTHENTICATED_IDENTIFIER).isDefined)
-        block(request)
-      else // move to own package and remove Redirect dependency
-        Future.successful(Redirect(routes.AuthController.login()).flashing("message" -> "Please login in!"))
-    }
   }
 }
