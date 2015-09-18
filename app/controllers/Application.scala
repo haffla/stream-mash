@@ -8,7 +8,7 @@ import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc.{Action, Controller}
 import slick.driver.JdbcProfile
-import tables.{CatTable}
+import tables.CatTable
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
@@ -30,12 +30,12 @@ class Application extends Controller
     )(Cat.apply)(Cat.unapply)
   )
 
-  def index = Action.async { implicit request =>
+  def index = Authenticated.async { implicit request =>
     db.run(catsQuery.sortBy(_.created_at.desc).result).map(
       res => Ok(views.html.index(res.toList)))
   }
 
-  def insert = Action.async { implicit request =>
+  def insert = Authenticated.async { implicit request =>
     catForm.bindFromRequest.fold(
         formWithErrors => {
           Future.successful(Redirect(routes.Application.index).flashing("message" -> "The form must be complete"))
