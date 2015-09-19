@@ -1,3 +1,4 @@
+public/bower_components
 logs
 target
 /.idea
@@ -6,3 +7,4 @@ target
 /.project
 /.settings
 /RUNNING_PID
+*.log
