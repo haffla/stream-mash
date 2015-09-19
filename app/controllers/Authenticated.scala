@@ -11,15 +11,21 @@ object Authenticated extends ActionBuilder[Request] with Controller {
   def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[Result]) = {
     request.session.get("username").map { username =>
       val secretFromCache = Cache.get(s"user.$username")
-      val secretFromSession = request.session.get("auth-secret").get
+      val secretFromSession = request.session.get("auth-secret").getOrElse("no-session-key")
       println(secretFromCache)
       println(secretFromSession)
       if(secretFromCache == secretFromSession)
         block(new AuthenticatedRequest(request))
       else
-        Future.successful(Redirect(routes.AuthController.login()).flashing("message" -> "The session has been tempered with."))
+        redirectToLoginPage("Tampered")
     } getOrElse {
-      Future.successful(Redirect(routes.AuthController.login()).flashing("message" -> "Please login in!"))
+      redirectToLoginPage("Please login again!")
     }
   }
+
+  def redirectToLoginPage(message:String) = {
+    Future.successful(Redirect(routes.AuthController.login()).flashing("message" -> message))
+  }
 }
+
+

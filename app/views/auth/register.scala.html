@@ -1,11 +1,11 @@
 @()(implicit flash: Flash)
 
 @main("Login") {
-<h2>Login or <a href='@routes.AuthController.register'>register</a></h2>
+<h2>Register:</h2>
 
 <p class="form-error">@flash.get("message")</p>
 
-<form action="/login" method="POST">
+<form action="/register" method="POST">
     <input name="name" type="text" placeholder="Your name"/>
     <input name="password" type="password" placeholder="Enter your password"/>
     <input type="submit"/>

@@ -52,7 +52,7 @@ class Application extends Controller
             }
           )
           // need to block here and wait for result, so user gets flash message.
-          Await.result(catWasSaved, 7.second)
+          Await.result(catWasSaved, Duration.Inf)
           Future.successful(Redirect(routes.Application.index).flashing("message" -> message))
         }
       )

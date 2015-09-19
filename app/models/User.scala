@@ -6,7 +6,7 @@ import slick.driver.JdbcProfile
 import tables.AccountTable
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-import scala.concurrent.{Future}
+import scala.concurrent.Future
 
 object User extends AccountTable with HasDatabaseConfig[JdbcProfile] {
 
@@ -21,6 +21,10 @@ object User extends AccountTable with HasDatabaseConfig[JdbcProfile] {
       case f:Future[Boolean] =>
         f map(
           bool => if(!bool) db.run(accountQuery += models.Account(0, name, password))
+          /*
+          0 or any integer here. the value will be ignored by slick/database as it
+          is defined as auto increment id.
+          */
           )
         true // if there is no existing user in db and new user was saved
       case _ => false

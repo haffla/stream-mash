@@ -9,13 +9,12 @@ POST    /insert                     controllers.Application.insert
 POST    /login                      controllers.AuthController.login
 GET     /login                      controllers.AuthController.loginPage
 GET     /logout                     controllers.AuthController.logout
+GET     /register                   controllers.AuthController.registerPage
+POST    /register                   controllers.AuthController.register
 
 ### User management
 
 GET     /users                      controllers.UserController.list
-POST    /users/create               controllers.UserController.create
-
-
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
