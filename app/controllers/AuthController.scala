@@ -12,8 +12,9 @@ import play.cache.Cache
 import slick.driver.JdbcProfile
 import tables.AccountTable
 
-import scala.concurrent.Await
+import scala.concurrent.{Future, Await}
 import scala.concurrent.duration._
+import scala.util.Success
 
 class AuthController extends Controller
         with AccountTable
@@ -29,24 +30,20 @@ class AuthController extends Controller
     )(UserData.apply)(UserData.unapply)
   )
 
-  def register = Action { implicit request =>
+  def register = Action.async { implicit request =>
     val user = userForm.bindFromRequest.get
-    val account = accountQuery.filter(_.name === user.name)
-    var exists = true
-    Await.result(
-      db.run(account.exists.result).map( bool =>
-        if(!bool) exists = false
-      ), Duration.Inf)
-    if(!exists) {
-      User.create(user.name, user.password)
-      val hash = authenticateUser(user.name, user.password)
-      Redirect(routes.Application.index).flashing("message" -> "Welcome")
-        .withSession("username" -> user.name, "auth-secret" -> hash)
-    } else {
-      Redirect(routes.AuthController.register)
-        .flashing("message" -> "User already exists")
-    }
-
+    val userExists = User.exists(user.name)
+    userExists.map( bool =>
+        if(!bool) {
+          User.create(user.name, user.password)
+          val hash = authenticateUser(user.name, user.password)
+          Redirect(routes.Application.index).flashing("message" -> "Welcome")
+            .withSession("username" -> user.name, "auth-secret" -> hash)
+        } else {
+          Redirect(routes.AuthController.register)
+            .flashing("message" -> "User already exists")
+        }
+    )
   }
 
   def login = Action { implicit request =>

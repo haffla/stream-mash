@@ -8,6 +8,7 @@ import tables.AccountTable
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import scala.concurrent.Future
+import scala.concurrent.duration.Duration
 
 object User extends AccountTable with HasDatabaseConfig[JdbcProfile] {
 
@@ -23,6 +24,11 @@ object User extends AccountTable with HasDatabaseConfig[JdbcProfile] {
 
   def list:Future[Seq[User.Account#TableElementType]] = {
     db.run(accountQuery.result)
+  }
+
+  def exists(name: String):Future[Boolean] = {
+    val account = accountQuery.filter(_.name === name)
+    db.run(account.exists.result)
   }
 
 }

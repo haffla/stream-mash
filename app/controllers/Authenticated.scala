@@ -15,7 +15,7 @@ object Authenticated extends ActionBuilder[Request] with Controller {
       if(secretFromCache == secretFromSession)
         block(new AuthenticatedRequest(request))
       else
-        redirectToLoginPage("Tampered")
+        redirectToLoginPage("The session has been tampered with.")
     } getOrElse {
       redirectToLoginPage("Please login again!")
     }
