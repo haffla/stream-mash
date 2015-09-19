@@ -6,7 +6,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.Controller
 import slick.driver.JdbcProfile
 import tables.CatTable
 
@@ -24,7 +24,7 @@ class Application extends Controller
 
   val catForm = Form(
     mapping(
-      "name" -> nonEmptyText,
+      "name" -> nonEmptyText(minLength = 2, maxLength = 50),
       "color" -> nonEmptyText,
       "age" -> number
     )(Cat.apply)(Cat.unapply)
@@ -38,6 +38,7 @@ class Application extends Controller
   def insert = Authenticated.async { implicit request =>
     catForm.bindFromRequest.fold(
         formWithErrors => {
+          println(formWithErrors.errors)
           Future.successful(Redirect(routes.Application.index).flashing("message" -> "The form must be complete"))
         },
         cat => {

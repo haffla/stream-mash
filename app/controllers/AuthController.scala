@@ -12,9 +12,7 @@ import play.cache.Cache
 import slick.driver.JdbcProfile
 import tables.AccountTable
 
-import scala.concurrent.{Future, Await}
-import scala.concurrent.duration._
-import scala.util.Success
+import scala.concurrent.Future
 
 class AuthController extends Controller
         with AccountTable
@@ -23,27 +21,51 @@ class AuthController extends Controller
   import driver.api._
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
   val accountQuery = TableQuery[Account]
+  val USERNAME_MAX_LENGTH = 64
+  val USERNAME_MIN_LENGTH = 3
+  val PASSWORD_MIN_LENGTH = 6
+
   val userForm = Form(
     mapping(
-      "name" -> text,
-      "password" -> text
+      "name" -> text.verifying(s"The username's length must be between $USERNAME_MIN_LENGTH and $USERNAME_MAX_LENGTH",
+                                    text => text.length > USERNAME_MIN_LENGTH && text.length < USERNAME_MAX_LENGTH),
+      "password" -> tuple(
+        "main" -> text.verifying(s"The password must be at least $PASSWORD_MIN_LENGTH characters long",
+                                    password => password.length > PASSWORD_MIN_LENGTH),
+        "confirm" -> text
+      ).verifying(
+          "Passwords don't match", password => password._1 == password._2
+        )
+        .transform(
+      { case (main, confirm) => main },
+      (main: String) => ("", "")
+      )
     )(UserData.apply)(UserData.unapply)
   )
 
   def register = Action.async { implicit request =>
-    val user = userForm.bindFromRequest.get
-    val userExists = User.exists(user.name)
-    userExists.map( bool =>
-        if(!bool) {
-          User.create(user.name, user.password)
-          val hash = authenticateUser(user.name, user.password)
-          Redirect(routes.Application.index).flashing("message" -> "Welcome")
-            .withSession("username" -> user.name, "auth-secret" -> hash)
-        } else {
-          Redirect(routes.AuthController.register)
-            .flashing("message" -> "User already exists")
-        }
+    userForm.bindFromRequest.fold(
+      formWithErrors => {
+        val errors = formWithErrors.errors.map(error => error.messages)
+        println(errors.flatten.toList)
+        Future.successful(Ok(views.html.auth.register(errors.flatten.toList)))
+      },
+      user => {
+        val userExists = User.exists(user.name)
+        userExists.map( bool =>
+          if(!bool) {
+            User.create(user.name, user.password)
+            val hash = authenticateUser(user.name, user.password)
+            Redirect(routes.Application.index).flashing("message" -> "Welcome")
+              .withSession("username" -> user.name, "auth-secret" -> hash)
+          } else {
+            Redirect(routes.AuthController.register)
+              .flashing("message" -> "User already exists")
+          }
+        )
+      }
     )
+
   }
 
   def login = Action.async { implicit request =>
@@ -58,11 +80,8 @@ class AuthController extends Controller
         } else (false, "")
       )
     ).map( result => // is a Seq[Tuple[Boolean,String]]
-        if(result.nonEmpty && result.head._1 == true) {
-          println(result)
+        if(result.nonEmpty && result.head._1)
           Redirect(routes.Application.index).withSession("username" -> userData.name, "auth-secret" -> result.head._2)
-        }
-
         else
           Redirect(routes.AuthController.login).flashing("message" -> "Username or password wrong")
       )
@@ -82,7 +101,7 @@ class AuthController extends Controller
   }
 
   def registerPage = Action { implicit request =>
-    Ok(views.html.auth.register())
+    Ok(views.html.auth.register(List.empty))
   }
 
 

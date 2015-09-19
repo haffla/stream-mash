@@ -1,13 +1,20 @@
-@()(implicit flash: Flash)
+@(errors:List[String])(implicit flash: Flash)
 
-@main("Login") {
+@main("Register") {
 <h2>Register:</h2>
 
 <p class="form-error">@flash.get("message")</p>
 
+<ul class="form-error">
+@for(e <- errors) {
+    <li>@e</li>
+}
+</ul>
+
 <form action="/register" method="POST">
-    <input name="name" type="text" placeholder="Your name"/>
-    <input name="password" type="password" placeholder="Enter your password"/>
-    <input type="submit"/>
+    <input name="name" type="text" placeholder="username"/>
+    <input name="password.main" type="password" placeholder="Choose a password"/>
+    <input name="password.confirm" type="password" placeholder="Repeat the password"/>
+    <button type="submit">Register</button>
 </form>
 }
