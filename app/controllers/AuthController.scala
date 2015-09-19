@@ -46,26 +46,27 @@ class AuthController extends Controller
     )
   }
 
-  def login = Action { implicit request =>
-    var isAuthentic = false
-    var hash = ""
-    val user:UserData = userForm.bindFromRequest.get
-    val existingUser = getAccountByUser(user).map(
-      usr => usr.map(
-        u => if(u.password == user.password) {
-          isAuthentic = true
-          val username = u.name
-          val password = u.password
-          hash = RosettaSHA256.digest(s"$username|$password")
-          Cache.set(s"user.$username", hash)
-        }
+  def login = Action.async { implicit request =>
+    val userData:UserData = userForm.bindFromRequest.get
+    getAccountByUser(userData).map(
+      listOfUsers => listOfUsers.map(
+        user => if(user.password == userData.password) {
+          val username = user.name
+          val password = user.password
+          val hash = authenticateUser(username, password)
+          (true, hash) // Tuple[Boolean, String]
+        } else (false, "")
       )
-    )
-    Await.result(existingUser, Duration.Inf)
-    if(isAuthentic)
-      Redirect(routes.Application.index).withSession("username" -> user.name, "auth-secret" -> hash)
-    else
-      Redirect(routes.AuthController.login).flashing("message" -> "Username or password wrong")
+    ).map( result => // is a Seq[Tuple[Boolean,String]]
+        if(result.nonEmpty && result.head._1 == true) {
+          println(result)
+          Redirect(routes.Application.index).withSession("username" -> userData.name, "auth-secret" -> result.head._2)
+        }
+
+        else
+          Redirect(routes.AuthController.login).flashing("message" -> "Username or password wrong")
+      )
+
   }
 
   def logout = Action { implicit request =>
@@ -88,7 +89,7 @@ class AuthController extends Controller
   //## HELPER
 
   def getAccountByUser(user:UserData) = {
-    val account = accountQuery.filter(_.name === user.name)
+    val account = accountQuery.filter(_.name === user.name).take(1)
     db.run(account.result)
   }
 
