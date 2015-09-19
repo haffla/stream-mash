@@ -1,5 +1,6 @@
 package models
 
+import models.auth.RosettaSHA256
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import slick.driver.JdbcProfile
@@ -15,21 +16,9 @@ object User extends AccountTable with HasDatabaseConfig[JdbcProfile] {
 
   val accountQuery = TableQuery[Account]
 
-  def create(name:String, password:String): Boolean = {
-    val exists = db.run(accountQuery.filter(_.name === name).exists.result)
-    val success = exists match {
-      case f:Future[Boolean] =>
-        f map(
-          bool => if(!bool) db.run(accountQuery += models.Account(0, name, password))
-          /*
-          0 or any integer here. the value will be ignored by slick/database as it
-          is defined as auto increment id.
-          */
-          )
-        true // if there is no existing user in db and new user was saved
-      case _ => false
-    }
-    success
+  def create(name:String, password:String) = {
+    val hashedPassword = RosettaSHA256.digest(password)
+    db.run(accountQuery += models.Account(0, name, hashedPassword))
   }
 
   def list:Future[Seq[User.Account#TableElementType]] = {

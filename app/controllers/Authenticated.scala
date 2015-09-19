@@ -12,8 +12,6 @@ object Authenticated extends ActionBuilder[Request] with Controller {
     request.session.get("username").map { username =>
       val secretFromCache = Cache.get(s"user.$username")
       val secretFromSession = request.session.get("auth-secret").getOrElse("no-session-key")
-      println(secretFromCache)
-      println(secretFromSession)
       if(secretFromCache == secretFromSession)
         block(new AuthenticatedRequest(request))
       else

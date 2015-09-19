@@ -65,7 +65,6 @@ class AuthController extends Controller
       )
     )
     Await.result(existingUser, Duration.Inf)
-    println("asdasd")
     if(isAuthentic)
       Redirect(routes.Application.index).withSession("username" -> user.name, "auth-secret" -> hash)
     else
@@ -88,17 +87,17 @@ class AuthController extends Controller
     Ok(views.html.auth.register())
   }
 
-  def authenticateUser(username:String, password:String):String = {
-    val hash = RosettaSHA256.digest(s"$username|$password")
-    Cache.set(s"user.$username", hash)
-    hash
-  }
-
 
   //## HELPER
 
   def getAccountByUser(user:UserData) = {
     val account = accountQuery.filter(_.name === user.name)
     db.run(account.result)
+  }
+
+  def authenticateUser(username:String, password:String):String = {
+    val hash = RosettaSHA256.digest(s"$username|$password")
+    Cache.set(s"user.$username", hash)
+    hash
   }
 }
