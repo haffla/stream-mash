@@ -16,9 +16,6 @@ libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.34"
 libraryDependencies += "com.typesafe.play" %% "play-slick" % "1.0.1"
 libraryDependencies += "com.typesafe.play" %% "play-slick-evolutions" % "1.0.1"
 
-libraryDependencies += "jp.t2v" %% "play2-auth"        % "0.14.1"
-libraryDependencies += "jp.t2v" %% "play2-auth-social" % "0.14.1"
-libraryDependencies += "jp.t2v" %% "play2-auth-test"   % "0.14.1" % "test"
 libraryDependencies += play.sbt.Play.autoImport.cache
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
@@ -26,3 +23,4 @@ resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 // Play provides two styles of routers, one expects its actions to be injected, the
 // other, legacy style, accesses its actions statically.
 routesGenerator := InjectedRoutesGenerator
+

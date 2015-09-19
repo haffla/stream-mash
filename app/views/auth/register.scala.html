@@ -10,11 +10,13 @@
     <li>@e</li>
 }
 </ul>
+<div class="inputs">
+    <form action="/register" method="POST">
+        <input class="form-control floating-label" name="name" type="text" placeholder="username"/>
+        <input class="form-control floating-label" name="password.main" data-hint="At least 6 characters long" type="password" placeholder="Choose a password"/>
+        <input class="form-control floating-label" name="password.confirm" type="password" placeholder="Repeat the password"/>
+        <button class="btn btn-raised" type="submit">Register</button>
+    </form>
+</div>
 
-<form action="/register" method="POST">
-    <input name="name" type="text" placeholder="username"/>
-    <input name="password.main" type="password" placeholder="Choose a password"/>
-    <input name="password.confirm" type="password" placeholder="Repeat the password"/>
-    <button type="submit">Register</button>
-</form>
 }
