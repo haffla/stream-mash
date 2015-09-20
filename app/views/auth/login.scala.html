@@ -3,8 +3,6 @@
 @main("Login") {
 <h2>Login or <a href='@routes.AuthController.register'>register</a></h2>
 
-<p class="form-error">@flash.get("message")</p>
-
 <div class="inputs">
     <form action="/login" method="POST">
         <input class="form-control floating-label" name="name" type="text" placeholder="Your name"/>

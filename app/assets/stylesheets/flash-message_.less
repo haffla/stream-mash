@@ -1,0 +1,37 @@
+@fade-out-duration: 3s;
+
+.message-container {
+  color: #ff067d;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  text-align: center;
+  -moz-animation: cssAnimation 0s ease-in @fade-out-duration forwards;
+  -webkit-animation: cssAnimation 0s ease-in @fade-out-duration forwards;
+  -o-animation: cssAnimation 0s ease-in @fade-out-duration forwards;
+  animation: cssAnimation 0s ease-in @fade-out-duration forwards;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+  div {
+    display: inline-block;
+    text-align: left;
+    font-size: large;
+  }
+}
+
+@keyframes cssAnimation {
+  to {
+    width:0;
+    height:0;
+    overflow:hidden;
+  }
+}
+@-webkit-keyframes cssAnimation {
+  to {
+    width:0;
+    height:0;
+    visibility:hidden;
+  }
+}
