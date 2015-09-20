@@ -1,13 +1,15 @@
-@()(implicit flash: Flash)
+@()(implicit flash: Flash, session: Session)
 
 @main("Login") {
 <h2>Login or <a href='@routes.AuthController.register'>register</a></h2>
 
 <p class="form-error">@flash.get("message")</p>
 
-<form action="/login" method="POST">
-    <input name="name" type="text" placeholder="Your name"/>
-    <input name="password" type="password" placeholder="Enter your password"/>
-    <button type="submit">Login</button>
-</form>
+<div class="inputs">
+    <form action="/login" method="POST">
+        <input class="form-control floating-label" name="name" type="text" placeholder="Your name"/>
+        <input class="form-control floating-label" name="password" type="password" placeholder="Enter your password"/>
+        <button class="btn btn-raised" type="submit">Login</button>
+    </form>
+</div>
 }

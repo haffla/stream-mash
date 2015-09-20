@@ -76,7 +76,9 @@ class AuthController extends Controller
   def logout = Action { implicit request =>
     val username = request.session.get("username")
     Cache.remove(s"user.$username")
-    Redirect(routes.AuthController.login).withNewSession
+    Redirect(routes.AuthController.login)
+      .withNewSession
+      .flashing("message" -> "You are logged out.")
   }
 
   //## Static
