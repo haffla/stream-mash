@@ -1,7 +1,7 @@
 @(errors:List[String])(implicit flash: Flash)
 
 @main("Register") {
-<h2>Register:</h2>
+<h2>Register or <a href='@routes.AuthController.login'>register</a></h2>
 
 <p class="form-error">@flash.get("message")</p>
 
@@ -9,6 +9,7 @@
 @for(e <- errors) {
     <li>@e</li>
 }
+
 </ul>
 <div class="inputs">
     <form action="/register" method="POST">
