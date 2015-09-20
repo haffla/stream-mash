@@ -1,7 +1,7 @@
 @()(implicit flash: Flash, session: Session)
 
 @main("Login") {
-<h2>Login or <a href='@routes.AuthController.register'>register</a></h2>
+<h2>Login <small>or <a href='@routes.AuthController.register'>register</a></small></h2>
 
 <div class="inputs">
     <form action="/login" method="POST">
