@@ -3,21 +3,29 @@
 @main("Register") {
 <h2>Register <small>or <a href='@routes.AuthController.login'>login</a></small></h2>
 
-<p class="form-error">@flash.get("message")</p>
-
-<ul class="form-error">
-@for(e <- errors) {
-    <li>@e</li>
-}
-
-</ul>
-<div class="inputs">
-    <form action="/register" method="POST">
-        <input class="form-control floating-label" name="name" type="text" placeholder="username"/>
-        <input class="form-control floating-label" name="password.main" data-hint="At least 6 characters long" type="password" placeholder="Choose a password"/>
-        <input class="form-control floating-label" name="password.confirm" type="password" placeholder="Repeat the password"/>
-        <button class="btn btn-raised" type="submit">Register</button>
-    </form>
+<div class="row">
+    <div class="col-md-6">
+        <div class="auth-inputs">
+            <form action="/register" method="POST">
+                <input class="form-control floating-label" name="name" type="text" placeholder="username"/>
+                <input class="form-control floating-label" name="password.main" data-hint="At least 6 characters long" type="password" placeholder="Choose a password"/>
+                <input class="form-control floating-label" name="password.confirm" type="password" placeholder="Repeat the password"/>
+                <button class="btn btn-raised btn-material-deep-orange-400" type="submit">Register</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-6">
+    @if(errors.nonEmpty) {
+        <h5>In order to register you have to meet the following requirements:</h5>
+        <div class="form-error">
+            <br>
+                <ul>
+                @for(e <- errors) {
+                    <li>@e</li>
+                }
+                </ul>
+        </div>
+    }
+    </div>
 </div>
-
 }
