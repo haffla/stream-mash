@@ -1,9 +1,11 @@
 package models.service
 
+import models.util.Logging
 import play.api.libs.json.Json
 import play.api.libs.ws.{WS, WSResponse}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.{PlayException, Play}
+import play.api.Play
 import play.api.Play.current
 
 import scala.concurrent.Future
@@ -96,13 +98,14 @@ object SpotifyService {
           val access_token = (json \ "access_token").asOpt[String]
           (access_token, refresh_token) match {
             case (Some(access_tkn), Some(refresh_tkn)) =>
+              Logging.debug(this.getClass.toString, access_tkn)
               Some((access_tkn,refresh_tkn))
             case _ =>
               println("No tokens! " + response.body)
               None
           }
         case http_code =>
-          println("Error: " + http_code + response.body)
+          Logging.error(this.getClass.toString, "Error: " + http_code + "\n" + response.body)
           None
       }
     )
