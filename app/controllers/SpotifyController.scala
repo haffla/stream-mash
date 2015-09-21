@@ -5,11 +5,8 @@ import models.util.TextWrangler
 import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.libs.ws._
-import play.mvc.Http.Response
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.Play.current
 
 class SpotifyController extends Controller {
 
@@ -27,14 +24,15 @@ class SpotifyController extends Controller {
     val code = request.getQueryString("code").orNull
     val storedState = request.cookies.get(SpotifyService.SPOTIFY_COOKIE_KEY) match {
       case Some(cookie) => cookie.value
-      case None => Future.successful(Redirect(routes.AuthController.logout).flashing("message" -> "There has been a problem while"))
+      case None => Future.successful(
+        Redirect(routes.AuthController.logout).flashing("message" -> "There has been a problem while")
+        )
     }
     //CSRF Protection
     if(state == null || state != storedState) {
       Future.successful(Ok("Error: State Mismatch"))
     } else {
       val wsResponse: Future[Option[WSResponse]] = SpotifyService.requestAuthorization(code)
-
       wsResponse.map {
         case Some(response) => Ok(Json.parse(response.body).toString())
         case None => Ok("")

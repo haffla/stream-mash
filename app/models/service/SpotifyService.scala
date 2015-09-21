@@ -4,13 +4,15 @@ import models.util.Logging
 import play.api.libs.json.Json
 import play.api.libs.ws.{WS, WSResponse}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.{PlayException, Play}
+import play.api.PlayException
 import play.api.Play
 import play.api.Play.current
 
 import scala.concurrent.Future
 
 object SpotifyService {
+
+  val ich = this.getClass.toString
 
   val client_id_key = "spotify.client.id"
   val client_secret_key = "spotify.client.secret"
@@ -63,15 +65,13 @@ object SpotifyService {
   def requestAuthorization(code:String): Future[Option[WSResponse]] = {
     val data = ApiEndpoints.DATA + ("code" -> Seq(code))
     val futureResponse: Future[WSResponse] = WS.url(ApiEndpoints.TOKEN).post(data)
-    getTokens(futureResponse).flatMap(
-      tokens => {
-        val user = requestUserData(tokens)
-        user.flatMap(x => Future.successful(x))
-      }
-    )
+    for {
+      tokens <- getTokens(futureResponse)
+      response <- requestUserData(tokens)
+    } yield response
   }
 
-  def requestUserData(tokens:Option[(String,String)]):Future[Option[WSResponse]] = {
+  private def requestUserData(tokens:Option[(String,String)]):Future[Option[WSResponse]] = {
     val access_token = tokens.get._1
     val refresh_token = tokens.get._2
     WS.url(ApiEndpoints.ME).withHeaders("Authorization" -> s"Bearer $access_token").get()
@@ -81,14 +81,14 @@ object SpotifyService {
           Some(response)
         case http_code =>
           val error_message = "HTTP code: %d \nResponse: %s".format(http_code, response.body)
-          println(error_message)
+          Logging.error(ich, error_message)
           None
       }
       )
   }
 
   //Inspired by https://github.com/StarTrack/server
-  def getTokens(futureReponse: Future[WSResponse]): Future[Option[(String, String)]] = {
+  private def getTokens(futureReponse: Future[WSResponse]): Future[Option[(String, String)]] = {
     futureReponse.map(response =>
       response.status match {
         case 200 =>
@@ -98,14 +98,13 @@ object SpotifyService {
           val access_token = (json \ "access_token").asOpt[String]
           (access_token, refresh_token) match {
             case (Some(access_tkn), Some(refresh_tkn)) =>
-              Logging.debug(this.getClass.toString, access_tkn)
               Some((access_tkn,refresh_tkn))
             case _ =>
-              println("No tokens! " + response.body)
+              Logging.error(ich, response.body)
               None
           }
         case http_code =>
-          Logging.error(this.getClass.toString, "Error: " + http_code + "\n" + response.body)
+          Logging.error(ich, "Error: " + http_code + "\n" + response.body)
           None
       }
     )
