@@ -43,11 +43,12 @@ class Itunes.File
       return window.alert "Nono!! Only XML"
 
   init: ->
-    dropzone = $("#dropzone").get(0)
-    dropzone.addEventListener "dragenter", @dragEnter
-    dropzone.addEventListener "dragleave", @dragLeave
-    dropzone.addEventListener "drop",      @drop
-    dropzone.addEventListener "dragover",  @killEvent
+    $.event.props.push('dataTransfer')
+    dropzone = $("#dropzone")
+    dropzone.on "dragenter", @dragEnter
+    dropzone.on "dragleave", @dragLeave
+    dropzone.on "drop",      @drop
+    dropzone.on "dragover",  @killEvent
 
 $ ->
   $.material.init()
