@@ -1,7 +1,8 @@
 package controllers
 
-import play.api.data.Form
-import play.api.data.Forms._
+import java.io.File
+import java.nio.file.Files
+
 import play.api.libs.json.{JsString, JsObject}
 import play.api.mvc.Action
 import play.api.mvc.Controller
@@ -14,14 +15,30 @@ class ItunesController extends Controller {
     Ok(views.html.itunes.index())
   }
 
-  def ifile = Action(parse.xml) { implicit request =>
-    val xml:NodeSeq = request.body
-
-    val jsonResponse = JsObject(
-      Map("response" -> JsString("success")
+  def itunes= Action(parse.multipartFormData) { implicit request =>
+    request.body.file("file").map { file =>
+      val filename = file.filename
+      val contentType = file.contentType
+      val path = s"/tmp/$filename"
+      file.ref.moveTo(new File(path))
+      val xml = scala.xml.XML.loadFile(path)
+      val dict = xml \\ "dict" \\ "dict"
+      println(dict.length)
+      Files.delete(new File(path).toPath)
+      val jsonResponse = JsObject(
+        Map(
+          "response" -> JsString("success"),
+          "length" -> JsString(dict.length.toString)
+        )
       )
-    )
-
-    Ok(jsonResponse)
+      Ok(jsonResponse)
+    }.getOrElse {
+      val jsonResponse = JsObject(
+        Map(
+          "response" -> JsString("error")
+        )
+      )
+      Ok(jsonResponse)
+    }
   }
 }

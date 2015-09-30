@@ -13,7 +13,7 @@ GET         /callback             controllers.SpotifyController.callback
 
 ### iTunes
 GET         /itunes               controllers.ItunesController.index
-POST        /ifile                controllers.ItunesController.ifile
+POST        /itunes               controllers.ItunesController.itunes
 
 ### User management
 GET         /users                controllers.UserController.list
