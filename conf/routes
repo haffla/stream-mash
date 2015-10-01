@@ -1,5 +1,4 @@
 GET         /                     controllers.Application.index
-POST        /insert               controllers.Application.insert
 
 POST        /login                controllers.AuthController.login
 GET         /login                controllers.AuthController.loginPage

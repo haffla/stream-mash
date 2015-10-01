@@ -1,7 +1,7 @@
 package controllers
 
-import models.{UserData, User}
-import play.api.mvc.{Action, Controller}
+import models.User
+import play.api.mvc.Controller
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import scala.concurrent.Future
