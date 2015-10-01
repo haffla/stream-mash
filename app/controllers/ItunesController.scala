@@ -22,10 +22,13 @@ class ItunesController extends Controller {
         .getOrElse("user-" + System.currentTimeMillis)
       val path = s"/tmp/$filename$username"
       file.ref.moveTo(new File(path))
-      val library = new ItunesLibrary(path).parseXml()
-      val songs = Json.obj("songs" -> library)
+      val library = new ItunesLibrary(path)
+      val parsedXml = library.parseXml()
+      val artists = library.getLibrary(parsedXml)
+      val json = Json.toJson(artists)
+
       Files.delete(new File(path).toPath)
-      Ok(songs)
+      Ok(json)
     }.getOrElse {
       val jsonResponse = JsObject(
         Map(

@@ -1,6 +1,8 @@
+@import play.api.libs.json.JsObject
 @()(implicit flash: Flash, session: Session)
 
 @main("Start Page") {
-
   <h2>Hello, @session.get("username")!</h2>
+  <div id="content"></div>
+  <script type='text/javascript' src='@routes.Assets.versioned("javascripts/reactTest.js")'></script>
 }

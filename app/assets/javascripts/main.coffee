@@ -39,28 +39,6 @@ class App.ItunesFileImport
     else
       return window.alert "Nono!! Only XML"
 
-  handleUpload: (event) ->
-    event.preventDefault()
-    event.stopPropagation()
-    fileSelect = $('#file-select').get(0)
-    file = fileSelect.files[0]
-    formData = new FormData()
-    formData.append 'file', file
-    $.ajax(
-      url: '/itunes'
-      type: 'POST'
-      data: formData
-      dataType: 'json'
-      cache: false
-      contentType: false
-      processData: false
-      success: (response) ->
-        console.log(response)
-        $('#dropzone').removeClass('dropped')
-      error: (jqXHR, status, error) ->
-        console.log('Error: '  + error + '\n' + 'Status: ' + status)
-    )
-
   init: ->
     $.event.props.push('dataTransfer')
     dropzone = $("#dropzone")
@@ -71,5 +49,5 @@ class App.ItunesFileImport
 
 $ ->
   $.material.init()
-  it = new App.ItunesFileImport()
-  it.init()
+  #it = new App.ItunesFileImport()
+  #it.init()
