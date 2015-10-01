@@ -3,11 +3,11 @@ package controllers
 import java.io.File
 import java.nio.file.Files
 
+import models.util.ItunesLibrary
 import play.api.libs.json.{JsString, JsObject}
 import play.api.mvc.Action
 import play.api.mvc.Controller
-
-import scala.xml.NodeSeq
+import play.api.libs.json._
 
 class ItunesController extends Controller {
 
@@ -18,20 +18,14 @@ class ItunesController extends Controller {
   def itunes= Action(parse.multipartFormData) { implicit request =>
     request.body.file("file").map { file =>
       val filename = file.filename
-      val contentType = file.contentType
-      val path = s"/tmp/$filename"
+      val username = request2session.get("username")
+        .getOrElse("user-" + System.currentTimeMillis)
+      val path = s"/tmp/$filename$username"
       file.ref.moveTo(new File(path))
-      val xml = scala.xml.XML.loadFile(path)
-      val dict = xml \\ "dict" \\ "dict"
-      println(dict.length)
+      val library = new ItunesLibrary(path).parseXml()
+      val songs = Json.obj("songs" -> library)
       Files.delete(new File(path).toPath)
-      val jsonResponse = JsObject(
-        Map(
-          "response" -> JsString("success"),
-          "length" -> JsString(dict.length.toString)
-        )
-      )
-      Ok(jsonResponse)
+      Ok(songs)
     }.getOrElse {
       val jsonResponse = JsObject(
         Map(
