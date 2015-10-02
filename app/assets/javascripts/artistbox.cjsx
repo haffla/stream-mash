@@ -47,17 +47,33 @@ MainComponent = React.createClass
     else
       return window.alert "Nono!! Only XML"
 
+  isMac: () ->
+    if navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i) then true else false
+
+  isWindows: () ->
+    if navigator.platform.match(/Win/i) then true else false
 
   render: () ->
+    sentence = "The iTunes Music Library file is typically located under "
     <div className="container">
         <div title="Drop your iTunes Library file here" id="dropzone" onDragOver={@preventDef}
              onDrop={@drop} onDragEnter={@dragEnter} onDragLeave={@dragLeave}>
-            <p>iTunes Library</p>
+        </div>
+        <div className="drop-instruction centered">
+          {
+            if @isMac()
+              <h4>{sentence} <br/>/Users/[username]/Music/iTunes/iTunes Music Library.xml<br/>Drop it on the iTunes Logo!</h4>
+            else if @isWindows()
+              <h4>{sentence} <br/>C:\Users\[username]\Music\iTunes\iTunes Music Library.xml<br/>Drop it on the iTunes Logo!</h4>
+            else
+              <h4>You don&apos;t seem to be neither a Mac nor a Windows user.<br/>Drop your iTunes Music Library.xml above!</h4>
+          }
         </div>
         <ArtistBox data={@state.data} />
     </div>
 
 ArtistBox = React.createClass
+
   render: () ->
     <div className="hidden" id="artistList">
         <h2>Listing Artists</h2>
