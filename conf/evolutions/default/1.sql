@@ -3,7 +3,7 @@
 CREATE TABLE IF NOT EXISTS account(
     id INT(6) PRIMARY KEY AUTO_INCREMENT NOT NULL,
     name VARCHAR(64) NOT NULL,
-    password VARCHAR(256) NOT NULL
+    password VARCHAR(64) NOT NULL
 );
 
 INSERT INTO account(name, password)
