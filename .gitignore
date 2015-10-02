@@ -1,4 +1,5 @@
 public/bower_components
+public/javascripts
 logs
 target
 /.idea
