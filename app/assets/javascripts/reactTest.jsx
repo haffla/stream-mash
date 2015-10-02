@@ -19,33 +19,41 @@ var MainComponent = React.createClass({
     },
     drop: function (event) {
         this.preventDef(event);
+        if(!(window.File && window.FileReader)) {
+            return alert("Your browser does not support the File API");
+        }
         var file = event.dataTransfer.files[0];
-        var formData = new FormData();
-        formData.append('file', file);
-        $('#dropzone').addClass('dropped');
-        $.ajax({
-            url: '/itunes',
-            dataType: 'json',
-            type: 'POST',
-            data: formData,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function(data) {
-                var formattedData = Object.keys(data).map(function(key) {
-                    var albums = data[key].map(function(name) {
-                        return {name: name};
+        if(file.type === 'text/xml' && file.name.match(/^iTunes (Music )?Library/)) {
+            var formData = new FormData();
+            formData.append('file', file);
+            $('#dropzone').addClass('dropped');
+            $.ajax({
+                url: '/itunes',
+                dataType: 'json',
+                type: 'POST',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    var formattedData = Object.keys(data).map(function(key) {
+                        var albums = data[key].map(function(name) {
+                            return {name: name};
+                        });
+                        return {name: key, albums: albums};
                     });
-                    return {name: key, albums: albums};
-                });
-                $('#artistList').removeClass('hidden');
-                $('#dropzone').removeClass('dropped hover');
-                this.setState({data: formattedData});
-            }.bind(this),
-            error: function(xhr, status, err) {
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });
+                    $('#artistList').removeClass('hidden');
+                    $('#dropzone').removeClass('dropped hover');
+                    this.setState({data: formattedData});
+                }.bind(this),
+                error: function(xhr, status, err) {
+                    console.error(this.props.url, status, err.toString());
+                }.bind(this)
+            });
+        } else {
+            return alert("Nono!! Only XML");
+        }
+
     },
     render: function() {
         return (
