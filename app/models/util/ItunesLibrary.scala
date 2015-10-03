@@ -3,13 +3,15 @@ package models.util
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import slick.driver.JdbcProfile
-import tables.UserCollectionTable
+import tables.AccountTable
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
+import scala.concurrent.Future
+import scala.util.{Success, Failure}
 import scala.xml.Node
 
-class ItunesLibrary(pathToXmlFile: String) extends HasDatabaseConfig[JdbcProfile]
-                                           with UserCollectionTable {
+class ItunesLibrary(pathToXmlFile: String, user_id:Int) extends HasDatabaseConfig[JdbcProfile]
+                                           with AccountTable {
   val LABEL_DICT = "dict"
   val LABEL_KEY  = "key"
   val information = List("Artist", "Album")
@@ -30,14 +32,37 @@ class ItunesLibrary(pathToXmlFile: String) extends HasDatabaseConfig[JdbcProfile
       val other = (d \ "_").toList.filter(x => x.label != LABEL_KEY)
       val zp:List[(Node,Node)] = keys.zip(other)
       zp.filter(information contains _._1.text)
-        .map{
+        .map {
         x => (x._1.text,x._2.text)
       }.toMap
     }.filter(_.size >= MIN_TUPLE_LENGTH)
   }
 
+  def persist(library: Map[String, Set[String]]):Unit = {
+    library.foreach { collection =>
+      val interpret = collection._1
+      val albums = collection._2
+      albums.foreach { album =>
+        saveAlbum(album, interpret).onComplete {
+          case Success(id) => println(id)
+          case Failure(t) => println(t.getMessage)
+        }
+      }
+    }
+  }
+
+  def saveAlbum(name: String, interpret:String):Future[Int] = {
+      db.run(albumQuery.filter(_.name === name).exists.result).flatMap { bool =>
+        if(bool) db.run(albumQuery.filter(_.name === name).result).map { album =>
+          album.head.id.get
+        } else {
+          db.run(albumQuery returning albumQuery.map(_.id) += models.music.Album(name = name, interpret = interpret, fk_user = user_id))
+        }
+      }
+  }
+
   def getLibrary(lib:Seq[Map[String,String]]): Map[String, Set[String]] = {
-    lib.foldLeft(Map[String, Set[String]]()) {(prev, curr) =>
+    val library = lib.foldLeft(Map[String, Set[String]]()) {(prev, curr) =>
       val artist:String = curr("Artist")
       val album:String = curr("Album")
       val artistAlbums:Set[String] = prev get artist match {
@@ -47,5 +72,7 @@ class ItunesLibrary(pathToXmlFile: String) extends HasDatabaseConfig[JdbcProfile
       val added:Set[String] = artistAlbums + album
       prev + (artist -> added)
     }
+    persist(library)
+    library
   }
 }

@@ -4,21 +4,19 @@ import models.auth.RosettaSHA256
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import slick.driver.JdbcProfile
-import tables.UserCollectionTable
+import tables.AccountTable
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import scala.concurrent.Future
 
-object User extends UserCollectionTable with HasDatabaseConfig[JdbcProfile] {
+object User extends AccountTable with HasDatabaseConfig[JdbcProfile] {
 
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
   import driver.api._
 
-  val accountQuery = TableQuery[Account]
-
-  def create(name:String, password:String) = {
+  def create(name:String, password:String):Future[Int] = {
     val hashedPassword = RosettaSHA256.digest(password)
-    db.run(accountQuery += models.Account(0, name, hashedPassword))
+    db.run(accountQuery returning accountQuery.map(_.id) += models.Account(0, name, hashedPassword))
   }
 
   def list:Future[Seq[User.Account#TableElementType]] = {

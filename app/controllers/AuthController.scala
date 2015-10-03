@@ -8,18 +8,17 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc._
 import play.cache.Cache
 import slick.driver.JdbcProfile
-import tables.UserCollectionTable
+import tables.AccountTable
 
 import scala.concurrent.Future
 
 class AuthController extends Controller
-        with UserCollectionTable
+        with AccountTable
         with HasDatabaseConfig[JdbcProfile]
         with models.auth.form.Forms {
 
   import driver.api._
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
-  val accountQuery = TableQuery[Account]
 
   def register = Action.async { implicit request =>
     registerForm.bindFromRequest.fold(
@@ -29,15 +28,16 @@ class AuthController extends Controller
       },
       user => {
         val userExists = User.exists(user.name)
-        userExists.map( bool =>
+        userExists.flatMap( bool =>
           if(!bool) {
-            User.create(user.name, user.password)
-            val hash = authenticateUser(user.name, user.password)
-            Redirect(routes.Application.index).flashing("message" -> "Welcome")
-              .withSession("username" -> user.name, "auth-secret" -> hash)
+            User.create(user.name, user.password).map {incrementId =>
+              val hash = authenticateUser(user.name, user.password)
+              Redirect(routes.Application.index).flashing("message" -> "Welcome")
+                .withSession("username" -> user.name, "auth-secret" -> hash, "user_id" -> incrementId.toString)
+            }
           } else {
-            Redirect(routes.AuthController.register)
-              .flashing("message" -> "User already exists")
+            Future.successful(Redirect(routes.AuthController.register)
+              .flashing("message" -> "User already exists"))
           }
         )
       }
@@ -58,13 +58,15 @@ class AuthController extends Controller
               if (user.password == RosettaSHA256.digest(userData.password)) {
                 val username = user.name
                 val password = user.password
+                val incrementId = user.id
                 val hash = authenticateUser(username, password)
-                (true, hash) // Tuple[Boolean, String]
-              } else (false, "")
+                (true, hash, incrementId) // Tuple[Boolean, String, Int]
+              } else (false, "", 0)
           )
-        ).map(result => // is a Seq[Tuple[Boolean,String]]
+        ).map(result => // is a Seq[Tuple[Boolean,String, Int]]
           if (result.nonEmpty && result.head._1)
-            Redirect(routes.Application.index).withSession("username" -> userData.name, "auth-secret" -> result.head._2)
+            Redirect(routes.Application.index)
+              .withSession("username" -> userData.name, "auth-secret" -> result.head._2, "user_id" -> result.head._3.toString)
           else
             Redirect(routes.AuthController.login).flashing("message" -> "Username or password wrong")
           )
