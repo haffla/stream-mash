@@ -1,7 +1,7 @@
 package tables
 
 import slick.driver.JdbcProfile
-import slick.lifted.Index
+import slick.lifted.{ForeignKeyQuery, Index}
 
 trait UserCollectionTable {
   protected val driver: JdbcProfile
@@ -31,18 +31,18 @@ trait UserCollectionTable {
   }
 
 
-  val artists = TableQuery[Interpret]
-  val albums = TableQuery[Album]
-  val users = TableQuery[Account]
+  val artistQuery = TableQuery[Interpret]
+  val albumQuery = TableQuery[Album]
+  val userQuery = TableQuery[Account]
 
   class UserCollection(tag:Tag) extends Table[models.music.UserCollection](tag, "user_collection") {
     def id = column[Int]("id", O.AutoInc, O.PrimaryKey)
     def id_interpret = column[Int]("id")
     def id_album = column[Int]("id")
     def id_user = column[Int]("id")
-    def interpret = foreignKey("fk_interpret", id_interpret, artists)(_.id)
-    def album = foreignKey("fk_album", id_album, albums)(_.id)
-    def user = foreignKey("fk_user", id_user, users)(_.id)
+    def interpret = foreignKey("fk_interpret", id_interpret, artistQuery)(_.id)
+    def album = foreignKey("fk_album", id_album, albumQuery)(_.id)
+    def user = foreignKey("fk_user", id_user, userQuery)(_.id)
     def * = (id, id_interpret, id_album) <> ((models.music.UserCollection.apply _).tupled, models.music.UserCollection.unapply _)
   }
 }

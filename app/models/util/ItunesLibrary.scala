@@ -1,12 +1,22 @@
 package models.util
 
+import play.api.Play
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
+import slick.driver.JdbcProfile
+import tables.UserCollectionTable
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+
 import scala.xml.Node
 
-class ItunesLibrary(pathToXmlFile: String) {
+class ItunesLibrary(pathToXmlFile: String) extends HasDatabaseConfig[JdbcProfile]
+                                           with UserCollectionTable {
   val LABEL_DICT = "dict"
   val LABEL_KEY  = "key"
   val information = List("Artist", "Album")
   val MIN_TUPLE_LENGTH = information.length
+
+  import driver.api._
+  val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
 
   /**
    * parses the Itunes Library XML file and returns all songs
