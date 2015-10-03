@@ -4,13 +4,12 @@ import models.auth.RosettaSHA256
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import slick.driver.JdbcProfile
-import tables.AccountTable
+import tables.UserCollectionTable
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import scala.concurrent.Future
-import scala.concurrent.duration.Duration
 
-object User extends AccountTable with HasDatabaseConfig[JdbcProfile] {
+object User extends UserCollectionTable with HasDatabaseConfig[JdbcProfile] {
 
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
   import driver.api._

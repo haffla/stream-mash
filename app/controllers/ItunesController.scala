@@ -26,7 +26,6 @@ class ItunesController extends Controller {
       val parsedXml = library.parseXml()
       val artists = library.getLibrary(parsedXml)
       val json = Json.toJson(artists)
-
       Files.delete(new File(path).toPath)
       Ok(json)
     }.getOrElse {

@@ -8,12 +8,12 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc._
 import play.cache.Cache
 import slick.driver.JdbcProfile
-import tables.AccountTable
+import tables.UserCollectionTable
 
 import scala.concurrent.Future
 
 class AuthController extends Controller
-        with AccountTable
+        with UserCollectionTable
         with HasDatabaseConfig[JdbcProfile]
         with models.auth.form.Forms {
 
