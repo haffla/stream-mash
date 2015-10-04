@@ -19,14 +19,16 @@ MainComponent = React.createClass
 
   loadFromDb: (event) ->
     callback = (data) =>
+      nr_albums = 0
       keys = Object.keys(data)
       if keys.length > 0
         $('#artistList').removeClass('hidden')
       formattedData = keys.map (key) ->
         albums = data[key].map (name) ->
+          nr_albums++
           {name: name}
         {name: key, albums: albums}
-      @setState({data: formattedData})
+      @setState({data: formattedData, nr_artists:keys.length, nr_albums: nr_albums})
 
     $.get '/itunes/fromdb', callback, 'json'
 
@@ -87,7 +89,7 @@ MainComponent = React.createClass
             <button className="btn btn-danger" type="submit">Load from DB</button>
           </form>
         </div>
-        <ArtistBox data={@state.data} />
+        <ArtistBox data={@state.data} nrArtists={@state.nr_artists} nrAlbums={@state.nr_albums} />
     </div>
 
 ArtistBox = React.createClass
@@ -95,6 +97,10 @@ ArtistBox = React.createClass
   render: () ->
     <div className="hidden" id="artistList">
         <h2>Listing Artists</h2>
+        <div className="collection-stats">
+          <p>Artists: {@props.nrArtists}</p>
+          <p>Albums: {@props.nrAlbums}</p>
+        </div>
         <ArtistList data={@props.data} />
     </div>
 
