@@ -3,6 +3,7 @@ MainComponent = React.createClass
     {data: []}
 
   componentDidMount: () ->
+    console.log(@state)
     @setState({data: []})
 
   preventDef: (event) ->
@@ -16,6 +17,17 @@ MainComponent = React.createClass
   dragLeave: (event) ->
     @preventDef(event)
     $('#dropzone').removeClass('hover')
+
+  loadFromDb: (event) ->
+    callback = (data) =>
+      formattedData = Object.keys(data).map (key) ->
+        albums = data[key].map (name) ->
+          {name: name}
+        {name: key, albums: albums}
+      @setState({data: formattedData})
+      console.log(@state)
+
+    $.get '/itunes/fromdb', callback, 'json'
 
   drop: (event) ->
     @preventDef(event)
@@ -68,6 +80,11 @@ MainComponent = React.createClass
             else
               <h4>You don&apos;t seem to be neither a Mac nor a Windows user.<br/>Drop your iTunes Music Library.xml above!</h4>
           }
+        </div>
+        <div>
+          <form className="form-prevent-default" onSubmit={@loadFromDb}>
+            <button className="btn btn-danger" type="submit">Load from DB</button>
+          </form>
         </div>
         <ArtistBox data={@state.data} />
     </div>
