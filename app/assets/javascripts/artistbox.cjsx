@@ -70,6 +70,7 @@ MainComponent = React.createClass
 
   render: () ->
     sentence = "The iTunes Music Library file is typically located under "
+    dropSentence = "Drop it on the iTunes Logo!"
     <div className="container">
         <div title="Drop your iTunes Library file here" id="dropzone" onDragOver={@preventDef}
              onDrop={@drop} onDragEnter={@dragEnter} onDragLeave={@dragLeave}>
@@ -77,16 +78,17 @@ MainComponent = React.createClass
         <div className="drop-instruction centered">
           {
             if @isMac()
-              <h4>{sentence} <br/>/Users/[username]/Music/iTunes/iTunes Music Library.xml<br/>Drop it on the iTunes Logo!</h4>
+              <h4>{sentence} <br/>/Users/[username]/Music/iTunes/iTunes Music Library.xml<br/>{dropSentence}</h4>
             else if @isWindows()
-              <h4>{sentence} <br/>C:\Users\[username]\Music\iTunes\iTunes Music Library.xml<br/>Drop it on the iTunes Logo!</h4>
+              <h4>{sentence} <br/>C:\Users\[username]\Music\iTunes\iTunes Music Library.xml<br/>{dropSentence}</h4>
             else
               <h4>You don&apos;t seem to be neither a Mac nor a Windows user.<br/>Drop your iTunes Music Library.xml above!</h4>
           }
         </div>
-        <div>
+        <hr/>
+        <div className="centered">
           <form className="form-prevent-default" onSubmit={@loadFromDb}>
-            <button className="btn btn-danger" type="submit">Load from DB</button>
+            <button className="btn btn-danger" type="submit">Or Load from DB</button>
           </form>
         </div>
         <ArtistBox data={@state.data} nrArtists={@state.nr_artists} nrAlbums={@state.nr_albums} />
