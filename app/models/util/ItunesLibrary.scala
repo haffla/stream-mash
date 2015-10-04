@@ -43,22 +43,22 @@ class ItunesLibrary(pathToXmlFile: String, user_id:Int) extends HasDatabaseConfi
       val interpret = collection._1
       val albums = collection._2
       albums.foreach { album =>
-        saveAlbum(album, interpret).onComplete {
-          case Success(id) => println(id)
+        getOrSaveAlbum(album, interpret).onComplete {
+          case Success(id) => //println(id)
           case Failure(t) => println(t.getMessage)
         }
       }
     }
   }
 
-  def saveAlbum(name: String, interpret:String):Future[Int] = {
-      db.run(albumQuery.filter(_.name === name).exists.result).flatMap { bool =>
-        if(bool) db.run(albumQuery.filter(_.name === name).result).map { album =>
-          album.head.id.get
-        } else {
-          db.run(albumQuery returning albumQuery.map(_.id) += models.music.Album(name = name, interpret = interpret, fk_user = user_id))
-        }
-      }
+  def getOrSaveAlbum(name: String, interpret:String):Future[Int] = {
+    db.run(albumQuery.filter { album =>
+      album.name === name && album.interpret === interpret && album.id_user === user_id
+    }.result).flatMap { album =>
+      if (album.nonEmpty) Future.successful(album.head.id.get)
+      else
+        db.run(albumQuery returning albumQuery.map(_.id) += models.music.Album(name = name, interpret = interpret, fk_user = user_id))
+    }
   }
 
   def getLibrary(lib:Seq[Map[String,String]]): Map[String, Set[String]] = {

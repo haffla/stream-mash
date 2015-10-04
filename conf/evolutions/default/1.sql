@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS album(
     interpret VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
     fk_user INT NOT NULL,
     FOREIGN KEY (fk_user) REFERENCES account(id_user) ON DELETE CASCADE ON UPDATE RESTRICT,
-    UNIQUE INDEX name_interpret (name,interpret)
+    UNIQUE INDEX name_interpret (name,interpret,fk_user)
 );
 
 # --- !Downs

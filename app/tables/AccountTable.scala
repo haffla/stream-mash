@@ -24,7 +24,7 @@ trait AccountTable {
     def interpret = column[String]("interpret")
     def id_user = column[Int]("fk_user")
     def fk_user = foreignKey("id_user", id_user, accountQuery)(_.id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
-    def index:Index = index("name_interpret", (name,interpret), unique=true)
+    def index:Index = index("name_interpret", (name,interpret,id_user), unique=true)
     def * = (id.?, name, interpret, id_user) <> ((models.music.Album.apply _).tupled, models.music.Album.unapply _)
   }
 
