@@ -60,7 +60,7 @@ MainComponent = React.createClass
         error: (jqXHR, status, error) =>
           console.log('Error: '  + error + '\n' + 'Status: ' + status)
     else
-      return window.alert "Nono!! Only XML"
+      return window.alert "Nono! Only iTunes Library XML files are allowed"
 
   isMac: () ->
     if navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i) then true else false
