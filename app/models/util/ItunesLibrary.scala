@@ -61,6 +61,23 @@ class ItunesLibrary(pathToXmlFile: String, user_id:Int) extends HasDatabaseConfi
     }
   }
 
+  def getAlbumsByUser(id:Int):Future[Map[String, Set[String]]] = {
+    db.run(albumQuery.filter(_.id_user === id).result.map { album =>
+      if(album.isEmpty) Map.empty
+      else {
+        album.foldLeft(Map[String, Set[String]]()) {(prev, curr) =>
+          val interpret = curr.interpret
+          val interpretAlbums:Set[String] = prev get interpret match {
+            case None => Set.empty
+            case Some(albums) => albums
+          }
+          val added:Set[String] = interpretAlbums + curr.name
+          prev + (interpret -> added)
+        }
+      }
+    })
+  }
+
   def getLibrary(lib:Seq[Map[String,String]]): Map[String, Set[String]] = {
     val library = lib.foldLeft(Map[String, Set[String]]()) {(prev, curr) =>
       val artist:String = curr("Artist")
