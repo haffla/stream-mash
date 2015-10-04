@@ -36,7 +36,6 @@ class ItunesController extends Controller {
   }
 
   def getArtistsFromDb = Authenticated.async { implicit request =>
-    println("Hello")
     val user_id =request.session.get("user_id").get.toInt
     val library = new ItunesLibrary(user_id)
     library.getAlbumsByUser(user_id).map ({

@@ -3,7 +3,8 @@ MainComponent = React.createClass
     {data: []}
 
   componentDidMount: () ->
-    @setState({data: []})
+    $('#artistList').removeClass('hidden')
+    @setState({data: [{name: "Tiago", albums: [{name: "Affe"}]}, {name: "Lappen", albums: [{name: "Hund"}]}]})
 
   preventDef: (event) ->
     event.stopPropagation()
@@ -72,48 +73,69 @@ MainComponent = React.createClass
     sentence = "The iTunes Music Library file is typically located under "
     dropSentence = "Drop it on the iTunes Logo!"
     <div className="container">
-        <div title="Drop your iTunes Library file here" id="dropzone" onDragOver={@preventDef}
-             onDrop={@drop} onDragEnter={@dragEnter} onDragLeave={@dragLeave}>
+
+        <div className="row">
+
+            <div className="col-lg-8 col-md-8 col-sm-12">
+              <div title="Drop your iTunes Library file here" id="dropzone" onDragOver={@preventDef}
+                   onDrop={@drop} onDragEnter={@dragEnter} onDragLeave={@dragLeave}>
+              </div>
+              <div className="drop-instruction centered">
+                {
+                  if @isMac()
+                    <h4>{sentence} <br/>/Users/[username]/Music/iTunes/iTunes Music Library.xml<br/>{dropSentence}</h4>
+                  else if @isWindows()
+                    <h4>{sentence} <br/>C:\Users\[username]\Music\iTunes\iTunes Music Library.xml<br/>{dropSentence}</h4>
+                  else
+                    <h4>You don&apos;t seem to be neither a Mac nor a Windows user.<br/>Drop your iTunes Music Library.xml above!</h4>
+                }
+              </div>
+              <hr/>
+              <div className="centered">
+                <form className="form-prevent-default" onSubmit={@loadFromDb}>
+                  <button className="btn btn-danger" type="submit">Or Load from DB</button>
+                </form>
+              </div>
+            </div>
+
+            <div className="col-lg-4 col-md-4">
+              <div className="collection-stats">
+                <p>Artists: {@state.nr_artists}</p>
+                <p>Albums: {@state.nr_albums}</p>
+              </div>
+            </div>
+
         </div>
-        <div className="drop-instruction centered">
-          {
-            if @isMac()
-              <h4>{sentence} <br/>/Users/[username]/Music/iTunes/iTunes Music Library.xml<br/>{dropSentence}</h4>
-            else if @isWindows()
-              <h4>{sentence} <br/>C:\Users\[username]\Music\iTunes\iTunes Music Library.xml<br/>{dropSentence}</h4>
-            else
-              <h4>You don&apos;t seem to be neither a Mac nor a Windows user.<br/>Drop your iTunes Music Library.xml above!</h4>
-          }
+
+        <div className="row">
+          <ArtistBox data={@state.data} />
         </div>
-        <hr/>
-        <div className="centered">
-          <form className="form-prevent-default" onSubmit={@loadFromDb}>
-            <button className="btn btn-danger" type="submit">Or Load from DB</button>
-          </form>
-        </div>
-        <ArtistBox data={@state.data} nrArtists={@state.nr_artists} nrAlbums={@state.nr_albums} />
+
     </div>
 
 ArtistBox = React.createClass
+  showAlbumList: (event) ->
+    #$(event.target).parent().next().fadeToggle()
+    $(event.target).parents('.artist').children('.albumList').fadeToggle()
 
   render: () ->
     <div className="hidden" id="artistList">
-        <h2>Listing Artists</h2>
-        <div className="collection-stats">
-          <p>Artists: {@props.nrArtists}</p>
-          <p>Albums: {@props.nrAlbums}</p>
-        </div>
-        <ArtistList data={@props.data} />
+        <ArtistList data={@props.data} onButtonClick={@showAlbumList}/>
     </div>
 
 ArtistList = React.createClass
   render: () ->
-    artists = this.props.data.map (artist) ->
-      <div className="artist">
-          <h3>{artist.name}</h3>
-          <Artist albums={artist.albums}/>
+    artists = this.props.data.map (artist) =>
+      <div className="artist panel panel-default">
+          <div className="panel-heading">{artist.name}
+            <button className="btn btn-default album-list-opener" onClick={@props.onButtonClick}>
+              <i className="fa fa-plus"></i>
+            </button>
+          </div>
+          <div className="panel-body">
+            <Artist albums={artist.albums}/>
+          </div>
       </div>
-
     <div className="artistList">
         {artists}
     </div>
@@ -129,14 +151,14 @@ AlbumList = React.createClass
     albums = @props.albums.map (album) ->
       <Album name={album.name} />
 
-    <div className="albumList">
+    <div className="albumList shadow-z-2">
         {albums}
     </div>
 
 Album = React.createClass
   render: () ->
     <div className="album">
-        <span>{@props.name}</span>
+        <a className="prevent-default" target="_blank" href="#">{@props.name}</a>
     </div>
 
 React.render <MainComponent />, document.getElementById('content')

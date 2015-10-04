@@ -1,7 +1,6 @@
 @()(implicit flash: Flash, session: Session)
 
 @main("iTunes") {
-    <h3>Hello, @session.get("username")!</h3>
     <div id="content"></div>
     <script type='text/javascript' src='@routes.Assets.versioned("javascripts/artistbox.js")'></script>
 }

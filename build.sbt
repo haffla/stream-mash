@@ -20,6 +20,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "bootstrap" % "3.1.1-2",
   "org.webjars" % "react" % "0.13.3",
   "org.webjars" % "marked" % "0.3.2-1",
+  "org.webjars" % "font-awesome" % "4.4.0",
   play.sbt.Play.autoImport.cache
 )
 
