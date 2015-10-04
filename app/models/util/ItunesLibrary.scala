@@ -10,7 +10,7 @@ import scala.concurrent.Future
 import scala.util.{Success, Failure}
 import scala.xml.Node
 
-class ItunesLibrary(pathToXmlFile: String, user_id:Int) extends HasDatabaseConfig[JdbcProfile]
+class ItunesLibrary(user_id:Int, save:Boolean = true) extends HasDatabaseConfig[JdbcProfile]
                                            with AccountTable {
   val LABEL_DICT = "dict"
   val LABEL_KEY  = "key"
@@ -24,7 +24,7 @@ class ItunesLibrary(pathToXmlFile: String, user_id:Int) extends HasDatabaseConfi
    * parses the Itunes Library XML file and returns all songs
    * as a sequence of maps
    */
-  def parseXml():Seq[Map[String,String]] = {
+  def parseXml(pathToXmlFile: String):Seq[Map[String,String]] = {
     val xml = scala.xml.XML.loadFile(pathToXmlFile)
     val dict = xml \ LABEL_DICT \ LABEL_DICT \ LABEL_DICT
     dict.map { d =>
@@ -61,20 +61,22 @@ class ItunesLibrary(pathToXmlFile: String, user_id:Int) extends HasDatabaseConfi
     }
   }
 
-  def getAlbumsByUser(id:Int):Future[Map[String, Set[String]]] = {
+  def getAlbumsByUser(id:Int):Future[Option[Map[String, Set[String]]]] = {
     db.run(albumQuery.filter(_.id_user === id).result.map { album =>
-      if(album.isEmpty) Map.empty
+      if(album.isEmpty) None
       else {
-        album.foldLeft(Map[String, Set[String]]()) {(prev, curr) =>
-          val interpret = curr.interpret
-          val interpretAlbums:Set[String] = prev get interpret match {
-            case None => Set.empty
-            case Some(albums) => albums
-          }
-          val added:Set[String] = interpretAlbums + curr.name
-          prev + (interpret -> added)
+          Some(
+            album.foldLeft(Map[String, Set[String]]()) {(prev, curr) =>
+              val interpret = curr.interpret
+              val interpretAlbums:Set[String] = prev get interpret match {
+                case None => Set.empty
+                case Some(albums) => albums
+              }
+              val added:Set[String] = interpretAlbums + curr.name
+              prev + (interpret -> added)
+            }
+          )
         }
-      }
     })
   }
 
@@ -89,7 +91,7 @@ class ItunesLibrary(pathToXmlFile: String, user_id:Int) extends HasDatabaseConfi
       val added:Set[String] = artistAlbums + album
       prev + (artist -> added)
     }
-    persist(library)
+    if(save) persist(library)
     library
   }
 }

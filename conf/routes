@@ -12,7 +12,7 @@ GET         /callback             controllers.SpotifyController.callback
 
 ### iTunes
 GET         /itunes               controllers.ItunesController.index
-POST        /itunes               controllers.ItunesController.itunes
+POST        /itunes               controllers.ItunesController.getArtistsFromXML(save:Boolean ?=true)
 
 ### User management
 GET         /users                controllers.UserController.list
