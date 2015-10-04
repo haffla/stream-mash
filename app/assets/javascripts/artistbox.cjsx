@@ -3,7 +3,6 @@ MainComponent = React.createClass
     {data: []}
 
   componentDidMount: () ->
-    console.log(@state)
     @setState({data: []})
 
   preventDef: (event) ->
@@ -20,12 +19,14 @@ MainComponent = React.createClass
 
   loadFromDb: (event) ->
     callback = (data) =>
-      formattedData = Object.keys(data).map (key) ->
+      keys = Object.keys(data)
+      if keys.length > 0
+        $('#artistList').removeClass('hidden')
+      formattedData = keys.map (key) ->
         albums = data[key].map (name) ->
           {name: name}
         {name: key, albums: albums}
       @setState({data: formattedData})
-      console.log(@state)
 
     $.get '/itunes/fromdb', callback, 'json'
 
