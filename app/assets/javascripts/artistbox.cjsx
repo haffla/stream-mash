@@ -18,11 +18,7 @@ MainComponent = React.createClass
     @preventDef(event)
     $('#dropzone').removeClass('hover')
 
-  originalData: []
-
-  setStateAndOriginalData: (state) ->
-    @setState(state)
-    @originalData = state
+  originalState: []
 
   loadFromDb: (event) ->
     callback = (data) =>
@@ -34,8 +30,9 @@ MainComponent = React.createClass
         albums = data[key].map (name) ->
           {name: name}
         {name: key, albums: albums}
-      @setStateAndOriginalData({data: formattedData, nr_artists:keys.length, nr_albums: nr_albums})
-
+      @setState({data: formattedData, nr_artists:keys.length, nr_albums: nr_albums}, () ->
+        @originalState = @state
+        )
     $.get '/itunes/fromdb', callback, 'json'
 
   drop: (event) ->
@@ -56,13 +53,17 @@ MainComponent = React.createClass
         contentType: false
         processData: false
         success: (data) =>
-          formattedData = Object.keys(data).map (key) ->
+          keys = _.keys(data)
+          nr_albums = _.flatten(_.values(data)).length
+          formattedData = keys.map (key) ->
             albums = data[key].map (name) ->
               {name: name}
             {name: key, albums: albums}
           $('#artistBox').removeClass('hidden')
           $('#dropzone').removeClass('dropped hover')
-          @setState({data: formattedData})
+          @setState({data: formattedData, nr_artists: keys.length, nr_albums: nr_albums}, () ->
+            @originalState = @state
+            )
         error: (jqXHR, status, error) =>
           console.log('Error: '  + error + '\n' + 'Status: ' + status)
     else
@@ -74,17 +75,19 @@ MainComponent = React.createClass
   isWindows: () ->
     if navigator.platform.match(/Win/i) then true else false
 
-  restoreOldState: () ->
-    @setState(@originalData)
+  addArrayLengths: (prev,curr) ->
+    prev.length + curr.length
 
-  filter: (event) ->
-    if event.keyCode == 13
-      re = new RegExp(event.target.value, "i")
-      newData = @state.data.filter (artist) ->
-        artist.name.search(re) != -1
+  filterArtists: (event) ->
+    re = new RegExp(event.target.value, "i")
+    newData = @originalState.data.filter (artist) ->
+      artist.name.search(re) != -1
+    if newData.length > 0
       nr_artists = newData.length
-      nr_albums = newData.reduce (prev,curr) -> prev.albums.length + curr.albums.length
-      @setState({data: newData, nr_artists: nr_artists, nr_albums: nr_albums})
+      nr_albums = 0
+      newData.forEach (elem) -> nr_albums += elem.albums.length
+
+    @setState({data: newData, nr_artists: nr_artists, nr_albums: nr_albums})
 
   render: () ->
     sentence = "The iTunes Music Library file is typically located under "
@@ -122,8 +125,8 @@ MainComponent = React.createClass
               </div>
               <div>
                 <div className="input-group">
-                  <span onClick={@restoreOldState} className="undo-icon input-group-addon" id="basic-addon1"><i className="fa fa-undo"></i></span>
-                  <input type="text" className="form-control" onKeyUp={@filter} placeholder="Artist" aria-describedby="basic-addon1" />
+                  <span className="input-group-addon" id="basic-addon1"><i className="fa fa-undo"></i></span>
+                  <input type="text" className="form-control" onKeyUp={@filterArtists} placeholder="Artist" aria-describedby="basic-addon1" />
                 </div>
               </div>
             </div>
