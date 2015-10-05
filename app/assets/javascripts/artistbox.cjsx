@@ -26,13 +26,12 @@ MainComponent = React.createClass
 
   loadFromDb: (event) ->
     callback = (data) =>
-      nr_albums = 0
-      keys = Object.keys(data)
+      keys = _.keys(data)
+      nr_albums = _.flatten(_.values(data)).length
       if keys.length > 0
         $('#artistBox').removeClass('hidden')
       formattedData = keys.map (key) ->
         albums = data[key].map (name) ->
-          nr_albums++
           {name: name}
         {name: key, albums: albums}
       @setStateAndOriginalData({data: formattedData, nr_artists:keys.length, nr_albums: nr_albums})
@@ -83,8 +82,9 @@ MainComponent = React.createClass
       re = new RegExp(event.target.value, "i")
       newData = @state.data.filter (artist) ->
         artist.name.search(re) != -1
-      nr_artists = Object.keys(newData).length
-      @setState({data: newData, nr_artists: nr_artists})
+      nr_artists = newData.length
+      nr_albums = newData.reduce (prev,curr) -> prev.albums.length + curr.albums.length
+      @setState({data: newData, nr_artists: nr_artists, nr_albums: nr_albums})
 
   render: () ->
     sentence = "The iTunes Music Library file is typically located under "
