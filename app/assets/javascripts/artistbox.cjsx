@@ -69,6 +69,13 @@ MainComponent = React.createClass
   isWindows: () ->
     if navigator.platform.match(/Win/i) then true else false
 
+  filter: (event) ->
+    if event.keyCode == 13
+      newData = @state.data.filter((artist) ->
+        artist.name == event.target.value
+        )
+      @setState({data: newData})
+
   render: () ->
     sentence = "The iTunes Music Library file is typically located under "
     dropSentence = "Drop it on the iTunes Logo!"
@@ -103,6 +110,12 @@ MainComponent = React.createClass
                 <p>Artists: {@state.nr_artists}</p>
                 <p>Albums: {@state.nr_albums}</p>
               </div>
+              <div>
+                <div className="input-group">
+                  <span className="input-group-addon" id="basic-addon1">@</span>
+                  <input type="text" className="form-control" onKeyUp={@filter} placeholder="Artist" aria-describedby="basic-addon1" />
+                </div>
+              </div>
             </div>
 
         </div>
@@ -126,15 +139,18 @@ ArtistList = React.createClass
   render: () ->
     artists = this.props.data.map (artist) =>
       <div className="artist panel panel-default">
+
           <div className="panel-heading">
             <div><i className="fa fa-music"></i> {artist.name}</div>
             <button className="btn btn-default album-list-opener" onClick={@props.onButtonClick}>
               <i className="fa fa-plus"></i>
             </button>
           </div>
+
           <div className="panel-body">
             <Artist key={artist.id} albums={artist.albums}/>
           </div>
+
       </div>
     <div className="artistList">
         {artists}
@@ -142,16 +158,14 @@ ArtistList = React.createClass
 
 Artist = React.createClass
   render: () ->
-    <div className="albumList">
-        <AlbumList albums={@props.albums}/>
-    </div>
+    <AlbumList albums={@props.albums}/>
 
 AlbumList = React.createClass
   render: () ->
     albums = @props.albums.map (album) ->
       <Album key={album.id} name={album.name} />
 
-    <div className="albumList shadow-z-2">
+    <div className="albumList">
         {albums}
     </div>
 
