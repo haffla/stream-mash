@@ -18,6 +18,8 @@ MainComponent = React.createClass
     @preventDef(event)
     $('#dropzone').removeClass('hover')
 
+  oldState: []
+
   loadFromDb: (event) ->
     callback = (data) =>
       nr_albums = 0
@@ -30,6 +32,7 @@ MainComponent = React.createClass
           {name: name}
         {name: key, albums: albums}
       @setState({data: formattedData, nr_artists:keys.length, nr_albums: nr_albums})
+      @oldState = formattedData
 
     $.get '/itunes/fromdb', callback, 'json'
 
@@ -69,10 +72,14 @@ MainComponent = React.createClass
   isWindows: () ->
     if navigator.platform.match(/Win/i) then true else false
 
+  restoreOldState: () ->
+    @setState({data: @oldState})
+
   filter: (event) ->
     if event.keyCode == 13
+      re = new RegExp(event.target.value, "i")
       newData = @state.data.filter((artist) ->
-        artist.name == event.target.value
+        artist.name.search(re) != -1
         )
       @setState({data: newData})
 
@@ -112,7 +119,7 @@ MainComponent = React.createClass
               </div>
               <div>
                 <div className="input-group">
-                  <span className="input-group-addon" id="basic-addon1">@</span>
+                  <span onClick={@restoreOldState} className="input-group-addon" id="basic-addon1">@</span>
                   <input type="text" className="form-control" onKeyUp={@filter} placeholder="Artist" aria-describedby="basic-addon1" />
                 </div>
               </div>
