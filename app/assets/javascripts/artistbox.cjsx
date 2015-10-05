@@ -133,7 +133,7 @@ ArtistList = React.createClass
             </button>
           </div>
           <div className="panel-body">
-            <Artist albums={artist.albums}/>
+            <Artist key={artist.id} albums={artist.albums}/>
           </div>
       </div>
     <div className="artistList">
