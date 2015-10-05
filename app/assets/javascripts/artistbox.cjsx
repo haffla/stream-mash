@@ -122,7 +122,7 @@ MainComponent = React.createClass
               </div>
               <div>
                 <div className="input-group">
-                  <span onClick={@restoreOldState} className="input-group-addon" id="basic-addon1">@</span>
+                  <span onClick={@restoreOldState} className="undo-icon input-group-addon" id="basic-addon1"><i className="fa fa-undo"></i></span>
                   <input type="text" className="form-control" onKeyUp={@filter} placeholder="Artist" aria-describedby="basic-addon1" />
                 </div>
               </div>
