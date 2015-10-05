@@ -18,7 +18,11 @@ MainComponent = React.createClass
     @preventDef(event)
     $('#dropzone').removeClass('hover')
 
-  oldState: []
+  originalData: []
+
+  setStateAndOriginalData: (state) ->
+    @setState(state)
+    @originalData = state
 
   loadFromDb: (event) ->
     callback = (data) =>
@@ -31,8 +35,7 @@ MainComponent = React.createClass
           nr_albums++
           {name: name}
         {name: key, albums: albums}
-      @setState({data: formattedData, nr_artists:keys.length, nr_albums: nr_albums})
-      @oldState = formattedData
+      @setStateAndOriginalData({data: formattedData, nr_artists:keys.length, nr_albums: nr_albums})
 
     $.get '/itunes/fromdb', callback, 'json'
 
@@ -73,15 +76,15 @@ MainComponent = React.createClass
     if navigator.platform.match(/Win/i) then true else false
 
   restoreOldState: () ->
-    @setState({data: @oldState})
+    @setState(@originalData)
 
   filter: (event) ->
     if event.keyCode == 13
       re = new RegExp(event.target.value, "i")
-      newData = @state.data.filter((artist) ->
+      newData = @state.data.filter (artist) ->
         artist.name.search(re) != -1
-        )
-      @setState({data: newData})
+      nr_artists = Object.keys(newData).length
+      @setState({data: newData, nr_artists: nr_artists})
 
   render: () ->
     sentence = "The iTunes Music Library file is typically located under "
