@@ -3,7 +3,7 @@ MainComponent = React.createClass
     {data: []}
 
   componentDidMount: () ->
-    $('#artistList').removeClass('hidden')
+    $('#artistBox').removeClass('hidden')
     @setState({data: [{name: "Tiago", albums: [{name: "Affe"}]}, {name: "Lappen", albums: [{name: "Hund"}]}]})
 
   preventDef: (event) ->
@@ -23,7 +23,7 @@ MainComponent = React.createClass
       nr_albums = 0
       keys = Object.keys(data)
       if keys.length > 0
-        $('#artistList').removeClass('hidden')
+        $('#artistBox').removeClass('hidden')
       formattedData = keys.map (key) ->
         albums = data[key].map (name) ->
           nr_albums++
@@ -55,7 +55,7 @@ MainComponent = React.createClass
             albums = data[key].map (name) ->
               {name: name}
             {name: key, albums: albums}
-          $('#artistList').removeClass('hidden')
+          $('#artistBox').removeClass('hidden')
           $('#dropzone').removeClass('dropped hover')
           @setState({data: formattedData})
         error: (jqXHR, status, error) =>
@@ -119,7 +119,7 @@ ArtistBox = React.createClass
     $(event.target).parents('.artist').children('.albumList').fadeToggle()
 
   render: () ->
-    <div className="hidden" id="artistList">
+    <div className="hidden" id="artistBox">
         <ArtistList data={@props.data} onButtonClick={@showAlbumList}/>
     </div>
 
