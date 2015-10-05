@@ -38,14 +38,39 @@
 }
 
 .artist {
-  width: 300px;
+  width: 30%;
+  position: relative;
+  float: left;
+  margin-right: 10px;
+  background-color: @grey-400;
   .album-list-opener {
+    border-radius: 0;
+    border-right: none;
+    border-bottom: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
     margin-left: 10px;
-    width: 30px;
     padding: 5px 10px;
   }
+  .panel-heading {
+    overflow: hidden;
+    background-color: @amber-300;
+    border-color: @amber-700;
+    height: 50px;
+     padding: 0;
+     div {
+       padding: 5px;
+       width: 90%;
+     }
+   }
+   .panel-body {
+     display: none;
+     padding: 0;
+   }
 
-  .albumList {
-    padding: 5px;
-  }
+   .albumList {
+     padding: 5px;
+   }
 }

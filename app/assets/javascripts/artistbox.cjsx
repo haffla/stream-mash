@@ -115,8 +115,7 @@ MainComponent = React.createClass
 
 ArtistBox = React.createClass
   showAlbumList: (event) ->
-    #$(event.target).parent().next().fadeToggle()
-    $(event.target).parents('.artist').children('.albumList').fadeToggle()
+    $(event.target).parents('.panel-heading').siblings('.panel-body').slideToggle()
 
   render: () ->
     <div className="hidden" id="artistBox">
@@ -127,7 +126,8 @@ ArtistList = React.createClass
   render: () ->
     artists = this.props.data.map (artist) =>
       <div className="artist panel panel-default">
-          <div className="panel-heading">{artist.name}
+          <div className="panel-heading">
+            <div><i className="fa fa-music"></i> {artist.name}</div>
             <button className="btn btn-default album-list-opener" onClick={@props.onButtonClick}>
               <i className="fa fa-plus"></i>
             </button>
@@ -149,7 +149,7 @@ Artist = React.createClass
 AlbumList = React.createClass
   render: () ->
     albums = @props.albums.map (album) ->
-      <Album name={album.name} />
+      <Album key={album.id} name={album.name} />
 
     <div className="albumList shadow-z-2">
         {albums}
