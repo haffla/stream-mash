@@ -22,7 +22,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "react" % "0.13.3",
   "org.webjars" % "marked" % "0.3.2-1",
   "org.webjars" % "font-awesome" % "4.4.0",
-  "org.webjars" % "underscorejs" % "1.7.0",
+  "org.webjars" % "lodash" % "3.10.1",
   play.sbt.Play.autoImport.cache
 )
 
@@ -31,4 +31,3 @@ resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 
 routesGenerator := InjectedRoutesGenerator
 unmanagedResourceDirectories in Compile += baseDirectory.value / "app" / "views"
-
