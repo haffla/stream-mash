@@ -87,7 +87,7 @@ MainComponent = React.createClass
       nr_albums = 0
       newData.forEach (elem) -> nr_albums += elem.albums.length
 
-    @setState({data: newData, nr_artists: nr_artists, nr_albums: nr_albums})
+    @setState({data: newData, nr_artists: nr_artists  || 0, nr_albums: nr_albums || 0})
 
   render: () ->
     sentence = "The iTunes Music Library file is typically located under "
