@@ -22,17 +22,20 @@ MainComponent = React.createClass
 
   loadFromDb: (event) ->
     callback = (data) =>
-      keys = _.keys(data)
-      nr_albums = _.flatten(_.values(data)).length
-      if keys.length > 0
-        $('#artistBox').removeClass('hidden')
-      formattedData = keys.map (key) ->
-        albums = data[key].map (name) ->
-          {name: name}
-        {name: key, albums: albums}
-      @setState({data: formattedData, nr_artists:keys.length, nr_albums: nr_albums}, () ->
-        @originalState = @state
-        )
+      if data.length > 0
+        keys = _.keys(data)
+        nr_albums = _.flatten(_.values(data)).length
+        if keys.length > 0
+          $('#artistBox').removeClass('hidden')
+        formattedData = keys.map (key) ->
+          albums = data[key].map (name) ->
+            {name: name}
+          {name: key, albums: albums}
+        @setState({data: formattedData, nr_artists:keys.length, nr_albums: nr_albums}, () ->
+          @originalState = @state
+          )
+      else
+        window.alert("You have no records stored in our database.")
     $.get '/itunes/fromdb', callback, 'json'
 
   drop: (event) ->
