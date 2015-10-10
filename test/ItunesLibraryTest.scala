@@ -1,0 +1,22 @@
+import models.util.ItunesLibrary
+import org.specs2.mutable._
+import org.specs2.runner._
+import org.junit.runner._
+import play.Play
+import play.api.test.WithApplication
+
+@RunWith(classOf[JUnitRunner])
+class ItunesLibraryTest extends Specification {
+
+  "The ItunesLibrary" should {
+    "parse a library xml file correctly" in new WithApplication {
+      val lib = new ItunesLibrary(1, false)
+      val songMap = lib.parseXml(Play.application.path.getPath + "/test/resources/testItunesLibrary.xml")
+      songMap.length shouldEqual(28)
+      val artistMap = lib.getLibrary(songMap)
+      artistMap.size shouldEqual(2)
+      artistMap("Burial").size shouldEqual(2)
+      artistMap("Burial + Four Tet").size shouldEqual(2)
+    }
+  }
+}

@@ -1,0 +1,1903 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Major Version</key><integer>1</integer>
+	<key>Minor Version</key><integer>1</integer>
+	<key>Application Version</key><string>12.2.0.145</string>
+	<key>Date</key><date>2015-09-30T20:12:29Z</date>
+	<key>Features</key><integer>5</integer>
+	<key>Show Content Ratings</key><true/>
+	<key>Library Persistent ID</key><string>8D4A68C9B4E78280</string>
+	<key>Tracks</key>
+	<dict>
+		<key>286</key>
+		<dict>
+			<key>Track ID</key><integer>286</integer>
+			<key>Size</key><integer>882748</integer>
+			<key>Total Time</key><integer>35970</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2006</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:55Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>192</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>0AF7B1E70981EC76</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Untitled</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Album</key><string>Burial</string>
+			<key>Genre</key><string>Garage</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Burial/01%20untitled.mp3</string>
+		</dict>
+		<key>288</key>
+		<dict>
+			<key>Track ID</key><integer>288</integer>
+			<key>Size</key><integer>7922622</integer>
+			<key>Total Time</key><integer>326400</integer>
+			<key>Track Number</key><integer>2</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2006</integer>
+			<key>BPM</key><integer>127</integer>
+			<key>Date Modified</key><date>2013-04-14T05:27:30Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>192</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>F97997ECCFD6108D</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Distant Lights</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Album</key><string>Burial</string>
+			<key>Genre</key><string>Garage</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Burial/02%20distant%20lights.mp3</string>
+		</dict>
+		<key>290</key>
+		<dict>
+			<key>Track ID</key><integer>290</integer>
+			<key>Size</key><integer>5819264</integer>
+			<key>Total Time</key><integer>241658</integer>
+			<key>Track Number</key><integer>3</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2006</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:50Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>192</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>01652BFA3851B325</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Spaceape</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Album</key><string>Burial</string>
+			<key>Genre</key><string>Garage</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Burial/03%20spaceape.mp3</string>
+		</dict>
+		<key>292</key>
+		<dict>
+			<key>Track ID</key><integer>292</integer>
+			<key>Size</key><integer>7014836</integer>
+			<key>Total Time</key><integer>291474</integer>
+			<key>Track Number</key><integer>4</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2006</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:57Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>192</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>35940CCC6972E608</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Wounder</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Album</key><string>Burial</string>
+			<key>Genre</key><string>Garage</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Burial/04%20wounder.mp3</string>
+		</dict>
+		<key>294</key>
+		<dict>
+			<key>Track ID</key><integer>294</integer>
+			<key>Size</key><integer>3384862</integer>
+			<key>Total Time</key><integer>140225</integer>
+			<key>Track Number</key><integer>5</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2006</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:45Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>192</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>9E3D3DA99DD60C19</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Night Bus</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Album</key><string>Burial</string>
+			<key>Genre</key><string>Garage</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Burial/05%20night%20bus.mp3</string>
+		</dict>
+		<key>296</key>
+		<dict>
+			<key>Track ID</key><integer>296</integer>
+			<key>Size</key><integer>7250574</integer>
+			<key>Total Time</key><integer>301296</integer>
+			<key>Track Number</key><integer>6</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2006</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:49Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>192</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>2331DCEA93D4F1EC</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Southern Comfort</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Album</key><string>Burial</string>
+			<key>Genre</key><string>Garage</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Burial/06%20southern%20comfort.mp3</string>
+		</dict>
+		<key>298</key>
+		<dict>
+			<key>Track ID</key><integer>298</integer>
+			<key>Size</key><integer>7759643</integer>
+			<key>Total Time</key><integer>322507</integer>
+			<key>Track Number</key><integer>7</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2006</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:57Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>192</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>14B439F048D89829</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>You Hurt Me</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Album</key><string>Burial</string>
+			<key>Genre</key><string>Garage</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Burial/07%20you%20hurt%20me.mp3</string>
+		</dict>
+		<key>300</key>
+		<dict>
+			<key>Track ID</key><integer>300</integer>
+			<key>Size</key><integer>6809199</integer>
+			<key>Total Time</key><integer>282906</integer>
+			<key>Track Number</key><integer>8</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2006</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:42Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>192</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>F668F8F5A42814CF</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Gutted</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Album</key><string>Burial</string>
+			<key>Genre</key><string>Garage</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Burial/08%20gutted.mp3</string>
+		</dict>
+		<key>302</key>
+		<dict>
+			<key>Track ID</key><integer>302</integer>
+			<key>Size</key><integer>4520873</integer>
+			<key>Total Time</key><integer>187559</integer>
+			<key>Track Number</key><integer>9</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2006</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:41Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>192</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>910021C8D5C45C78</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Forgive</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Album</key><string>Burial</string>
+			<key>Genre</key><string>Garage</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Comments</key><string> 00000000 00000210 00000A8C 00000000007E5AE4 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Burial/09%20forgive.mp3</string>
+		</dict>
+		<key>304</key>
+		<dict>
+			<key>Track ID</key><integer>304</integer>
+			<key>Size</key><integer>7325175</integer>
+			<key>Total Time</key><integer>304404</integer>
+			<key>Track Number</key><integer>10</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2006</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:37Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>192</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>474E6B4133D90756</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Broken Home</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Album</key><string>Burial</string>
+			<key>Genre</key><string>Garage</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Burial/10%20broken%20home.mp3</string>
+		</dict>
+		<key>306</key>
+		<dict>
+			<key>Track ID</key><integer>306</integer>
+			<key>Size</key><integer>5424919</integer>
+			<key>Total Time</key><integer>225227</integer>
+			<key>Track Number</key><integer>11</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2006</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:46Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>192</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>3F1ED42A28617300</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Prayer</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Album</key><string>Burial</string>
+			<key>Genre</key><string>Garage</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Burial/11%20prayer.mp3</string>
+		</dict>
+		<key>308</key>
+		<dict>
+			<key>Track ID</key><integer>308</integer>
+			<key>Size</key><integer>8916342</integer>
+			<key>Total Time</key><integer>370703</integer>
+			<key>Track Number</key><integer>12</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2006</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:46Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>192</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>84718072E4FEDD95</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Pirates</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Album</key><string>Burial</string>
+			<key>Genre</key><string>Garage</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Burial/12%20pirates.mp3</string>
+		</dict>
+		<key>310</key>
+		<dict>
+			<key>Track ID</key><integer>310</integer>
+			<key>Size</key><integer>1324742</integer>
+			<key>Total Time</key><integer>54386</integer>
+			<key>Track Number</key><integer>13</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2006</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:55Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>192</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>20368EFB31D5F0B6</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Untitled2</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Album</key><string>Burial</string>
+			<key>Genre</key><string>Garage</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Burial/13%20untitled2.mp3</string>
+		</dict>
+		<key>312</key>
+		<dict>
+			<key>Track ID</key><integer>312</integer>
+			<key>Size</key><integer>1935549</integer>
+			<key>Total Time</key><integer>46288</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Disc Count</key><integer>1</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2007</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:55Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>6D4C220DCF2A0881</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Untitled</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Composer</key><string>Burial</string>
+			<key>Album</key><string>Untrue</string>
+			<key>Genre</key><string>Electronica/Dance</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Untrue/01%20Untitled.mp3</string>
+		</dict>
+		<key>314</key>
+		<dict>
+			<key>Track ID</key><integer>314</integer>
+			<key>Size</key><integer>9623909</integer>
+			<key>Total Time</key><integer>238497</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Disc Count</key><integer>1</integer>
+			<key>Track Number</key><integer>2</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2007</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:33Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>12086663757273B6</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Archangel</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Composer</key><string>Burial</string>
+			<key>Album</key><string>Untrue</string>
+			<key>Genre</key><string>Electronica/Dance</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Untrue/02%20Archangel.mp3</string>
+		</dict>
+		<key>316</key>
+		<dict>
+			<key>Track ID</key><integer>316</integer>
+			<key>Size</key><integer>9467174</integer>
+			<key>Total Time</key><integer>234579</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Disc Count</key><integer>1</integer>
+			<key>Track Number</key><integer>3</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2007</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:45Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>C517F72CFC43C53E</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Near Dark</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Composer</key><string>Burial</string>
+			<key>Album</key><string>Untrue</string>
+			<key>Genre</key><string>Electronica/Dance</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Untrue/03%20Near%20Dark.mp3</string>
+		</dict>
+		<key>318</key>
+		<dict>
+			<key>Track ID</key><integer>318</integer>
+			<key>Size</key><integer>11809840</integer>
+			<key>Total Time</key><integer>293146</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Disc Count</key><integer>1</integer>
+			<key>Track Number</key><integer>4</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2007</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:41Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>FD5F0CEF0B961EC2</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Ghost Hardware</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Composer</key><string>Burial</string>
+			<key>Album</key><string>Untrue</string>
+			<key>Genre</key><string>Electronica/Dance</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Untrue/04%20Ghost%20Hardware.mp3</string>
+		</dict>
+		<key>320</key>
+		<dict>
+			<key>Track ID</key><integer>320</integer>
+			<key>Size</key><integer>7179892</integer>
+			<key>Total Time</key><integer>177397</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Disc Count</key><integer>1</integer>
+			<key>Track Number</key><integer>5</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2007</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:39Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>04F5E022090B7EF9</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Endorphin</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Composer</key><string>Burial</string>
+			<key>Album</key><string>Untrue</string>
+			<key>Genre</key><string>Electronica/Dance</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Untrue/05%20Endorphin.mp3</string>
+		</dict>
+		<key>322</key>
+		<dict>
+			<key>Track ID</key><integer>322</integer>
+			<key>Size</key><integer>14477467</integer>
+			<key>Total Time</key><integer>359836</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Disc Count</key><integer>1</integer>
+			<key>Track Number</key><integer>6</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2007</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:40Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>27EA40F3BBBF4FBC</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Etched Headplate</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Composer</key><string>Burial</string>
+			<key>Album</key><string>Untrue</string>
+			<key>Genre</key><string>Electronica/Dance</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Untrue/06%20Etched%20Headplate.mp3</string>
+		</dict>
+		<key>324</key>
+		<dict>
+			<key>Track ID</key><integer>324</integer>
+			<key>Size</key><integer>5166377</integer>
+			<key>Total Time</key><integer>127059</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Disc Count</key><integer>1</integer>
+			<key>Track Number</key><integer>7</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2007</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:44Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>FC23F1F1C231C6D4</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>In Mcdonalds</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Composer</key><string>Burial</string>
+			<key>Album</key><string>Untrue</string>
+			<key>Genre</key><string>Electronica/Dance</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Untrue/07%20In%20Mcdonalds.mp3</string>
+		</dict>
+		<key>326</key>
+		<dict>
+			<key>Track ID</key><integer>326</integer>
+			<key>Size</key><integer>15154551</integer>
+			<key>Total Time</key><integer>376764</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Disc Count</key><integer>1</integer>
+			<key>Track Number</key><integer>8</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2007</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:56Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>C65EE9304072465A</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Untrue</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Composer</key><string>Burial</string>
+			<key>Album</key><string>Untrue</string>
+			<key>Genre</key><string>Electronica/Dance</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Untrue/08%20Untrue.mp3</string>
+		</dict>
+		<key>328</key>
+		<dict>
+			<key>Track ID</key><integer>328</integer>
+			<key>Size</key><integer>11308289</integer>
+			<key>Total Time</key><integer>280607</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Disc Count</key><integer>1</integer>
+			<key>Track Number</key><integer>9</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2007</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:48Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>6B890B6146076492</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Shell Of Light</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Composer</key><string>Burial</string>
+			<key>Album</key><string>Untrue</string>
+			<key>Genre</key><string>Electronica/Dance</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Untrue/09%20Shell%20Of%20Light.mp3</string>
+		</dict>
+		<key>330</key>
+		<dict>
+			<key>Track ID</key><integer>330</integer>
+			<key>Size</key><integer>7255128</integer>
+			<key>Total Time</key><integer>179278</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Disc Count</key><integer>1</integer>
+			<key>Track Number</key><integer>10</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2007</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:38Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>A7B8A91E6F2821D4</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Dog Shelter</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Composer</key><string>Burial</string>
+			<key>Album</key><string>Untrue</string>
+			<key>Genre</key><string>Electronica/Dance</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Untrue/10%20Dog%20Shelter.mp3</string>
+		</dict>
+		<key>332</key>
+		<dict>
+			<key>Track ID</key><integer>332</integer>
+			<key>Size</key><integer>12977049</integer>
+			<key>Total Time</key><integer>320600</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Disc Count</key><integer>1</integer>
+			<key>Track Number</key><integer>11</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2007</integer>
+			<key>BPM</key><integer>137</integer>
+			<key>Date Modified</key><date>2013-04-14T02:43:20Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>0874CFE5820A1F8F</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Homeless</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Composer</key><string>Burial</string>
+			<key>Album</key><string>Untrue</string>
+			<key>Genre</key><string>Electronica/Dance</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Untrue/11%20Homeless.mp3</string>
+		</dict>
+		<key>334</key>
+		<dict>
+			<key>Track ID</key><integer>334</integer>
+			<key>Size</key><integer>4095361</integer>
+			<key>Total Time</key><integer>100284</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Disc Count</key><integer>1</integer>
+			<key>Track Number</key><integer>12</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2007</integer>
+			<key>BPM</key><integer>380</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:54Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>449EB07F8848044A</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>U.K.</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Composer</key><string>Burial</string>
+			<key>Album</key><string>Untrue</string>
+			<key>Genre</key><string>Electronica/Dance</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Untrue/12%20U.K..mp3</string>
+		</dict>
+		<key>336</key>
+		<dict>
+			<key>Track ID</key><integer>336</integer>
+			<key>Size</key><integer>12080461</integer>
+			<key>Total Time</key><integer>299911</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Disc Count</key><integer>1</integer>
+			<key>Track Number</key><integer>13</integer>
+			<key>Track Count</key><integer>13</integer>
+			<key>Year</key><integer>2007</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:47Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>105</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>85371E7CEAD4ADC9</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Raver</string>
+			<key>Artist</key><string>Burial</string>
+			<key>Composer</key><string>Burial</string>
+			<key>Album</key><string>Untrue</string>
+			<key>Genre</key><string>Electronica/Dance</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial/Untrue/13%20Raver.mp3</string>
+		</dict>
+		<key>338</key>
+		<dict>
+			<key>Track ID</key><integer>338</integer>
+			<key>Size</key><integer>11833716</integer>
+			<key>Total Time</key><integer>295784</integer>
+			<key>Track Number</key><integer>15</integer>
+			<key>Track Count</key><integer>24</integer>
+			<key>Year</key><integer>2010</integer>
+			<key>Date Modified</key><date>2012-11-22T11:34:44Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Volume Adjustment</key><integer>104</integer>
+			<key>Persistent ID</key><string>D8F59CF883DA6B89</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Moth</string>
+			<key>Artist</key><string>Burial + Four Tet</string>
+			<key>Album</key><string>DJ-Kicks</string>
+			<key>Genre</key><string>Electronic</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial%20+%20Four%20Tet/DJ-Kicks/15%20Moth.mp3</string>
+		</dict>
+		<key>340</key>
+		<dict>
+			<key>Track ID</key><integer>340</integer>
+			<key>Size</key><integer>13764946</integer>
+			<key>Total Time</key><integer>344058</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Track Count</key><integer>1</integer>
+			<key>Year</key><integer>2012</integer>
+			<key>Date Modified</key><date>2012-03-30T10:15:23Z</date>
+			<key>Date Added</key><date>2015-06-02T14:58:08Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Persistent ID</key><string>ED1689E2C5C829FA</string>
+			<key>Track Type</key><string>File</string>
+			<key>File Folder Count</key><integer>-1</integer>
+			<key>Library Folder Count</key><integer>-1</integer>
+			<key>Name</key><string>Nova</string>
+			<key>Artist</key><string>Burial + Four Tet</string>
+			<key>Album</key><string>Nova</string>
+			<key>Genre</key><string>Bass</string>
+			<key>Kind</key><string>MPEG-Audiodatei</string>
+			<key>Location</key><string>file://localhost/E:/MusicBackup/Mumu/Music/Burial%20+%20Four%20Tet/Nova/01%20Nova.mp3</string>
+		</dict>
+		
+	</dict>
+	<key>Playlists</key>
+	<array>
+		<dict>
+			<key>Master</key><true/>
+			<key>Playlist ID</key><integer>468</integer>
+			<key>Playlist Persistent ID</key><string>796F16B423FA127F</string>
+			<key>All Items</key><true/>
+			<key>Visible</key><false/>
+			<key>Name</key><string>####!####</string>
+			<key>Playlist Items</key>
+			<array>
+				<dict>
+					<key>Track ID</key><integer>286</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>288</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>290</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>292</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>294</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>296</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>298</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>300</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>302</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>304</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>306</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>308</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>310</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>312</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>314</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>316</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>318</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>320</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>322</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>324</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>326</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>328</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>330</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>332</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>334</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>336</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>338</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>340</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>342</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>344</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>346</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>348</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>350</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>352</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>354</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>356</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>358</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>360</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>362</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>364</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>366</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>368</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>370</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>372</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>374</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>376</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>378</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>380</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>382</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>384</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>386</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>388</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>390</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>392</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>394</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>396</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>398</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>400</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>402</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>404</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>406</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>408</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>410</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>412</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>414</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>416</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>418</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>420</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>422</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>424</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>426</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>428</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>430</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>432</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>434</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>436</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>438</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>456</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>458</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>460</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>462</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>464</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>466</integer>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>554</integer>
+			<key>Playlist Persistent ID</key><string>0F2C7CFAF0EB109D</string>
+			<key>Distinguished Kind</key><integer>4</integer>
+			<key>Music</key><true/>
+			<key>All Items</key><true/>
+			<key>Name</key><string>Musik</string>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAQAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAAAQIbEAAAAAAAAAAAAAAAAAAAAB
+			AAAAAAAQIbEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AgAEAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAIIAE
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAIIAEAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAA
+			</data>
+			<key>Playlist Items</key>
+			<array>
+				<dict>
+					<key>Track ID</key><integer>286</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>288</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>290</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>292</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>294</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>296</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>298</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>300</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>302</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>304</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>306</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>308</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>310</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>312</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>314</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>316</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>318</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>320</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>322</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>324</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>326</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>328</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>330</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>332</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>334</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>336</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>338</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>340</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>346</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>362</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>348</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>376</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>378</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>354</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>342</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>394</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>398</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>402</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>406</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>408</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>420</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>422</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>414</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>372</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>428</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>434</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>430</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>436</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>360</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>432</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>390</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>418</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>392</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>410</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>374</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>396</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>416</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>412</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>352</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>364</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>370</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>404</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>424</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>426</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>438</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>356</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>386</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>344</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>368</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>350</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>358</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>366</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>380</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>382</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>384</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>388</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>400</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>456</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>458</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>462</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>460</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>466</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>464</integer>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>640</integer>
+			<key>Playlist Persistent ID</key><string>F6D77A57E909516D</string>
+			<key>Distinguished Kind</key><integer>47</integer>
+			<key>All Items</key><true/>
+			<key>Name</key><string>Musikvideos</string>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAQAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAB
+			AAAAAAAAACAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AgAEAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAIYAE
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAIYAEAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAA
+			</data>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>643</integer>
+			<key>Playlist Persistent ID</key><string>A2DB927AC7C364AE</string>
+			<key>Distinguished Kind</key><integer>7</integer>
+			<key>All Items</key><true/>
+			<key>Name</key><string>Leihobjekte</string>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAQAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAAAAAEIAAAAAAAAAAAAAAAAAAAAB
+			AAAAAAAAAEIAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AAAIAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAAIAA
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAA
+			</data>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>646</integer>
+			<key>Playlist Persistent ID</key><string>551ABF39C56DC1A9</string>
+			<key>Distinguished Kind</key><integer>2</integer>
+			<key>Movies</key><true/>
+			<key>All Items</key><true/>
+			<key>Name</key><string>Filme</string>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAQAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAB
+			AAAAAAAAAAIAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AgAEAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAIKAE
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAIKAEAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAA
+			</data>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>649</integer>
+			<key>Playlist Persistent ID</key><string>D07E34A571C6BDA8</string>
+			<key>Distinguished Kind</key><integer>48</integer>
+			<key>All Items</key><true/>
+			<key>Name</key><string>Eigene Videos</string>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAQAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAB
+			AAAAAAAABAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AgAEAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAIYAE
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAIYAEAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAA
+			</data>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>652</integer>
+			<key>Playlist Persistent ID</key><string>E64D2671D224469F</string>
+			<key>Distinguished Kind</key><integer>3</integer>
+			<key>TV Shows</key><true/>
+			<key>All Items</key><true/>
+			<key>Name</key><string>TV-Sendungen</string>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAQAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAB
+			AAAAAAAAAEAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AgAEAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAIKAE
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAIKAEAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAA
+			</data>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>655</integer>
+			<key>Playlist Persistent ID</key><string>16D4D6BD823B410A</string>
+			<key>Distinguished Kind</key><integer>10</integer>
+			<key>Podcasts</key><true/>
+			<key>All Items</key><true/>
+			<key>Visible</key><false/>
+			<key>Name</key><string>Podcasts</string>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>662</integer>
+			<key>Playlist Persistent ID</key><string>4FD848D6954F15C2</string>
+			<key>Distinguished Kind</key><integer>31</integer>
+			<key>iTunesU</key><true/>
+			<key>All Items</key><true/>
+			<key>Visible</key><false/>
+			<key>Name</key><string>iTunes U</string>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>665</integer>
+			<key>Playlist Persistent ID</key><string>FA89F3B6E80A19E1</string>
+			<key>Distinguished Kind</key><integer>5</integer>
+			<key>Audiobooks</key><true/>
+			<key>Books</key><true/>
+			<key>All Items</key><true/>
+			<key>Visible</key><false/>
+			<key>Name</key><string>Bücher</string>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAQAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAADAAAgAAAAAAAAAAAAAAAAAAAAB
+			AAAAAADAAAgAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AgAEAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAIKAE
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAIKAEAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAA
+			</data>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>668</integer>
+			<key>Playlist Persistent ID</key><string>13259A3410A43193</string>
+			<key>Distinguished Kind</key><integer>57</integer>
+			<key>All Items</key><true/>
+			<key>Name</key><string>Bücher</string>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAQAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAB
+			AAAAAABAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AgAEAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAIKAE
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAIKAEAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAA
+			</data>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>671</integer>
+			<key>Playlist Persistent ID</key><string>1FFBBE27988C0EB1</string>
+			<key>Distinguished Kind</key><integer>59</integer>
+			<key>All Items</key><true/>
+			<key>Name</key><string>PDFs</string>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAQAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAB
+			AAAAAACAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AgAEAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAIKAE
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAIKAEAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAA
+			</data>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>674</integer>
+			<key>Playlist Persistent ID</key><string>E3BB322FE27977D0</string>
+			<key>Distinguished Kind</key><integer>58</integer>
+			<key>All Items</key><true/>
+			<key>Name</key><string>Hörbücher</string>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAQAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAB
+			AAAAAAAAAAgAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AgAEAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAIKAE
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAIKAEAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAA
+			</data>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>677</integer>
+			<key>Playlist Persistent ID</key><string>70A0DECCD6E29476</string>
+			<key>Distinguished Kind</key><integer>18</integer>
+			<key>All Items</key><true/>
+			<key>Name</key><string>Apps</string>
+			<key>Playlist Items</key>
+			<array>
+				<dict>
+					<key>Track ID</key><integer>280</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>272</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>284</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>246</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>444</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>244</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>266</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>454</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>238</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>236</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>274</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>240</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>232</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>262</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>448</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>242</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>278</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>264</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>224</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>248</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>226</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>446</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>228</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>258</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>440</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>282</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>234</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>256</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>268</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>230</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>452</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>250</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>450</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>276</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>260</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>270</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>442</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>254</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>252</integer>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>719</integer>
+			<key>Playlist Persistent ID</key><string>DF3363E4EEE0C860</string>
+			<key>Distinguished Kind</key><integer>6</integer>
+			<key>All Items</key><true/>
+			<key>Name</key><string>Töne</string>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAQAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAAEAQAAAAAAAAAAAAAAAAAAAAAAB
+			AAAAAAEAQAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AgAEAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAIKAE
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAIKAEAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAA
+			</data>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>722</integer>
+			<key>Playlist Persistent ID</key><string>A34FEC85ADCB3164</string>
+			<key>Distinguished Kind</key><integer>26</integer>
+			<key>All Items</key><true/>
+			<key>Name</key><string>Genius</string>
+			<key>Smart Info</key>
+			<data>
+			AAABAwAAAAIAAAAZAAABAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+			</data>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>725</integer>
+			<key>Playlist Persistent ID</key><string>ADA9BA22CFC981A0</string>
+			<key>All Items</key><true/>
+			<key>Name</key><string>90s Music</string>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAEAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAAAAB8YAAAAAAAAAAAAAAAAAAAAB
+			AAAAAAAAB88AAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgFNMc3QAAQAB
+			AAAAAgAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAB
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAABAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEQAAAAAAAAAIAAAAAAAAAAA
+			AAAAAAAAAAEAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+			</data>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>728</integer>
+			<key>Playlist Persistent ID</key><string>0353094489E16F45</string>
+			<key>All Items</key><true/>
+			<key>Name</key><string>Classical Music</string>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAU0xzdAABAAEAAAACAAAAAQAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAADwAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAABEAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAB
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAg
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABVxTTHN0AAEAAQAAABEAAAAB
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAACAEAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAABIAQwBsAGEAcwBzAGkAYwBhAGwAAAAIAQAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEABLAGwAYQBzAHMAaQBlAGsAAAAI
+			AQAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgBD
+			AGwAYQBzAHMAaQBxAHUAZQAAAAgBAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAOAEsAbABhAHMAcwBpAGsAAAAIAQAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEABDAGwAYQBzAHMAaQBjAGEAAAAI
+			AQAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACjCv
+			MOkwtzDDMK8AAAAIAQAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAADgBDAGwA4QBzAGkAYwBhAAAACAEAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAASwBsAGEAcwBzAGkAcwBrAAAACAEAAAEAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAQwBsAOEAcwBz
+			AGkAYwBhAAAACAEAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAABIASwBsAGEAcwBzAGkAcwBrAHQAAAAIAQAAAQAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAQaBDsEMARBBEEEOARHBDUEQQQ6BDAETwAA
+			AAgBAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAS
+			AEsAbABhAHMAeQBjAHoAbgBhAAAACAEAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAABIASwBsAGEAcwBzAGkAbgBlAG4AAAAIAQAAAQAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADABLAGwAYQBzAGkAawAA
+			AAgBAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU
+			AEsAbABhAHMAcwB6AGkAawB1AHMAAAAIAQAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAFgBWAOEBfgBuAOEAIABoAHUAZABiAGEAAAAIAQAAAQAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgZDBkQGJwYz
+			BkoGQwZK
+			</data>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>731</integer>
+			<key>Playlist Persistent ID</key><string>689681C9A1B0DCAA</string>
+			<key>All Items</key><true/>
+			<key>Name</key><string>My Top Rated</string>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAABAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABkAAAAQAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAAAAADwAAAAAAAAAAAAAAAAAAAAB
+			AAAAAAAAADwAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+			</data>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>734</integer>
+			<key>Playlist Persistent ID</key><string>DF9D2ADEFC0D15FA</string>
+			<key>All Items</key><true/>
+			<key>Name</key><string>Recently Added</string>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABELa4tri2uLa7//////////gAAAAAACTqA
+			La4tri2uLa4AAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA5AgAAAQAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAAB
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAA
+			</data>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>737</integer>
+			<key>Playlist Persistent ID</key><string>4114B450E8D780EF</string>
+			<key>All Items</key><true/>
+			<key>Name</key><string>Recently Played</string>
+			<key>Smart Info</key>
+			<data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABcAAAIAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABELa4tri2uLa7//////////gAAAAAACTqA
+			La4tri2uLa4AAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA5AgAAAQAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAAB
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAA
+			</data>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>740</integer>
+			<key>Playlist Persistent ID</key><string>2F8E1F73283510DB</string>
+			<key>All Items</key><true/>
+			<key>Name</key><string>Top 25 Most Played</string>
+			<key>Smart Info</key>
+			<data>
+			AQEBAwAAABkAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAA==
+			</data>
+			<key>Smart Criteria</key>
+			<data>
+			U0xzdAABAAEAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADkCAAABAAAAAAAAAAAAAAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAB
+			AAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWAAAAEAAA
+			AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAAA
+			AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA
+			AAAAAAAA
+			</data>
+		</dict>
+		<dict>
+			<key>Playlist ID</key><integer>743</integer>
+			<key>Playlist Persistent ID</key><string>6A8C8B15CBECA1B3</string>
+			<key>Distinguished Kind</key><integer>17</integer>
+			<key>All Items</key><true/>
+			<key>Name</key><string>Sprachmemos</string>
+			<key>Playlist Items</key>
+			<array>
+				<dict>
+					<key>Track ID</key><integer>456</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>458</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>460</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>462</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>464</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>466</integer>
+				</dict>
+			</array>
+		</dict>
+	</array>
+	<key>Music Folder</key><string>file://localhost/C:/Users/jacko_000/Music/iTunes/iTunes%20Media/</string>
+</dict>
+</plist>
