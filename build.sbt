@@ -25,7 +25,8 @@ libraryDependencies ++= Seq(
   "org.webjars" % "marked" % "0.3.2-1",
   "org.webjars" % "font-awesome" % "4.4.0",
   "org.webjars" % "lodash" % "3.10.1",
-  play.sbt.Play.autoImport.cache
+  play.sbt.Play.autoImport.cache,
+  "com.rabbitmq" % "amqp-client" % "3.5.6"
 )
 
 

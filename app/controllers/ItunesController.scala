@@ -2,6 +2,8 @@ package controllers
 
 import java.io.File
 import java.nio.file.Files
+import models.auth.RosettaSHA256
+
 import scala.concurrent.Future
 
 import models.util.ItunesLibrary
@@ -23,11 +25,14 @@ class ItunesController extends Controller {
         .getOrElse("user-" + System.currentTimeMillis)
       val path = s"/tmp/$filename$username"
       file.ref.moveTo(new File(path))
+      val f = new File(path)
+      val fileBody:String = scala.io.Source.fromFile(f).getLines().mkString
+      println(RosettaSHA256.md5(fileBody))
       val library = new ItunesLibrary(user_id, save)
       val parsedXml = library.parseXml(path)
       val artists = library.getLibrary(parsedXml)
       val json = Json.toJson(artists)
-      Files.delete(new File(path).toPath)
+      Files.delete(f.toPath)
       Ok(json)
     }.getOrElse {
       val jsonResponse = Json.toJson(Map("response" -> "Could not read the file"))
