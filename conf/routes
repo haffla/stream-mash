@@ -11,9 +11,9 @@ GET         /spotify/login        controllers.SpotifyController.loginPage
 GET         /callback             controllers.SpotifyController.callback
 
 ### iTunes
-GET         /itunes/fromdb        controllers.ItunesController.getArtistsFromDb
+GET         /itunes/fromdb        controllers.ItunesController.artistAlbumCollectionFromDb
 GET         /itunes               controllers.ItunesController.index
-POST        /itunes               controllers.ItunesController.getArtistsFromXML(save:Boolean ?=true)
+POST        /itunes               controllers.ItunesController.fileUpload
 
 ### User management
 GET         /users                controllers.UserController.list

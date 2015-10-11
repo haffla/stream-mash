@@ -10,7 +10,7 @@ import scala.concurrent.Future
 import scala.util.{Success, Failure}
 import scala.xml.Node
 
-class ItunesLibrary(user_id:Int, save:Boolean = true) extends HasDatabaseConfig[JdbcProfile]
+class ItunesLibrary(user_id:Int, xmlPath:String = "") extends HasDatabaseConfig[JdbcProfile]
                                            with AccountTable {
   val LABEL_DICT = "dict"
   val LABEL_KEY  = "key"
@@ -24,8 +24,8 @@ class ItunesLibrary(user_id:Int, save:Boolean = true) extends HasDatabaseConfig[
    * parses the Itunes Library XML file and returns all songs
    * as a sequence of maps
    */
-  def parseXml(pathToXmlFile: String):Seq[Map[String,String]] = {
-    val xml = scala.xml.XML.loadFile(pathToXmlFile)
+  def parseXml:Seq[Map[String,String]] = {
+    val xml = scala.xml.XML.loadFile(xmlPath)
     val dict = xml \ LABEL_DICT \ LABEL_DICT \ LABEL_DICT
     dict.map { d =>
       val keys = (d \ LABEL_KEY).toList
@@ -43,7 +43,7 @@ class ItunesLibrary(user_id:Int, save:Boolean = true) extends HasDatabaseConfig[
       val interpret = collection._1
       val albums = collection._2
       albums.foreach { album =>
-        getOrSaveAlbum(album, interpret).onComplete {
+        getOrSaveCollectionItem(album, interpret).onComplete {
           case Success(id) => //println(id)
           case Failure(t) => println(t.getMessage)
         }
@@ -51,7 +51,7 @@ class ItunesLibrary(user_id:Int, save:Boolean = true) extends HasDatabaseConfig[
     }
   }
 
-  def getOrSaveAlbum(name: String, interpret:String):Future[Int] = {
+  def getOrSaveCollectionItem(name: String, interpret:String):Future[Int] = {
     db.run(albumQuery.filter { album =>
       album.name === name && album.interpret === interpret && album.id_user === user_id
     }.result).flatMap { album =>
@@ -61,7 +61,7 @@ class ItunesLibrary(user_id:Int, save:Boolean = true) extends HasDatabaseConfig[
     }
   }
 
-  def getAlbumsByUser(id:Int):Future[Option[Map[String, Set[String]]]] = {
+  def getCollectionFromDbByUser(id:Int):Future[Option[Map[String, Set[String]]]] = {
     db.run(albumQuery.filter(_.id_user === id).result.map { album =>
       if(album.isEmpty) None
       else {
@@ -80,9 +80,10 @@ class ItunesLibrary(user_id:Int, save:Boolean = true) extends HasDatabaseConfig[
     })
   }
 
-  def getLibrary(lib:Seq[Map[String,String]]): Map[String, Set[String]] = {
+  def getCollection: Map[String, Set[String]] = {
+    val lib = parseXml
     val library = lib.foldLeft(Map[String, Set[String]]()) {(prev, curr) =>
-      val artist:String = curr(informationToExtract(0))
+      val artist:String = curr(informationToExtract.head)
       val album:String = curr(informationToExtract(1))
       val artistAlbums:Set[String] = prev get artist match {
         case None => Set.empty
@@ -91,7 +92,7 @@ class ItunesLibrary(user_id:Int, save:Boolean = true) extends HasDatabaseConfig[
       val added:Set[String] = artistAlbums + album
       prev + (artist -> added)
     }
-    if(save) persist(library)
+    persist(library)
     library
   }
 }

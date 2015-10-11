@@ -22,7 +22,7 @@ MainComponent = React.createClass
 
   loadFromDb: (event) ->
     callback = (data) =>
-      if data.length > 0
+      if !data.error
         keys = _.keys(data)
         nr_albums = _.flatten(_.values(data)).length
         if keys.length > 0
@@ -35,7 +35,7 @@ MainComponent = React.createClass
           @originalState = @state
           )
       else
-        window.alert("You have no records stored in our database.")
+        window.alert(data.error)
     $.get '/itunes/fromdb', callback, 'json'
 
   drop: (event) ->
