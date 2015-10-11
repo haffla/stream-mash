@@ -12,8 +12,9 @@ trait AccountTable {
     def id = column[Int]("id_user", O.AutoInc, O.PrimaryKey)
     def name = column[String]("name")
     def password = column[String]("password")
+    def itunesFileHash = column[String]("itunes_file_hash")
     def index:Index = index("idx_name", name, unique=true)
-    def * = (id, name, password) <> ((models.Account.apply _).tupled, models.Account.unapply _)
+    def * = (id.?, name, password, itunesFileHash.?) <> ((models.Account.apply _).tupled, models.Account.unapply _)
   }
 
   val accountQuery = TableQuery[Account]

@@ -1,6 +1,6 @@
 package controllers
 
-import models.auth.RosettaSHA256
+import models.auth.MessageDigest
 import models.{User, UserData}
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
@@ -55,12 +55,12 @@ class AuthController extends Controller
         getAccountByUser(userData).map(
           listOfUsers => listOfUsers.map(
             user =>
-              if (user.password == RosettaSHA256.digest(userData.password)) {
+              if (user.password == MessageDigest.digest(userData.password)) {
                 val username = user.name
                 val password = user.password
                 val incrementId = user.id
                 val hash = authenticateUser(username, password)
-                (true, hash, incrementId) // Tuple[Boolean, String, Int]
+                (true, hash, incrementId.get) // Tuple[Boolean, String, Int]
               } else (false, "", 0)
           )
         ).map(result => // is a Seq[Tuple[Boolean,String, Int]]
@@ -102,7 +102,7 @@ class AuthController extends Controller
   }
 
   def authenticateUser(username:String, password:String):String = {
-    val hash = RosettaSHA256.digest(s"$username|$password")
+    val hash = MessageDigest.digest(s"$username|$password")
     Cache.set(s"user.$username", hash)
     hash
   }

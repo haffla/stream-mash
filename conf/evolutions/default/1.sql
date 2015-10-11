@@ -3,7 +3,8 @@
 CREATE TABLE IF NOT EXISTS account(
     id_user SERIAL PRIMARY KEY,
     name VARCHAR(64) NOT NULL,
-    password VARCHAR(64) NOT NULL
+    password VARCHAR(64) NOT NULL,
+    itunes_file_hash VARCHAR(32)
 );
 
 INSERT INTO account(name, password)
