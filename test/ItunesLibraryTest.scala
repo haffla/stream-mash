@@ -10,10 +10,8 @@ class ItunesLibraryTest extends Specification {
 
   "The ItunesLibrary" should {
     "parse a library xml file correctly" in new WithApplication {
-      val lib = new ItunesLibrary(1, false)
-      val songMap = lib.parseXml(Play.application.path.getPath + "/test/resources/testItunesLibrary.xml")
-      songMap.length shouldEqual(28)
-      val artistMap = lib.getCollection(songMap)
+      val lib = new ItunesLibrary(1, Play.application.path.getPath + "/test/resources/testItunesLibrary.xml")
+      val artistMap = lib.getCollection
       artistMap.size shouldEqual(2)
       artistMap("Burial").size shouldEqual(2)
       artistMap("Burial + Four Tet").size shouldEqual(2)
