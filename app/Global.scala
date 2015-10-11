@@ -4,7 +4,6 @@ import models.messaging.{Receiver, RabbitMQConnection}
 object Global extends play.api.GlobalSettings {
 
   override def onStart(app: play.api.Application) {
-    println(Config.RABBITMQ_HOST)
     val connection = RabbitMQConnection.getConnection()
     val channel = connection.createChannel()
     channel.queueDeclare(Config.RABBITMQ_QUEUE, false, false, false, null)

@@ -4,7 +4,7 @@ MainComponent = React.createClass
 
   componentDidMount: () ->
     $('#artistBox').removeClass('hidden')
-    @setState({data: [{name: "Tiago", albums: [{name: "Affe"}]}, {name: "Lappen", albums: [{name: "Hund"}]}]})
+    @setState({data: []})
 
   preventDef: (event) ->
     event.stopPropagation()
@@ -56,17 +56,20 @@ MainComponent = React.createClass
         contentType: false
         processData: false
         success: (data) =>
-          keys = _.keys(data)
-          nr_albums = _.flatten(_.values(data)).length
-          formattedData = keys.map (key) ->
-            albums = data[key].map (name) ->
-              {name: name}
-            {name: key, albums: albums}
-          $('#artistBox').removeClass('hidden')
-          $('#dropzone').removeClass('dropped hover')
-          @setState({data: formattedData, nr_artists: keys.length, nr_albums: nr_albums}, () ->
-            @originalState = @state
-            )
+          if !data.error
+            keys = _.keys(data)
+            nr_albums = _.flatten(_.values(data)).length
+            formattedData = keys.map (key) ->
+              albums = data[key].map (name) ->
+                {name: name}
+              {name: key, albums: albums}
+            $('#artistBox').removeClass('hidden')
+            $('#dropzone').removeClass('dropped hover')
+            @setState({data: formattedData, nr_artists: keys.length, nr_albums: nr_albums}, () ->
+              @originalState = @state
+              )
+          else
+            window.alert("We could not read the file.")
         error: (jqXHR, status, error) =>
           console.log('Error: '  + error + '\n' + 'Status: ' + status)
     else

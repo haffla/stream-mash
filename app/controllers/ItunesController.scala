@@ -32,22 +32,27 @@ class ItunesController extends Controller {
       val xmlPath = s"/tmp/$filename$username"
       file.ref.moveTo(new File(xmlPath))
       val f = new File(xmlPath)
-
       val fileBody:String = scala.io.Source.fromFile(f).getLines().mkString
       val fileHash = MessageDigest.md5(fileBody)
       User.iTunesFileProcessedAlready(userId,fileHash).flatMap(
        bool => if(bool) {
          //user has submitted the exact same file. load from db.
-         User.saveItunesFileHash(userId, fileHash)
+         cleanUp(f)
          collectionFromDb(userId)
        } else {
+         User.saveItunesFileHash(userId, fileHash)
          val json = collectionFromXml(userId, xmlPath)
+         cleanUp(f)
          Future.successful(Ok(json))
        })
     }.getOrElse {
       val jsonResponse = Json.toJson(Map("error" -> "Could not read the file"))
       Future.successful(Ok(jsonResponse))
     }
+  }
+
+  def cleanUp(f:File) = {
+    Files.delete(f.toPath)
   }
 
   def collectionFromDb(userId:Int) = {
