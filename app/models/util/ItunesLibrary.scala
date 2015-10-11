@@ -24,7 +24,7 @@ class ItunesLibrary(user_id:Int, xmlPath:String = "") extends HasDatabaseConfig[
    * parses the Itunes Library XML file and returns all songs
    * as a sequence of maps
    */
-  def parseXml:Seq[Map[String,String]] = {
+  private def parseXml:Seq[Map[String,String]] = {
     val xml = scala.xml.XML.loadFile(xmlPath)
     val dict = xml \ LABEL_DICT \ LABEL_DICT \ LABEL_DICT
     dict.map { d =>
@@ -38,7 +38,7 @@ class ItunesLibrary(user_id:Int, xmlPath:String = "") extends HasDatabaseConfig[
     }.filter(_.size >= MIN_TUPLE_LENGTH)
   }
 
-  def persist(library: Map[String, Set[String]]):Unit = {
+  private def persist(library: Map[String, Set[String]]):Unit = {
     library.foreach { collection =>
       val interpret = collection._1
       val albums = collection._2
@@ -51,13 +51,14 @@ class ItunesLibrary(user_id:Int, xmlPath:String = "") extends HasDatabaseConfig[
     }
   }
 
-  def getOrSaveCollectionItem(name: String, interpret:String):Future[Int] = {
-    db.run(albumQuery.filter { album =>
-      album.name === name && album.interpret === interpret && album.id_user === user_id
-    }.result).flatMap { album =>
-      if (album.nonEmpty) Future.successful(album.head.id.get)
-      else
+  private def getOrSaveCollectionItem(name: String, interpret:String):Future[Int] = {
+    db.run(albumQuery.filter { albums =>
+      albums.name === name && albums.interpret === interpret && albums.id_user === user_id
+    }.result).flatMap { albumList =>
+      if (albumList.nonEmpty) Future.successful(albumList.head.id.get)
+      else {
         db.run(albumQuery returning albumQuery.map(_.id) += models.music.Album(name = name, interpret = interpret, fk_user = user_id))
+      }
     }
   }
 
@@ -65,17 +66,17 @@ class ItunesLibrary(user_id:Int, xmlPath:String = "") extends HasDatabaseConfig[
     db.run(albumQuery.filter(_.id_user === id).result.map { album =>
       if(album.isEmpty) None
       else {
-          Some(
-            album.foldLeft(Map[String, Set[String]]()) {(prev, curr) =>
-              val interpret = curr.interpret
-              val interpretAlbums:Set[String] = prev get interpret match {
-                case None => Set.empty
-                case Some(albums) => albums
-              }
-              val added:Set[String] = interpretAlbums + curr.name
-              prev + (interpret -> added)
+        Some(
+          album.foldLeft(Map[String, Set[String]]()) {(prev, curr) =>
+            val interpret = curr.interpret
+            val interpretAlbums:Set[String] = prev get interpret match {
+              case None => Set.empty
+              case Some(albums) => albums
             }
-          )
+            val added:Set[String] = interpretAlbums + curr.name
+            prev + (interpret -> added)
+          }
+        )
         }
     })
   }

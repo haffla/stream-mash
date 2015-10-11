@@ -58,7 +58,7 @@ class ItunesController extends Controller {
   def collectionFromDb(userId:Int) = {
     val library = new ItunesLibrary(userId)
     library.getCollectionFromDbByUser(userId).map {
-      case Some(art) => Ok(Json.toJson(art))
+      case Some(collection) => Ok(Json.toJson(collection))
       case None => Ok(Json.toJson(Map("error" -> "You have no records stored in our database.")))
     }
   }
