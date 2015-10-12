@@ -95,17 +95,29 @@ MainComponent = React.createClass
 
     @setState({data: newData, nr_artists: nr_artists  || 0, nr_albums: nr_albums || 0})
 
-  showAlbumList: (artist,event) ->
-    callback = (data) ->
+  showAlbumList: (artist, idx, event) ->
+    #TODO: move all spotify api logic to server
+    apiCallback = (data) =>
       unless data.error
-        artistCallback = (artists) ->
-          _.forEach(artists.items, (item) ->
-            console.log(item.name)
-          )
-        $.get 'https://api.spotify.com/v1/artists/' + data.spotify_id + '/albums?album_type=album', artistCallback, 'json'
+        unless @state.data[idx].fetched
+          spotifyApiCallback = (albums) =>
+            spotifyAlbums = albums.items.map (album) ->
+              {name: album.name}
+            existingAlbums = @state.data[idx].albums
+            namesOfExistingAlbums = existingAlbums.map (album) ->
+              album.name
+            result = _.union(existingAlbums,spotifyAlbums)
+            result = result.map (album) ->
+              userHas = if album.name in namesOfExistingAlbums then true else false
+              {name: album.name, userHas: userHas}
+            result = _.uniq(result, 'name')
+            _.set(@state.data[idx], 'albums', result)
+            _.set(@state.data[idx], 'fetched', true)
+            @setState({data: @state.data})
+          $.get 'https://api.spotify.com/v1/artists/' + data.spotify_id + '/albums?album_type=album', spotifyApiCallback, 'json'
       else
         # Artist does not exist on Spotify
-    $.get '/itunes/spotifyid', {artist: artist}, callback, 'json'
+    $.get '/itunes/spotifyid', {artist: artist}, apiCallback, 'json'
     $(event.target).parents('.panel-heading').siblings('.panel-body').slideToggle()
 
 
@@ -167,12 +179,12 @@ ArtistBox = React.createClass
 
 ArtistList = React.createClass
   render: () ->
-    artists = this.props.data.map (artist) =>
+    artists = this.props.data.map (artist, idx) =>
       <div className="artist panel panel-default">
 
           <div className="panel-heading">
             <div><i className="fa fa-music"></i> {artist.name}</div>
-            <button className="btn btn-default album-list-opener" onClick={@props.onButtonClick.bind(@, artist.name)}>
+            <button className="btn btn-default album-list-opener" onClick={@props.onButtonClick.bind(@, artist.name, idx)}>
               <i className="fa fa-plus"></i>
             </button>
           </div>
@@ -193,7 +205,8 @@ Artist = React.createClass
 AlbumList = React.createClass
   render: () ->
     albums = @props.albums.map (album) ->
-      <Album key={album.id} name={album.name} />
+      userHas = if album.userHas then "hasAlbum" else ""
+      <Album key={album.id} name={album.name} userHas={userHas}/>
 
     <div className="albumList">
         {albums}
@@ -201,7 +214,8 @@ AlbumList = React.createClass
 
 Album = React.createClass
   render: () ->
-    <div className="album">
+    classes = "album " + @props.userHas
+    <div className={classes}>
         <a className="prevent-default" target="_blank" href="#">{@props.name}</a>
     </div>
 
