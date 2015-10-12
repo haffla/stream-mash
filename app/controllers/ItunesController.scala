@@ -7,7 +7,7 @@ import models.auth.MessageDigest
 
 import scala.concurrent.Future
 
-import models.util.ItunesLibrary
+import models.util.{ArtistLibrary, ItunesLibrary}
 import play.api.mvc.Controller
 import play.api.libs.json._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -67,5 +67,13 @@ class ItunesController extends Controller {
     val library = new ItunesLibrary(userId, xmlPath)
     val collection = library.getCollection
     Json.toJson(collection)
+  }
+
+  def getSpotifyId = Authenticated.async { implicit request =>
+    val artist = request.getQueryString("artist").get
+    ArtistLibrary.getIdForArtist(artist).map {
+        case Some(spotifyId) => Ok(Json.toJson(Map("spotify_id" -> spotifyId)))
+        case None => Ok(Json.toJson(Map("error" -> "Did not find a Spotify ID")))
+    }
   }
 }

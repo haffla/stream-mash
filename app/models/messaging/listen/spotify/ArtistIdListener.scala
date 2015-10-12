@@ -17,7 +17,6 @@ class ArtistIdListener {
         val splitMessage:Array[String] = message.split("""\|%\|""")
         val artist:String = splitMessage(0)
         val id:String = splitMessage(1)
-        //Thread sleep 1000
         SpotifyLibrary.saveArtistId(artist,id)
       }
     }

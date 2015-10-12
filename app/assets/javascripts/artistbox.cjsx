@@ -95,6 +95,20 @@ MainComponent = React.createClass
 
     @setState({data: newData, nr_artists: nr_artists  || 0, nr_albums: nr_albums || 0})
 
+  showAlbumList: (artist,event) ->
+    callback = (data) ->
+      unless data.error
+        artistCallback = (artists) ->
+          _.forEach(artists.items, (item) ->
+            console.log(item.name)
+          )
+        $.get 'https://api.spotify.com/v1/artists/' + data.spotify_id + '/albums?album_type=album', artistCallback, 'json'
+      else
+        # Artist does not exist on Spotify
+    $.get '/itunes/spotifyid', {artist: artist}, callback, 'json'
+    $(event.target).parents('.panel-heading').siblings('.panel-body').slideToggle()
+
+
   render: () ->
     sentence = "The iTunes Music Library file is typically located under "
     dropSentence = "Drop it on the iTunes Logo!"
@@ -140,18 +154,15 @@ MainComponent = React.createClass
         </div>
 
         <div className="row">
-          <ArtistBox data={@state.data} />
+          <ArtistBox data={@state.data} onButtonClick={@showAlbumList} />
         </div>
 
     </div>
 
 ArtistBox = React.createClass
-  showAlbumList: (event) ->
-    $(event.target).parents('.panel-heading').siblings('.panel-body').slideToggle()
-
   render: () ->
     <div className="hidden" id="artistBox">
-        <ArtistList data={@props.data} onButtonClick={@showAlbumList}/>
+        <ArtistList data={@props.data} onButtonClick={@props.onButtonClick}/>
     </div>
 
 ArtistList = React.createClass
@@ -161,13 +172,13 @@ ArtistList = React.createClass
 
           <div className="panel-heading">
             <div><i className="fa fa-music"></i> {artist.name}</div>
-            <button className="btn btn-default album-list-opener" onClick={@props.onButtonClick}>
+            <button className="btn btn-default album-list-opener" onClick={@props.onButtonClick.bind(@, artist.name)}>
               <i className="fa fa-plus"></i>
             </button>
           </div>
 
           <div className="panel-body">
-            <Artist key={artist.id} albums={artist.albums}/>
+            <Artist key={artist.id} albums={artist.albums} />
           </div>
 
       </div>

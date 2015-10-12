@@ -12,6 +12,7 @@ GET         /callback             controllers.SpotifyController.callback
 
 ### iTunes
 GET         /itunes/fromdb        controllers.ItunesController.artistAlbumCollectionFromDb
+GET         /itunes/spotifyid     controllers.ItunesController.getSpotifyId
 GET         /itunes               controllers.ItunesController.index
 POST        /itunes               controllers.ItunesController.fileUpload
 
