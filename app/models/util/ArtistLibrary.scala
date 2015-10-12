@@ -1,6 +1,7 @@
 package models.util
 
 import database.MainDatabaseAccess
+import models.service.SpotifyService
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import slick.driver.JdbcProfile
@@ -19,8 +20,12 @@ object ArtistLibrary extends MainDatabaseAccess
     db.run(artistQuery += newArtist)
   }
 
-  def getIdForArtist(artist:String):Future[Option[String]] = {
+  def getIdForArtistFromDb(artist:String):Future[Option[String]] = {
     val id = for { a <- artistQuery if a.name === artist } yield a.spotifyId
     db.run(id.result.headOption)
+  }
+
+  def getIdForArtistFromSpotify(artist: String): Future[Option[String]] = {
+    SpotifyService.getArtistId(artist)
   }
 }

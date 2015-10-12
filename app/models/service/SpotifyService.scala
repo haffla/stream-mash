@@ -3,7 +3,7 @@ package models.service
 import com.rabbitmq.client.MessageProperties
 import models.Config
 import models.messaging.RabbitMQConnection
-import models.util.Logging
+import models.util.{SpotifyLibrary, Logging}
 import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.{WS, WSResponse}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -55,6 +55,7 @@ object SpotifyService {
     val TRACKS = "https://api.spotify.com/v1/me/tracks"
     val TOKEN = "https://accounts.spotify.com/api/token"
     val AUTHORIZE = "https://accounts.spotify.com/authorize"
+    val SEARCH = "https://api.spotify.com/v1/search"
 
     val DATA = Map(
       "redirect_uri" -> Seq(REDIRECT_URI),
@@ -69,7 +70,7 @@ object SpotifyService {
     val futureResponse: Future[WSResponse] = WS.url(ApiEndpoints.TOKEN).post(data)
     for {
       tokens <- getTokens(futureResponse)
-      response <- requestUserData(tokens)
+      response <- requestUsersTracks(tokens)
     } yield response
   }
 
@@ -83,7 +84,7 @@ object SpotifyService {
     connection.close()
   }
 
-  private def requestUserData(tokens:Option[(String,String)]):Future[Option[WSResponse]] = {
+  private def requestUsersTracks(tokens:Option[(String,String)]):Future[Option[WSResponse]] = {
     val access_token = tokens.get._1
     val refresh_token = tokens.get._2
     WS.url(ApiEndpoints.TRACKS).withHeaders("Authorization" -> s"Bearer $access_token").get()
@@ -105,8 +106,7 @@ object SpotifyService {
           }
           Some(response)
         case http_code =>
-          val error_message = "HTTP code: %d \nResponse: %s".format(http_code, response.body)
-          Logging.error(ich, error_message)
+          Logging.error(ich, "Error requesting user data: " + http_code + "\n" + response.body)
           None
       }
       )
@@ -129,9 +129,29 @@ object SpotifyService {
               None
           }
         case http_code =>
-          Logging.error(ich, "Error: " + http_code + "\n" + response.body)
+          Logging.error(ich, "Error getting tokens: " + http_code + "\n" + response.body)
           None
       }
     )
+  }
+
+  def getArtistId(artist:String):Future[Option[String]] = {
+    WS.url(ApiEndpoints.SEARCH).withQueryString("type" -> "artist", "q" -> artist).get().map {
+      response =>
+        response.status match {
+          case 200 =>
+            val json = Json.parse(response.body)
+            val artists = (json \ "artists" \ "items").as[List[JsObject]]
+            if(artists.nonEmpty) {
+              val id = (artists.head \ "id").asOpt[String]
+              SpotifyLibrary.saveArtistId(artist, id.get)
+              id
+            }
+            else None
+          case http_code =>
+            Logging.error(ich, "Error getting id for artist: " + http_code + "\n" + response.body)
+            None
+        }
+    }
   }
 }

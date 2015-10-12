@@ -69,11 +69,16 @@ class ItunesController extends Controller {
     Json.toJson(collection)
   }
 
-  def getSpotifyId = Authenticated.async { implicit request =>
+  def getSpotifyArtistId = Authenticated.async { implicit request =>
     val artist = request.getQueryString("artist").get
-    ArtistLibrary.getIdForArtist(artist).map {
-        case Some(spotifyId) => Ok(Json.toJson(Map("spotify_id" -> spotifyId)))
-        case None => Ok(Json.toJson(Map("error" -> "Did not find a Spotify ID")))
+    ArtistLibrary.getIdForArtistFromDb(artist).flatMap {
+        case Some(spotifyId) => Future.successful(Ok(Json.toJson(Map("spotify_id" -> spotifyId))))
+        case None =>
+          val id:Future[Option[String]] = ArtistLibrary.getIdForArtistFromSpotify(artist)
+          id.map {
+            case Some(sp) => Ok(Json.toJson(Map("spotify_id" -> sp)))
+            case None => Ok(Json.toJson(Map("error" -> "Did not find a Spotify ID")))
+          }
     }
   }
 }
