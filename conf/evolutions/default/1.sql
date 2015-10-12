@@ -18,8 +18,16 @@ CREATE TABLE IF NOT EXISTS album(
     UNIQUE (name,interpret,fk_user)
 );
 
+CREATE TABLE IF NOT EXISTS artist(
+    id_artist SERIAL,
+    name VARCHAR(255) NOT NULL,
+    spotify_id VARCHAR(32) DEFAULT NULL,
+    UNIQUE (name,spotify_id)
+)
+
 # --- !Downs
 
 DROP TABLE IF EXISTS album;
 DROP TABLE IF EXISTS account;
+DROP TABLE IF EXISTS artist;
 

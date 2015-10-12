@@ -3,7 +3,7 @@ package models.util
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import slick.driver.JdbcProfile
-import tables.AccountTable
+import database.MainDatabaseAccess
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import scala.concurrent.Future
@@ -11,7 +11,7 @@ import scala.util.{Success, Failure}
 import scala.xml.Node
 
 class ItunesLibrary(user_id:Int, xmlPath:String = "") extends HasDatabaseConfig[JdbcProfile]
-                                           with AccountTable {
+                                           with MainDatabaseAccess {
   val LABEL_DICT = "dict"
   val LABEL_KEY  = "key"
   val informationToExtract = List("Artist", "Album")

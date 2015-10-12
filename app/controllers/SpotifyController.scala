@@ -10,7 +10,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 class SpotifyController extends Controller {
 
-  def loginPage = Action { implicit request =>
+  def login = Action { implicit request =>
     val state = TextWrangler.generateRandomString(16)
     val withState = SpotifyService.queryString + ("state" -> Seq(state))
     Redirect(SpotifyService.ApiEndpoints.AUTHORIZE, withState)
@@ -25,17 +25,17 @@ class SpotifyController extends Controller {
     val storedState = request.cookies.get(SpotifyService.SPOTIFY_COOKIE_KEY) match {
       case Some(cookie) => cookie.value
       case None => Future.successful(
-        Redirect(routes.AuthController.logout).flashing("message" -> "There has been a problem while")
+        Redirect(routes.AuthController.logout).flashing("message" -> "There has been a problem...")
         )
     }
-    //CSRF Protection
+    //CSRF Protection, see http://tools.ietf.org/html/rfc6749#section-10.12
     if(state == null || state != storedState) {
       Future.successful(Ok("Error: State Mismatch"))
     } else {
-      val wsResponse: Future[Option[WSResponse]] = SpotifyService.requestAuthorization(code)
+      val wsResponse: Future[Option[WSResponse]] = SpotifyService.requestAccessTokens(code)
       wsResponse.map {
         case Some(response) => Ok(Json.parse(response.body).toString())
-        case None => Ok("")
+        case None => Ok("An error has occurred.")
       }
     }
 

@@ -4,12 +4,12 @@ import models.auth.MessageDigest
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import slick.driver.JdbcProfile
-import tables.AccountTable
+import database.MainDatabaseAccess
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import scala.concurrent.Future
 
-object User extends AccountTable with HasDatabaseConfig[JdbcProfile] {
+object User extends MainDatabaseAccess with HasDatabaseConfig[JdbcProfile] {
 
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
   import driver.api._
@@ -35,11 +35,9 @@ object User extends AccountTable with HasDatabaseConfig[JdbcProfile] {
 
   def iTunesFileProcessedAlready(userId:Int, hash:String):Future[Boolean] =  {
     db.run(accountQuery.filter(_.id === userId).result.map { account =>
-      println(account.head.itunesFileHash.get)
       account.head.itunesFileHash match {
-        case Some(s) => {
+        case Some(s) =>
           if(s == hash) true else false
-        }
         case None => false
       }
     })

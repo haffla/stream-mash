@@ -1,10 +1,10 @@
-package tables
+package database
 
 import models.Account
 import slick.driver.JdbcProfile
 import slick.lifted.Index
 
-trait AccountTable {
+trait MainDatabaseAccess {
   protected val driver: JdbcProfile
   import driver.api._
 
@@ -30,5 +30,15 @@ trait AccountTable {
   }
 
   val albumQuery = TableQuery[Album]
+
+  class Artist(tag:Tag) extends Table[models.music.Artist](tag, "artist") {
+    def id = column[Int]("id_artist", O.AutoInc, O.PrimaryKey)
+    def name = column[String]("name")
+    def spotifyId = column[String]("spotify_id")
+    def index:Index = index("name_spotifyId", (name, spotifyId), unique=true)
+    def * = (id.?, name, spotifyId.?) <> ((models.music.Artist.apply _).tupled, models.music.Artist.unapply _)
+  }
+
+  val artistQuery = TableQuery[Artist]
 
 }

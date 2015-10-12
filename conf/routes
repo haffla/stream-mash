@@ -7,7 +7,7 @@ GET         /register             controllers.AuthController.registerPage
 POST        /register             controllers.AuthController.register
 
 ### Spotify
-GET         /spotify/login        controllers.SpotifyController.loginPage
+GET         /spotify/login        controllers.SpotifyController.login
 GET         /callback             controllers.SpotifyController.callback
 
 ### iTunes

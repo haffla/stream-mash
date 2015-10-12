@@ -1,7 +1,10 @@
 package models.service
 
+import com.rabbitmq.client.MessageProperties
+import models.Config
+import models.messaging.RabbitMQConnection
 import models.util.Logging
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.{WS, WSResponse}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.PlayException
@@ -36,7 +39,6 @@ object SpotifyService {
   val SCOPE:Seq[String] = Seq(
     "user-read-private",
     "playlist-read-private",
-    "playlist-read-collaborative",
     "user-follow-read",
     "user-library-read"
   )
@@ -50,7 +52,7 @@ object SpotifyService {
   )
 
   object ApiEndpoints {
-    val ME = "https://api.spotify.com/v1/me"
+    val TRACKS = "https://api.spotify.com/v1/me/tracks"
     val TOKEN = "https://accounts.spotify.com/api/token"
     val AUTHORIZE = "https://accounts.spotify.com/authorize"
 
@@ -62,7 +64,7 @@ object SpotifyService {
     )
   }
 
-  def requestAuthorization(code:String): Future[Option[WSResponse]] = {
+  def requestAccessTokens(code:String): Future[Option[WSResponse]] = {
     val data = ApiEndpoints.DATA + ("code" -> Seq(code))
     val futureResponse: Future[WSResponse] = WS.url(ApiEndpoints.TOKEN).post(data)
     for {
@@ -71,13 +73,36 @@ object SpotifyService {
     } yield response
   }
 
+  def pushToArtistIdQueue(name: String, id: String) = {
+    val connection = RabbitMQConnection.getConnection()
+    val channel = connection.createChannel()
+    channel.queueDeclare(Config.RABBITMQ_QUEUE, true, false, false, null)
+    val message = s"$name|%|$id"
+    channel.basicPublish("", Config.RABBITMQ_QUEUE, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes)
+    channel.close()
+    connection.close()
+  }
+
   private def requestUserData(tokens:Option[(String,String)]):Future[Option[WSResponse]] = {
     val access_token = tokens.get._1
     val refresh_token = tokens.get._2
-    WS.url(ApiEndpoints.ME).withHeaders("Authorization" -> s"Bearer $access_token").get()
+    WS.url(ApiEndpoints.TRACKS).withHeaders("Authorization" -> s"Bearer $access_token").get()
       .map(response =>
       response.status match {
         case 200 =>
+          val json = Json.parse(response.body)
+          val items = (json \ "items").asOpt[List[JsObject]]
+          items.get.foreach { item =>
+            val artists = (item \ "track" \ "artists").asOpt[List[JsObject]]
+            artists.get.foreach { artist =>
+              val name = (artist \ "name").as[String]
+              val id = (artist \ "id").as[String]
+              val artistType = (artist \ "type").as[String]
+              if(artistType == "artist") {
+                pushToArtistIdQueue(name, id)
+              }
+            }
+          }
           Some(response)
         case http_code =>
           val error_message = "HTTP code: %d \nResponse: %s".format(http_code, response.body)
