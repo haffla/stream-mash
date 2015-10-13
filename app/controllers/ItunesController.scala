@@ -19,8 +19,7 @@ class ItunesController extends Controller {
   }
 
   def artistAlbumCollectionFromDb = Action.async { implicit request =>
-    val userId =request.session.get("user_id").get.toInt
-    collectionFromDb(userId)
+    collectionFromDb(1)
   }
 
   def fileUpload = Action.async(parse.multipartFormData) { implicit request =>
