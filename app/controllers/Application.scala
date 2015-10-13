@@ -8,7 +8,7 @@ class Application extends Controller {
     Ok(views.html.index())
   }
 
-  def privacy = Action {
+  def privacy = Action { implicit request =>
     Ok(views.html.privacy())
   }
 }
