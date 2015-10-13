@@ -1,9 +1,19 @@
+# JUST A HELPER FOR COMMON TASKS ----------------
+
 class Helper
   @calculateNrOfAlbums: (data) ->
-    nr_albums = _.values(data).reduce (x,y) ->
+    _.values(data).reduce (x,y) ->
       x + y.albums.length
     , 0
-    nr_albums
+
+  @formatData: (data) ->
+    keys = _.keys(data)
+    keys.map (key) ->
+      albums = data[key].map (name) ->
+        {name: name}
+      {name: key, albums: albums}
+
+# REACT CLASSES ---------------------------
 
 MainComponent = React.createClass
   getInitialState: () ->
@@ -42,13 +52,9 @@ MainComponent = React.createClass
   loadFromDb: (event) ->
     callback = (data) =>
       if !data.error
-        keys = _.keys(data)
-        if keys.length > 0
+        if _.size(data) > 0
           $('#artistBox').removeClass('hidden')
-        formattedData = keys.map (key) ->
-          albums = data[key].map (name) ->
-            {name: name}
-          {name: key, albums: albums}
+        formattedData = Helper.formatData(data)
         @setTheState(formattedData, true)
       else
         window.alert(data.error)
@@ -73,11 +79,7 @@ MainComponent = React.createClass
         processData: false
         success: (data) =>
           if !data.error
-            keys = _.keys(data)
-            formattedData = keys.map (key) ->
-              albums = data[key].map (name) ->
-                {name: name}
-              {name: key, albums: albums}
+            formattedData = Helper.formatData(data)
             $('#artistBox').removeClass('hidden')
             $('#dropzone').removeClass('dropped hover')
             @setTheState(formattedData, true)
@@ -126,7 +128,8 @@ MainComponent = React.createClass
             _.set(@state.data[idx], 'albums', result)
             _.set(@state.data[idx], 'fetched', true)
             @setTheState(@state.data)
-          $.get 'https://api.spotify.com/v1/artists/' + data.spotify_id + '/albums?album_type=album', spotifyApiCallback, 'json'
+          # maybe also concider album_type=single
+          $.get "https://api.spotify.com/v1/artists/#{data.spotify_id}/albums?album_type=album", spotifyApiCallback, 'json'
       else
         # Artist does not exist on Spotify
     $.get '/itunes/spotifyid', {artist: artist}, apiCallback, 'json'
