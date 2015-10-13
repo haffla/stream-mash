@@ -4,6 +4,7 @@ import com.rabbitmq.client._
 import models.Config
 import models.messaging.RabbitMQConnection
 import models.util.SpotifyLibrary
+import play.api.libs.json.Json
 
 class ArtistIdListener {
   def listen() = {
@@ -14,9 +15,9 @@ class ArtistIdListener {
     val consumer = new DefaultConsumer(channel) {
       override def handleDelivery(consumerTag:String, envelope:Envelope, properties:AMQP.BasicProperties, body:Array[Byte]): Unit = {
         val message = new String(body, "UTF-8")
-        val splitMessage:Array[String] = message.split("""\|%\|""")
-        val artist:String = splitMessage(0)
-        val id:String = splitMessage(1)
+        val js = Json.parse(message)
+        val artist:String = (js \ "name").as[String]
+        val id:String = (js \ "id").as[String]
         SpotifyLibrary.saveArtistId(artist,id)
       }
     }

@@ -78,7 +78,7 @@ object SpotifyService {
     val connection = RabbitMQConnection.getConnection()
     val channel = connection.createChannel()
     channel.queueDeclare(Config.RABBITMQ_QUEUE, true, false, false, null)
-    val message = s"$name|%|$id"
+    val message = Json.toJson(Map("name" -> name, "id" -> id)).toString()
     channel.basicPublish("", Config.RABBITMQ_QUEUE, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes)
     channel.close()
     connection.close()
