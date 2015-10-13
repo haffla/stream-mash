@@ -8,22 +8,22 @@ import models.auth.MessageDigest
 import scala.concurrent.Future
 
 import models.util.{ArtistLibrary, ItunesLibrary}
-import play.api.mvc.Controller
+import play.api.mvc.{Action, Controller}
 import play.api.libs.json._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 class ItunesController extends Controller {
 
-  def index = Authenticated { implicit request =>
+  def index = Action { implicit request =>
     Ok(views.html.itunes.index())
   }
 
-  def artistAlbumCollectionFromDb = Authenticated.async { implicit request =>
+  def artistAlbumCollectionFromDb = Action.async { implicit request =>
     val userId =request.session.get("user_id").get.toInt
     collectionFromDb(userId)
   }
 
-  def fileUpload = Authenticated.async(parse.multipartFormData) { implicit request =>
+  def fileUpload = Action.async(parse.multipartFormData) { implicit request =>
     request.body.file("file").map { file =>
       val userId:Int = request.session.get("user_id").get.toInt
       val filename = file.filename
@@ -69,7 +69,7 @@ class ItunesController extends Controller {
     Json.toJson(collection)
   }
 
-  def getSpotifyArtistId = Authenticated.async { implicit request =>
+  def getSpotifyArtistId = Action.async { implicit request =>
     val artist = request.getQueryString("artist").get
     ArtistLibrary.getIdForArtistFromDb(artist).flatMap {
         case Some(spotifyId) => Future.successful(Ok(Json.toJson(Map("spotify_id" -> spotifyId))))
