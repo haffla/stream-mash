@@ -1,3 +1,10 @@
+class Helper
+  @calculateNrOfAlbums: (data) ->
+    nr_albums = _.values(data).reduce (x,y) ->
+      x + y.albums.length
+    , 0
+    nr_albums
+
 MainComponent = React.createClass
   getInitialState: () ->
     {data: []}
@@ -20,20 +27,29 @@ MainComponent = React.createClass
 
   originalState: []
 
+  setTheState: (data, setOriginalData = false) ->
+    unless nr_artists && nr_albums
+      nr_albums = Helper.calculateNrOfAlbums(data)
+      nr_artists = _.keys(data).length
+    if setOriginalData
+      @setState({data: data, nr_artists: nr_artists, nr_albums: nr_albums}, () ->
+        @originalState = @state
+      )
+    else
+      @setState({data: data, nr_artists: nr_artists, nr_albums: nr_albums})
+
+
   loadFromDb: (event) ->
     callback = (data) =>
       if !data.error
         keys = _.keys(data)
-        nr_albums = _.flatten(_.values(data)).length
         if keys.length > 0
           $('#artistBox').removeClass('hidden')
         formattedData = keys.map (key) ->
           albums = data[key].map (name) ->
             {name: name}
           {name: key, albums: albums}
-        @setState({data: formattedData, nr_artists:keys.length, nr_albums: nr_albums}, () ->
-          @originalState = @state
-          )
+        @setTheState(formattedData, true)
       else
         window.alert(data.error)
     $.get '/itunes/fromdb', callback, 'json'
@@ -58,16 +74,13 @@ MainComponent = React.createClass
         success: (data) =>
           if !data.error
             keys = _.keys(data)
-            nr_albums = _.flatten(_.values(data)).length
             formattedData = keys.map (key) ->
               albums = data[key].map (name) ->
                 {name: name}
               {name: key, albums: albums}
             $('#artistBox').removeClass('hidden')
             $('#dropzone').removeClass('dropped hover')
-            @setState({data: formattedData, nr_artists: keys.length, nr_albums: nr_albums}, () ->
-              @originalState = @state
-              )
+            @setTheState(formattedData, true)
           else
             window.alert("We could not read the file.")
         error: (jqXHR, status, error) =>
@@ -90,8 +103,7 @@ MainComponent = React.createClass
       artist.name.search(re) != -1
     if newData.length > 0
       nr_artists = newData.length
-      nr_albums = 0
-      newData.forEach (elem) -> nr_albums += elem.albums.length
+      nr_albums = Helper.calculateNrOfAlbums(newData)
 
     @setState({data: newData, nr_artists: nr_artists  || 0, nr_albums: nr_albums || 0})
 
@@ -113,7 +125,7 @@ MainComponent = React.createClass
             result = _.uniq(result, 'name')
             _.set(@state.data[idx], 'albums', result)
             _.set(@state.data[idx], 'fetched', true)
-            @setState({data: @state.data})
+            @setTheState(@state.data)
           $.get 'https://api.spotify.com/v1/artists/' + data.spotify_id + '/albums?album_type=album', spotifyApiCallback, 'json'
       else
         # Artist does not exist on Spotify
