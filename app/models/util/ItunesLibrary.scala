@@ -2,6 +2,7 @@ package models.util
 
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
+import play.api.libs.json._
 import slick.driver.JdbcProfile
 import database.MainDatabaseAccess
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -21,7 +22,7 @@ class ItunesLibrary(user_id:Int, xmlPath:String = "") extends HasDatabaseConfig[
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
 
   /**
-   * parses the Itunes Library XML file and returns all songs
+   * Parses the Itunes Library XML file and returns all songs
    * as a sequence of maps
    */
   private def parseXml:Seq[Map[String,String]] = {
@@ -62,6 +63,9 @@ class ItunesLibrary(user_id:Int, xmlPath:String = "") extends HasDatabaseConfig[
     }
   }
 
+  /**
+   * Gets all collections (album / artist) of user from DB
+   */
   def getCollectionFromDbByUser(id:Int):Future[Option[Map[String, Set[String]]]] = {
     db.run(albumQuery.filter(_.id_user === id).result.map { album =>
       if(album.isEmpty) None
@@ -81,8 +85,12 @@ class ItunesLibrary(user_id:Int, xmlPath:String = "") extends HasDatabaseConfig[
     })
   }
 
+  /**
+   * Transforms the result of the parsed xml which is Seq[Map[String,String]]
+   * to a Map[String, Set[String]]
+   */
   def getCollection: Map[String, Set[String]] = {
-    val lib = parseXml
+    val lib:Seq[Map[String,String]] = parseXml
     val library = lib.foldLeft(Map[String, Set[String]]()) {(prev, curr) =>
       val artist:String = curr(informationToExtract.head)
       val album:String = curr(informationToExtract(1))
@@ -95,5 +103,21 @@ class ItunesLibrary(user_id:Int, xmlPath:String = "") extends HasDatabaseConfig[
     }
     persist(library)
     library
+  }
+
+  /**
+   * Transforms the collection to a Json Array of Json Objects
+   */
+  def prepareCollectionForFrontend(data:Map[String, Set[String]]):JsValue = {
+    val formattedData:List[JsObject] = data.keySet.toList.map { artist =>
+      val albums = data(artist).toList.map { albumName =>
+        Json.obj("name" -> albumName)
+      }
+      Json.obj(
+        "name" -> artist,
+        "albums" -> Json.toJson(albums)
+      )
+    }
+    Json.toJson(formattedData)
   }
 }

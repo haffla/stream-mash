@@ -58,7 +58,7 @@ class ItunesController extends Controller {
   def collectionFromDb(userId:Int) = {
     val library = new ItunesLibrary(userId)
     library.getCollectionFromDbByUser(userId).map {
-      case Some(collection) => Ok(Json.toJson(collection))
+      case Some(collection) => Ok(library.prepareCollectionForFrontend(collection))
       case None => Ok(Json.toJson(Map("error" -> "You have no records stored in our database.")))
     }
   }
@@ -66,7 +66,7 @@ class ItunesController extends Controller {
   def collectionFromXml(userId:Int,xmlPath:String) = {
     val library = new ItunesLibrary(userId, xmlPath)
     val collection = library.getCollection
-    Json.toJson(collection)
+    library.prepareCollectionForFrontend(collection)
   }
 
   def getSpotifyArtistId = Authenticated.async { implicit request =>
