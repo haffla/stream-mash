@@ -1,6 +1,6 @@
 @()(implicit flash: Flash, session: Session)
 
-@main("iTunes") {
+@main("iTunes", List("lodash", "react")) {
     <div id="content"></div>
     <script type='text/javascript' src='@routes.Assets.versioned("javascripts/artistbox.js")'></script>
 }
