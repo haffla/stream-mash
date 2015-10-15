@@ -6,13 +6,6 @@ class Helper
       x + y.albums.length
     , 0
 
-  @formatData: (data) ->
-    keys = _.keys(data)
-    keys.map (key) ->
-      albums = data[key].map (name) ->
-        {name: name}
-      {name: key, albums: albums}
-
 # REACT CLASSES ---------------------------
 
 MainComponent = React.createClass
@@ -38,9 +31,8 @@ MainComponent = React.createClass
   originalState: []
 
   setTheState: (data, setOriginalData = false) ->
-    unless nr_artists && nr_albums
-      nr_albums = Helper.calculateNrOfAlbums(data)
-      nr_artists = _.keys(data).length
+    nr_albums = Helper.calculateNrOfAlbums(data)
+    nr_artists = _.keys(data).length
     if setOriginalData
       @setState({data: data, nr_artists: nr_artists, nr_albums: nr_albums}, () ->
         @originalState = @state
@@ -54,8 +46,7 @@ MainComponent = React.createClass
       if !data.error
         if _.size(data) > 0
           $('#artistBox').removeClass('hidden')
-        formattedData = Helper.formatData(data)
-        @setTheState(formattedData, true)
+        @setTheState(data, true)
       else
         window.alert(data.error)
     $.get '/itunes/fromdb', callback, 'json'
@@ -79,10 +70,9 @@ MainComponent = React.createClass
         processData: false
         success: (data) =>
           if !data.error
-            formattedData = Helper.formatData(data)
             $('#artistBox').removeClass('hidden')
             $('#dropzone').removeClass('dropped hover')
-            @setTheState(formattedData, true)
+            @setTheState(data, true)
           else
             window.alert("We could not read the file.")
         error: (jqXHR, status, error) =>
@@ -172,8 +162,8 @@ MainComponent = React.createClass
               </div>
               <div>
                 <div className="input-group">
-                  <span className="input-group-addon" id="basic-addon1"><i className="fa fa-undo"></i></span>
-                  <input type="text" className="form-control" onKeyUp={@filterArtists} placeholder="Artist" aria-describedby="basic-addon1" />
+                  <span className="input-group-addon" id="basic-addon1"><i className="fa fa-music"></i></span>
+                  <input type="text" className="form-control" onKeyUp={@filterArtists} placeholder="Filter by artist" aria-describedby="basic-addon1" />
                 </div>
               </div>
             </div>
