@@ -3,7 +3,7 @@ package controllers
 import java.io.File
 import java.nio.file.Files
 import models.User
-import models.auth.MessageDigest
+import models.auth.{Authenticated, MessageDigest}
 
 import scala.concurrent.Future
 

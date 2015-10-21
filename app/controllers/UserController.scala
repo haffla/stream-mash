@@ -1,6 +1,7 @@
 package controllers
 
 import models.User
+import models.auth.Authenticated
 import play.api.mvc.Controller
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 

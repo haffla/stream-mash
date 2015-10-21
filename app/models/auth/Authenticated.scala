@@ -1,5 +1,6 @@
-package controllers
+package models.auth
 
+import controllers.routes
 import play.api.mvc._
 import play.cache.Cache
 
@@ -17,7 +18,7 @@ object Authenticated extends ActionBuilder[Request] with Controller {
       else
         redirectToLoginPage("The session has been tampered with.")
     } getOrElse {
-      redirectToLoginPage("Please login again!")
+      redirectToLoginPage("Please login!")
     }
   }
 

@@ -32,11 +32,11 @@ class AuthController extends Controller
           if(!bool) {
             User.create(user.name, user.password).map {incrementId =>
               val hash = authenticateUser(user.name, user.password)
-              Redirect(routes.Application.index).flashing("message" -> "Welcome")
+              Redirect(routes.Application.index()).flashing("message" -> "Welcome")
                 .withSession("username" -> user.name, "auth-secret" -> hash, "user_id" -> incrementId.toString)
             }
           } else {
-            Future.successful(Redirect(routes.AuthController.register)
+            Future.successful(Redirect(routes.AuthController.register())
               .flashing("message" -> "User already exists"))
           }
         )
@@ -49,27 +49,26 @@ class AuthController extends Controller
       formWithErrors => {
         val errors = formWithErrors.errors
         println(errors)
-        Future.successful(Redirect(routes.AuthController.login))
+        Future.successful(Redirect(routes.AuthController.login()))
       },
       userData => {
-        getAccountByUser(userData).map(
-          listOfUsers => listOfUsers.map(
-            user =>
-              if (user.password == MessageDigest.digest(userData.password)) {
-                val username = user.name
-                val password = user.password
-                val incrementId = user.id
-                val hash = authenticateUser(username, password)
-                (true, hash, incrementId.get) // Tuple[Boolean, String, Int]
-              } else (false, "", 0)
-          )
-        ).map(result => // is a Seq[Tuple[Boolean,String, Int]]
-          if (result.nonEmpty && result.head._1)
-            Redirect(routes.Application.index)
-              .withSession("username" -> userData.name, "auth-secret" -> result.head._2, "user_id" -> result.head._3.toString)
-          else
-            Redirect(routes.AuthController.login).flashing("message" -> "Username or password wrong")
-          )
+        getAccountByUser(userData).map {
+          case Some(user) =>
+            if (user.password == MessageDigest.digest(userData.password)) {
+              val username = user.name
+              val password = user.password
+              val incrementId = user.id
+              val hash = authenticateUser(username, password)
+              Some((true, hash, incrementId.get)) // Tuple[Boolean, String, Int]
+            } else None
+          case None => None
+        }.map {
+          case Some(result) =>
+            Redirect(routes.Application.index())
+              .withSession("username" -> userData.name, "auth-secret" -> result._2, "user_id" -> result._3.toString)
+          case None =>
+            Redirect("/login").flashing("message" -> "Username or password wrong")
+        }
       }
     )
 
@@ -78,7 +77,7 @@ class AuthController extends Controller
   def logout = Action { implicit request =>
     val username = request.session.get("username")
     Cache.remove(s"user.$username")
-    Redirect(routes.AuthController.login)
+    Redirect(routes.AuthController.login())
       .withNewSession
       .flashing("message" -> "You are logged out.")
   }
@@ -98,7 +97,7 @@ class AuthController extends Controller
 
   def getAccountByUser(user:UserData) = {
     val account = accountQuery.filter(_.name === user.name).take(1)
-    db.run(account.result)
+    db.run(account.result.headOption)
   }
 
   def authenticateUser(username:String, password:String):String = {
