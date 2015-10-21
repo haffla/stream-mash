@@ -1,4 +1,4 @@
-name := """stream"""
+name := "Stream Mashup"
 
 version := "1.0-SNAPSHOT"
 

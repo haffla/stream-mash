@@ -15,7 +15,7 @@ object SoundcloudService extends StreamingServiceAbstract {
   val client_secret_key = "soundcloud.client.secret"
 
   val REDIRECT_URI="http://localhost:9000/soundcloud/callback"
-  val COOKIE_KEY = "spotify_auth_state"
+  val COOKIE_KEY = "soundcloud_auth_state"
 
   val queryString:Map[String,Seq[String]] = Map(
     "response_type" -> Seq("code"),
