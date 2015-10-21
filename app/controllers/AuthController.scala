@@ -5,7 +5,7 @@ import models.{User, UserData}
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.mvc._
+import play.api.mvc.{Controller,Request,Result,Action}
 import play.cache.Cache
 import slick.driver.JdbcProfile
 import database.MainDatabaseAccess
@@ -48,7 +48,6 @@ class AuthController extends Controller
     loginForm.bindFromRequest.fold(
       formWithErrors => {
         val errors = formWithErrors.errors
-        println(errors)
         Future.successful(Redirect(routes.AuthController.login()))
       },
       userData => {
@@ -64,14 +63,16 @@ class AuthController extends Controller
           case None => None
         }.map {
           case Some(result) =>
-            Redirect(routes.Application.index())
-              .withSession("username" -> userData.name, "auth-secret" -> result._2, "user_id" -> result._3.toString)
+            val newSession = request.session +
+               ("username" -> userData.name) +
+               ("auth-secret" -> result._2)  +
+               ("user_id" -> result._3.toString)
+            Redirect(request.session.get("intended_location").getOrElse("/")).withSession(newSession)
           case None =>
-            Redirect("/login").flashing("message" -> "Username or password wrong")
+            Redirect(routes.AuthController.login()).flashing("message" -> "Username or password wrong")
         }
       }
     )
-
   }
 
   def logout = Action { implicit request =>
@@ -91,7 +92,6 @@ class AuthController extends Controller
   def registerPage = Action { implicit request =>
     Ok(views.html.auth.register(List.empty))
   }
-
 
   //## HELPER
 

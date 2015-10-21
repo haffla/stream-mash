@@ -1,12 +1,10 @@
 package models.auth
 
 import controllers.routes
-import play.api.mvc._
+import play.api.mvc.{ActionBuilder,Controller,Request,Result,WrappedRequest}
 import play.cache.Cache
 
 import scala.concurrent.Future
-
-class AuthenticatedRequest[A](request: Request[A]) extends WrappedRequest[A](request)
 
 object Authenticated extends ActionBuilder[Request] with Controller {
   def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[Result]) = {
@@ -16,15 +14,20 @@ object Authenticated extends ActionBuilder[Request] with Controller {
       if(secretFromCache == secretFromSession)
         block(new AuthenticatedRequest(request))
       else
-        redirectToLoginPage("The session has been tampered with.")
+        redirectToLoginPage(request, "The session has been tampered with.")
     } getOrElse {
-      redirectToLoginPage("Please login!")
+      redirectToLoginPage(request, "Please login!")
     }
   }
 
-  def redirectToLoginPage(message:String) = {
-    Future.successful(Redirect(routes.AuthController.login()).flashing("message" -> message))
+  def redirectToLoginPage[A](request:Request[A], message:String) = {
+    Future.successful(
+      Redirect(routes.AuthController.login()).flashing("message" -> message)
+        .withSession(request.session + ("intended_location" -> request.path))
+      )
   }
+
+  class AuthenticatedRequest[A](request: Request[A]) extends WrappedRequest[A](request)
 }
 
 
