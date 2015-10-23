@@ -11,7 +11,7 @@ object RabbitMQConnection {
     connection match {
       case null => {
         val factory = new ConnectionFactory()
-        factory.setHost(Config.RABBITMQ_HOST)
+        factory.setHost(Config.rabbitMqHost)
         factory.newConnection()
       }
       case _ => connection

@@ -10,7 +10,7 @@ class ArtistIdListener {
   def listen() = {
     val connection = RabbitMQConnection.getConnection()
     val channel = connection.createChannel()
-    channel.queueDeclare(Config.RABBITMQ_QUEUE, true, false, false, null)
+    channel.queueDeclare(Config.rabbitMqQueue, true, false, false, null)
 
     val consumer = new DefaultConsumer(channel) {
       override def handleDelivery(consumerTag:String, envelope:Envelope, properties:AMQP.BasicProperties, body:Array[Byte]): Unit = {
@@ -21,6 +21,6 @@ class ArtistIdListener {
         SpotifyLibrary.saveArtistId(artist,id)
       }
     }
-    channel.basicConsume(Config.RABBITMQ_QUEUE, true, consumer)
+    channel.basicConsume(Config.rabbitMqQueue, true, consumer)
   }
 }

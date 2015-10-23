@@ -58,16 +58,16 @@ object SpotifyService extends StreamingServiceAbstract{
   def pushToArtistIdQueue(name: String, id: String) = {
     val connection = RabbitMQConnection.getConnection()
     val channel = connection.createChannel()
-    channel.queueDeclare(Config.RABBITMQ_QUEUE, true, false, false, null)
+    channel.queueDeclare(Config.rabbitMqQueue, true, false, false, null)
     val message = Json.toJson(Map("name" -> name, "id" -> id)).toString()
-    channel.basicPublish("", Config.RABBITMQ_QUEUE, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes)
+    channel.basicPublish("", Config.rabbitMqQueue, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes)
     channel.close()
     connection.close()
   }
 
   private def requestUsersTracks(tokens:Option[String]):Future[Option[WSResponse]] = {
-    val access_token = tokens.get
-    WS.url(apiEndpoints.tracks).withHeaders("Authorization" -> s"Bearer $access_token").get()
+    val accessToken = tokens.get
+    WS.url(apiEndpoints.tracks).withHeaders("Authorization" -> s"Bearer $accessToken").get()
       .map(response =>
       response.status match {
         case 200 =>
