@@ -8,20 +8,20 @@ import org.haffla.soundcloud.Client
 
 object SoundcloudService extends StreamingServiceAbstract {
 
-  val client_id_key = "soundcloud.client.id"
-  val client_secret_key = "soundcloud.client.secret"
+  val clientIdKey = "soundcloud.client.id"
+  val clientSecretKey = "soundcloud.client.secret"
 
-  val REDIRECT_URI="http://localhost:9000/soundcloud/callback"
-  val COOKIE_KEY = "soundcloud_auth_state"
+  val redirectUri="http://localhost:9000/soundcloud/callback"
+  val cookieKey = "soundcloud_auth_state"
 
   val queryString:Map[String,Seq[String]] = Map(
     "response_type" -> Seq("code"),
-    "client_id" -> Seq(CLIENT_ID),
-    "redirect_uri" -> Seq(REDIRECT_URI),
+    "client_id" -> Seq(clientId),
+    "redirect_uri" -> Seq(redirectUri),
     "scope" -> Seq("non-expiring")
   )
 
-  val client = Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
+  val client = Client(clientId, clientSecret, redirectUri)
 
   def requestUserData(code:String): Future[JsValue] = {
     for {

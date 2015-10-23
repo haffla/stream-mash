@@ -13,42 +13,42 @@ import scala.concurrent.Future
 
 object SpotifyService extends StreamingServiceAbstract{
 
-  val client_id_key = "spotify.client.id"
-  val client_secret_key = "spotify.client.secret"
+  val clientIdKey = "spotify.client.id"
+  val clientSecretKey = "spotify.client.secret"
 
-  val REDIRECT_URI = "http://localhost:9000/callback"
-  val SCOPE:Seq[String] = Seq(
+  val redirectUri = "http://localhost:9000/callback"
+  val scope:Seq[String] = Seq(
     "user-read-private",
     "playlist-read-private",
     "user-follow-read",
     "user-library-read"
   )
-  val COOKIE_KEY = "spotify_auth_state"
+  val cookieKey = "spotify_auth_state"
 
   val queryString:Map[String,Seq[String]] = Map(
     "response_type" -> Seq("code"),
-    "client_id" -> Seq(CLIENT_ID),
-    "scope" -> Seq(SCOPE.mkString(" ")),
-    "redirect_uri" -> Seq(REDIRECT_URI)
+    "client_id" -> Seq(clientId),
+    "scope" -> Seq(scope.mkString(" ")),
+    "redirect_uri" -> Seq(redirectUri)
   )
 
-  object ApiEndpoints {
-    val TRACKS = "https://api.spotify.com/v1/me/tracks"
-    val TOKEN = "https://accounts.spotify.com/api/token"
-    val AUTHORIZE = "https://accounts.spotify.com/authorize"
-    val SEARCH = "https://api.spotify.com/v1/search"
+  object apiEndpoints {
+    val tracks = "https://api.spotify.com/v1/me/tracks"
+    val token = "https://accounts.spotify.com/api/token"
+    val authorize = "https://accounts.spotify.com/authorize"
+    val search = "https://api.spotify.com/v1/search"
 
-    val DATA = Map(
-      "redirect_uri" -> Seq(REDIRECT_URI),
+    val data = Map(
+      "redirect_uri" -> Seq(redirectUri),
       "grant_type" -> Seq("authorization_code"),
-      "client_id" -> Seq(CLIENT_ID),
-      "client_secret" -> Seq(CLIENT_SECRET)
+      "client_id" -> Seq(clientId),
+      "client_secret" -> Seq(clientSecret)
     )
   }
 
   def requestUserData(code:String): Future[Option[WSResponse]] = {
-    val data = ApiEndpoints.DATA + ("code" -> Seq(code))
-    val futureResponse: Future[WSResponse] = WS.url(ApiEndpoints.TOKEN).post(data)
+    val data = apiEndpoints.data + ("code" -> Seq(code))
+    val futureResponse: Future[WSResponse] = WS.url(apiEndpoints.token).post(data)
     for {
       tokens <- getAccessToken(futureResponse)
       response <- requestUsersTracks(tokens)
@@ -67,7 +67,7 @@ object SpotifyService extends StreamingServiceAbstract{
 
   private def requestUsersTracks(tokens:Option[String]):Future[Option[WSResponse]] = {
     val access_token = tokens.get
-    WS.url(ApiEndpoints.TRACKS).withHeaders("Authorization" -> s"Bearer $access_token").get()
+    WS.url(apiEndpoints.tracks).withHeaders("Authorization" -> s"Bearer $access_token").get()
       .map(response =>
       response.status match {
         case 200 =>
@@ -107,7 +107,7 @@ object SpotifyService extends StreamingServiceAbstract{
   }
 
   def getArtistId(artist:String):Future[Option[String]] = {
-    WS.url(ApiEndpoints.SEARCH).withQueryString("type" -> "artist", "q" -> artist).get().map {
+    WS.url(apiEndpoints.search).withQueryString("type" -> "artist", "q" -> artist).get().map {
       response =>
         response.status match {
           case 200 =>

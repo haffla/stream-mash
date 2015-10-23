@@ -13,14 +13,14 @@ class SpotifyController extends Controller {
   def login = Action { implicit request =>
     val state = TextWrangler.generateRandomString(16)
     val withState = SpotifyService.queryString + ("state" -> Seq(state))
-    Redirect(SpotifyService.ApiEndpoints.AUTHORIZE, withState)
-      .withCookies(Cookie(SpotifyService.COOKIE_KEY, state))
+    Redirect(SpotifyService.apiEndpoints.authorize, withState)
+      .withCookies(Cookie(SpotifyService.cookieKey, state))
   }
 
   def callback = Action.async { implicit request =>
     val state = request.getQueryString("state").orNull
     val code = request.getQueryString("code").orNull
-    val storedState = request.cookies.get(SpotifyService.COOKIE_KEY) match {
+    val storedState = request.cookies.get(SpotifyService.cookieKey) match {
       case Some(cookie) => cookie.value
       case None => Future.successful(
         Redirect(routes.Application.index).flashing("message" -> "There has been a problem...")
