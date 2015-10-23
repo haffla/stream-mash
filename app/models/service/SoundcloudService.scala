@@ -1,11 +1,7 @@
 package models.service
 
-import models.util.Logging
-import play.api.Play.current
-import play.api.{Play, PlayException}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.libs.json.Json
-import play.api.libs.ws.{WS, WSResponse}
+import play.api.libs.json.{JsValue, Json}
 
 import scala.concurrent.Future
 import org.haffla.soundcloud.Client
@@ -25,21 +21,9 @@ object SoundcloudService extends StreamingServiceAbstract {
     "scope" -> Seq("non-expiring")
   )
 
-  object ApiEndpoints {
-    val AUTHORIZE = "https://api.soundcloud.com/connect"
-    val ME = "https://api.soundcloud.com/me"
-    val USERS = "http://api.soundcloud.com/users"
+  val client = Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
 
-    val DATA = Map(
-      "grant_type" -> Seq("authorization_code"),
-      "redirect_uri" -> Seq(REDIRECT_URI),
-      "client_id" -> Seq(CLIENT_ID),
-      "client_secret" -> Seq(CLIENT_SECRET)
-    )
-  }
-
-  def requestUserData(code:String): Future[Option[WSResponse]] = {
-    val client = Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
+  def requestUserData(code:String): Future[JsValue] = {
     for {
       authCredentials <- client.exchange_token(code)
       userId <- getUserId(authCredentials)
@@ -47,26 +31,18 @@ object SoundcloudService extends StreamingServiceAbstract {
     } yield response
   }
 
-  private def requestUsersTracks(userId:Int):Future[Option[WSResponse]] = {
-    WS.url(ApiEndpoints.USERS + "/" + userId.toString + "/favorites").withQueryString("client_id" -> CLIENT_ID).get() map( response =>
-      response.status match {
-        case 200 =>
-          val json = Json.parse(response.body)
-          Some(response)
-        case http_code =>
-          Logging.error(ich, "Error requesting user data: " + http_code + "\n" + response.body)
-          None
-      }
-    )
+  private def requestUsersTracks(userId:String):Future[JsValue] = {
+    client.users(userId)("favorites") map { favorites =>
+      Json.parse(favorites)
+    }
   }
 
-  private def getUserId(authCredential: Map[String,String]):Future[Int] = {
+  private def getUserId(authCredential: Map[String,String]):Future[String] = {
     authCredential.get("access_token") match {
-      case Some(token) =>
-        WS.url(ApiEndpoints.ME).withQueryString("oauth_token" -> token).get() map { response =>
-          val json = Json.parse(response.body)
-          (json \ "id").as[Int]
-        }
+      case Some(token) => client.me(token)().map { user =>
+        val json = Json.parse(user)
+        (json \ "id").as[Int].toString
+      }
       case None => Future.failed(new Exception("A valid access token could not be retrieved"))
     }
   }
