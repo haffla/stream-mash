@@ -8,6 +8,7 @@ import play.api.libs.json.Json
 import play.api.libs.ws.{WS, WSResponse}
 
 import scala.concurrent.Future
+import org.haffla.soundcloud.Client
 
 object SoundcloudService extends StreamingServiceAbstract {
 
@@ -28,7 +29,6 @@ object SoundcloudService extends StreamingServiceAbstract {
     val AUTHORIZE = "https://api.soundcloud.com/connect"
     val ME = "https://api.soundcloud.com/me"
     val USERS = "http://api.soundcloud.com/users"
-    val TOKEN = "https://api.soundcloud.com/oauth2/token"
 
     val DATA = Map(
       "grant_type" -> Seq("authorization_code"),
@@ -39,11 +39,10 @@ object SoundcloudService extends StreamingServiceAbstract {
   }
 
   def requestUserData(code:String): Future[Option[WSResponse]] = {
-    val data = ApiEndpoints.DATA + ("code" -> Seq(code))
-    val futureResponse: Future[WSResponse] = WS.url(ApiEndpoints.TOKEN).post(data)
+    val client = Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
     for {
-      accessToken <- getAccessToken(futureResponse)
-      userId <- getUserId(accessToken)
+      authCredentials <- client.exchange_token(code)
+      userId <- getUserId(authCredentials)
       response <- requestUsersTracks(userId)
     } yield response
   }
@@ -61,21 +60,8 @@ object SoundcloudService extends StreamingServiceAbstract {
     )
   }
 
-  private def getAccessToken(futureReponse: Future[WSResponse]): Future[Option[String]] = {
-    futureReponse.map(response =>
-      response.status match {
-        case 200 =>
-          val json = Json.parse(response.body)
-          (json \ "access_token").asOpt[String]
-        case http_code =>
-          Logging.error(ich, "Error getting tokens: " + http_code + "\n" + response.body)
-          None
-      }
-    )
-  }
-
-  private def getUserId(accessToken: Option[String]):Future[Int] = {
-    accessToken match {
+  private def getUserId(authCredential: Map[String,String]):Future[Int] = {
+    authCredential.get("access_token") match {
       case Some(token) =>
         WS.url(ApiEndpoints.ME).withQueryString("oauth_token" -> token).get() map { response =>
           val json = Json.parse(response.body)

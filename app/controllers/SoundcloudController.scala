@@ -4,6 +4,9 @@ import models.service.SoundcloudService
 import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import org.haffla.soundcloud.Client
+
+import scala.concurrent.Future
 
 class SoundcloudController extends Controller {
 

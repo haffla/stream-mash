@@ -29,6 +29,4 @@ abstract class StreamingServiceAbstract {
     case Some(secret) => secret
     case None => throw new PlayException(confErrorTitle("client secret"), confErrorDescription("client secret", client_secret_key))
   }
-
-  def requestUserData(code:String): Future[Option[WSResponse]]
 }
