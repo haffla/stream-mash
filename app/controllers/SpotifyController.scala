@@ -18,7 +18,7 @@ class SpotifyController extends Controller {
   }
 
   def callback = Action.async { implicit request =>
-    val state = request.getQueryString("state").orNull
+    val state = request.getQueryString("state")
     val code = request.getQueryString("code").orNull
     val storedState = request.cookies.get(SpotifyService.cookieKey) match {
       case Some(cookie) => cookie.value
@@ -27,15 +27,18 @@ class SpotifyController extends Controller {
         )
     }
     //CSRF Protection, see http://tools.ietf.org/html/rfc6749#section-10.12
-    if(state == null || state != storedState) {
-      Future.successful(Ok("Error: State Mismatch"))
-    } else {
-      val wsResponse: Future[Option[WSResponse]] = SpotifyService.requestUserData(code)
-      wsResponse.map {
-        case Some(response) => Ok(Json.parse(response.body).toString())
-        case None => Ok("An error has occurred.")
-      }
+    val stateMismatchMessage = "Error: State Mismatch"
+    state match {
+      case Some(s) =>
+        if(s == storedState) {
+          val wsResponse: Future[Option[WSResponse]] = SpotifyService.requestUserData(code)
+          wsResponse.map {
+            case Some(response) => Ok(Json.parse(response.body).toString())
+            case None => Ok("An error has occurred.")
+          }
+        }
+        else Future.successful(Ok(stateMismatchMessage))
+      case None => Future.successful(Ok(stateMismatchMessage))
     }
-
   }
 }
