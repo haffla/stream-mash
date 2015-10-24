@@ -27,11 +27,12 @@ libraryDependencies ++= Seq(
   "org.webjars" % "lodash" % "3.10.1",
   play.sbt.Play.autoImport.cache,
   "com.rabbitmq" % "amqp-client" % "3.5.6",
-  "org.haffla" %% "soundcloud-scala" % "0.1-SNAPSHOT"
+  "com.github.haffla" %% "soundcloud-scala" % "0.1-SNAPSHOT"
 )
 
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
 routesGenerator := InjectedRoutesGenerator
 

@@ -4,7 +4,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.{JsValue, Json}
 
 import scala.concurrent.Future
-import org.haffla.soundcloud.Client
+import com.github.haffla.soundcloud.Client
 
 object SoundcloudService extends StreamingServiceAbstract {
 
@@ -37,8 +37,8 @@ object SoundcloudService extends StreamingServiceAbstract {
     }
   }
 
-  private def getUserId(authCredential: Map[String,String]):Future[String] = {
-    authCredential.get("access_token") match {
+  private def getUserId(authCredentials: String):Future[String] = {
+    (Json.parse(authCredentials) \ "access_token").asOpt[String] match {
       case Some(token) => client.me(token)().map { user =>
         val json = Json.parse(user)
         (json \ "id").as[Int].toString
