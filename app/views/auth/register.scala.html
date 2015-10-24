@@ -4,11 +4,20 @@
 
 <div class="row">
     <div class="col-md-6">
-        <div class="auth-inputs">
-            <form action="/register" method="POST">
-                <input class="form-control" name="name" type="text" placeholder="username"/>
-                <input class="form-control" name="password.main" data-hint="At least 6 characters long" type="password" placeholder="Choose a password"/>
-                <input class="form-control" name="password.confirm" type="password" placeholder="Repeat the password"/>
+        <div class="text-center">
+            <form class="auth-form" action="/register" method="POST">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1"><i class="fa fa-user"></i></span>
+                    <input type="text" name="name" class="form-control" placeholder="Username" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1"><i class="fa fa-user-secret"></i></span>
+                    <input type="password" name="password.main" class="form-control" placeholder="Choose a password" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1"><i class="fa fa-user-secret"></i></span>
+                    <input type="password" name="password.confirm" class="form-control" placeholder="Repeat the password" aria-describedby="basic-addon1">
+                </div>
                 <button class="btn btn-default" type="submit">Register</button>
             </form>
         </div>

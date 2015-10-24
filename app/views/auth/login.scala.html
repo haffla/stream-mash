@@ -3,14 +3,21 @@
 @main("Login") {
 
 <div class="row">
-    <div class="col-md-6">
-        <div class="auth-inputs">
-            <form action="/login" method="POST">
-                <input class="form-control" name="name" type="text" placeholder="Your name"/>
-                <input class="form-control" name="password" type="password" placeholder="Enter your password"/>
+    <div class="col-md-12">
+        <div class="text-center">
+            <form class="auth-form" action="/login" method="POST">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1"><i class="fa fa-user"></i></span>
+                        <input type="text" name="name" class="form-control" placeholder="Username" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1"><i class="fa fa-user-secret"></i></span>
+                    <input type="password" name="password" class="form-control" placeholder="Enter your password" aria-describedby="basic-addon1">
+                </div>
                 <button class="btn btn-default" type="submit">Login</button>
             </form>
         </div>
     </div>
 </div>
 }
+

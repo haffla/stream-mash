@@ -1,7 +1,15 @@
 @import "_material-design-colors";
 
 body {
-    padding-bottom: 30px;
+  padding-bottom: 30px;
+  background-color: #e7e7e7;
+}
+
+.spacer {
+  width: 100%;
+  height: 50px;
+  margin: 0;
+  padding: 0;
 }
 
 a {
@@ -9,15 +17,36 @@ a {
 }
 
 div.centered {
-    margin-left: 0;
-    margin-right: 0;
-    text-align: center;
+  margin-left: 0;
+  margin-right: 0;
+  text-align: center;
 }
 
 hr {
-    width: 50%;
-    background-color: @purple-400;
-    height: 1px;
+  width: 50%;
+  background-color: @purple-400;
+  height: 1px;
+}
+
+.navbar-default {
+  background-color: #079493;
+}
+
+@link-color: #444444;
+@hover-link-color: #333333;
+
+.navbar-default .navbar-brand {
+  color: @link-color;
+  &:hover {
+    color: @hover-link-color;
+  }
+}
+
+.navbar-default .navbar-nav>li>a {
+  color: @link-color;
+  &:hover {
+    color: @hover-link-color;
+  }
 }
 
 @import "_flash-message";

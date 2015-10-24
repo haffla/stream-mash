@@ -12,10 +12,10 @@ trait Forms {
   val registerForm = Form(
     mapping(
       "name" -> text.verifying(s"The username's length must be between $usernameMinLength and $usernameMaxLength",
-        text => text.length > usernameMinLength && text.length < usernameMaxLength),
+        text => text.length >= usernameMinLength && text.length <= usernameMaxLength),
       "password" -> tuple(
         "main" -> text.verifying(s"The password must be at least $passwordMinLength characters long",
-          password => password.length > passwordMinLength),
+          password => password.length >= passwordMinLength),
         "confirm" -> text
       ).verifying(
           "Passwords don't match", password => password._1 == password._2

@@ -5,7 +5,7 @@ import models.{User, UserData}
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.mvc.{Controller,Request,Result,Action}
+import play.api.mvc.{Controller, Action}
 import play.cache.Cache
 import slick.driver.JdbcProfile
 import database.MainDatabaseAccess
@@ -27,19 +27,20 @@ class AuthController extends Controller
         Future.successful(Ok(views.html.auth.register(errors.flatten.toList)))
       },
       user => {
-        val userExists = User.exists(user.name)
-        userExists.flatMap( bool =>
-          if(!bool) {
-            User.create(user.name, user.password).map {incrementId =>
+        for (userExists <- User.exists(user.name)) yield {
+            if(userExists) {
+              Redirect(routes.AuthController.register())
+                .flashing("message" -> "User already exists")
+            }
+            else {
+              val incrementId =
+                for (incrementId <- User.create(user.name, user.password))
+                yield incrementId
               val hash = authenticateUser(user.name, user.password)
               Redirect(routes.Application.index()).flashing("message" -> "Welcome")
                 .withSession("username" -> user.name, "auth-secret" -> hash, "user_id" -> incrementId.toString)
             }
-          } else {
-            Future.successful(Redirect(routes.AuthController.register())
-              .flashing("message" -> "User already exists"))
           }
-        )
       }
     )
   }
