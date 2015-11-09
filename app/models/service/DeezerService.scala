@@ -41,19 +41,6 @@ object DeezerService extends StreamingServiceAbstract {
     } yield response
   }
 
-  private def getAccessToken(futureReponse: Future[WSResponse]):Future[Option[String]] = {
-    futureReponse.map { response =>
-      response.status match {
-        case 200 =>
-          val json = Json.parse(response.body)
-          (json \ "access_token").asOpt[String]
-        case http_code =>
-          Logging.error(ich, "Error getting tokens: " + http_code + "\n" + response.body)
-          None
-      }
-    }
-  }
-
   private def requestUsersTracks(token:Option[String]):Future[Option[JsValue]] = {
     token match {
       case Some(access_token) =>
@@ -69,6 +56,5 @@ object DeezerService extends StreamingServiceAbstract {
             }
         }
     }
-
   }
 }

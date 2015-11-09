@@ -1,8 +1,11 @@
 package models.service
 
+import models.util.Logging
+import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
 import play.api.{PlayException, Play}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 abstract class StreamingServiceAbstract {
@@ -34,5 +37,19 @@ abstract class StreamingServiceAbstract {
     case Some(uri) => uri + redirectUriPath
     case None => throw new PlayException("Current host could not be determined. It is used for all callbacks from third party APIs",
       "Example: current.host=\"http://example.com\"")
+  }
+
+  //Inspired by https://github.com/StarTrack/server
+  def getAccessToken(futureReponse: Future[WSResponse]): Future[Option[String]] = {
+    futureReponse.map(response =>
+      response.status match {
+        case 200 =>
+          val json = Json.parse(response.body)
+          (json \ "access_token").asOpt[String]
+        case http_code =>
+          Logging.error(ich, "Error getting access token: " + http_code + "\n" + response.body)
+          None
+      }
+    )
   }
 }

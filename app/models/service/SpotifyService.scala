@@ -92,20 +92,6 @@ object SpotifyService extends StreamingServiceAbstract{
       )
   }
 
-  //Inspired by https://github.com/StarTrack/server
-  private def getAccessToken(futureReponse: Future[WSResponse]): Future[Option[String]] = {
-    futureReponse.map(response =>
-      response.status match {
-        case 200 =>
-          val json = Json.parse(response.body)
-          (json \ "access_token").asOpt[String]
-        case http_code =>
-          Logging.error(ich, "Error getting tokens: " + http_code + "\n" + response.body)
-          None
-      }
-    )
-  }
-
   def getArtistId(artist:String):Future[Option[String]] = {
     WS.url(apiEndpoints.search).withQueryString("type" -> "artist", "q" -> artist).get().map {
       response =>
