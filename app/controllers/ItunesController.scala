@@ -34,7 +34,7 @@ class ItunesController extends Controller {
       val f = new File(xmlPath)
       val fileBody:String = scala.io.Source.fromFile(f).getLines().mkString
       val fileHash = MessageDigest.md5(fileBody)
-      User.iTunesFileProcessedAlready(userId,fileHash).flatMap(
+      User.iTunesFileProcessedAlready(userId,fileHash) flatMap(
        bool => if(bool) {
          //user has submitted the exact same file. load from db.
          cleanUp(f)
@@ -57,7 +57,7 @@ class ItunesController extends Controller {
 
   def collectionFromDb(userId:Int) = {
     val library = new ItunesLibrary(userId)
-    library.getCollectionFromDbByUser(userId).map {
+    library.getCollectionFromDbByUser(userId) map {
       case Some(collection) => Ok(library.prepareCollectionForFrontend(collection))
       case None => Ok(Json.toJson(Map("error" -> "You have no records stored in our database.")))
     }
@@ -71,11 +71,11 @@ class ItunesController extends Controller {
 
   def getSpotifyArtistId = Authenticated.async { implicit request =>
     val artist = request.getQueryString("artist").get
-    ArtistLibrary.getIdForArtistFromDb(artist).flatMap {
+    ArtistLibrary.getSpotifyIdForArtistFromDb(artist) flatMap {
         case Some(spotifyId) => Future.successful(Ok(Json.toJson(Map("spotify_id" -> spotifyId))))
         case None =>
-          val id:Future[Option[String]] = ArtistLibrary.getIdForArtistFromSpotify(artist)
-          id.map {
+          val id:Future[Option[String]] = ArtistLibrary.getSpotifyIdForArtistFromSpotify(artist)
+          id map {
             case Some(sp) => Ok(Json.toJson(Map("spotify_id" -> sp)))
             case None => Ok(Json.toJson(Map("error" -> "Did not find a Spotify ID")))
           }

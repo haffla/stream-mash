@@ -4,7 +4,7 @@ import com.rabbitmq.client.MessageProperties
 import models.Config
 import models.messaging.RabbitMQConnection
 import models.util.{SpotifyLibrary, Logging}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsValue, JsObject, Json}
 import play.api.libs.ws.{WS, WSResponse}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.Play.current
@@ -16,7 +16,7 @@ object SpotifyService extends StreamingServiceAbstract{
   val clientIdKey = "spotify.client.id"
   val clientSecretKey = "spotify.client.secret"
 
-  val redirectUri = "http://localhost:9000/callback"
+  val redirectUriPath = "/spotify/callback"
   val scope:Seq[String] = Seq(
     "user-read-private",
     "playlist-read-private",
@@ -46,7 +46,7 @@ object SpotifyService extends StreamingServiceAbstract{
     )
   }
 
-  def requestUserData(code:String): Future[Option[WSResponse]] = {
+  def requestUserData(code:String): Future[Option[JsValue]] = {
     val data = apiEndpoints.data + ("code" -> Seq(code))
     val futureResponse: Future[WSResponse] = WS.url(apiEndpoints.token).post(data)
     for {
@@ -65,7 +65,7 @@ object SpotifyService extends StreamingServiceAbstract{
     connection.close()
   }
 
-  private def requestUsersTracks(tokens:Option[String]):Future[Option[WSResponse]] = {
+  private def requestUsersTracks(tokens:Option[String]):Future[Option[JsValue]] = {
     val accessToken = tokens.get
     WS.url(apiEndpoints.tracks).withHeaders("Authorization" -> s"Bearer $accessToken").get()
       .map(response =>
@@ -84,7 +84,7 @@ object SpotifyService extends StreamingServiceAbstract{
               }
             }
           }
-          Some(response)
+          Some(json)
         case http_code =>
           Logging.error(ich, "Error requesting user data: " + http_code + "\n" + response.body)
           None

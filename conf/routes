@@ -8,7 +8,7 @@ POST        /register                   controllers.AuthController.register
 
 ### Spotify
 GET         /spotify/login              controllers.SpotifyController.login
-GET         /callback                   controllers.SpotifyController.callback
+GET         /spotify/callback           controllers.SpotifyController.callback
 
 GET         /soundcloud/callback        controllers.SoundcloudController.callback
 GET         /soundcloud/login           controllers.SoundcloudController.login
@@ -18,6 +18,10 @@ GET         /itunes/fromdb              controllers.ItunesController.artistAlbum
 GET         /itunes/spotifyid           controllers.ItunesController.getSpotifyArtistId
 GET         /itunes                     controllers.ItunesController.index
 POST        /itunes                     controllers.ItunesController.fileUpload
+
+### Deezer
+GET         /deezer/login               controllers.DeezerController.login
+GET         /deezer/callback            controllers.DeezerController.callback
 
 ### User management
 GET         /users                      controllers.UserController.list

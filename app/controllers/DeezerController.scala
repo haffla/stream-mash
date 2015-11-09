@@ -1,37 +1,37 @@
 package controllers
 
-import models.service.SpotifyService
+import models.service.DeezerService
 import models.util.TextWrangler
 import play.api.mvc._
-import scala.concurrent.Future
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class SpotifyController extends Controller {
+import scala.concurrent.Future
+
+class DeezerController extends Controller {
 
   def login = Action { implicit request =>
     val state = TextWrangler.generateRandomString(16)
-    val withState = SpotifyService.queryString + ("state" -> Seq(state))
-    Redirect(SpotifyService.apiEndpoints.authorize, withState)
-      .withCookies(Cookie(SpotifyService.cookieKey, state))
+    val withState = DeezerService.queryString + ("state" -> Seq(state))
+    Redirect(DeezerService.apiEndpoints.authorize, withState)
+      .withCookies(Cookie(DeezerService.cookieKey, state))
   }
 
   def callback = Action.async { implicit request =>
     val state = request.getQueryString("state")
     val code = request.getQueryString("code").orNull
-    val storedState = request.cookies.get(SpotifyService.cookieKey) match {
+    val storedState = request.cookies.get(DeezerService.cookieKey) match {
       case Some(cookie) => cookie.value
       case None => Future.successful(
         Redirect(routes.Application.index).flashing("message" -> "There has been a problem...")
-        )
+      )
     }
-    //CSRF Protection, see http://tools.ietf.org/html/rfc6749#section-10.12
     val stateMismatchMessage = "Error: State Mismatch"
     state match {
       case Some(s) =>
         if(s == storedState) {
-          val json = SpotifyService.requestUserData(code)
-          json map {
-            case Some(js) => Ok(js)
+          val futureJson = DeezerService.requestUserData(code)
+          futureJson map {
+            case Some(json) => Ok(json)
             case None => Ok("An error has occurred.")
           }
         }

@@ -20,12 +20,12 @@ object ArtistLibrary extends MainDatabaseAccess
     db.run(artistQuery += newArtist)
   }
 
-  def getIdForArtistFromDb(artist:String):Future[Option[String]] = {
+  def getSpotifyIdForArtistFromDb(artist:String):Future[Option[String]] = {
     val id = for { a <- artistQuery if a.name === artist } yield a.spotifyId
     db.run(id.result.headOption)
   }
 
-  def getIdForArtistFromSpotify(artist: String): Future[Option[String]] = {
+  def getSpotifyIdForArtistFromSpotify(artist: String): Future[Option[String]] = {
     SpotifyService.getArtistId(artist)
   }
 }

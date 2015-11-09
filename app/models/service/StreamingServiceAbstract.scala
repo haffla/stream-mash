@@ -9,8 +9,8 @@ abstract class StreamingServiceAbstract {
 
   val clientIdKey:String
   val clientSecretKey:String
-  val redirectUri:String
   val cookieKey:String
+  val redirectUriPath:String
 
   lazy val ich = this.getClass.toString
 
@@ -23,10 +23,16 @@ abstract class StreamingServiceAbstract {
 
   lazy val clientId = Play.current.configuration.getString(clientIdKey) match {
     case Some(id) => id
-    case None => throw new PlayException(confErrorTitle("client id"),confErrorDescription("client id", clientIdKey))
+    case None => throw new PlayException(confErrorTitle("client id"), confErrorDescription("client id", clientIdKey))
   }
   lazy val clientSecret = Play.current.configuration.getString(clientSecretKey) match {
     case Some(secret) => secret
     case None => throw new PlayException(confErrorTitle("client secret"), confErrorDescription("client secret", clientSecretKey))
+  }
+
+  lazy val redirectUri = Play.current.configuration.getString("current.host") match {
+    case Some(uri) => uri + redirectUriPath
+    case None => throw new PlayException("Current host could not be determined. It is used for all callbacks from third party APIs",
+      "Example: current.host=\"http://example.com\"")
   }
 }
