@@ -3,7 +3,21 @@
 @main("Register") {
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12">
+        <div class="text-center">
+        @if(errors.nonEmpty) {
+            <p>In order to register you have to meet the following requirements:</p>
+            <div class="form-error">
+                <ul>
+                @for(e <- errors) {
+                    <li>@e</li>
+                }
+                </ul>
+            </div>
+        }
+        </div>
+    </div>
+    <div class="col-md-12">
         <div class="text-center">
             <form class="auth-form" action="/register" method="POST">
                 <div class="input-group">
@@ -21,19 +35,6 @@
                 <button class="btn btn-default" type="submit">Register</button>
             </form>
         </div>
-    </div>
-    <div class="col-md-6">
-    @if(errors.nonEmpty) {
-        <h5>In order to register you have to meet the following requirements:</h5>
-        <div class="form-error">
-            <br>
-                <ul>
-                @for(e <- errors) {
-                    <li>@e</li>
-                }
-                </ul>
-        </div>
-    }
     </div>
 </div>
 }

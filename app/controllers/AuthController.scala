@@ -24,13 +24,14 @@ class AuthController extends Controller
     registerForm.bindFromRequest.fold(
       formWithErrors => {
         val errors = formWithErrors.errors.map(error => error.messages)
+        println(errors.flatten.toList)
         Future.successful(Ok(views.html.auth.register(errors.flatten.toList)))
       },
       user => {
         for (userExists <- User.exists(user.name)) yield {
             if(userExists) {
               Redirect(routes.AuthController.register())
-                .flashing("message" -> "User already exists")
+                .flashing("message" -> "Sorry. This username already exists.")
             }
             else {
               val incrementId =
