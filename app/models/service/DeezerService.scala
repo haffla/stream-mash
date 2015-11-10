@@ -55,6 +55,7 @@ object DeezerService extends StreamingServiceAbstract {
                 None
             }
         }
+      case None => throw new Exception("The access token could not be retrieved")
     }
   }
 }

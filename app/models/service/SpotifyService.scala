@@ -50,8 +50,8 @@ object SpotifyService extends StreamingServiceAbstract{
     val data = apiEndpoints.data + ("code" -> Seq(code))
     val futureResponse: Future[WSResponse] = WS.url(apiEndpoints.token).post(data)
     for {
-      tokens <- getAccessToken(futureResponse)
-      response <- requestUsersTracks(tokens)
+      token <- getAccessToken(futureResponse)
+      response <- requestUsersTracks(token)
     } yield response
   }
 
@@ -65,31 +65,34 @@ object SpotifyService extends StreamingServiceAbstract{
     connection.close()
   }
 
-  private def requestUsersTracks(tokens:Option[String]):Future[Option[JsValue]] = {
-    val accessToken = tokens.get
-    WS.url(apiEndpoints.tracks).withHeaders("Authorization" -> s"Bearer $accessToken").get()
-      .map(response =>
-      response.status match {
-        case 200 =>
-          val json = Json.parse(response.body)
-          val items = (json \ "items").asOpt[List[JsObject]]
-          items.get.foreach { item =>
-            val artists = (item \ "track" \ "artists").asOpt[List[JsObject]]
-            artists.get.foreach { artist =>
-              val name = (artist \ "name").as[String]
-              val id = (artist \ "id").as[String]
-              val artistType = (artist \ "type").as[String]
-              if(artistType == "artist") {
-                pushToArtistIdQueue(name, id)
+  private def requestUsersTracks(token:Option[String]):Future[Option[JsValue]] = {
+    token match {
+      case Some(accessToken) =>
+        WS.url(apiEndpoints.tracks).withHeaders("Authorization" -> s"Bearer $accessToken").get() map { response =>
+          response.status match {
+            case 200 =>
+              val json = Json.parse(response.body)
+              val items = (json \ "items").asOpt[List[JsObject]]
+              items.get.foreach { item =>
+                val artists = (item \ "track" \ "artists").asOpt[List[JsObject]]
+                artists.get.foreach { artist =>
+                  val name = (artist \ "name").as[String]
+                  val id = (artist \ "id").as[String]
+                  val artistType = (artist \ "type").as[String]
+                  if (artistType == "artist") {
+                    pushToArtistIdQueue(name, id)
+                  }
+                }
               }
-            }
+              Some(json)
+            case http_code =>
+              Logging.error(ich, "Error requesting user data: " + http_code + "\n" + response.body)
+              None
           }
-          Some(json)
-        case http_code =>
-          Logging.error(ich, "Error requesting user data: " + http_code + "\n" + response.body)
-          None
-      }
-      )
+        }
+      case None => throw new Exception ("The access token could not be retrieved")
+    }
+
   }
 
   def getArtistId(artist:String):Future[Option[String]] = {
