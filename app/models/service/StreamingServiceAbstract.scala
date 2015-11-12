@@ -39,7 +39,6 @@ abstract class StreamingServiceAbstract {
       "Example: current.host=\"http://example.com\"")
   }
 
-  //Inspired by https://github.com/StarTrack/server
   def getAccessToken(futureReponse: Future[WSResponse]): Future[Option[String]] = {
     futureReponse.map(response =>
       response.status match {
@@ -47,7 +46,7 @@ abstract class StreamingServiceAbstract {
           val json = Json.parse(response.body)
           (json \ "access_token").asOpt[String]
         case http_code =>
-          Logging.error(ich, "Error getting access token: " + http_code + "\n" + response.body)
+          Logging.error(ich, Constants.accessTokenRetrievalError + ": " + http_code + "\n" + response.body)
           None
       }
     )
