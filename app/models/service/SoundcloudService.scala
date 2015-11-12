@@ -43,7 +43,7 @@ object SoundcloudService extends StreamingServiceAbstract {
         val json = Json.parse(user)
         (json \ "id").as[Int].toString
       }
-      case None => Future.failed(new Exception("A valid access token could not be retrieved"))
+      case None => Future.failed(new Exception(Constants.accessTokenRetrievalError))
     }
   }
 

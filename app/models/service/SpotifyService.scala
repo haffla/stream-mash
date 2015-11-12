@@ -86,11 +86,11 @@ object SpotifyService extends StreamingServiceAbstract{
               }
               Some(json)
             case http_code =>
-              Logging.error(ich, "Error requesting user data: " + http_code + "\n" + response.body)
+              Logging.error(ich, Constants.userTracksRetrievalError + ": " +  http_code + "\n" + response.body)
               None
           }
         }
-      case None => throw new Exception ("The access token could not be retrieved")
+      case None => throw new Exception (Constants.accessTokenRetrievalError)
     }
 
   }

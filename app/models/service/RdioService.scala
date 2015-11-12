@@ -41,11 +41,7 @@ object RdioService extends StreamingServiceAbstract {
     val clientIdAndSecret = clientId + ":" + clientSecret
     val encodedAuthorization = MessageDigest.encodeBase64(clientIdAndSecret)
     val futureResponse: Future[WSResponse] = WS.url(apiEndpoints.token)
-      .withHeaders(
-        "Authorization" -> s"Basic $encodedAuthorization",
-        "Content-Type" -> "application/x-www-form-urlencoded",
-        "Host" -> "services.rdio.com"
-      ).post(data)
+      .withHeaders("Authorization" -> s"Basic $encodedAuthorization").post(data)
     for {
       token <- getAccessToken(futureResponse)
       response <- requestUsersTracks(token)
@@ -65,11 +61,11 @@ object RdioService extends StreamingServiceAbstract {
                   val json = Json.parse(response.body)
                   Some(json)
                 case http_code =>
-                  Logging.error(ich, "Error getting tokens: " + http_code + "\n" + response.body)
+                  Logging.error(ich, Constants.userTracksRetrievalError + ": " +  http_code + "\n" + response.body)
                   None
               }
         }
-      case None => throw new Exception("The access token could not be retrieved")
+      case None => throw new Exception(Constants.accessTokenRetrievalError)
     }
   }
 }
