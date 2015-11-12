@@ -9,4 +9,8 @@ object MessageDigest {
   def md5(s:String): String = {
     digest(s, "MD5")
   }
+
+  def encodeBase64(s:String): String = {
+    new sun.misc.BASE64Encoder().encode(s.getBytes)
+  }
 }

@@ -23,6 +23,10 @@ POST        /itunes                     controllers.ItunesController.fileUpload
 GET         /deezer/login               controllers.DeezerController.login
 GET         /deezer/callback            controllers.DeezerController.callback
 
+### Rdio
+GET         /rdio/login               controllers.RdioController.login
+GET         /rdio/callback            controllers.RdioController.callback
+
 ### User management
 GET         /users                      controllers.UserController.list
 
