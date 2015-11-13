@@ -31,7 +31,7 @@ class RdioController extends Controller {
         if(s == storedState) {
           val futureJson = RdioService(userId).requestUserData(code)
           futureJson map { json =>
-            Ok(json)
+            Redirect(routes.ItunesController.index)
           }
         }
         else Future.successful(Ok(Constants.stateMismatchError))

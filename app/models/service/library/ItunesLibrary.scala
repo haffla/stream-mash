@@ -28,8 +28,6 @@ class ItunesLibrary(user_id:Int, xmlPath:String = "") extends Library(user_id) {
 
   def getCollection: Map[String, Set[String]] = {
     val lib:Seq[Map[String,String]] = parseXml
-    val library = convertSeqToMap(lib, informationToExtract.head, informationToExtract(1))
-    persist(library)
-    library
+    convertSeqToMap(lib, informationToExtract.head, informationToExtract(1))
   }
 }

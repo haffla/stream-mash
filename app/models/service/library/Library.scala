@@ -22,7 +22,7 @@ class Library(user_id:Int) extends HasDatabaseConfig[JdbcProfile]
    * to a Map[String, Set[String]]
    */
   def convertSeqToMap(data: Seq[Map[String,String]], keyArtist:String = "artist", keyAlbum:String = "album"):Map[String, Set[String]] = {
-    data.foldLeft(Map[String, Set[String]]()) { (prev, curr) =>
+    val result = data.foldLeft(Map[String, Set[String]]()) { (prev, curr) =>
       val artist:String = curr(keyArtist)
       val album:Option[String] = curr.get(keyAlbum)
       val artistAlbums:Set[String] = prev get artist match {
@@ -35,6 +35,8 @@ class Library(user_id:Int) extends HasDatabaseConfig[JdbcProfile]
       }
       prev + (artist -> added)
     }
+    persist(result)
+    result
   }
 
   /**

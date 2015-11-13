@@ -22,9 +22,10 @@ class RdioService(userId:Int) {
       .withHeaders("Authorization" -> s"Basic $encodedAuthorization").post(data)
     for {
       token <- getAccessToken(futureResponse)
-      response <- requestUsersTracks(token)
-      result <- convertJsonToSeq(response)
-    } yield library.prepareCollectionForFrontend(library.convertSeqToMap(result))
+      jsonResponse <- requestUsersTracks(token)
+      seq = convertJsonToSeq(jsonResponse)
+      result = library.convertSeqToMap(seq)
+    } yield library.prepareCollectionForFrontend(result)
   }
 }
 
@@ -66,30 +67,28 @@ object RdioService extends StreamingServiceAbstract {
     )
   }
 
-  def convertJsonToSeq(json: Option[JsValue]):Future[Seq[Map[String,String]]] = {
+  def convertJsonToSeq(json: Option[JsValue]):Seq[Map[String,String]] = {
     json match {
       case Some(x) =>
-        Future {
-          val res = (x \ "result").as[Seq[JsValue]]
-          res map { entity =>
-            val typ = (entity \ "type").as[String]
-            typ match {
-              case jsonKeys.typeAlbum =>
-                val artist = (entity \ jsonKeys.artist).as[String]
-                val album = (entity \ jsonKeys.name).as[String]
-                Map(Constants.mapKeyArtist -> artist, Constants.mapKeyAlbum -> album)
-              case jsonKeys.typeTrack =>
-                val artist = (entity \ jsonKeys.artist).as[String]
-                val album = (entity \ jsonKeys.album).as[String]
-                Map(Constants.mapKeyArtist -> artist, Constants.mapKeyAlbum -> album)
-              case jsonKeys.typeArtist =>
-                val artist = (entity \ jsonKeys.name).as[String]
-                Map(Constants.mapKeyArtist -> artist)
-            }
+        val res = (x \ "result").as[Seq[JsValue]]
+        res map { entity =>
+          val typ = (entity \ "type").as[String]
+          typ match {
+            case jsonKeys.typeAlbum =>
+              val artist = (entity \ jsonKeys.artist).as[String]
+              val album = (entity \ jsonKeys.name).as[String]
+              Map(Constants.mapKeyArtist -> artist, Constants.mapKeyAlbum -> album)
+            case jsonKeys.typeTrack =>
+              val artist = (entity \ jsonKeys.artist).as[String]
+              val album = (entity \ jsonKeys.album).as[String]
+              Map(Constants.mapKeyArtist -> artist, Constants.mapKeyAlbum -> album)
+            case jsonKeys.typeArtist =>
+              val artist = (entity \ jsonKeys.name).as[String]
+              Map(Constants.mapKeyArtist -> artist)
           }
         }
       case None =>
-        Future.failed(new Exception(Constants.userTracksRetrievalError))
+        throw new Exception(Constants.userTracksRetrievalError)
      }
   }
 
