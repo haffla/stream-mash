@@ -1,7 +1,6 @@
 package database
 
 import database.alias
-import database.alias.{Account, Artist, Album}
 import slick.driver.JdbcProfile
 import slick.lifted.Index
 
@@ -27,7 +26,7 @@ trait MainDatabaseAccess {
     def id_user = column[Int]("fk_user")
     def fk_user = foreignKey("id_user", id_user, accountQuery)(_.id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
     def index:Index = index("name_interpret", (name,interpret,id_user), unique=true)
-    def * = (id.?, name, interpret, id_user) <> ((Album.apply _).tupled, alias.Album.unapply _)
+    def * = (id.?, name, interpret, id_user) <> ((alias.Album.apply _).tupled, alias.Album.unapply _)
   }
 
   val albumQuery = TableQuery[Album]
@@ -37,7 +36,7 @@ trait MainDatabaseAccess {
     def name = column[String]("name")
     def spotifyId = column[String]("spotify_id")
     def index:Index = index("name_spotifyId", (name, spotifyId), unique=true)
-    def * = (id.?, name, spotifyId.?) <> ((Artist.apply _).tupled, alias.Artist.unapply _)
+    def * = (id.?, name, spotifyId.?) <> ((alias.Artist.apply _).tupled, alias.Artist.unapply _)
   }
 
   val artistQuery = TableQuery[Artist]
