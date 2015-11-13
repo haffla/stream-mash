@@ -14,7 +14,7 @@ MainComponent = React.createClass
 
   componentDidMount: () ->
     $('#artistBox').removeClass('hidden')
-    @setState({data: []})
+    @loadFromDb()
 
   preventDef: (event) ->
     event.stopPropagation()
@@ -47,8 +47,8 @@ MainComponent = React.createClass
         if _.size(data) > 0
           $('#artistBox').removeClass('hidden')
         @setTheState(data, true)
-      else
-        window.alert(data.error)
+      #else
+        #window.alert(data.error)
     $.get '/collection/fromdb', callback, 'json'
 
   drop: (event) ->
@@ -146,12 +146,6 @@ MainComponent = React.createClass
                   else
                     <h4>You don&apos;t seem to be neither a Mac nor a Windows user.<br/>Drop your iTunes Music Library.xml above!</h4>
                 }
-              </div>
-              <hr/>
-              <div className="centered">
-                <form className="form-prevent-default" onSubmit={@loadFromDb}>
-                  <button className="btn btn-danger" type="submit">Or Load from DB</button>
-                </form>
               </div>
             </div>
 
