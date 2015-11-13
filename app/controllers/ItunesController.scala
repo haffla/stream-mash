@@ -2,7 +2,6 @@ package controllers
 
 import java.io.File
 import java.nio.file.Files
-import database.facade.artistFacade
 import models.User
 import models.auth.{Authenticated, MessageDigest}
 import models.service.library.ItunesLibrary
@@ -16,11 +15,6 @@ class ItunesController extends Controller {
 
   def index = Authenticated { implicit request =>
     Ok(views.html.itunes.index())
-  }
-
-  def artistAlbumCollectionFromDb = Authenticated.async { implicit request =>
-    val userId =request.session.get("user_id").get.toInt
-    collectionFromDb(userId)
   }
 
   def fileUpload = Authenticated.async(parse.multipartFormData) { implicit request =>
@@ -38,7 +32,7 @@ class ItunesController extends Controller {
        bool => if(bool) {
          //user has submitted the exact same file. load from db.
          cleanUp(f)
-         collectionFromDb(userId)
+         Future.successful(Redirect(routes.UserController.artistAlbumCollectionFromDb))
        } else {
          User.saveItunesFileHash(userId, fileHash)
          val json = collectionFromXml(userId, xmlPath)
@@ -55,30 +49,9 @@ class ItunesController extends Controller {
     Files.delete(f.toPath)
   }
 
-  def collectionFromDb(userId:Int) = {
-    val library = new ItunesLibrary(userId)
-    library.getCollectionFromDbByUser(userId) map {
-      case Some(collection) => Ok(library.prepareCollectionForFrontend(collection))
-      case None => Ok(Json.toJson(Map("error" -> "You have no records stored in our database.")))
-    }
-  }
-
   def collectionFromXml(userId:Int,xmlPath:String) = {
     val library = new ItunesLibrary(userId, xmlPath)
     val collection = library.getCollection
     library.prepareCollectionForFrontend(collection)
-  }
-
-  def getSpotifyArtistId = Authenticated.async { implicit request =>
-    val artist = request.getQueryString("artist").get
-    artistFacade.getSpotifyIdForArtistFromDb(artist) flatMap {
-        case Some(spotifyId) => Future.successful(Ok(Json.toJson(Map("spotify_id" -> spotifyId))))
-        case None =>
-          val id:Future[Option[String]] = artistFacade.getSpotifyIdForArtistFromSpotify(artist)
-          id map {
-            case Some(sp) => Ok(Json.toJson(Map("spotify_id" -> sp)))
-            case None => Ok(Json.toJson(Map("error" -> "Did not find a Spotify ID")))
-          }
-    }
   }
 }

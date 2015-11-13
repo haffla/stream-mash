@@ -30,9 +30,8 @@ class RdioController extends Controller {
       case Some(s) =>
         if(s == storedState) {
           val futureJson = RdioService.requestUserData(code)
-          futureJson map {
-            case Some(json) => Ok(json)
-            case None => Ok("An error has occurred.")
+          futureJson map { json =>
+            Ok(json)
           }
         }
         else Future.successful(Ok(stateMismatchMessage))

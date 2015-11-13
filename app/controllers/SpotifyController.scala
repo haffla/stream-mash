@@ -1,7 +1,10 @@
 package controllers
 
+import database.facade.artistFacade
+import models.auth.Authenticated
 import models.service.SpotifyService
 import models.util.TextWrangler
+import play.api.libs.json.Json
 import play.api.mvc._
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -37,6 +40,19 @@ class SpotifyController extends Controller {
         }
         else Future.successful(Ok(stateMismatchMessage))
       case None => Future.successful(Ok(stateMismatchMessage))
+    }
+  }
+
+  def getSpotifyArtistId = Authenticated.async { implicit request =>
+    val artist = request.getQueryString("artist").get
+    artistFacade.getSpotifyIdForArtistFromDb(artist) flatMap {
+      case Some(spotifyId) => Future.successful(Ok(Json.toJson(Map("spotify_id" -> spotifyId))))
+      case None =>
+        val id:Future[Option[String]] = artistFacade.getSpotifyIdForArtistFromSpotify(artist)
+        id map {
+          case Some(sp) => Ok(Json.toJson(Map("spotify_id" -> sp)))
+          case None => Ok(Json.toJson(Map("error" -> "Did not find a Spotify ID")))
+        }
     }
   }
 }

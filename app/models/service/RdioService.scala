@@ -1,6 +1,7 @@
 package models.service
 
 import models.auth.MessageDigest
+import models.service.library.RdioLibrary
 import models.util.Logging
 import play.api.Play.current
 import play.api.libs.json.{JsValue, Json}
@@ -13,6 +14,8 @@ object RdioService extends StreamingServiceAbstract {
 
   val clientIdKey = "rdio.client.id"
   val clientSecretKey = "rdio.client.secret"
+
+  val library = new RdioLibrary(1)
 
   val redirectUriPath = "/rdio/callback"
   override lazy val redirectUri = "http://localhost:9000/rdio/callback"
@@ -72,7 +75,7 @@ object RdioService extends StreamingServiceAbstract {
      }
   }
 
-  def requestUserData(code:String):Future[Option[JsValue]] = {
+  def requestUserData(code:String):Future[JsValue] = {
     val data = apiEndpoints.data + ("code" -> Seq(code))
     val clientIdAndSecret = clientId + ":" + clientSecret
     val encodedAuthorization = MessageDigest.encodeBase64(clientIdAndSecret)
@@ -82,7 +85,7 @@ object RdioService extends StreamingServiceAbstract {
       token <- getAccessToken(futureResponse)
       response <- requestUsersTracks(token)
       result <- convertJsonToSeq(response)
-    } yield response
+    } yield library.prepareCollectionForFrontend(library.convertSeqToMap(result))
   }
 
   private def requestUsersTracks(token:Option[String]):Future[Option[JsValue]] = {

@@ -49,7 +49,7 @@ MainComponent = React.createClass
         @setTheState(data, true)
       else
         window.alert(data.error)
-    $.get '/itunes/fromdb', callback, 'json'
+    $.get '/collection/fromdb', callback, 'json'
 
   drop: (event) ->
     @preventDef(event)
@@ -122,7 +122,7 @@ MainComponent = React.createClass
           $.get "https://api.spotify.com/v1/artists/#{data.spotify_id}/albums?album_type=album", spotifyApiCallback, 'json'
       else
         # Artist does not exist on Spotify
-    $.get '/itunes/spotifyid', {artist: artist}, apiCallback, 'json'
+    $.get '/spotify/spotifyid', {artist: artist}, apiCallback, 'json'
     $(event.target).parents('.panel-heading').siblings('.panel-body').slideToggle()
 
 

@@ -11,13 +11,11 @@ import scala.concurrent.Future
 import scala.util.{Failure, Success}
 import scala.concurrent.ExecutionContext.Implicits.global
 
-abstract class LibraryAbstract(user_id:Int) extends HasDatabaseConfig[JdbcProfile]
+class Library(user_id:Int) extends HasDatabaseConfig[JdbcProfile]
                                             with MainDatabaseAccess {
 
   import driver.api._
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
-
-  def getCollection: Map[String, Set[String]]
 
   /**
    * Cleans the data by transforming the Seq[Map[String,String]]
@@ -26,12 +24,15 @@ abstract class LibraryAbstract(user_id:Int) extends HasDatabaseConfig[JdbcProfil
   def convertSeqToMap(data: Seq[Map[String,String]], keyArtist:String = "artist", keyAlbum:String = "album"):Map[String, Set[String]] = {
     data.foldLeft(Map[String, Set[String]]()) { (prev, curr) =>
       val artist:String = curr(keyArtist)
-      val album:String = curr(keyAlbum)
+      val album:Option[String] = curr.get(keyAlbum)
       val artistAlbums:Set[String] = prev get artist match {
         case None => Set.empty
         case Some(albums) => albums
       }
-      val added:Set[String] = artistAlbums + album
+      val added:Set[String] = album match {
+        case Some(alb) => artistAlbums + alb
+        case None => artistAlbums
+      }
       prev + (artist -> added)
     }
   }
