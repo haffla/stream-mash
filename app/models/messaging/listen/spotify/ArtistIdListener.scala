@@ -3,7 +3,7 @@ package models.messaging.listen.spotify
 import com.rabbitmq.client._
 import models.Config
 import models.messaging.RabbitMQConnection
-import models.util.SpotifyLibrary
+import models.service.library.SpotifyLibrary
 import play.api.libs.json.Json
 
 class ArtistIdListener {

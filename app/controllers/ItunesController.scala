@@ -4,10 +4,9 @@ import java.io.File
 import java.nio.file.Files
 import models.User
 import models.auth.{Authenticated, MessageDigest}
+import models.service.library.{ArtistLibrary, ItunesLibrary}
 
 import scala.concurrent.Future
-
-import models.util.{ArtistLibrary, ItunesLibrary}
 import play.api.mvc.Controller
 import play.api.libs.json._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext

@@ -3,7 +3,8 @@ package models.service
 import com.rabbitmq.client.MessageProperties
 import models.Config
 import models.messaging.RabbitMQConnection
-import models.util.{SpotifyLibrary, Logging}
+import models.service.library.SpotifyLibrary
+import models.util.Logging
 import play.api.libs.json.{JsValue, JsObject, Json}
 import play.api.libs.ws.{WS, WSResponse}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext

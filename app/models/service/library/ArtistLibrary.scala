@@ -1,11 +1,10 @@
-package models.util
+package models.service.library
 
 import database.MainDatabaseAccess
 import models.service.SpotifyService
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import slick.driver.JdbcProfile
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import scala.concurrent.Future
 

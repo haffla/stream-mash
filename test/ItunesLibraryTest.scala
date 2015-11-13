@@ -1,4 +1,4 @@
-import models.util.ItunesLibrary
+import models.service.library.ItunesLibrary
 import org.specs2.mutable._
 import org.specs2.runner._
 import org.junit.runner._

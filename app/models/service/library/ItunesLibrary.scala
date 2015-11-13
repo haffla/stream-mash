@@ -1,14 +1,14 @@
-package models.util
+package models.service.library
 
+import database.MainDatabaseAccess
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
 import slick.driver.JdbcProfile
-import database.MainDatabaseAccess
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import scala.concurrent.Future
-import scala.util.{Success, Failure}
+import scala.util.{Failure, Success}
 import scala.xml.Node
 
 class ItunesLibrary(user_id:Int, xmlPath:String = "") extends HasDatabaseConfig[JdbcProfile]

@@ -1,10 +1,10 @@
-package models.util
+package models.service.library
 
 import database.MainDatabaseAccess
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
-import slick.driver.JdbcProfile
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import slick.driver.JdbcProfile
 
 object SpotifyLibrary extends MainDatabaseAccess
                       with HasDatabaseConfig[JdbcProfile] {
