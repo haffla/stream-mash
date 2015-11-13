@@ -17,6 +17,7 @@ class RdioController extends Controller {
   }
 
   def callback = Action.async { implicit request =>
+    val userId:Int = request.session.get("user_id").get.toInt
     val state = request.getQueryString("state")
     val code = request.getQueryString("code").orNull
     val storedState = request.cookies.get(RdioService.cookieKey) match {
@@ -28,7 +29,7 @@ class RdioController extends Controller {
     state match {
       case Some(s) =>
         if(s == storedState) {
-          val futureJson = RdioService.requestUserData(code)
+          val futureJson = RdioService(userId).requestUserData(code)
           futureJson map { json =>
             Ok(json)
           }

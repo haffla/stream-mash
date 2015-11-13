@@ -1,6 +1,7 @@
 package models.service
 
 import models.auth.MessageDigest
+import models.service.RdioService._
 import models.service.library.RdioLibrary
 import models.util.Logging
 import play.api.Play.current
@@ -10,12 +11,29 @@ import play.api.libs.ws.{WS, WSResponse}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+class RdioService(userId:Int) {
+  val library = new RdioLibrary(userId)
+
+  def requestUserData(code:String):Future[JsValue] = {
+    val data = apiEndpoints.data + ("code" -> Seq(code))
+    val clientIdAndSecret = clientId + ":" + clientSecret
+    val encodedAuthorization = MessageDigest.encodeBase64(clientIdAndSecret)
+    val futureResponse: Future[WSResponse] = WS.url(apiEndpoints.token)
+      .withHeaders("Authorization" -> s"Basic $encodedAuthorization").post(data)
+    for {
+      token <- getAccessToken(futureResponse)
+      response <- requestUsersTracks(token)
+      result <- convertJsonToSeq(response)
+    } yield library.prepareCollectionForFrontend(library.convertSeqToMap(result))
+  }
+}
+
 object RdioService extends StreamingServiceAbstract {
+
+  def apply(userId:Int) = new RdioService(userId)
 
   val clientIdKey = "rdio.client.id"
   val clientSecretKey = "rdio.client.secret"
-
-  val library = new RdioLibrary(1)
 
   val redirectUriPath = "/rdio/callback"
   override lazy val redirectUri = "http://localhost:9000/rdio/callback"
@@ -73,19 +91,6 @@ object RdioService extends StreamingServiceAbstract {
       case None =>
         Future.failed(new Exception(Constants.userTracksRetrievalError))
      }
-  }
-
-  def requestUserData(code:String):Future[JsValue] = {
-    val data = apiEndpoints.data + ("code" -> Seq(code))
-    val clientIdAndSecret = clientId + ":" + clientSecret
-    val encodedAuthorization = MessageDigest.encodeBase64(clientIdAndSecret)
-    val futureResponse: Future[WSResponse] = WS.url(apiEndpoints.token)
-      .withHeaders("Authorization" -> s"Basic $encodedAuthorization").post(data)
-    for {
-      token <- getAccessToken(futureResponse)
-      response <- requestUsersTracks(token)
-      result <- convertJsonToSeq(response)
-    } yield library.prepareCollectionForFrontend(library.convertSeqToMap(result))
   }
 
   private def requestUsersTracks(token:Option[String]):Future[Option[JsValue]] = {
