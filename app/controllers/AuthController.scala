@@ -21,6 +21,12 @@ class AuthController extends Controller
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
 
   def register = Action.async { implicit request =>
+
+    def success(name:String, hash:String, id:Int):play.api.mvc.Result = {
+      Redirect(routes.Application.index()).flashing("message" -> "Welcome")
+        .withSession("username" -> name, "auth-secret" -> hash, "user_id" -> id.toString)
+    }
+
     registerForm.bindFromRequest.fold(
       formWithErrors => {
         val errors = formWithErrors.errors.map(error => error.messages)
@@ -28,20 +34,19 @@ class AuthController extends Controller
         Future.successful(Ok(views.html.auth.register(errors.flatten.toList)))
       },
       user => {
-        for (userExists <- User.exists(user.name)) yield {
-            if(userExists) {
-              Redirect(routes.AuthController.register())
-                .flashing("message" -> "Sorry. This username already exists.")
-            }
-            else {
-              val incrementId =
-                for (incrementId <- User.create(user.name, user.password))
-                yield incrementId
+        User.exists(user.name) flatMap { bool =>
+          if(bool) {
+            Future.successful(Redirect(routes.AuthController.register())
+              .flashing("message" -> "Sorry. This username already exists."))
+          }
+          else {
+            User.create(user.name, user.password) map { incrementId =>
               val hash = authenticateUser(user.name, user.password)
               Redirect(routes.Application.index()).flashing("message" -> "Welcome")
                 .withSession("username" -> user.name, "auth-secret" -> hash, "user_id" -> incrementId.toString)
             }
           }
+        }
       }
     )
   }
