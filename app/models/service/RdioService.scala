@@ -23,7 +23,7 @@ class RdioService(userId:Int) {
     for {
       token <- getAccessToken(futureResponse)
       jsonResponse <- requestUsersTracks(token)
-      seq = convertJsonToSeq(jsonResponse)
+      seq = library.convertJsonToSeq(jsonResponse)
       result = library.convertSeqToMap(seq)
     } yield library.prepareCollectionForFrontend(result)
   }
@@ -46,15 +46,6 @@ object RdioService extends StreamingServiceAbstract {
     "response_type" -> Seq("code")
   )
 
-  object jsonKeys {
-    val artist = "artist"
-    val name = "name"
-    val album = "album"
-    val typeArtist = "r"
-    val typeAlbum = "a"
-    val typeTrack = "t"
-  }
-
   object apiEndpoints {
     val token = "https://services.rdio.com/oauth2/token"
     val authorize = "https://www.rdio.com/oauth2/authorize"
@@ -65,31 +56,6 @@ object RdioService extends StreamingServiceAbstract {
       "redirect_uri" -> Seq(redirectUri),
       "grant_type" -> Seq("authorization_code")
     )
-  }
-
-  def convertJsonToSeq(json: Option[JsValue]):Seq[Map[String,String]] = {
-    json match {
-      case Some(x) =>
-        val res = (x \ "result").as[Seq[JsValue]]
-        res map { entity =>
-          val typ = (entity \ "type").as[String]
-          typ match {
-            case jsonKeys.typeAlbum =>
-              val artist = (entity \ jsonKeys.artist).as[String]
-              val album = (entity \ jsonKeys.name).as[String]
-              Map(Constants.mapKeyArtist -> artist, Constants.mapKeyAlbum -> album)
-            case jsonKeys.typeTrack =>
-              val artist = (entity \ jsonKeys.artist).as[String]
-              val album = (entity \ jsonKeys.album).as[String]
-              Map(Constants.mapKeyArtist -> artist, Constants.mapKeyAlbum -> album)
-            case jsonKeys.typeArtist =>
-              val artist = (entity \ jsonKeys.name).as[String]
-              Map(Constants.mapKeyArtist -> artist)
-          }
-        }
-      case None =>
-        throw new Exception(Constants.userTracksRetrievalError)
-     }
   }
 
   private def requestUsersTracks(token:Option[String]):Future[Option[JsValue]] = {

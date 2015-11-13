@@ -1,9 +1,8 @@
 package models.service
 
-import com.rabbitmq.client.MessageProperties
 import database.facade.SpotifyFacade
-import models.Config
-import models.messaging.RabbitMQConnection
+import models.service.SpotifyService._
+import models.service.library.SpotifyLibrary
 import models.util.Logging
 import play.api.libs.json.{JsValue, JsObject, Json}
 import play.api.libs.ws.{WS, WSResponse}
@@ -12,12 +11,29 @@ import play.api.Play.current
 
 import scala.concurrent.Future
 
+class SpotifyService(userId:Int) {
+  val library = new SpotifyLibrary(userId)
+
+  def requestUserData(code:String): Future[Option[JsValue]] = {
+    val data = apiEndpoints.data + ("code" -> Seq(code))
+    val futureResponse: Future[WSResponse] = WS.url(apiEndpoints.token).post(data)
+    for {
+      token <- getAccessToken(futureResponse)
+      response <- requestUsersTracks(token)
+      seq = library.convertJsonToSeq(response)
+      result = library.convertSeqToMap(seq)
+    } yield response
+  }
+}
+
 object SpotifyService extends StreamingServiceAbstract{
 
+  def apply(userId:Int) = new SpotifyService(userId)
   val clientIdKey = "spotify.client.id"
   val clientSecretKey = "spotify.client.secret"
 
   val redirectUriPath = "/spotify/callback"
+  override lazy val redirectUri = "http://localhost:9000/spotify/callback"
   val scope:Seq[String] = Seq(
     "user-read-private",
     "playlist-read-private",
@@ -47,25 +63,6 @@ object SpotifyService extends StreamingServiceAbstract{
     )
   }
 
-  def requestUserData(code:String): Future[Option[JsValue]] = {
-    val data = apiEndpoints.data + ("code" -> Seq(code))
-    val futureResponse: Future[WSResponse] = WS.url(apiEndpoints.token).post(data)
-    for {
-      token <- getAccessToken(futureResponse)
-      response <- requestUsersTracks(token)
-    } yield response
-  }
-
-  def pushToArtistIdQueue(name: String, id: String) = {
-    val connection = RabbitMQConnection.getConnection()
-    val channel = connection.createChannel()
-    channel.queueDeclare(Config.rabbitMqQueue, true, false, false, null)
-    val message = Json.toJson(Map("name" -> name, "id" -> id)).toString()
-    channel.basicPublish("", Config.rabbitMqQueue, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes)
-    channel.close()
-    connection.close()
-  }
-
   private def requestUsersTracks(token:Option[String]):Future[Option[JsValue]] = {
     token match {
       case Some(accessToken) =>
@@ -73,18 +70,6 @@ object SpotifyService extends StreamingServiceAbstract{
           response.status match {
             case 200 =>
               val json = Json.parse(response.body)
-              val items = (json \ "items").asOpt[List[JsObject]]
-              items.get.foreach { item =>
-                val artists = (item \ "track" \ "artists").asOpt[List[JsObject]]
-                artists.get.foreach { artist =>
-                  val name = (artist \ "name").as[String]
-                  val id = (artist \ "id").as[String]
-                  val artistType = (artist \ "type").as[String]
-                  if (artistType == "artist") {
-                    pushToArtistIdQueue(name, id)
-                  }
-                }
-              }
               Some(json)
             case http_code =>
               Logging.error(ich, Constants.userTracksRetrievalError + ": " +  http_code + "\n" + response.body)

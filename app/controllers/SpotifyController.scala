@@ -19,6 +19,7 @@ class SpotifyController extends Controller {
   }
 
   def callback = Action.async { implicit request =>
+    val userId:Int = request.session.get("user_id").get.toInt
     val state = request.getQueryString("state")
     val code = request.getQueryString("code").orNull
     val storedState = request.cookies.get(SpotifyService.cookieKey) match {
@@ -30,9 +31,8 @@ class SpotifyController extends Controller {
     state match {
       case Some(s) =>
         if(s == storedState) {
-          val json = SpotifyService.requestUserData(code)
-          json map {
-            case Some(js) => Ok(js)
+          SpotifyService(userId).requestUserData(code) map {
+            case Some(js) => Redirect(routes.ItunesController.index())
             case None => Ok("An error has occurred.")
           }
         }

@@ -68,7 +68,7 @@ class Library(user_id:Int) extends HasDatabaseConfig[JdbcProfile]
     }
   }
 
-  def getOrSaveCollectionItem(name: String, interpret:String):Future[Int] = {
+  private def getOrSaveCollectionItem(name: String, interpret:String):Future[Int] = {
     db.run(albumQuery.filter { albums =>
       albums.name === name && albums.interpret === interpret && albums.id_user === user_id
     }.result).flatMap { albumList =>

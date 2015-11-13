@@ -5,7 +5,7 @@ import models.util.TextWrangler
 import play.api.mvc._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{Await, Future}
 
 class RdioController extends Controller {
 
@@ -29,8 +29,7 @@ class RdioController extends Controller {
     state match {
       case Some(s) =>
         if(s == storedState) {
-          val futureJson = RdioService(userId).requestUserData(code)
-          futureJson map { json =>
+          RdioService(userId).requestUserData(code) map { json =>
             Redirect(routes.ItunesController.index)
           }
         }
