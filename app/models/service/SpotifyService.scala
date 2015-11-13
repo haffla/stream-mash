@@ -1,9 +1,9 @@
 package models.service
 
 import com.rabbitmq.client.MessageProperties
+import database.facade.SpotifyFacade
 import models.Config
 import models.messaging.RabbitMQConnection
-import models.service.library.SpotifyLibrary
 import models.util.Logging
 import play.api.libs.json.{JsValue, JsObject, Json}
 import play.api.libs.ws.{WS, WSResponse}
@@ -105,7 +105,7 @@ object SpotifyService extends StreamingServiceAbstract{
             val artists = (json \ "artists" \ "items").as[List[JsObject]]
             if(artists.nonEmpty) {
               val id = (artists.head \ "id").asOpt[String]
-              SpotifyLibrary.saveArtistId(artist, id.get)
+              SpotifyFacade.saveArtistId(artist, id.get)
               id
             }
             else None

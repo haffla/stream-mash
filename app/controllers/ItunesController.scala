@@ -2,9 +2,10 @@ package controllers
 
 import java.io.File
 import java.nio.file.Files
+import database.facade.artistFacade
 import models.User
 import models.auth.{Authenticated, MessageDigest}
-import models.service.library.{ArtistLibrary, ItunesLibrary}
+import models.service.library.ItunesLibrary
 
 import scala.concurrent.Future
 import play.api.mvc.Controller
@@ -70,10 +71,10 @@ class ItunesController extends Controller {
 
   def getSpotifyArtistId = Authenticated.async { implicit request =>
     val artist = request.getQueryString("artist").get
-    ArtistLibrary.getSpotifyIdForArtistFromDb(artist) flatMap {
+    artistFacade.getSpotifyIdForArtistFromDb(artist) flatMap {
         case Some(spotifyId) => Future.successful(Ok(Json.toJson(Map("spotify_id" -> spotifyId))))
         case None =>
-          val id:Future[Option[String]] = ArtistLibrary.getSpotifyIdForArtistFromSpotify(artist)
+          val id:Future[Option[String]] = artistFacade.getSpotifyIdForArtistFromSpotify(artist)
           id map {
             case Some(sp) => Ok(Json.toJson(Map("spotify_id" -> sp)))
             case None => Ok(Json.toJson(Map("error" -> "Did not find a Spotify ID")))

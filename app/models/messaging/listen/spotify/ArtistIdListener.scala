@@ -1,9 +1,9 @@
 package models.messaging.listen.spotify
 
 import com.rabbitmq.client._
+import database.facade.SpotifyFacade
 import models.Config
 import models.messaging.RabbitMQConnection
-import models.service.library.SpotifyLibrary
 import play.api.libs.json.Json
 
 class ArtistIdListener {
@@ -18,7 +18,7 @@ class ArtistIdListener {
         val js = Json.parse(message)
         val artist:String = (js \ "name").as[String]
         val id:String = (js \ "id").as[String]
-        SpotifyLibrary.saveArtistId(artist,id)
+        SpotifyFacade.saveArtistId(artist,id)
       }
     }
     channel.basicConsume(Config.rabbitMqQueue, true, consumer)

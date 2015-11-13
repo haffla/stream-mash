@@ -24,6 +24,15 @@ object RdioService extends StreamingServiceAbstract {
     "response_type" -> Seq("code")
   )
 
+  object jsonKeys {
+    val artist = "artist"
+    val name = "name"
+    val album = "album"
+    val typeArtist = "r"
+    val typeAlbum = "a"
+    val typeTrack = "t"
+  }
+
   object apiEndpoints {
     val token = "https://services.rdio.com/oauth2/token"
     val authorize = "https://www.rdio.com/oauth2/authorize"
@@ -36,7 +45,7 @@ object RdioService extends StreamingServiceAbstract {
     )
   }
 
-  def convertJson(json: Option[JsValue]):Future[Seq[Map[String,String]]] = {
+  def convertJsonToSeq(json: Option[JsValue]):Future[Seq[Map[String,String]]] = {
     json match {
       case Some(x) =>
         Future {
@@ -44,19 +53,17 @@ object RdioService extends StreamingServiceAbstract {
           res map { entity =>
             val typ = (entity \ "type").as[String]
             typ match {
-              case "a" =>
-                //It's an album
-                val artist = (entity \ "artist").as[String]
-                val album = (entity \ "name").as[String]
-                Map("artist" -> artist, "album" -> album)
-              case "t" =>
-                //It's a track
-                val artist = (entity \ "artist").as[String]
-                val album = (entity \ "album").as[String]
-                Map("artist" -> artist, "album" -> album)
-              case "r" =>
-                val artist = (entity \ "name").as[String]
-                Map("artist" -> artist)
+              case jsonKeys.typeAlbum =>
+                val artist = (entity \ jsonKeys.artist).as[String]
+                val album = (entity \ jsonKeys.name).as[String]
+                Map(Constants.mapKeyArtist -> artist, Constants.mapKeyAlbum -> album)
+              case jsonKeys.typeTrack =>
+                val artist = (entity \ jsonKeys.artist).as[String]
+                val album = (entity \ jsonKeys.album).as[String]
+                Map(Constants.mapKeyArtist -> artist, Constants.mapKeyAlbum -> album)
+              case jsonKeys.typeArtist =>
+                val artist = (entity \ jsonKeys.name).as[String]
+                Map(Constants.mapKeyArtist -> artist)
             }
           }
         }
@@ -74,14 +81,14 @@ object RdioService extends StreamingServiceAbstract {
     for {
       token <- getAccessToken(futureResponse)
       response <- requestUsersTracks(token)
-      result <- convertJson(response)
+      result <- convertJsonToSeq(response)
     } yield response
   }
 
   private def requestUsersTracks(token:Option[String]):Future[Option[JsValue]] = {
     token match {
       case Some(access_token) =>
-        val data = Map("access_token" -> Seq(access_token), "method" -> Seq(apiEndpoints.getFavourites))
+        val data = Map(Constants.jsonKeyAccessToken -> Seq(access_token), "method" -> Seq(apiEndpoints.getFavourites))
         WS.url(apiEndpoints.mainApi)
           .withHeaders("Authorization" -> s"Bearer $access_token")
           .post(data) map {

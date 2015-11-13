@@ -1,4 +1,4 @@
-package models.service.library
+package database.facade
 
 import database.MainDatabaseAccess
 import play.api.Play
@@ -6,7 +6,7 @@ import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import slick.driver.JdbcProfile
 
-object SpotifyLibrary extends MainDatabaseAccess
+object SpotifyFacade extends MainDatabaseAccess
                       with HasDatabaseConfig[JdbcProfile] {
 
   import driver.api._
@@ -28,7 +28,7 @@ object SpotifyLibrary extends MainDatabaseAccess
         }
       }
       else {
-        ArtistLibrary.createNewArtistWithSpotifyId(artist, spotifyId)
+        artistFacade.createNewArtistWithSpotifyId(artist, spotifyId)
       }
     }
   }

@@ -44,7 +44,7 @@ abstract class StreamingServiceAbstract {
       response.status match {
         case 200 =>
           val json = Json.parse(response.body)
-          (json \ "access_token").asOpt[String]
+          (json \ Constants.jsonKeyAccessToken).asOpt[String]
         case http_code =>
           Logging.error(ich, Constants.accessTokenRetrievalError + ": " + http_code + "\n" + response.body)
           None

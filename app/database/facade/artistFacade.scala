@@ -1,4 +1,4 @@
-package models.service.library
+package database.facade
 
 import database.MainDatabaseAccess
 import database.alias.Artist
@@ -9,7 +9,7 @@ import slick.driver.JdbcProfile
 
 import scala.concurrent.Future
 
-object ArtistLibrary extends MainDatabaseAccess
+object artistFacade extends MainDatabaseAccess
                      with HasDatabaseConfig[JdbcProfile] {
 
   import driver.api._
