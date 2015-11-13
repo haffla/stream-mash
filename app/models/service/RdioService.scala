@@ -36,6 +36,35 @@ object RdioService extends StreamingServiceAbstract {
     )
   }
 
+  def convertJson(json: Option[JsValue]):Future[Seq[Map[String,String]]] = {
+    json match {
+      case Some(x) =>
+        Future {
+          val res = (x \ "result").as[Seq[JsValue]]
+          res map { entity =>
+            val typ = (entity \ "type").as[String]
+            typ match {
+              case "a" =>
+                //It's an album
+                val artist = (entity \ "artist").as[String]
+                val album = (entity \ "name").as[String]
+                Map("artist" -> artist, "album" -> album)
+              case "t" =>
+                //It's a track
+                val artist = (entity \ "artist").as[String]
+                val album = (entity \ "album").as[String]
+                Map("artist" -> artist, "album" -> album)
+              case "r" =>
+                val artist = (entity \ "name").as[String]
+                Map("artist" -> artist)
+            }
+          }
+        }
+      case None =>
+        Future.failed(new Exception(Constants.userTracksRetrievalError))
+     }
+  }
+
   def requestUserData(code:String):Future[Option[JsValue]] = {
     val data = apiEndpoints.data + ("code" -> Seq(code))
     val clientIdAndSecret = clientId + ":" + clientSecret
@@ -45,6 +74,7 @@ object RdioService extends StreamingServiceAbstract {
     for {
       token <- getAccessToken(futureResponse)
       response <- requestUsersTracks(token)
+      result <- convertJson(response)
     } yield response
   }
 
