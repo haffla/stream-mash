@@ -1,6 +1,7 @@
 package models.service.library
 
 import database.MainDatabaseAccess
+import database.alias.Artist
 import models.service.SpotifyService
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
@@ -15,7 +16,7 @@ object ArtistLibrary extends MainDatabaseAccess
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
 
   def createNewArtistWithSpotifyId(artist: String, id: String) = {
-    val newArtist = models.music.Artist(name = artist, spotifyId = Some(id))
+    val newArtist = Artist(name = artist, spotifyId = Some(id))
     db.run(artistQuery += newArtist)
   }
 

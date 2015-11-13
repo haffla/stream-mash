@@ -1,6 +1,7 @@
 package models.service.library
 
 import database.MainDatabaseAccess
+import database.alias.Album
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -58,7 +59,7 @@ class ItunesLibrary(user_id:Int, xmlPath:String = "") extends HasDatabaseConfig[
     }.result).flatMap { albumList =>
       if (albumList.nonEmpty) Future.successful(albumList.head.id.get)
       else {
-        db.run(albumQuery returning albumQuery.map(_.id) += models.music.Album(name = name, interpret = interpret, fk_user = user_id))
+        db.run(albumQuery returning albumQuery.map(_.id) += Album(name = name, interpret = interpret, fk_user = user_id))
       }
     }
   }

@@ -1,5 +1,6 @@
 package models
 
+import database.alias.Account
 import models.auth.MessageDigest
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
@@ -16,7 +17,7 @@ object User extends MainDatabaseAccess with HasDatabaseConfig[JdbcProfile] {
 
   def create(name:String, password:String):Future[Int] = {
     val hashedPassword = MessageDigest.digest(password)
-    db.run(accountQuery returning accountQuery.map(_.id) += models.Account(name = name, password = hashedPassword))
+    db.run(accountQuery returning accountQuery.map(_.id) += Account(name = name, password = hashedPassword))
   }
 
   def list:Future[Seq[User.Account#TableElementType]] = {
