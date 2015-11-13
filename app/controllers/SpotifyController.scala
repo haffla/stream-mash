@@ -2,7 +2,7 @@ package controllers
 
 import database.facade.artistFacade
 import models.auth.Authenticated
-import models.service.SpotifyService
+import models.service.{Constants, SpotifyService}
 import models.util.TextWrangler
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -27,8 +27,6 @@ class SpotifyController extends Controller {
         Redirect(routes.Application.index).flashing("message" -> "There has been a problem...")
         )
     }
-    //CSRF Protection, see http://tools.ietf.org/html/rfc6749#section-10.12
-    val stateMismatchMessage = "Error: State Mismatch"
     state match {
       case Some(s) =>
         if(s == storedState) {
@@ -38,8 +36,8 @@ class SpotifyController extends Controller {
             case None => Ok("An error has occurred.")
           }
         }
-        else Future.successful(Ok(stateMismatchMessage))
-      case None => Future.successful(Ok(stateMismatchMessage))
+        else Future.successful(Ok(Constants.stateMismatchError))
+      case None => Future.successful(Ok(Constants.stateMismatchError))
     }
   }
 

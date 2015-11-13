@@ -23,7 +23,7 @@ class UserController extends Controller {
     collectionFromDb(userId)
   }
 
-  def collectionFromDb(userId:Int) = {
+  private def collectionFromDb(userId:Int) = {
     val library = new Library(userId)
     library.getCollectionFromDbByUser(userId) map {
       case Some(collection) => Ok(library.prepareCollectionForFrontend(collection))

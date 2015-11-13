@@ -1,6 +1,6 @@
 package controllers
 
-import models.service.DeezerService
+import models.service.{Constants, DeezerService}
 import models.util.TextWrangler
 import play.api.mvc._
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -25,7 +25,6 @@ class DeezerController extends Controller {
         Redirect(routes.Application.index).flashing("message" -> "There has been a problem...")
       )
     }
-    val stateMismatchMessage = "Error: State Mismatch"
     state match {
       case Some(s) =>
         if(s == storedState) {
@@ -35,8 +34,8 @@ class DeezerController extends Controller {
             case None => Ok("An error has occurred.")
           }
         }
-        else Future.successful(Ok(stateMismatchMessage))
-      case None => Future.successful(Ok(stateMismatchMessage))
+        else Future.successful(Ok(Constants.stateMismatchError))
+      case None => Future.successful(Ok(Constants.stateMismatchError))
     }
   }
 }

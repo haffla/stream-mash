@@ -1,6 +1,6 @@
 package controllers
 
-import models.service.RdioService
+import models.service.{Constants, RdioService}
 import models.util.TextWrangler
 import play.api.mvc._
 
@@ -25,7 +25,6 @@ class RdioController extends Controller {
         Redirect(routes.Application.index).flashing("message" -> "There has been a problem...")
       )
     }
-    val stateMismatchMessage = "Error: State Mismatch"
     state match {
       case Some(s) =>
         if(s == storedState) {
@@ -34,8 +33,8 @@ class RdioController extends Controller {
             Ok(json)
           }
         }
-        else Future.successful(Ok(stateMismatchMessage))
-      case None => Future.successful(Ok(stateMismatchMessage))
+        else Future.successful(Ok(Constants.stateMismatchError))
+      case None => Future.successful(Ok(Constants.stateMismatchError))
     }
   }
 }
