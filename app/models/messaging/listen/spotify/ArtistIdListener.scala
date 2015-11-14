@@ -6,7 +6,7 @@ import models.Config
 import models.messaging.RabbitMQConnection
 import play.api.libs.json.Json
 
-class ArtistIdListener {
+object ArtistIdListener {
   def listen() = {
     val connection = RabbitMQConnection.getConnection()
     val channel = connection.createChannel()
