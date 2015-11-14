@@ -30,7 +30,6 @@ class AuthController extends Controller
     registerForm.bindFromRequest.fold(
       formWithErrors => {
         val errors = formWithErrors.errors.map(error => error.messages)
-        println(errors.flatten.toList)
         Future.successful(Ok(views.html.auth.register(errors.flatten.toList)))
       },
       user => {
