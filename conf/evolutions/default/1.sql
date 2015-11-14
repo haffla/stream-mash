@@ -22,7 +22,9 @@ CREATE TABLE IF NOT EXISTS artist(
     id_artist SERIAL,
     name VARCHAR(255) NOT NULL,
     spotify_id VARCHAR(32) DEFAULT NULL,
-    UNIQUE (name,spotify_id)
+    rdio_id VARCHAR(32) DEFAULT NULL,
+    UNIQUE (name,spotify_id),
+    UNIQUE (name,rdio_id)
 )
 
 # --- !Downs

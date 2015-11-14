@@ -3,11 +3,15 @@ package models.service.library
 import models.service.Constants
 import play.api.libs.json.JsValue
 
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 class RdioLibrary(userId:Int) extends Library(userId) {
 
   val keyArtist = "artist"
   val keyName = "name"
   val keyAlbum = "album"
+  val keyArtistKey = "artistKey"
   val typeArtist = "r"
   val typeAlbum = "a"
   val typeTrack = "t"
@@ -18,22 +22,45 @@ class RdioLibrary(userId:Int) extends Library(userId) {
         val res = (js \ "result").as[Seq[JsValue]]
         res map { entity =>
           val typ = (entity \ "type").as[String]
-          typ match {
-            case typeAlbum =>
+          val data:(String,String,String) = typ match {
+            case `typeAlbum` =>
               val artist = (entity \ keyArtist).as[String]
               val album = (entity \ keyName).as[String]
-              Map(Constants.mapKeyArtist -> artist, Constants.mapKeyAlbum -> album)
-            case typeTrack =>
+              val rdioKey = (entity \ keyArtistKey).as[String]
+              (artist,rdioKey,album)
+            case `typeTrack` =>
               val artist = (entity \ keyArtist).as[String]
               val album = (entity \ keyAlbum).as[String]
-              Map(Constants.mapKeyArtist -> artist, Constants.mapKeyAlbum -> album)
-            case typeArtist =>
+              val rdioKey = (entity \ keyArtistKey).as[String]
+              (artist,rdioKey,album)
+            case `typeArtist` =>
               val artist = (entity \ keyName).as[String]
-              Map(Constants.mapKeyArtist -> artist)
+              val rdioKey = (entity \ "key").as[String]
+              (artist,rdioKey,"")
+            case _ =>
+              throw new UnsupportedOperationException("The JSON key for 'type' has not been defined.")
+          }
+          saveArtistsRdioIds(data)
+          data match {
+            case (art,key,alb) =>
+              if(alb.nonEmpty) {
+                Map(Constants.mapKeyArtist -> art, Constants.mapKeyAlbum -> alb, Constants.mapKeyRdioArtistId -> key)
+              }
+              else {
+                Map(Constants.mapKeyArtist -> art, Constants.mapKeyRdioArtistId -> key)
+              }
           }
         }
       case None =>
         throw new Exception(Constants.userTracksRetrievalError)
+    }
+  }
+
+  private def saveArtistsRdioIds(artistTuple:(String,String,String)) = {
+    Future {
+      val artist = artistTuple._1
+      val id = artistTuple._2
+      pushToArtistIdQueue(artist, id, "rdio")
     }
   }
 }

@@ -1,6 +1,5 @@
 package database
 
-import database.alias
 import slick.driver.JdbcProfile
 import slick.lifted.Index
 
@@ -35,8 +34,10 @@ trait MainDatabaseAccess {
     def id = column[Int]("id_artist", O.AutoInc, O.PrimaryKey)
     def name = column[String]("name")
     def spotifyId = column[String]("spotify_id")
-    def index:Index = index("name_spotifyId", (name, spotifyId), unique=true)
-    def * = (id.?, name, spotifyId.?) <> ((alias.Artist.apply _).tupled, alias.Artist.unapply _)
+    def rdioId = column[String]("rdio_id")
+    def indexSpotify:Index = index("name_spotifyId", (name, spotifyId), unique=true)
+    def indexRdio:Index = index("name_rdioId", (name, rdioId), unique=true)
+    def * = (id.?, name, spotifyId.?, rdioId.?) <> ((alias.Artist.apply _).tupled, alias.Artist.unapply _)
   }
 
   val artistQuery = TableQuery[Artist]

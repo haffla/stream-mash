@@ -1,7 +1,7 @@
 package models.messaging.listen.spotify
 
 import com.rabbitmq.client._
-import database.facade.SpotifyFacade
+import database.facade.{RdioFacade, SpotifyFacade}
 import models.Config
 import models.messaging.RabbitMQConnection
 import play.api.libs.json.Json
@@ -10,7 +10,7 @@ class ArtistIdListener {
   def listen() = {
     val connection = RabbitMQConnection.getConnection()
     val channel = connection.createChannel()
-    channel.queueDeclare(Config.rabbitMqQueue, true, false, false, null)
+    channel.queueDeclare(Config.rabbitArtistIdQueue, true, false, false, null)
 
     val consumer = new DefaultConsumer(channel) {
       override def handleDelivery(consumerTag:String, envelope:Envelope, properties:AMQP.BasicProperties, body:Array[Byte]): Unit = {
@@ -18,9 +18,15 @@ class ArtistIdListener {
         val js = Json.parse(message)
         val artist:String = (js \ "name").as[String]
         val id:String = (js \ "id").as[String]
-        SpotifyFacade.saveArtistId(artist,id)
+        val typ:String = (js \ "type").as[String]
+        if(typ == "spotify") {
+          SpotifyFacade.saveArtistId(artist,id)
+        }
+        else {
+          RdioFacade.saveArtistId(artist,id)
+        }
       }
     }
-    channel.basicConsume(Config.rabbitMqQueue, true, consumer)
+    channel.basicConsume(Config.rabbitArtistIdQueue, true, consumer)
   }
 }

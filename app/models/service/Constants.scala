@@ -8,6 +8,7 @@ object Constants {
 
   val mapKeyArtist = "artist"
   val mapKeyAlbum = "album"
+  val mapKeyRdioArtistId = "rdio_artist_id"
 
   val jsonKeyAccessToken = "access_token"
 }

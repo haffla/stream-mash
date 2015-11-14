@@ -31,16 +31,6 @@ class SpotifyLibrary(userId:Int) extends Library(userId) {
     }
   }
 
-  private def pushToArtistIdQueue(name: String, id: String) = {
-    val connection = RabbitMQConnection.getConnection()
-    val channel = connection.createChannel()
-    channel.queueDeclare(Config.rabbitMqQueue, true, false, false, null)
-    val message = Json.toJson(Map("name" -> name, "id" -> id)).toString()
-    channel.basicPublish("", Config.rabbitMqQueue, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes)
-    channel.close()
-    connection.close()
-  }
-
   private def saveArtistsSpotifyIds(artists:Seq[JsValue]) = {
     Future {
       artists.foreach { artist =>
@@ -48,7 +38,7 @@ class SpotifyLibrary(userId:Int) extends Library(userId) {
         val id = (artist \ "id").as[String]
         val artistType = (artist \ "type").as[String]
         if (artistType == "artist") {
-          pushToArtistIdQueue(name, id)
+          pushToArtistIdQueue(name, id, "spotify")
         }
       }
     }

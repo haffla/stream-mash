@@ -1,10 +1,14 @@
 package database.facade
 
 import database.MainDatabaseAccess
+import database.alias.Artist
+import models.service.SpotifyService
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import slick.driver.JdbcProfile
+
+import scala.concurrent.Future
 
 object SpotifyFacade extends MainDatabaseAccess
                       with HasDatabaseConfig[JdbcProfile] {
@@ -28,9 +32,23 @@ object SpotifyFacade extends MainDatabaseAccess
         }
       }
       else {
-        artistFacade.createNewArtistWithSpotifyId(artist, spotifyId)
+        createNewArtistWithSpotifyId(artist, spotifyId)
       }
     }
+  }
+
+  def createNewArtistWithSpotifyId(artist: String, id: String) = {
+    val newArtist = Artist(name = artist, spotifyId = Some(id))
+    db.run(artistQuery += newArtist)
+  }
+
+  def getSpotifyIdForArtistFromDb(artist:String):Future[Option[String]] = {
+    val id = for { a <- artistQuery if a.name === artist } yield a.spotifyId
+    db.run(id.result.headOption)
+  }
+
+  def getSpotifyIdForArtistFromSpotify(artist: String): Future[Option[String]] = {
+    SpotifyService.getArtistId(artist)
   }
 
 }

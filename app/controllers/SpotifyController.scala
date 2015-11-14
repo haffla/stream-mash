@@ -1,6 +1,6 @@
 package controllers
 
-import database.facade.artistFacade
+import database.facade.SpotifyFacade
 import models.auth.Authenticated
 import models.service.{Constants, SpotifyService}
 import models.util.TextWrangler
@@ -43,10 +43,10 @@ class SpotifyController extends Controller {
 
   def getSpotifyArtistId = Authenticated.async { implicit request =>
     val artist = request.getQueryString("artist").get
-    artistFacade.getSpotifyIdForArtistFromDb(artist) flatMap {
+    SpotifyFacade.getSpotifyIdForArtistFromDb(artist) flatMap {
       case Some(spotifyId) => Future.successful(Ok(Json.toJson(Map("spotify_id" -> spotifyId))))
       case None =>
-        val id:Future[Option[String]] = artistFacade.getSpotifyIdForArtistFromSpotify(artist)
+        val id:Future[Option[String]] = SpotifyFacade.getSpotifyIdForArtistFromSpotify(artist)
         id map {
           case Some(sp) => Ok(Json.toJson(Map("spotify_id" -> sp)))
           case None => Ok(Json.toJson(Map("error" -> "Did not find a Spotify ID")))
