@@ -15,7 +15,6 @@ object RdioFacade extends MainDatabaseAccess
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
 
   def saveArtistId(artist: String, rdioId: String): Unit = {
-    println(artist,rdioId)
     val artistsWithThatName = db.run(artistQuery.filter(_.name === artist).result)
     artistsWithThatName.map { artists =>
       if(artists.nonEmpty) {

@@ -24,6 +24,8 @@ class SpotifyLibrary(userId:Int) extends Library(userId) {
               saveArtistsSpotifyIds(artists)
               val artist = (artists.head \ "name").as[String]
               Map(Constants.mapKeyArtist -> artist, Constants.mapKeyAlbum -> album)
+            case None =>
+              throw new Exception("Missing key 'track' in JSON")
           }
         }
       case None =>
