@@ -7,20 +7,16 @@ import scalikejdbc._
 import slick.driver.JdbcProfile
 
 abstract class ServiceFacade extends MainDatabaseAccess with HasDatabaseConfig[JdbcProfile] {
+
   implicit val session = AutoSession
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
 
   val serviceFieldName:SQLSyntax
 
-  def findArtistByName(name:String):List[Map[String,String]] = {
-    val ordering = if (true) sqls"desc" else sqls"asc"
-    sql"select * from artist where name=$name order by name ${ordering}"
+  def saveArtistWithServiceId(artistName: String, serviceId: String): Unit = {
+    val artistsByName = sql"select * from artist where name=$artistName"
       .toMap().list().apply()
       .map(_.mapValues(_.toString))
-  }
-
-  def saveArtistWithServiceId(artistName: String, serviceId: String): Unit = {
-    val artistsByName = findArtistByName(artistName)
     artistsByName.headOption match {
       case Some(artist) =>
         val artistId = artist("id_artist").toInt
