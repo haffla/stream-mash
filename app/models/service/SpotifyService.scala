@@ -90,7 +90,7 @@ object SpotifyService extends StreamingServiceAbstract{
             val artists = (json \ "artists" \ "items").as[List[JsObject]]
             if(artists.nonEmpty) {
               val id = (artists.head \ "id").asOpt[String]
-              SpotifyFacade.saveArtistId(artist, id.get)
+              SpotifyFacade.saveArtistWithServiceId(artist, id.get)
               id
             }
             else None

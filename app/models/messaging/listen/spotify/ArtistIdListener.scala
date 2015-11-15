@@ -1,17 +1,23 @@
 package models.messaging.listen.spotify
 
 import com.rabbitmq.client._
-import database.facade.{RdioFacade, SpotifyFacade}
+import database.facade.{ServiceFacade, RdioFacade, SpotifyFacade}
 import models.Config
 import models.messaging.RabbitMQConnection
 import play.api.libs.json.Json
 
 object ArtistIdListener {
-  
+
+  var facades:Map[String, ServiceFacade] = Map(
+    "spotify" -> SpotifyFacade,
+    "rdio" -> RdioFacade
+  )
+
   def listen() = {
     val connection = RabbitMQConnection.getConnection()
     val channel = connection.createChannel()
     channel.queueDeclare(Config.rabbitArtistIdQueue, true, false, false, null)
+
 
     val consumer = new DefaultConsumer(channel) {
       override def handleDelivery(consumerTag:String, envelope:Envelope, properties:AMQP.BasicProperties, body:Array[Byte]): Unit = {
@@ -20,11 +26,9 @@ object ArtistIdListener {
         val artist:String = (js \ "name").as[String]
         val id:String = (js \ "id").as[String]
         val typ:String = (js \ "type").as[String]
-        if(typ == "spotify") {
-          SpotifyFacade.saveArtistId(artist,id)
-        }
-        else {
-          RdioFacade.saveArtistId(artist,id)
+        facades.get(typ) match {
+          case Some(facade) => facade.saveArtistWithServiceId(artist, id)
+          case None => throw new Exception("Facade of type $typ does not exist")
         }
       }
     }
