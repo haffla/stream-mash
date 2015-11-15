@@ -1,48 +1,43 @@
 package database.facade
 
-import database.MainDatabaseAccess
-import database.alias.Artist
 import models.service.SpotifyService
-import play.api.Play
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import slick.driver.JdbcProfile
+import scalikejdbc._
 
 import scala.concurrent.Future
 
-object SpotifyFacade extends MainDatabaseAccess
-                      with HasDatabaseConfig[JdbcProfile] {
+object SpotifyFacade extends ServiceFacade {
 
-  import driver.api._
-  val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
-
-  private def updateSpotifyId(artist: String, spotifyId: String): Unit = {
-    //TODO: Make sure only one artist is updated
-    val id = for { a <- artistQuery if a.name === artist } yield a.spotifyId
-    db.run(id.update(spotifyId))
-  }
-
-  def saveArtistId(artist: String, spotifyId: String): Unit = {
-    val artistsWithThatName = db.run(artistQuery.filter(_.name === artist).result)
-    artistsWithThatName.map { artists =>
-      if(artists.nonEmpty) {
-        val existingId:String = artists.head.spotifyId.orNull
-        if(existingId != spotifyId) {
-          updateSpotifyId(artist, spotifyId)
+  def saveArtistId(artistName: String, spotifyId: String): Unit = {
+    val artistsByName:List[Map[String,String]] = sql"select * from artist where name=$artistName"
+      .toMap().list().apply()
+      .map(_.mapValues(_.toString))
+      
+    artistsByName.headOption match {
+      case Some(artist) =>
+        val artistId = artist("id_artist")
+        artist.get("spotify_id") match {
+          case Some(id) =>
+            if(id != spotifyId) {
+              updateSpotifyId(artistId, spotifyId)
+            }
+          case None =>
+            updateSpotifyId(artistName, spotifyId)
         }
-      }
-      else {
-        createNewArtistWithSpotifyId(artist, spotifyId)
-      }
+      case None =>
+        createNewArtistWithSpotifyId(artistName, spotifyId)
     }
   }
 
-  def createNewArtistWithSpotifyId(artist: String, id: String) = {
-    val newArtist = Artist(name = artist, spotifyId = Some(id))
-    db.run(artistQuery += newArtist)
+  def updateSpotifyId(artistId: String, spotifyId: String): Unit = {
+    sql"update artist set spotify_id='$spotifyId' where id_artist=$artistId".update().apply()
+  }
+
+  def createNewArtistWithSpotifyId(artistName: String, id: String) = {
+    sql"insert into artist (name, spotify_id) VALUES ($artistName, $id)".update().apply()
   }
 
   def getSpotifyIdForArtistFromDb(artist:String):Future[Option[String]] = {
+    import driver.api._
     val id = for { a <- artistQuery if a.name === artist } yield a.spotifyId
     db.run(id.result.headOption)
   }
