@@ -2,7 +2,9 @@ package controllers
 
 import database.facade.SpotifyFacade
 import models.auth.Authenticated
-import models.service.{Constants, SpotifyService}
+import models.service.api.SpotifyApiFacade
+import models.service.Constants
+import models.service.oauth.SpotifyService
 import models.util.TextWrangler
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -46,7 +48,7 @@ class SpotifyController extends Controller {
     SpotifyFacade.getSpotifyIdForArtistFromDb(artist) flatMap {
       case Some(spotifyId) => Future.successful(Ok(Json.toJson(Map("spotify_id" -> spotifyId))))
       case None =>
-        val id:Future[Option[String]] = SpotifyFacade.getSpotifyIdForArtistFromSpotify(artist)
+        val id:Future[Option[String]] = SpotifyApiFacade.getArtistId(artist)
         id map {
           case Some(sp) => Ok(Json.toJson(Map("spotify_id" -> sp)))
           case None => Ok(Json.toJson(Map("error" -> "Did not find a Spotify ID")))

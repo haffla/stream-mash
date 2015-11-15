@@ -1,8 +1,9 @@
-package models.service
+package models.service.oauth
 
 import models.auth.MessageDigest
-import models.service.RdioService._
+import models.service.Constants
 import models.service.library.RdioLibrary
+import models.service.oauth.RdioService._
 import models.util.Logging
 import play.api.Play.current
 import play.api.libs.json.{JsValue, Json}
@@ -12,6 +13,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RdioService(userId:Int) {
+
   val library = new RdioLibrary(userId)
 
   def requestUserData(code:String):Future[JsValue] = {

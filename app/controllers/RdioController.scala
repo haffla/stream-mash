@@ -1,6 +1,7 @@
 package controllers
 
-import models.service.{Constants, RdioService}
+import models.service.Constants
+import models.service.oauth.RdioService
 import models.util.TextWrangler
 import play.api.mvc._
 

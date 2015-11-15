@@ -1,9 +1,10 @@
-package models.service
+package models.service.oauth
 
+import models.service.Constants
 import models.util.Logging
 import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
-import play.api.{PlayException, Play}
+import play.api.{Play, PlayException}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

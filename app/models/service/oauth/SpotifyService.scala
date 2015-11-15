@@ -1,17 +1,19 @@
-package models.service
+package models.service.oauth
 
-import database.facade.SpotifyFacade
-import models.service.SpotifyService._
 import models.service.library.SpotifyLibrary
+import models.service.oauth.SpotifyService.apiEndpoints
+import models.service.Constants
 import models.util.Logging
-import play.api.libs.json.{JsValue, JsObject, Json}
-import play.api.libs.ws.{WS, WSResponse}
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import models.service.oauth.SpotifyService._
 import play.api.Play.current
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.libs.json.{JsValue, Json}
+import play.api.libs.ws.{WS, WSResponse}
 
 import scala.concurrent.Future
 
 class SpotifyService(userId:Int) {
+
   val library = new SpotifyLibrary(userId)
 
   def requestUserData(code:String): Future[Option[JsValue]] = {
@@ -26,7 +28,7 @@ class SpotifyService(userId:Int) {
   }
 }
 
-object SpotifyService extends StreamingServiceAbstract{
+object SpotifyService extends StreamingServiceAbstract {
 
   def apply(userId:Int) = new SpotifyService(userId)
   val clientIdKey = "spotify.client.id"
@@ -79,25 +81,5 @@ object SpotifyService extends StreamingServiceAbstract{
       case None => throw new Exception (Constants.accessTokenRetrievalError)
     }
 
-  }
-
-  def getArtistId(artist:String):Future[Option[String]] = {
-    WS.url(apiEndpoints.search).withQueryString("type" -> "artist", "q" -> artist).get().map {
-      response =>
-        response.status match {
-          case 200 =>
-            val json = Json.parse(response.body)
-            val artists = (json \ "artists" \ "items").as[List[JsObject]]
-            if(artists.nonEmpty) {
-              val id = (artists.head \ "id").asOpt[String]
-              SpotifyFacade.saveArtistWithServiceId(artist, id.get)
-              id
-            }
-            else None
-          case http_code =>
-            Logging.error(ich, "Error getting id for artist: " + http_code + "\n" + response.body)
-            None
-        }
-    }
   }
 }

@@ -1,10 +1,11 @@
-package models.service
+package models.service.oauth
 
+import com.github.haffla.soundcloud.Client
+import models.service.Constants
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.{JsValue, Json}
 
 import scala.concurrent.Future
-import com.github.haffla.soundcloud.Client
 
 object SoundcloudService extends StreamingServiceAbstract {
 

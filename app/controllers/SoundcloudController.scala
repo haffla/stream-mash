@@ -1,6 +1,6 @@
 package controllers
 
-import models.service.SoundcloudService
+import models.service.oauth.SoundcloudService
 import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
