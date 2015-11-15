@@ -1,6 +1,6 @@
 package controllers
 
-import database.facade.SpotifyFacade
+import models.database.facade.SpotifyFacade
 import models.auth.Authenticated
 import models.service.api.SpotifyApiFacade
 import models.service.Constants

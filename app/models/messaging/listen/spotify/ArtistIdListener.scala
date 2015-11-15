@@ -1,7 +1,7 @@
 package models.messaging.listen.spotify
 
 import com.rabbitmq.client._
-import database.facade.{ServiceFacade, RdioFacade, SpotifyFacade}
+import models.database.facade.{ServiceFacade, RdioFacade, SpotifyFacade}
 import models.Config
 import models.messaging.RabbitMQConnection
 import play.api.libs.json.Json

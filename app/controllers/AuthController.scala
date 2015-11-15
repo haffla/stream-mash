@@ -8,7 +8,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc.{Controller, Action}
 import play.cache.Cache
 import slick.driver.JdbcProfile
-import database.MainDatabaseAccess
+import models.database.MainDatabaseAccess
 
 import scala.concurrent.Future
 

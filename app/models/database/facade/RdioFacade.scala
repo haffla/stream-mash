@@ -1,4 +1,4 @@
-package database.facade
+package models.database.facade
 
 import scalikejdbc._
 

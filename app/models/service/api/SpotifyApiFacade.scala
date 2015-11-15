@@ -1,6 +1,6 @@
 package models.service.api
 
-import database.facade.SpotifyFacade
+import models.database.facade.SpotifyFacade
 import models.service.oauth.SpotifyService
 import SpotifyService.apiEndpoints
 import models.util.Logging

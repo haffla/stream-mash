@@ -1,6 +1,6 @@
-package database.facade
+package models.database.facade
 
-import database.MainDatabaseAccess
+import models.database.MainDatabaseAccess
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import scalikejdbc._

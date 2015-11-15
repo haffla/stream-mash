@@ -1,4 +1,4 @@
-package database
+package models.database
 
 import slick.driver.JdbcProfile
 import slick.lifted.Index

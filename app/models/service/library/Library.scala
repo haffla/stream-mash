@@ -1,8 +1,8 @@
 package models.service.library
 
 import com.rabbitmq.client.MessageProperties
-import database.MainDatabaseAccess
-import database.alias.Album
+import models.database.MainDatabaseAccess
+import models.database.alias.Album
 import models.Config
 import models.messaging.RabbitMQConnection
 import play.api.Play
