@@ -1,8 +1,8 @@
 package controllers
 
 import models.service.oauth.SoundcloudService
-import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.mvc._
 
 class SoundcloudController extends Controller {
 

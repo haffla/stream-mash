@@ -1,15 +1,16 @@
 package controllers
 
-import models.database.facade.SpotifyFacade
 import models.auth.Authenticated
-import models.service.api.SpotifyApiFacade
+import models.database.facade.SpotifyFacade
 import models.service.Constants
+import models.service.api.SpotifyApiFacade
 import models.service.oauth.SpotifyService
 import models.util.TextWrangler
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
 import play.api.mvc._
+
 import scala.concurrent.Future
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 class SpotifyController extends Controller {
 

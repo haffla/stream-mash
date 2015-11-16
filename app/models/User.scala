@@ -1,12 +1,12 @@
 package models
 
-import models.database.alias.Account
 import models.auth.MessageDigest
+import models.database.MainDatabaseAccess
+import models.database.alias.Account
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
-import slick.driver.JdbcProfile
-import models.database.MainDatabaseAccess
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import slick.driver.JdbcProfile
 
 import scala.concurrent.Future
 

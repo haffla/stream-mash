@@ -1,10 +1,9 @@
 package models.service.oauth
 
-import models.service.library.SpotifyLibrary
-import models.service.oauth.SpotifyService.apiEndpoints
 import models.service.Constants
+import models.service.library.SpotifyLibrary
+import models.service.oauth.SpotifyService.{apiEndpoints, _}
 import models.util.Logging
-import models.service.oauth.SpotifyService._
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.{JsValue, Json}

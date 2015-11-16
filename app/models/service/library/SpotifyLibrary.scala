@@ -1,13 +1,10 @@
 package models.service.library
 
-import com.rabbitmq.client.MessageProperties
-import models.Config
-import models.messaging.RabbitMQConnection
 import models.service.Constants
-import play.api.libs.json.{Json, JsValue}
+import play.api.libs.json.JsValue
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class SpotifyLibrary(userId:Int) extends Library(userId) {
 

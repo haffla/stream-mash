@@ -1,18 +1,18 @@
 package models.service.library
 
 import com.rabbitmq.client.MessageProperties
+import models.Config
 import models.database.MainDatabaseAccess
 import models.database.alias.Album
-import models.Config
 import models.messaging.RabbitMQConnection
 import play.api.Play
-import play.api.db.slick.{HasDatabaseConfig, DatabaseConfigProvider}
-import play.api.libs.json.{Json, JsObject, JsValue}
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import slick.driver.JdbcProfile
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class Library(userId:Int) extends HasDatabaseConfig[JdbcProfile]
                                             with MainDatabaseAccess {
@@ -74,7 +74,7 @@ class Library(userId:Int) extends HasDatabaseConfig[JdbcProfile]
   private def getOrSaveCollectionItem(name: String, interpret:String):Future[Int] = {
     db.run(albumQuery.filter { albums =>
       albums.name === name && albums.interpret === interpret && albums.id_user === userId
-    }.result).flatMap { albumList =>
+    }.result) flatMap { albumList =>
       if (albumList.nonEmpty) Future.successful(albumList.head.id.get)
       else {
         db.run(albumQuery returning albumQuery.map(_.id) += Album(name = name, interpret = interpret, fk_user = userId))

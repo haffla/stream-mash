@@ -1,7 +1,7 @@
 package models.auth
 
 import controllers.routes
-import play.api.mvc.{ActionBuilder,Controller,Request,Result,WrappedRequest}
+import play.api.mvc.{ActionBuilder, Controller, Request, Result, WrappedRequest}
 import play.cache.Cache
 
 import scala.concurrent.Future

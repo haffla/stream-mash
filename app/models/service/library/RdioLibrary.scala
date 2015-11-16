@@ -3,8 +3,8 @@ package models.service.library
 import models.service.Constants
 import play.api.libs.json.JsValue
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class RdioLibrary(userId:Int) extends Library(userId) {
 

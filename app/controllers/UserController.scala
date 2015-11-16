@@ -3,9 +3,9 @@ package controllers
 import models.User
 import models.auth.Authenticated
 import models.service.library.Library
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
 import play.api.mvc.Controller
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import scala.concurrent.Future
 

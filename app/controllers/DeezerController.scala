@@ -4,8 +4,8 @@ import models.service.Constants
 import models.service.oauth.DeezerService
 import models.util.TextWrangler
 import play.api.mvc._
-import scala.concurrent.ExecutionContext.Implicits.global
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DeezerController extends Controller {

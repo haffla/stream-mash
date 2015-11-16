@@ -2,12 +2,12 @@ package models.service.api
 
 import models.database.facade.SpotifyFacade
 import models.service.oauth.SpotifyService
-import SpotifyService.apiEndpoints
+import models.service.oauth.SpotifyService.apiEndpoints
 import models.util.Logging
+import play.api.Play.current
 import play.api.libs.json.{JsObject, Json}
 import play.api.libs.ws.WS
 
-import play.api.Play.current
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

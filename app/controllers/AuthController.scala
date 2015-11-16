@@ -1,14 +1,14 @@
 package controllers
 
 import models.auth.MessageDigest
+import models.database.MainDatabaseAccess
 import models.{User, UserData}
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.mvc.{Controller, Action}
+import play.api.mvc.{Action, Controller}
 import play.cache.Cache
 import slick.driver.JdbcProfile
-import models.database.MainDatabaseAccess
 
 import scala.concurrent.Future
 

@@ -1,7 +1,7 @@
 import models.service.library.ItunesLibrary
+import org.junit.runner._
 import org.specs2.mutable._
 import org.specs2.runner._
-import org.junit.runner._
 import play.Play
 import play.api.test.WithApplication
 

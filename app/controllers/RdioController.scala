@@ -6,7 +6,7 @@ import models.util.TextWrangler
 import play.api.mvc._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 
 class RdioController extends Controller {
 

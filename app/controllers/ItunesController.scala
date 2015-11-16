@@ -2,14 +2,15 @@ package controllers
 
 import java.io.File
 import java.nio.file.Files
+
 import models.User
 import models.auth.{Authenticated, MessageDigest}
 import models.service.library.ItunesLibrary
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.libs.json._
+import play.api.mvc.Controller
 
 import scala.concurrent.Future
-import play.api.mvc.Controller
-import play.api.libs.json._
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 class ItunesController extends Controller {
 
