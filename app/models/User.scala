@@ -3,6 +3,7 @@ package models
 import models.auth.MessageDigest
 import models.database.MainDatabaseAccess
 import models.database.alias.Account
+import models.service.Constants
 import play.api.Play
 import play.api.cache.Cache
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
@@ -17,7 +18,17 @@ object User extends MainDatabaseAccess with HasDatabaseConfig[JdbcProfile] {
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
   import driver.api._
 
-  val fileHashCacheKeyPrefix = "it-file-hash::"
+  /**
+   * Updates all album entities of the session identified user
+   * with his userId in order to prevent loss of data for the user
+   */
+  def transferData(userId: Int, sessionKey: String) = {
+    db.run(
+      albumQuery.filter(_.userSessionKey === sessionKey)
+        .map(a => (a.idUser, a.userSessionKey))
+        .update(userId, null)
+    )
+  }
 
   def create(name:String, password:String):Future[Int] = {
     val hashedPassword = MessageDigest.digest(password)
@@ -39,7 +50,7 @@ object User extends MainDatabaseAccess with HasDatabaseConfig[JdbcProfile] {
         val iTunesFileHash = for { account <- accountQuery if account.id === userId } yield account.itunesFileHash
         db.run(iTunesFileHash.update(hash))
       case Right(sessionKey) =>
-        Cache.set(fileHashCacheKeyPrefix + sessionKey, hash)
+        Cache.set(Constants.fileHashCacheKeyPrefix + sessionKey, hash)
     }
   }
 
@@ -54,13 +65,18 @@ object User extends MainDatabaseAccess with HasDatabaseConfig[JdbcProfile] {
           }
         })
       case Right(sessionKey) =>
-        val result = Cache.getAs[String](fileHashCacheKeyPrefix + sessionKey) match {
+        val result = Cache.getAs[String](Constants.fileHashCacheKeyPrefix + sessionKey) match {
           case Some(storedHash) =>
             if(storedHash == hash) true else false
           case None => false
         }
         Future.successful(result)
     }
+  }
+
+  def getAccountByUserName(user:UserData) = {
+    val account = accountQuery.filter(_.name === user.name).take(1)
+    db.run(account.result.headOption)
   }
 
 }

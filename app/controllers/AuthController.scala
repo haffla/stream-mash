@@ -2,6 +2,7 @@ package controllers
 
 import models.auth.MessageDigest
 import models.database.MainDatabaseAccess
+import models.service.Constants
 import models.{User, UserData}
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
@@ -35,6 +36,11 @@ class AuthController extends Controller
           }
           else {
             User.create(user.name, user.password) map { incrementId =>
+              request.session.get(Constants.userSessionKey) match {
+                case Some(sessionKey) =>
+                  User.transferData(incrementId, sessionKey)
+                case None => //NADA
+              }
               val hash = authenticateUser(user.name, user.password)
               Redirect(routes.Application.index()).flashing("message" -> "Welcome")
                 .withSession("username" -> user.name, "auth-secret" -> hash, "user_id" -> incrementId.toString)
@@ -52,7 +58,7 @@ class AuthController extends Controller
         Future.successful(Redirect(routes.AuthController.login()))
       },
       userData => {
-        getAccountByUser(userData).map {
+        User.getAccountByUserName(userData).map {
           case Some(user) =>
             if (user.password == MessageDigest.digest(userData.password)) {
               val username = user.name
@@ -62,7 +68,7 @@ class AuthController extends Controller
               Some((true, hash, incrementId.get)) // Tuple[Boolean, String, Int]
             } else None
           case None => None
-        }.map {
+        } map {
           case Some(result) =>
             val newSession = request.session +
                ("username" -> userData.name) +
@@ -95,11 +101,6 @@ class AuthController extends Controller
   }
 
   //## HELPER
-
-  private def getAccountByUser(user:UserData) = {
-    val account = accountQuery.filter(_.name === user.name).take(1)
-    db.run(account.result.headOption)
-  }
 
   private def authenticateUser(username:String, password:String):String = {
     val hash = MessageDigest.digest(s"$username|$password")
