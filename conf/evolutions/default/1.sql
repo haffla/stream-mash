@@ -14,8 +14,10 @@ CREATE TABLE IF NOT EXISTS album(
     id_album SERIAL,
     name VARCHAR(255) NOT NULL,
     interpret VARCHAR(255) NOT NULL,
-    fk_user INT NOT NULL REFERENCES account(id_user),
-    UNIQUE (name,interpret,fk_user)
+    fk_user INT DEFAULT NULL REFERENCES account(id_user),
+    user_session_key VARCHAR(32) DEFAULT NULL,
+    UNIQUE (name,interpret,fk_user),
+    UNIQUE (name,interpret,user_session_key)
 );
 
 CREATE TABLE IF NOT EXISTS artist(

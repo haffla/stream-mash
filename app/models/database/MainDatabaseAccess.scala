@@ -22,10 +22,12 @@ trait MainDatabaseAccess {
     def id = column[Int]("id_album", O.AutoInc, O.PrimaryKey)
     def name = column[String]("name")
     def interpret = column[String]("interpret")
-    def id_user = column[Int]("fk_user")
-    def fk_user = foreignKey("id_user", id_user, accountQuery)(_.id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
-    def index:Index = index("name_interpret", (name,interpret,id_user), unique=true)
-    def * = (id.?, name, interpret, id_user) <> ((alias.Album.apply _).tupled, alias.Album.unapply _)
+    def idUser = column[Int]("fk_user")
+    def userSessionKey = column[String]("user_session_key")
+    def fkUser = foreignKey("id_user", idUser, accountQuery)(_.id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
+    def indexWithId:Index = index("name_interpret_id", (name,interpret,idUser), unique=true)
+    def indexWithSession:Index = index("name_interpret_session", (name,interpret, userSessionKey), unique=true)
+    def * = (id.?, name, interpret, idUser, userSessionKey.?) <> ((alias.Album.apply _).tupled, alias.Album.unapply _)
   }
 
   val albumQuery = TableQuery[Album]

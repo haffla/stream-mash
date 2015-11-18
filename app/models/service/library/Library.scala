@@ -73,7 +73,7 @@ class Library(userId:Int) extends HasDatabaseConfig[JdbcProfile]
 
   private def getOrSaveCollectionItem(name: String, interpret:String):Future[Int] = {
     db.run(albumQuery.filter { albums =>
-      albums.name === name && albums.interpret === interpret && albums.id_user === userId
+      albums.name === name && albums.interpret === interpret && albums.idUser === userId
     }.result) flatMap { albumList =>
       if (albumList.nonEmpty) Future.successful(albumList.head.id.get)
       else {
@@ -86,7 +86,7 @@ class Library(userId:Int) extends HasDatabaseConfig[JdbcProfile]
     * Gets all collections (album / artist) of user from DB
     */
   def getCollectionFromDbByUser(id:Int):Future[Option[Map[String, Set[String]]]] = {
-    db.run(albumQuery.filter(_.id_user === id).result.map { album =>
+    db.run(albumQuery.filter(_.idUser === id).result.map { album =>
       if(album.isEmpty) None
       else {
         Some(
