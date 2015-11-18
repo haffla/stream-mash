@@ -2,7 +2,8 @@ package models.service.library
 
 import scala.xml.Node
 
-class ItunesLibrary(user_id:Int, xmlPath:String = "") extends Library(user_id) {
+class ItunesLibrary(identifier: Either[Int, String], xmlPath:String = "") extends Library(identifier) {
+
   val labelDict = "dict"
   val labelKey  = "key"
   val informationToExtract = List("Artist", "Album")

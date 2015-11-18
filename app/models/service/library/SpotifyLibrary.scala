@@ -6,7 +6,7 @@ import play.api.libs.json.JsValue
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SpotifyLibrary(userId:Int) extends Library(userId) {
+class SpotifyLibrary(identifier: Either[Int, String]) extends Library(identifier) {
 
   def convertJsonToSeq(json: Option[JsValue]):Seq[Map[String,String]] = {
     json match {

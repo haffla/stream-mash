@@ -11,9 +11,9 @@ import play.api.libs.ws.{WS, WSResponse}
 
 import scala.concurrent.Future
 
-class SpotifyService(userId:Int) {
+class SpotifyService(identifier: Either[Int, String]) {
 
-  val library = new SpotifyLibrary(userId)
+  val library = new SpotifyLibrary(identifier)
 
   def requestUserData(code:String): Future[Option[JsValue]] = {
     val data = apiEndpoints.data + ("code" -> Seq(code))
@@ -29,7 +29,7 @@ class SpotifyService(userId:Int) {
 
 object SpotifyService extends StreamingServiceAbstract {
 
-  def apply(userId:Int) = new SpotifyService(userId)
+  def apply(identifier: Either[Int, String]) = new SpotifyService(identifier)
   val clientIdKey = "spotify.client.id"
   val clientSecretKey = "spotify.client.secret"
 

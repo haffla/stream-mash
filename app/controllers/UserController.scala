@@ -1,11 +1,11 @@
 package controllers
 
 import models.User
-import models.auth.Authenticated
+import models.auth.{IdentifiedBySession, Helper, Authenticated}
 import models.service.library.Library
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
-import play.api.mvc.Controller
+import play.api.mvc.{Action, Controller}
 
 import scala.concurrent.Future
 
@@ -18,14 +18,14 @@ class UserController extends Controller {
     )
   }
 
-  def artistAlbumCollectionFromDb = Authenticated.async { implicit request =>
-    val userId =request.session.get("user_id").get.toInt
-    collectionFromDb(userId)
+  def artistAlbumCollectionFromDb = IdentifiedBySession.async { implicit request =>
+    val identifier = Helper.getUserIdentifier(request.session)
+    collectionFromDb(identifier)
   }
 
-  private def collectionFromDb(userId:Int) = {
-    val library = new Library(userId)
-    library.getCollectionFromDbByUser(userId) map {
+  private def collectionFromDb(identifier: Either[Int, String]) = {
+    val library = new Library(identifier)
+    library.getCollectionFromDbByUser(identifier) map {
       case Some(collection) => Ok(library.prepareCollectionForFrontend(collection))
       case None => Ok(Json.toJson(Map("error" -> "You have no records stored in our database.")))
     }

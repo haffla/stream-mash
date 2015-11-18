@@ -22,11 +22,6 @@ class AuthController extends Controller
 
   def register = Action.async { implicit request =>
 
-    def success(name:String, hash:String, id:Int):play.api.mvc.Result = {
-      Redirect(routes.Application.index()).flashing("message" -> "Welcome")
-        .withSession("username" -> name, "auth-secret" -> hash, "user_id" -> id.toString)
-    }
-
     registerForm.bindFromRequest.fold(
       formWithErrors => {
         val errors = formWithErrors.errors.map(error => error.messages)
@@ -101,12 +96,12 @@ class AuthController extends Controller
 
   //## HELPER
 
-  def getAccountByUser(user:UserData) = {
+  private def getAccountByUser(user:UserData) = {
     val account = accountQuery.filter(_.name === user.name).take(1)
     db.run(account.result.headOption)
   }
 
-  def authenticateUser(username:String, password:String):String = {
+  private def authenticateUser(username:String, password:String):String = {
     val hash = MessageDigest.digest(s"$username|$password")
     Cache.set(s"user.$username", hash)
     hash

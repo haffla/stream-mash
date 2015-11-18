@@ -6,7 +6,7 @@ import play.api.libs.json.JsValue
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RdioLibrary(userId:Int) extends Library(userId) {
+class RdioLibrary(identifier: Either[Int, String]) extends Library(identifier) {
 
   val keyArtist = "artist"
   val keyName = "name"

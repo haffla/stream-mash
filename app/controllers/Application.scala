@@ -1,11 +1,10 @@
 package controllers
 
-import models.auth.Authenticated
-import play.api.mvc.Controller
+import play.api.mvc.{Action, Controller}
 
 class Application extends Controller {
 
-  def index = Authenticated { implicit request =>
+  def index = Action { implicit request =>
     Ok(views.html.index())
   }
 }

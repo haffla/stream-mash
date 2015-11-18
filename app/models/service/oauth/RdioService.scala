@@ -12,9 +12,9 @@ import play.api.libs.ws.{WS, WSResponse}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RdioService(userId:Int) {
+class RdioService(identifier: Either[Int, String]) {
 
-  val library = new RdioLibrary(userId)
+  val library = new RdioLibrary(identifier)
 
   def requestUserData(code:String):Future[JsValue] = {
     val data = apiEndpoints.data + ("code" -> Seq(code))
@@ -33,7 +33,7 @@ class RdioService(userId:Int) {
 
 object RdioService extends StreamingServiceAbstract {
 
-  def apply(userId:Int) = new RdioService(userId)
+  def apply(identifier: Either[Int, String]) = new RdioService(identifier)
 
   val clientIdKey = "rdio.client.id"
   val clientSecretKey = "rdio.client.secret"

@@ -27,7 +27,7 @@ trait MainDatabaseAccess {
     def fkUser = foreignKey("id_user", idUser, accountQuery)(_.id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
     def indexWithId:Index = index("name_interpret_id", (name,interpret,idUser), unique=true)
     def indexWithSession:Index = index("name_interpret_session", (name,interpret, userSessionKey), unique=true)
-    def * = (id.?, name, interpret, idUser, userSessionKey.?) <> ((alias.Album.apply _).tupled, alias.Album.unapply _)
+    def * = (id.?, name, interpret, idUser.?, userSessionKey.?) <> ((alias.Album.apply _).tupled, alias.Album.unapply _)
   }
 
   val albumQuery = TableQuery[Album]

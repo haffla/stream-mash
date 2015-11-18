@@ -4,23 +4,25 @@ import java.io.File
 import java.nio.file.Files
 
 import models.User
-import models.auth.{Authenticated, MessageDigest}
+import models.auth.{IdentifiedBySession, Helper, Authenticated, MessageDigest}
+import models.service.Constants
 import models.service.library.ItunesLibrary
+import models.util.TextWrangler
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
-import play.api.mvc.Controller
+import play.api.mvc.{Action, Controller}
 
 import scala.concurrent.Future
 
 class ItunesController extends Controller {
 
-  def index = Authenticated { implicit request =>
+  def index = IdentifiedBySession { implicit request =>
     Ok(views.html.itunes.index())
   }
 
-  def fileUpload = Authenticated.async(parse.multipartFormData) { implicit request =>
+  def fileUpload = IdentifiedBySession.async(parse.multipartFormData) { implicit request =>
     request.body.file("file").map { file =>
-      val userId:Int = request.session.get("user_id").get.toInt
+      val identifier = Helper.getUserIdentifier(request.session)
       val filename = file.filename
       val username = request.session.get("username")
         .getOrElse("user-" + System.currentTimeMillis)
@@ -29,14 +31,14 @@ class ItunesController extends Controller {
       val f = new File(xmlPath)
       val fileBody:String = scala.io.Source.fromFile(f).getLines().mkString
       val fileHash = MessageDigest.md5(fileBody)
-      User.iTunesFileProcessedAlready(userId,fileHash) flatMap(
+      User.iTunesFileProcessedAlready(identifier,fileHash) flatMap(
        bool => if(bool) {
          //user has submitted the exact same file. load from db.
          cleanUp(f)
          Future.successful(Redirect(routes.UserController.artistAlbumCollectionFromDb))
        } else {
-         User.saveItunesFileHash(userId, fileHash)
-         val json = collectionFromXml(userId, xmlPath)
+         User.saveItunesFileHash(identifier, fileHash)
+         val json = collectionFromXml(identifier, xmlPath)
          cleanUp(f)
          Future.successful(Ok(json))
        })
@@ -46,12 +48,12 @@ class ItunesController extends Controller {
     }
   }
 
-  def cleanUp(f:File) = {
+  private def cleanUp(f:File) = {
     Files.delete(f.toPath)
   }
 
-  def collectionFromXml(userId:Int,xmlPath:String) = {
-    val library = new ItunesLibrary(userId, xmlPath)
+  private def collectionFromXml(identifier: Either[Int, String],xmlPath:String) = {
+    val library = new ItunesLibrary(identifier, xmlPath)
     val collection = library.getCollection
     library.prepareCollectionForFrontend(collection)
   }

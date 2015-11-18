@@ -14,7 +14,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-class Library(userId:Int) extends HasDatabaseConfig[JdbcProfile]
+class Library(identifier: Either[Int, String]) extends HasDatabaseConfig[JdbcProfile]
                                             with MainDatabaseAccess {
 
   import driver.api._
@@ -73,11 +73,23 @@ class Library(userId:Int) extends HasDatabaseConfig[JdbcProfile]
 
   private def getOrSaveCollectionItem(name: String, interpret:String):Future[Int] = {
     db.run(albumQuery.filter { albums =>
-      albums.name === name && albums.interpret === interpret && albums.idUser === userId
+      identifier match {
+        case Left(userId) =>
+          albums.name === name && albums.interpret === interpret && albums.idUser === userId
+        case Right(sessionKey) =>
+          albums.name === name && albums.interpret === interpret && albums.userSessionKey === sessionKey
+      }
+
     }.result) flatMap { albumList =>
       if (albumList.nonEmpty) Future.successful(albumList.head.id.get)
       else {
-        db.run(albumQuery returning albumQuery.map(_.id) += Album(name = name, interpret = interpret, fk_user = userId))
+        val album = identifier match {
+          case Left(userId) =>
+            Album(name = name, interpret = interpret, fkUser = Some(userId))
+          case Right(sessionKey) =>
+            Album(name = name, interpret = interpret, userSessionKey = Some(sessionKey))
+        }
+        db.run(albumQuery returning albumQuery.map(_.id) += album)
       }
     }
   }
@@ -85,8 +97,14 @@ class Library(userId:Int) extends HasDatabaseConfig[JdbcProfile]
   /**
     * Gets all collections (album / artist) of user from DB
     */
-  def getCollectionFromDbByUser(id:Int):Future[Option[Map[String, Set[String]]]] = {
-    db.run(albumQuery.filter(_.idUser === id).result.map { album =>
+  def getCollectionFromDbByUser(identifier: Either[Int, String]):Future[Option[Map[String, Set[String]]]] = {
+    val query = identifier match {
+      case Left(userId) =>
+        albumQuery.filter(_.idUser === userId)
+      case Right(sessionKey) =>
+        albumQuery.filter(_.userSessionKey === sessionKey)
+    }
+    db.run(query.result map { album =>
       if(album.isEmpty) None
       else {
         Some(
