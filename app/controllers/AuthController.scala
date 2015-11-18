@@ -70,6 +70,11 @@ class AuthController extends Controller
           case None => None
         } map {
           case Some(result) =>
+            request.session.get(Constants.userSessionKey) match {
+              case Some(sessionKey) =>
+                User.transferData(result._3, sessionKey)
+              case None => //NADA
+            }
             val newSession = request.session +
                ("username" -> userData.name) +
                ("auth-secret" -> result._2)  +
