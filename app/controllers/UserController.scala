@@ -1,17 +1,17 @@
 package controllers
 
 import models.User
-import models.auth.{IdentifiedBySession, Helper, Authenticated}
+import models.auth.{AdminAccess, IdentifiedBySession, Helper}
 import models.service.library.Library
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.Controller
 
 import scala.concurrent.Future
 
 class UserController extends Controller {
 
-  def list = Authenticated.async { implicit request =>
+  def list = AdminAccess.async { implicit request =>
     val users:Future[Seq[User.Account#TableElementType]] = User.list
     users.map(
       res => Ok(views.html.users.list(res.toList))
