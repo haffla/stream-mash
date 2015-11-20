@@ -39,7 +39,6 @@ object RdioService extends StreamingServiceAbstract {
   val clientSecretKey = "rdio.client.secret"
 
   val redirectUriPath = "/rdio/callback"
-  override lazy val redirectUri = "http://localhost:9000/rdio/callback"
   val cookieKey = "rdio_auth_state"
 
   val queryString:Map[String,Seq[String]] = Map(

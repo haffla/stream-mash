@@ -32,9 +32,7 @@ object SpotifyService extends StreamingServiceAbstract {
   def apply(identifier: Either[Int, String]) = new SpotifyService(identifier)
   val clientIdKey = "spotify.client.id"
   val clientSecretKey = "spotify.client.secret"
-
   val redirectUriPath = "/spotify/callback"
-  override lazy val redirectUri = "http://localhost:9000/spotify/callback"
   val scope:Seq[String] = Seq(
     "user-read-private",
     "playlist-read-private",

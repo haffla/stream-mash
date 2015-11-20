@@ -32,7 +32,6 @@ object SoundcloudService extends StreamingServiceAbstract {
   val clientSecretKey = "soundcloud.client.secret"
 
   val redirectUriPath="/soundcloud/callback"
-  override lazy val redirectUri = "http://localhost:9000/soundcloud/callback"
   val cookieKey = "soundcloud_auth_state"
 
   val queryString:Map[String,Seq[String]] = Map(
