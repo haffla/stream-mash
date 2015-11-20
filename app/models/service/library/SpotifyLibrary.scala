@@ -1,32 +1,28 @@
 package models.service.library
 
 import models.service.Constants
+import models.service.library.util.JsonConversion
 import play.api.libs.json.JsValue
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SpotifyLibrary(identifier: Either[Int, String]) extends Library(identifier) {
+class SpotifyLibrary(identifier: Either[Int, String]) extends Library(identifier) with JsonConversion {
 
-  def convertJsonToSeq(json: Option[JsValue]):Seq[Map[String,String]] = {
-    json match {
-      case Some(js) =>
-        val items = (js \ "items").as[Seq[JsValue]]
-        items.map { entity =>
-          val track = (entity \ "track").asOpt[JsValue]
-          track match {
-            case Some(trackJson) =>
-              val album = (trackJson \ "album" \ "name").as[String]
-              val artists = (trackJson \ "artists").as[Seq[JsValue]]
-              saveArtistsSpotifyIds(artists)
-              val artist = (artists.head \ "name").as[String]
-              Map(Constants.mapKeyArtist -> artist, Constants.mapKeyAlbum -> album)
-            case None =>
-              throw new Exception("Missing key 'track' in JSON")
-          }
-        }
-      case None =>
-        throw new Exception(Constants.userTracksRetrievalError)
+  def doJsonConversion(js: JsValue): Seq[Map[String, String]] = {
+    val items = (js \ "items").as[Seq[JsValue]]
+    items.map { entity =>
+      val track = (entity \ "track").asOpt[JsValue]
+      track match {
+        case Some(trackJson) =>
+          val album = (trackJson \ "album" \ "name").as[String]
+          val artists = (trackJson \ "artists").as[Seq[JsValue]]
+          saveArtistsSpotifyIds(artists)
+          val artist = (artists.head \ "name").as[String]
+          Map(Constants.mapKeyArtist -> artist, Constants.mapKeyAlbum -> album)
+        case None =>
+          throw new Exception("Missing key 'track' in JSON")
+      }
     }
   }
 

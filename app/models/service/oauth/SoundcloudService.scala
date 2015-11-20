@@ -2,17 +2,37 @@ package models.service.oauth
 
 import com.github.haffla.soundcloud.Client
 import models.service.Constants
+import models.service.library.SoundcloudLibrary
+import models.service.oauth.SoundcloudService._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.{JsValue, Json}
 
 import scala.concurrent.Future
 
+class SoundcloudService(identifier: Either[Int, String]) {
+
+  val library = new SoundcloudLibrary(identifier)
+
+  def requestUserData(code:String): Future[JsValue] = {
+    for {
+      authCredentials <- client.exchange_token(code)
+      userId <- getUserId(authCredentials)
+      response <- requestUsersTracks(userId)
+      seq = library.convertJsonToSeq(response)
+      result = library.convertSeqToMap(seq)
+    } yield library.prepareCollectionForFrontend(result)
+  }
+}
+
 object SoundcloudService extends StreamingServiceAbstract {
+
+  def apply(identifier: Either[Int, String]) = new SoundcloudService(identifier)
 
   val clientIdKey = "soundcloud.client.id"
   val clientSecretKey = "soundcloud.client.secret"
 
   val redirectUriPath="/soundcloud/callback"
+  override lazy val redirectUri = "http://localhost:9000/soundcloud/callback"
   val cookieKey = "soundcloud_auth_state"
 
   val queryString:Map[String,Seq[String]] = Map(
@@ -24,17 +44,9 @@ object SoundcloudService extends StreamingServiceAbstract {
 
   val client = Client(clientId, clientSecret, redirectUri)
 
-  def requestUserData(code:String): Future[JsValue] = {
-    for {
-      authCredentials <- client.exchange_token(code)
-      userId <- getUserId(authCredentials)
-      response <- requestUsersTracks(userId)
-    } yield response
-  }
-
-  private def requestUsersTracks(userId:String):Future[JsValue] = {
+  private def requestUsersTracks(userId:String):Future[Option[JsValue]] = {
     client.users(userId)("favorites") map { favorites =>
-      Json.parse(favorites)
+      Some(Json.parse(favorites))
     }
   }
 

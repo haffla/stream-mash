@@ -5,6 +5,7 @@ import models.Config
 import models.database.MainDatabaseAccess
 import models.database.alias.Album
 import models.messaging.RabbitMQConnection
+import models.service.Constants
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import play.api.libs.json.{JsObject, JsValue, Json}
@@ -131,5 +132,4 @@ class Library(identifier: Either[Int, String]) extends HasDatabaseConfig[JdbcPro
     channel.close()
     connection.close()
   }
-
 }

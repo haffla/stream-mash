@@ -21,23 +21,14 @@ class DeezerController extends Controller {
   def callback = IdentifiedBySession.async { implicit request =>
     val state = request.getQueryString("state")
     val code = request.getQueryString("code").orNull
-    val storedState = request.cookies.get(DeezerService.cookieKey) match {
-      case Some(cookie) => cookie.value
-      case None => Future.successful(
-        Redirect(routes.Application.index).flashing("message" -> "There has been a problem...")
-      )
+    val cookieState = request.cookies.get(DeezerService.cookieKey)
+    if(TextWrangler.validateState(cookieState, state)) {
+      val futureJson = DeezerService.requestUserData(code)
+      futureJson map {
+        case Some(json) => Ok(json)
+        case None => Ok("An error has occurred.")
+      }
     }
-    state match {
-      case Some(s) =>
-        if(s == storedState) {
-          val futureJson = DeezerService.requestUserData(code)
-          futureJson map {
-            case Some(json) => Ok(json)
-            case None => Ok("An error has occurred.")
-          }
-        }
-        else Future.successful(Ok(Constants.stateMismatchError))
-      case None => Future.successful(Ok(Constants.stateMismatchError))
-    }
+    else Future.successful(Ok(Constants.stateMismatchError))
   }
 }

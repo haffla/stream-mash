@@ -21,22 +21,13 @@ class RdioController extends Controller {
   def callback = IdentifiedBySession.async { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
     val state = request.getQueryString("state")
+    val cookieState = request.cookies.get(RdioService.cookieKey)
     val code = request.getQueryString("code").orNull
-    val storedState = request.cookies.get(RdioService.cookieKey) match {
-      case Some(cookie) => cookie.value
-      case None => Future.successful(
-        Redirect(routes.Application.index).flashing("message" -> "There has been a problem...")
-      )
+    if(TextWrangler.validateState(cookieState, state)) {
+      RdioService(identifier).requestUserData(code) map { json =>
+        Redirect(routes.ItunesController.index)
+      }
     }
-    state match {
-      case Some(s) =>
-        if(s == storedState) {
-          RdioService(identifier).requestUserData(code) map { json =>
-            Redirect(routes.ItunesController.index)
-          }
-        }
-        else Future.successful(Ok(Constants.stateMismatchError))
-      case None => Future.successful(Ok(Constants.stateMismatchError))
-    }
+    else Future.successful(Ok(Constants.stateMismatchError))
   }
 }

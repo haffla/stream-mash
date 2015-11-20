@@ -1,21 +1,35 @@
 package controllers
 
-import models.auth.IdentifiedBySession
+import models.auth.{Helper, IdentifiedBySession}
+import models.service.Constants
 import models.service.oauth.SoundcloudService
+import models.util.TextWrangler
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.mvc.Controller
+import play.api.mvc.{Cookie, Controller}
+
+import scala.concurrent.Future
 
 class SoundcloudController extends Controller {
 
   def login = IdentifiedBySession { implicit request =>
-    Redirect("https://api.soundcloud.com/connect", SoundcloudService.queryString)
+    val state = TextWrangler.generateRandomString(16)
+    val withState = SoundcloudService.queryString + ("state" -> Seq(state))
+    Redirect("https://api.soundcloud.com/connect", withState)
+      .withCookies(Cookie(SoundcloudService.cookieKey, state))
   }
 
   def callback = IdentifiedBySession.async { implicit request =>
+    val identified = Helper.getUserIdentifier(request.session)
     val code = request.getQueryString("code").orNull
-    //TODO check state to protect from CSRF
-    for {
-      response <- SoundcloudService.requestUserData(code)
-    } yield Ok(response)
+    val state = request.getQueryString("state")
+    val stateCookie = request.cookies.get(SoundcloudService.cookieKey)
+    if(TextWrangler.validateState(stateCookie, state)) {
+      for {
+        response <- SoundcloudService(identified).requestUserData(code)
+      } yield Ok(response)
+    }
+    else {
+      Future.successful(Ok(Constants.stateMismatchError))
+    }
   }
 }

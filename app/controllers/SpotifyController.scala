@@ -23,24 +23,17 @@ class SpotifyController extends Controller {
 
   def callback = IdentifiedBySession.async { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
-    val state = request.getQueryString("state")
     val code = request.getQueryString("code").orNull
-    val storedState = request.cookies.get(SpotifyService.cookieKey) match {
-      case Some(cookie) => cookie.value
-      case None => Future.successful(
-        Redirect(routes.Application.index).flashing("message" -> "There has been a problem...")
-        )
+    val state = request.getQueryString("state")
+    val stateCookie = request.cookies.get(SpotifyService.cookieKey)
+    if(TextWrangler.validateState(stateCookie, state)) {
+      SpotifyService(identifier).requestUserData(code) map {
+        case Some(js) => Redirect(routes.ItunesController.index())
+        case None => Ok("An error has occurred.")
+      }
     }
-    state match {
-      case Some(s) =>
-        if(s == storedState) {
-          SpotifyService(identifier).requestUserData(code) map {
-            case Some(js) => Redirect(routes.ItunesController.index())
-            case None => Ok("An error has occurred.")
-          }
-        }
-        else Future.successful(Ok(Constants.stateMismatchError))
-      case None => Future.successful(Ok(Constants.stateMismatchError))
+    else {
+      Future.successful(Ok(Constants.stateMismatchError))
     }
   }
 

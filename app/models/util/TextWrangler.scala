@@ -1,5 +1,7 @@
 package models.util
 
+import play.api.mvc.Cookie
+
 object TextWrangler {
 
   val possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
@@ -13,5 +15,26 @@ object TextWrangler {
       }
     }
     buildString("")
+  }
+
+  /**
+   * Protects from CSRF attacks by comparing a certain value of a response
+   * with a stored value saved in a Cookie during the request
+   */
+  def validateState(cookie: Option[Cookie], state:Option[String]):Boolean = {
+      println(cookie.get.value, state.get)
+      val storedState:Option[String] = cookie match {
+        case Some(cookie) => Some(cookie.value)
+        case None => None
+      }
+      storedState match {
+        case Some(storedStateValue) =>
+          state match {
+            case Some(stateValue) =>
+              storedStateValue == stateValue
+            case None => false
+          }
+        case None => false
+      }
   }
 }
