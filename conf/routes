@@ -1,4 +1,5 @@
 GET         /                           controllers.Application.index
+GET         /privacy                    controllers.Application.privacy
 
 POST        /login                      controllers.AuthController.login
 GET         /login                      controllers.AuthController.loginPage
