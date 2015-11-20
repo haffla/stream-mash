@@ -19,7 +19,7 @@ class SoundcloudLibrary(identifier: Either[Int, String]) extends Library(identif
       TODO check if artist is a real artist and not some normal Soundcloud user, Musicbrainz could help
       IGNORE all others
       */
-      Map("artist" -> "SomeArtistMightBeFake", "album" -> "WEDONTKNOW")
+      Map("artist" -> "NOTYETSUPPORTED", "album" -> "WORKINPROGRESS")
     }
   }
 

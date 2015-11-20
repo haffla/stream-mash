@@ -22,6 +22,7 @@ object TextWrangler {
    * with a stored value saved in a Cookie during the request
    */
   def validateState(cookie: Option[Cookie], state:Option[String]):Boolean = {
+      println(cookie.get.value, state.get)
       val storedState:Option[String] = cookie match {
         case Some(cookie) => Some(cookie.value)
         case None => None
