@@ -8,6 +8,10 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb)
 
 scalaVersion := "2.11.7"
 
+scalacOptions ++= Seq(
+  "-feature"
+)
+
 libraryDependencies ++= Seq(
   cache,
   ws,
@@ -32,7 +36,6 @@ libraryDependencies ++= Seq(
   "com.rabbitmq" % "amqp-client" % "3.5.6",
   "com.github.haffla" %% "soundcloud-scala" % "0.1-SNAPSHOT"
 )
-
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
