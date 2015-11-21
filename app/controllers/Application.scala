@@ -1,6 +1,9 @@
 package controllers
 
+import models.service.api.discover.MusicBrainzApi
 import play.api.mvc.{Action, Controller}
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class Application extends Controller {
 
@@ -10,5 +13,11 @@ class Application extends Controller {
 
   def privacy = Action { implicit request =>
     Ok(views.html.privacy())
+  }
+
+  def test = Action.async { implicit request =>
+    MusicBrainzApi.lookForArtistRecording("jealous guy", "beatles") map { res =>
+      Ok(res.toString())
+    }
   }
 }

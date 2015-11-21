@@ -1,5 +1,6 @@
 GET         /                           controllers.Application.index
 GET         /privacy                    controllers.Application.privacy
+GET         /test                       controllers.Application.test
 
 POST        /login                      controllers.AuthController.login
 GET         /login                      controllers.AuthController.loginPage
