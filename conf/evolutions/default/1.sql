@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS album(
     interpret VARCHAR(255) NOT NULL,
     fk_user INT DEFAULT NULL REFERENCES account(id_user),
     user_session_key VARCHAR(32) DEFAULT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     UNIQUE (name,interpret,fk_user),
     UNIQUE (name,interpret,user_session_key)
 );
