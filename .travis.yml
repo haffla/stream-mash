@@ -1,0 +1,10 @@
+language: scala
+scala:
+   - 2.11.7
+jdk:
+   - oraclejdk8
+
+before_script:
+  - psql -U postgres 'CREATE DATABASE playdb ENCODING UTF8 LC_COLLATE = en_US.UTF-8 LC_CTYPE = en_US.UTF-8'
+  - psql -U postgres -d playdb -a -f ./conf/travis/1.sql
+  - wget http://downloads.typesafe.com/typesafe-activator/1.3.6/typesafe-activator-1.3.6.zip
