@@ -5,6 +5,7 @@ import play.api.Play.current
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.language.postfixOps
 
 import org.apache.commons.lang3.StringUtils
 
@@ -26,7 +27,8 @@ object MusicBrainzApi {
         val title = rec \ "title" text
         val album = rec \ "release-list" \ "release" \ "title" text
         val artist = rec \ "artist-credit" \ "name-credit" \ "artist" \ "name" text
-        val score = (rec \\ s"@{$extNs}score").text
+        val score = rec \\ s"@{$extNs}score" text
+        
         if(score.toInt > minScore) {
           Some(Map("album" -> album, "artist" -> artist))
         }
