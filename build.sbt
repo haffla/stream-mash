@@ -37,6 +37,10 @@ libraryDependencies ++= Seq(
   "com.github.haffla" %% "soundcloud-scala" % "0.1-SNAPSHOT"
 )
 
+val alternateTestOptions = "-Dconfig.file=conf/" + Option(System.getProperty("test.config")).getOrElse("application") + ".conf"
+javaOptions in Test += alternateTestOptions
+
+
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
