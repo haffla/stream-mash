@@ -4,6 +4,10 @@ scala:
 jdk:
    - oraclejdk8
 
+services:
+   - postgresql
+   - rabbitmq
+
 before_script:
   - psql -c "CREATE DATABASE playdb ENCODING 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8'" -U postgres
   - psql -U postgres -d playdb -a -f ./conf/travis/1.sql
