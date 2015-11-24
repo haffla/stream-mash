@@ -25,7 +25,7 @@ class UserController extends Controller {
 
   private def collectionFromDb(identifier: Either[Int, String]) = {
     val library = new Library(identifier)
-    library.getCollectionFromDbByUser(identifier) map {
+    library.getUsersAlbumCollection map {
       case Some(collection) => Ok(library.prepareCollectionForFrontend(collection))
       case None => Ok(Json.toJson(Map("error" -> "You have no records stored in our database.")))
     }

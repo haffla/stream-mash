@@ -98,7 +98,7 @@ class Library(identifier: Either[Int, String]) extends HasDatabaseConfig[JdbcPro
   /**
     * Gets all collections (album / artist) of user from DB
     */
-  def getCollectionFromDbByUser(identifier: Either[Int, String]):Future[Option[Map[String, Set[String]]]] = {
+  def getUsersAlbumCollection:Future[Option[Map[String, Set[String]]]] = {
     val query = identifier match {
       case Left(userId) =>
         albumQuery.filter(_.idUser === userId)
