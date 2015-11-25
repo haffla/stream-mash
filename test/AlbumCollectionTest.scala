@@ -38,7 +38,7 @@ class AlbumCollectionTest extends UnitSpec with ScalaFutures {
       albums.toSet should equal(Set("Abbey Road", "Sgt. Pepper’s Lonely Hearts Club Band", "Dark Side Of The Moon", "Walls"))
     }
 
-    val futureDelete = AlbumFacade.deleteUsersAlbums(identifier)
+    val futureDelete = AlbumFacade(identifier).deleteUsersAlbums()
     whenReady(futureDelete) { countDeletedRows =>
       countDeletedRows should equal(4)
     }

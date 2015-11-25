@@ -4,8 +4,8 @@ import com.rabbitmq.client.MessageProperties
 import models.Config
 import models.database.MainDatabaseAccess
 import models.database.alias.Album
+import models.database.facade.AlbumFacade
 import models.messaging.RabbitMQConnection
-import models.service.Constants
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import play.api.libs.json.{JsObject, JsValue, Json}
@@ -15,7 +15,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-class Library(identifier: Either[Int, String]) extends HasDatabaseConfig[JdbcProfile]
+class Library(identifier: Either[Int, String], persistent: Boolean = true) extends HasDatabaseConfig[JdbcProfile]
                                             with MainDatabaseAccess {
 
   import driver.api._
@@ -39,7 +39,7 @@ class Library(identifier: Either[Int, String]) extends HasDatabaseConfig[JdbcPro
       }
       prev + (artist -> added)
     }
-    persist(result)
+    if(persistent) persist(result)
     result
   }
 
@@ -64,7 +64,7 @@ class Library(identifier: Either[Int, String]) extends HasDatabaseConfig[JdbcPro
       val interpret = collection._1
       val albums = collection._2
       albums.foreach { album =>
-        getOrSaveCollectionItem(album, interpret).onComplete {
+        findOrCreateUserAlbum(album, interpret).onComplete {
           case Success(id) => //println(id)
           case Failure(t) => println(t.getMessage)
         }
@@ -72,16 +72,8 @@ class Library(identifier: Either[Int, String]) extends HasDatabaseConfig[JdbcPro
     }
   }
 
-  private def getOrSaveCollectionItem(name: String, interpret:String):Future[Int] = {
-    db.run(albumQuery.filter { albums =>
-      identifier match {
-        case Left(userId) =>
-          albums.name === name && albums.interpret === interpret && albums.idUser === userId
-        case Right(sessionKey) =>
-          albums.name === name && albums.interpret === interpret && albums.userSessionKey === sessionKey
-      }
-
-    }.result) flatMap { albumList =>
+  private def findOrCreateUserAlbum(name: String, interpret:String):Future[Int] = {
+    AlbumFacade(identifier).findSingleUserAlbum(name,interpret) flatMap { albumList =>
       if (albumList.nonEmpty) Future.successful(albumList.head.id.get)
       else {
         val album = identifier match {

@@ -2,7 +2,8 @@ package models.service.library
 
 import scala.xml.Node
 
-class ItunesLibrary(identifier: Either[Int, String], xmlPath:String = "") extends Library(identifier) {
+class ItunesLibrary(identifier: Either[Int, String], xmlPath:String = "", persistent:Boolean = true)
+                                                            extends Library(identifier, persistent) {
 
   val labelDict = "dict"
   val labelKey  = "key"

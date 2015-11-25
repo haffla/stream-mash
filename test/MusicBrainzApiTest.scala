@@ -5,7 +5,7 @@ import play.api.test.WithApplication
 
 class MusicBrainzApiTest extends UnitSpec with ScalaFutures {
 
-  implicit val defaultPatience = PatienceConfig(timeout = Span(2, Seconds), interval = Span(500, Millis))
+  implicit val defaultPatience = PatienceConfig(timeout = Span(4, Seconds), interval = Span(500, Millis))
 
   val expectedResult = List(Map("album" -> "The Sweetest Apples", "artist" -> "The Beatles"))
 
