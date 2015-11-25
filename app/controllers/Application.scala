@@ -16,7 +16,7 @@ class Application extends Controller {
   }
 
   def test = Action.async { implicit request =>
-    MusicBrainzApi.lookForArtistRecording("jealous guy", "beatles") map { res =>
+    MusicBrainzApi.findAlbumOfTrack("jealous guy", "beatles") map { res =>
       Ok(res.toString())
     }
   }
