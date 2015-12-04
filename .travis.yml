@@ -13,4 +13,6 @@ before_script:
   - psql -U postgres -d playdb -a -f ./conf/travis/1.sql
 
 script:
-  - sbt -Dtest.config=test test
+  - sbt -Dtest.config=test clean coverage test
+  - sbt coverageReport
+  - sbt codacyCoverage

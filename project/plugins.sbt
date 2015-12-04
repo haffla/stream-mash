@@ -17,3 +17,7 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-mocha" % "1.1.0")
 
 addSbtPlugin("com.github.ddispaltro" % "sbt-reactjs" % "0.5.2")
 
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.3.3")
+
+addSbtPlugin("com.codacy" % "sbt-codacy-coverage" % "1.2.1")
+
