@@ -15,10 +15,7 @@ scalacOptions ++= Seq(
 libraryDependencies ++= Seq(
   cache,
   ws,
-  specs2 % Test
-)
-
-libraryDependencies ++= Seq(
+  specs2 % Test,
   "org.scalatest" %% "scalatest" % "2.2.1" % "test",
   "org.scalikejdbc" %% "scalikejdbc" % "2.2.9",
   "org.scalikejdbc" %% "scalikejdbc-config" % "2.2.9",
@@ -40,7 +37,7 @@ libraryDependencies ++= Seq(
 val alternateTestOptions = "-Dconfig.file=conf/" + Option(System.getProperty("test.config")).getOrElse("application") + ".conf"
 javaOptions in Test += alternateTestOptions
 
-
+resolvers += Resolver.typesafeRepo("releases")
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
