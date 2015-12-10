@@ -24,22 +24,30 @@ class SoundcloudLibrary(identifier: Either[Int, String]) extends Library(identif
       result map { entity =>
         Thread.sleep(1000)
         val isTrack = (entity \ "kind").as[String] == "track"
-
-        val id = (entity \ "id").as[Int]
-        val user = (entity \ "user").as[JsValue]
-        val artist = (user \ "username").as[String]
-        val title = (entity \ "title").as[String]
-
-        for {
-          musicBrainzResult <- MusicBrainzApi.findAlbumOfTrack(title, artist, 1100)
-        } yield musicBrainzResult.headOption
+        if(isTrack) {
+          val id = (entity \ "id").as[Int]
+          val user = (entity \ "user").as[JsValue]
+          val artist = (user \ "username").as[String]
+          val title = (entity \ "title").as[String]
+          val res = for {
+            musicBrainzResult <- MusicBrainzApi.findAlbumOfTrack(title, artist, 1100)
+          } yield musicBrainzResult.headOption
+          saveArtistsSoundcloudId(res, id)
+          res
+        }
+        else {
+          Future.successful(None)
+        }
       }
     } map(x => x filter(y => y.isDefined) map(z => z.get))
   }
 
-  private def saveArtistsSoundcloudId(artist:String, id:Int) = {
-    Future {
-      pushToArtistIdQueue(artist, id.toString, "soundcloud")
-    }
+  private def saveArtistsSoundcloudId(musicBrainzApiResponse:Future[Option[Map[String,String]]], id:Int) = {
+    musicBrainzApiResponse.map {
+        case Some(result) =>
+          val artist = result(MusicBrainzApi.keyArtist)
+          pushToArtistIdQueue(artist, id.toString, "soundcloud")
+        case None => //do nothing
+      }
   }
 }
