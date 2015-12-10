@@ -10,4 +10,8 @@ object Logging {
   def error(context:String, message:String) = {
     logger.error(s"$context: $message")
   }
+
+  def info(context:String, message:String) = {
+    logger.info(s"$context: $message")
+  }
 }

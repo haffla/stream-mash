@@ -18,7 +18,7 @@ class SoundcloudService(identifier: Either[Int, String]) {
       authCredentials <- client.exchange_token(code)
       userId <- getUserId(authCredentials)
       response <- requestUsersTracks(userId)
-      seq = library.convertJsonToSeq(response)
+      seq <- library.convertJsonToSeq(response)
       result = library.convertSeqToMap(seq)
     } yield library.prepareCollectionForFrontend(result)
   }
