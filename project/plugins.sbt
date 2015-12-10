@@ -1,6 +1,5 @@
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.4")
 
-resolvers += Resolver.bintrayRepo("typesafe", "maven-releases")
 resolvers += Resolver.typesafeRepo("releases")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-coffeescript" % "1.0.0")
