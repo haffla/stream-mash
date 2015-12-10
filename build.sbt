@@ -37,7 +37,7 @@ libraryDependencies ++= Seq(
 val alternateTestOptions = "-Dconfig.file=conf/" + Option(System.getProperty("test.config")).getOrElse("application") + ".conf"
 javaOptions in Test += alternateTestOptions
 
-resolvers += Resolver.typesafeRepo("releases")
+resolvers += Resolver.bintrayRepo("typesafe", "maven-releases")
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
