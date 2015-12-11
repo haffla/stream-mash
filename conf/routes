@@ -1,6 +1,7 @@
 GET         /                           controllers.Application.index
 GET         /privacy                    controllers.Application.privacy
 GET         /test                       controllers.Application.test
+GET         /soundcloud/socket          controllers.Application.socket
 
 POST        /login                      controllers.AuthController.login
 GET         /login                      controllers.AuthController.loginPage
@@ -13,11 +14,12 @@ GET         /spotify/login              controllers.SpotifyController.login
 GET         /spotify/callback           controllers.SpotifyController.callback
 GET         /spotify/spotifyid          controllers.SpotifyController.getSpotifyArtistId
 
+### Soundcloud
 GET         /soundcloud/callback        controllers.SoundcloudController.callback
 GET         /soundcloud/login           controllers.SoundcloudController.login
 
 ### iTunes
-GET         /itunes                     controllers.ItunesController.index
+GET         /itunes                     controllers.ItunesController.index(service:String ?= "")
 POST        /itunes                     controllers.ItunesController.fileUpload
 
 ### Deezer

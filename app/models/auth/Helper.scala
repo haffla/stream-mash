@@ -17,4 +17,11 @@ object Helper {
         }
     }
   }
+
+  def userIdentifierToString(identifier:Either[Int,String]):String = {
+    identifier match {
+      case Left(userId) => userId.toString
+      case Right(sessionKey) => sessionKey
+    }
+  }
 }

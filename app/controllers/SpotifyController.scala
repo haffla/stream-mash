@@ -27,9 +27,12 @@ class SpotifyController extends Controller {
     val state = request.getQueryString("state")
     val stateCookie = request.cookies.get(SpotifyService.cookieKey)
     if(TextWrangler.validateState(stateCookie, state)) {
-      SpotifyService(identifier).requestUserData(code) map {
-        case Some(js) => Redirect(routes.ItunesController.index())
-        case None => Ok("An error has occurred.")
+      request.getQueryString("code") match {
+        case Some(code) =>
+          SpotifyService(identifier).requestUserData(code)
+          Future.successful(Redirect(routes.ItunesController.index("spotify")))
+        case None =>
+          Future.successful(Ok(Constants.missingOAuthCodeError))
       }
     }
     else {

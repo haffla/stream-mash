@@ -1,6 +1,11 @@
-@()(implicit flash: Flash, session: Session)
+@(service:String)(implicit flash: Flash, session: Session, request: RequestHeader)
 
 @main("iTunes", List("lodash", "react")) {
     <div id="content"></div>
+
+    <script type='text/javascript'>
+        window.streamingservice = {'name': '@service', 'url': '@routes.Application.socket().webSocketURL()'};
+    </script>
+
     <script type='text/javascript' src='@routes.Assets.versioned("javascripts/artistbox.js")'></script>
 }

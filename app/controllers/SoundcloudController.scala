@@ -20,13 +20,16 @@ class SoundcloudController extends Controller {
 
   def callback = IdentifiedBySession.async { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
-    val code = request.getQueryString("code").orNull
     val state = request.getQueryString("state")
     val stateCookie = request.cookies.get(SoundcloudService.cookieKey)
     if(TextWrangler.validateState(stateCookie, state)) {
-      for {
-        response <- SoundcloudService(identifier).requestUserData(code)
-      } yield Redirect(routes.ItunesController.index())
+      request.getQueryString("code") match {
+        case Some(code) =>
+          SoundcloudService(identifier).requestUserData(code)
+          Future.successful(Redirect(routes.ItunesController.index("soundcloud")))
+        case None =>
+          Future.successful(Ok(Constants.missingOAuthCodeError))
+      }
     }
     else {
       Future.successful(Ok(Constants.stateMismatchError))

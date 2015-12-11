@@ -1,9 +1,12 @@
 package models.service.oauth
 
 import com.github.haffla.soundcloud.Client
+import models.auth.Helper
 import models.service.Constants
+import models.service.api.discover.ApiHelper
 import models.service.library.SoundcloudLibrary
 import models.service.oauth.SoundcloudService._
+import play.api.cache.Cache
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.{JsValue, Json}
 
@@ -12,15 +15,17 @@ import scala.concurrent.Future
 class SoundcloudService(identifier: Either[Int, String]) {
 
   val library = new SoundcloudLibrary(identifier)
+  val apiHelper = new ApiHelper("soundcloud", identifier)
 
-  def requestUserData(code:String): Future[JsValue] = {
+  def requestUserData(code:String) = {
+    apiHelper.setRetrievalProcessPending()
     for {
       authCredentials <- client.exchange_token(code)
       userId <- getUserId(authCredentials)
       response <- requestUsersTracks(userId)
       seq <- library.convertJsonToSeq(response)
       result = library.convertSeqToMap(seq)
-    } yield library.prepareCollectionForFrontend(result)
+    } apiHelper.setRetrievalProcessDone()
   }
 }
 

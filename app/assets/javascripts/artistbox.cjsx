@@ -14,7 +14,16 @@ MainComponent = React.createClass
 
   componentDidMount: () ->
     $('#artistBox').removeClass('hidden')
-    @loadFromDb()
+    ws = new WebSocket(window.streamingservice.url);
+
+    ws.onopen = () ->
+      ws.send(window.streamingservice.name)
+
+    ws.onmessage = (data) =>
+      if data.data is 'done'
+        @loadFromDb()
+      else
+        console.log('Not done yet')
 
   preventDef: (event) ->
     event.stopPropagation()
