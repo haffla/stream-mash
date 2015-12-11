@@ -4,7 +4,6 @@ import models.auth.Helper
 import models.service.api.discover.{ApiHelper, MusicBrainzApi}
 import play.api.libs.iteratee.{Concurrent, Iteratee}
 import play.api.mvc.{WebSocket, Action, Controller}
-import util.control.Breaks._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -26,26 +25,12 @@ class Application extends Controller {
 
   def socket = WebSocket.using[String] { request =>
     val (out, channel) = Concurrent.broadcast[String]
-    val in = Iteratee.foreach[String] {
-      msg =>
-        val apiHelper = new ApiHelper(msg, Helper.getUserIdentifier(request.session))
-        breakable {
-          while(true) {
-            apiHelper.getRetrievalProcessStatus match {
-              case Some(status) =>
-                channel push status.toString
-                if(status == "done") {
-                  break()
-                }
-                else {
-                  Thread.sleep(1000)
-                }
-              case None =>
-                channel push "done"
-                break()
-            }
-          }
-        }
+    val in = Iteratee.foreach[String] { service =>
+        val apiHelper = new ApiHelper(service, Helper.getUserIdentifier(request.session))
+        // Wait a maximum of 2 minutes
+        (1 to 120).toStream.takeWhile { _ =>
+          !apiHelper.retrievalProcessIsDone(channel, 1000)
+        } foreach( _ => apiHelper.getRetrievalProcessStatus)
     }
     (in, out)
   }
