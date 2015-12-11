@@ -1,13 +1,15 @@
 package models.service.library
 
 import models.service.Constants
-import models.service.api.discover.MusicBrainzApi
+import models.service.api.discover.{ApiHelper, MusicBrainzApi}
 import play.api.libs.json.JsValue
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class SoundcloudLibrary(identifier: Either[Int, String]) extends Library(identifier) {
+
+  val apiHelper = new ApiHelper("soundcloud", identifier)
 
   def convertJsonToSeq(json: Option[JsValue]):Future[Seq[Map[String,String]]] = {
     json match {
@@ -20,8 +22,11 @@ class SoundcloudLibrary(identifier: Either[Int, String]) extends Library(identif
 
   def doJsonConversion(js: JsValue): Future[Seq[Map[String, String]]] = {
     val result = js.as[Seq[JsValue]]
+    val totalLength = result.length
     Future.sequence {
-      result map { entity =>
+      result.zipWithIndex.map { case (entity, i) =>
+        val position = i + 1
+        apiHelper.setRetrievalProcessProgress(position.toDouble / totalLength)
         Thread.sleep(1000)
         val isTrack = (entity \ "kind").as[String] == "track"
         if(isTrack) {
@@ -30,14 +35,12 @@ class SoundcloudLibrary(identifier: Either[Int, String]) extends Library(identif
           val artist = (user \ "username").as[String]
           val title = (entity \ "title").as[String]
           val res = for {
-            musicBrainzResult <- MusicBrainzApi.findAlbumOfTrack(title, artist, 1100)
+            musicBrainzResult <- MusicBrainzApi.findAlbumOfTrack(title, artist)
           } yield musicBrainzResult.headOption
           saveArtistsSoundcloudId(res, id)
           res
         }
-        else {
-          Future.successful(None)
-        }
+        else Future.successful(None)
       }
     } map(x => x filter(y => y.isDefined) map(z => z.get))
   }

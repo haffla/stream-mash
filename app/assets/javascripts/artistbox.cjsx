@@ -23,8 +23,6 @@ MainComponent = React.createClass
       console.log(data.data)
       if data.data is 'done'
         @loadFromDb()
-      else
-        console.log('Not done yet')
 
   preventDef: (event) ->
     event.stopPropagation()

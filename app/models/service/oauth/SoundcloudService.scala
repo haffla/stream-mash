@@ -25,7 +25,8 @@ class SoundcloudService(identifier: Either[Int, String]) {
       response <- requestUsersTracks(userId)
       seq <- library.convertJsonToSeq(response)
       result = library.convertSeqToMap(seq)
-    } apiHelper.setRetrievalProcessDone()
+    }
+    apiHelper.setRetrievalProcessDone()
   }
 }
 

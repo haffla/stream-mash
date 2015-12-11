@@ -6,6 +6,7 @@ import models.database.MainDatabaseAccess
 import models.database.alias.Album
 import models.database.facade.AlbumFacade
 import models.messaging.RabbitMQConnection
+import models.service.api.discover.ApiHelper
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import play.api.libs.json.{JsObject, JsValue, Json}
@@ -124,4 +125,6 @@ class Library(identifier: Either[Int, String], persistent: Boolean = true) exten
     channel.close()
     connection.close()
   }
+
+
 }

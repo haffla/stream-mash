@@ -25,8 +25,9 @@ class Application extends Controller {
 
   def socket = WebSocket.using[String] { request =>
     val (out, channel) = Concurrent.broadcast[String]
+    val identifier = Helper.getUserIdentifier(request.session)
     val in = Iteratee.foreach[String] { service =>
-        val apiHelper = new ApiHelper(service, Helper.getUserIdentifier(request.session))
+        val apiHelper = new ApiHelper(service, identifier)
         // Wait a maximum of 2 minutes
         (1 to 120).toStream.takeWhile { _ =>
           !apiHelper.retrievalProcessIsDone(channel, 1000)

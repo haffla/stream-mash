@@ -23,6 +23,10 @@ class ApiHelper(service:String, identifier:Either[Int,String]) {
     getRetrievalProcessStatus match {
       case Some(status) =>
         channel push status.toString
+        getRetrievalProcessProgress match {
+          case Some(progress) => channel push progress.toString
+          case None => channel push "0"
+        }
         if(status == "done") true
         else {
           Thread.sleep(pollingTimeout)
@@ -33,4 +37,8 @@ class ApiHelper(service:String, identifier:Either[Int,String]) {
         true
     }
   }
+
+  def setRetrievalProcessProgress(progress:Double) = Cache.set(id + "|" + service + "|progress", progress, Duration(1, HOURS))
+
+  def getRetrievalProcessProgress = Cache.get(id + "|" + service + "|progress")
 }
