@@ -1,5 +1,10 @@
 # JUST A HELPER FOR COMMON TASKS ----------------
 
+String::startsWith ?= (s) -> @slice(0, s.length) == s
+line = new ProgressBar.Line('.spacer', {
+  color: '#FCB03C'
+  })
+
 class Helper
   @calculateNrOfAlbums: (data) ->
     _.values(data).reduce (x,y) ->
@@ -14,14 +19,16 @@ MainComponent = React.createClass
 
   componentDidMount: () ->
     $('#artistBox').removeClass('hidden')
-    ws = new WebSocket(window.streamingservice.url);
+    ws = new WebSocket(window.streamingservice.url)
 
     ws.onopen = () ->
       ws.send(window.streamingservice.name)
 
     ws.onmessage = (data) =>
       console.log(data.data)
-      if data.data is 'done'
+      if data.data.startsWith "progress"
+        line.animate(data.data.split(':')[1])
+      else if data.data is 'done'
         @loadFromDb()
 
   preventDef: (event) ->
@@ -55,8 +62,7 @@ MainComponent = React.createClass
         if _.size(data) > 0
           $('#artistBox').removeClass('hidden')
         @setTheState(data, true)
-      #else
-        #window.alert(data.error)
+      line.animate(0)
     $.get '/collection/fromdb', callback, 'json'
 
   drop: (event) ->

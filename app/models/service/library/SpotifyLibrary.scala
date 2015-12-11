@@ -7,11 +7,14 @@ import play.api.libs.json.JsValue
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SpotifyLibrary(identifier: Either[Int, String]) extends Library(identifier) with JsonConversion {
+class SpotifyLibrary(identifier: Either[Int, String]) extends Library(identifier, "spotify") with JsonConversion {
 
   def doJsonConversion(js: JsValue): Seq[Map[String, String]] = {
     val items = (js \ "items").as[Seq[JsValue]]
-    items.map { entity =>
+    val totalLength = items.length
+    items.zipWithIndex.map { case (entity,i) =>
+      val position = i + 1
+      apiHelper.setRetrievalProcessProgress(position.toDouble / totalLength)
       val track = (entity \ "track").asOpt[JsValue]
       track match {
         case Some(trackJson) =>
@@ -20,8 +23,7 @@ class SpotifyLibrary(identifier: Either[Int, String]) extends Library(identifier
           saveArtistsSpotifyIds(artists)
           val artist = (artists.head \ "name").as[String]
           Map(Constants.mapKeyArtist -> artist, Constants.mapKeyAlbum -> album)
-        case None =>
-          throw new Exception("Missing key 'track' in JSON")
+        case None => throw new Exception("Missing key 'track' in JSON")
       }
     }
   }

@@ -10,9 +10,7 @@ class ApiHelper(service:String, identifier:Either[Int,String]) {
 
   val id = Helper.userIdentifierToString(identifier)
 
-  private def setRetrievalProcess(flag: String) = {
-    Cache.set(id + "|" + service, flag, Duration(1, HOURS))
-  }
+  private def setRetrievalProcess(flag: String) = Cache.set(id + "|" + service, flag, Duration(1, HOURS))
 
   def setRetrievalProcessDone() = setRetrievalProcess("done")
   def setRetrievalProcessPending() = setRetrievalProcess("pending")
@@ -22,10 +20,11 @@ class ApiHelper(service:String, identifier:Either[Int,String]) {
   def retrievalProcessIsDone(channel:Concurrent.Channel[String], pollingTimeout:Int): Boolean = {
     getRetrievalProcessStatus match {
       case Some(status) =>
+        println(status)
         channel push status.toString
         getRetrievalProcessProgress match {
-          case Some(progress) => channel push progress.toString
-          case None => channel push "0"
+          case Some(progress) => channel push("progress:" + progress.toString)
+          case None => channel push "progress:1"
         }
         if(status == "done") true
         else {
@@ -41,4 +40,5 @@ class ApiHelper(service:String, identifier:Either[Int,String]) {
   def setRetrievalProcessProgress(progress:Double) = Cache.set(id + "|" + service + "|progress", progress, Duration(1, HOURS))
 
   def getRetrievalProcessProgress = Cache.get(id + "|" + service + "|progress")
+
 }

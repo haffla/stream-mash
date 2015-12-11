@@ -13,9 +13,7 @@ class UserController extends Controller {
 
   def list = AdminAccess.async { implicit request =>
     val users:Future[Seq[User.Account#TableElementType]] = User.list
-    users.map(
-      res => Ok(views.html.users.list(res.toList))
-    )
+    users.map(res => Ok(views.html.users.list(res.toList)))
   }
 
   def artistAlbumCollectionFromDb = IdentifiedBySession.async { implicit request =>

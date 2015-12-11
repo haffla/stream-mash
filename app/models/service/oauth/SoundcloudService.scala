@@ -12,21 +12,18 @@ import play.api.libs.json.{JsValue, Json}
 
 import scala.concurrent.Future
 
-class SoundcloudService(identifier: Either[Int, String]) {
+class SoundcloudService(identifier: Either[Int, String]) extends ApiDataRequest("soundcloud", identifier) {
 
   val library = new SoundcloudLibrary(identifier)
-  val apiHelper = new ApiHelper("soundcloud", identifier)
 
-  def requestUserData(code:String) = {
-    apiHelper.setRetrievalProcessPending()
+  def doDataRequest(code:String) = {
     for {
       authCredentials <- client.exchange_token(code)
       userId <- getUserId(authCredentials)
       response <- requestUsersTracks(userId)
       seq <- library.convertJsonToSeq(response)
       result = library.convertSeqToMap(seq)
-    }
-    apiHelper.setRetrievalProcessDone()
+    } yield true
   }
 }
 

@@ -16,11 +16,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-class Library(identifier: Either[Int, String], persistent: Boolean = true) extends HasDatabaseConfig[JdbcProfile]
+class Library(identifier: Either[Int, String], name:String = "", persistent: Boolean = true) extends HasDatabaseConfig[JdbcProfile]
                                             with MainDatabaseAccess {
 
   import driver.api._
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+
+  val apiHelper = new ApiHelper(name, identifier)
 
   /**
    * Cleans the data by transforming the Seq[Map[String,String]]

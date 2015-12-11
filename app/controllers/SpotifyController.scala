@@ -23,7 +23,6 @@ class SpotifyController extends Controller {
 
   def callback = IdentifiedBySession.async { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
-    val code = request.getQueryString("code").orNull
     val state = request.getQueryString("state")
     val stateCookie = request.cookies.get(SpotifyService.cookieKey)
     if(TextWrangler.validateState(stateCookie, state)) {

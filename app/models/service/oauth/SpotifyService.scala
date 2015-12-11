@@ -1,6 +1,7 @@
 package models.service.oauth
 
 import models.service.Constants
+import models.service.api.discover.ApiHelper
 import models.service.library.SpotifyLibrary
 import models.service.oauth.SpotifyService.{apiEndpoints, _}
 import models.util.Logging
@@ -11,11 +12,11 @@ import play.api.libs.ws.{WS, WSResponse}
 
 import scala.concurrent.Future
 
-class SpotifyService(identifier: Either[Int, String]) {
+class SpotifyService(identifier: Either[Int, String]) extends ApiDataRequest("spotify", identifier) {
 
   val library = new SpotifyLibrary(identifier)
 
-  def requestUserData(code:String): Future[Option[JsValue]] = {
+  def doDataRequest(code:String) = {
     val data = apiEndpoints.data + ("code" -> Seq(code))
     val futureResponse: Future[WSResponse] = WS.url(apiEndpoints.token).post(data)
     for {
@@ -23,7 +24,7 @@ class SpotifyService(identifier: Either[Int, String]) {
       response <- requestUsersTracks(token)
       seq = library.convertJsonToSeq(response)
       result = library.convertSeqToMap(seq)
-    } yield response
+    } yield true
   }
 }
 

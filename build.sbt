@@ -25,6 +25,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-slick" % "1.1.0",
   "com.typesafe.play" %% "play-slick-evolutions" % "1.1.0",
   "org.webjars" %% "webjars-play" % "2.4.0-1",
+  "org.webjars.bower" % "progressbar.js" % "0.9.0",
   "org.webjars" % "bootstrap" % "3.1.1-2",
   "org.webjars" % "react" % "0.13.3",
   "org.webjars" % "font-awesome" % "4.4.0",

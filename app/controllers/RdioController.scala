@@ -24,9 +24,8 @@ class RdioController extends Controller {
     val cookieState = request.cookies.get(RdioService.cookieKey)
     val code = request.getQueryString("code").orNull
     if(TextWrangler.validateState(cookieState, state)) {
-      RdioService(identifier).requestUserData(code) map { json =>
-        Redirect(routes.ItunesController.index("rdio"))
-      }
+      RdioService(identifier).requestUserData(code)
+      Future.successful(Redirect(routes.ItunesController.index("rdio")))
     }
     else Future.successful(Ok(Constants.stateMismatchError))
   }

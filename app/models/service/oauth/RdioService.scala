@@ -12,11 +12,11 @@ import play.api.libs.ws.{WS, WSResponse}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RdioService(identifier: Either[Int, String]) {
+class RdioService(identifier: Either[Int, String]) extends ApiDataRequest("rdio", identifier) {
 
   val library = new RdioLibrary(identifier)
 
-  def requestUserData(code:String):Future[JsValue] = {
+  def doDataRequest(code:String) = {
     val data = apiEndpoints.data + ("code" -> Seq(code))
     val clientIdAndSecret = clientId + ":" + clientSecret
     val encodedAuthorization = MessageDigest.encodeBase64(clientIdAndSecret)
@@ -27,7 +27,7 @@ class RdioService(identifier: Either[Int, String]) {
       jsonResponse <- requestUsersTracks(token)
       seq = library.convertJsonToSeq(jsonResponse)
       result = library.convertSeqToMap(seq)
-    } yield library.prepareCollectionForFrontend(result)
+    } yield true
   }
 }
 
