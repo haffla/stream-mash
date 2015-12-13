@@ -127,6 +127,4 @@ class Library(identifier: Either[Int, String], name:String = "") extends HasData
     channel.close()
     connection.close()
   }
-
-
 }

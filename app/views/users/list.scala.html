@@ -1,16 +1,19 @@
 @import models.database.alias.Account
 @(users: List[Account])(implicit flash: Flash, session: Session)
 
-@main("Users") {
+@main("Users", List("admin")) {
 
 <h2>List of users</h2>
-<table>
+<table class="table">
     <tr>
-        <th>Name</th>
+        <th>Name</th><th></th>
     </tr>
     @for(u <- users){
     <tr>
         <td>@u.name</td>
+        <th>
+            <button class="btn btn-danger coll-delete-button" data-url='@routes.UserController.deleteCollectionByUser(u.id.get)'>Delete Collection</button>
+        </th>
     </tr>
     }
 </table>

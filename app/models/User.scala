@@ -72,9 +72,13 @@ object User extends MainDatabaseAccess with HasDatabaseConfig[JdbcProfile] {
     }
   }
 
-  def getAccountByUserName(user:UserData) = {
-    val account = accountQuery.filter(_.name === user.name).take(1)
+  def getAccountByUserName(username:String) = {
+    val account = accountQuery.filter(_.name === username).take(1)
     db.run(account.result.headOption)
+  }
+
+  def deleteUsersAlbumCollection(id:Int):Future[Int] = {
+    db.run(albumQuery.filter(a => a.idUser === id).delete)
   }
 
 }

@@ -54,11 +54,10 @@ class AuthController extends Controller
   def login = Action.async { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors => {
-        val errors = formWithErrors.errors
         Future.successful(Redirect(routes.AuthController.login()))
       },
       userData => {
-        User.getAccountByUserName(userData).map {
+        User.getAccountByUserName(userData.name).map {
           case Some(user) =>
             if (user.password == MessageDigest.digest(userData.password)) {
               val username = user.name
