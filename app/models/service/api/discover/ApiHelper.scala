@@ -9,18 +9,23 @@ import scala.concurrent.duration._
 class ApiHelper(service:String, identifier:Either[Int,String]) {
 
   val id = Helper.userIdentifierToString(identifier)
+  val serviceId = id + "|" + service
+  val progressId = id + "|" + service + "|progress"
 
-  private def setRetrievalProcess(flag: String) = Cache.set(id + "|" + service, flag, Duration(1, HOURS))
+  private def setRetrievalProcess(flag: String) = Cache.set(serviceId, flag, Duration(1, HOURS))
 
-  def setRetrievalProcessDone() = setRetrievalProcess("done")
+  def setRetrievalProcessDone() = {
+    setRetrievalProcess("done")
+    Cache.remove(serviceId)
+    Cache.remove(progressId)
+  }
   def setRetrievalProcessPending() = setRetrievalProcess("pending")
 
-  def getRetrievalProcessStatus = Cache.get(id + "|" + service)
+  def getRetrievalProcessStatus = Cache.get(serviceId)
 
   def retrievalProcessIsDone(channel:Concurrent.Channel[String], pollingTimeout:Int): Boolean = {
     getRetrievalProcessStatus match {
       case Some(status) =>
-        println(status)
         channel push status.toString
         getRetrievalProcessProgress match {
           case Some(progress) => channel push("progress:" + progress.toString)
@@ -37,8 +42,8 @@ class ApiHelper(service:String, identifier:Either[Int,String]) {
     }
   }
 
-  def setRetrievalProcessProgress(progress:Double) = Cache.set(id + "|" + service + "|progress", progress, Duration(1, HOURS))
+  def setRetrievalProcessProgress(progress:Double) = Cache.set(progressId, progress, Duration(1, HOURS))
 
-  def getRetrievalProcessProgress = Cache.get(id + "|" + service + "|progress")
+  def getRetrievalProcessProgress = Cache.get(progressId)
 
 }

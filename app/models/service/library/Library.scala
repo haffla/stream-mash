@@ -16,7 +16,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-class Library(identifier: Either[Int, String], name:String = "", persistent: Boolean = true) extends HasDatabaseConfig[JdbcProfile]
+class Library(identifier: Either[Int, String], name:String = "") extends HasDatabaseConfig[JdbcProfile]
                                             with MainDatabaseAccess {
 
   import driver.api._
@@ -42,7 +42,7 @@ class Library(identifier: Either[Int, String], name:String = "", persistent: Boo
       }
       prev + (artist -> added)
     }
-    if(persistent) persist(result)
+    persist(result)
     result
   }
 

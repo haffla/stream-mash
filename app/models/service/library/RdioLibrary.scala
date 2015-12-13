@@ -19,7 +19,10 @@ class RdioLibrary(identifier: Either[Int, String]) extends Library(identifier) w
 
   def doJsonConversion(js: JsValue): Seq[Map[String, String]] = {
     val res = (js \ "result").as[Seq[JsValue]]
-    res map { entity =>
+    val totalLength = res.length
+    res.zipWithIndex.map { case (entity,i) =>
+      val position = i + 1
+      apiHelper.setRetrievalProcessProgress(position.toDouble / totalLength)
       val typ = (entity \ "type").as[String]
       val data:(String,String,String) = typ match {
         case `typeAlbum` =>
@@ -32,6 +35,10 @@ class RdioLibrary(identifier: Either[Int, String]) extends Library(identifier) w
           val album = (entity \ keyAlbum).as[String]
           val rdioKey = (entity \ keyArtistKey).as[String]
           (artist,rdioKey,album)
+        /*
+         * Entities that do not have album will be ignored in convertSeqToMap method
+         * This is just for saving the rdio key anyway.
+         */
         case `typeArtist` =>
           val artist = (entity \ keyName).as[String]
           val rdioKey = (entity \ "key").as[String]

@@ -1,5 +1,6 @@
 # JUST A HELPER FOR COMMON TASKS ----------------
 
+ws = new WebSocket(window.streamingservice.url)
 String::startsWith ?= (s) -> @slice(0, s.length) == s
 line = new ProgressBar.Line('.spacer', {
   color: '#FCB03C'
@@ -19,7 +20,6 @@ MainComponent = React.createClass
 
   componentDidMount: () ->
     $('#artistBox').removeClass('hidden')
-    ws = new WebSocket(window.streamingservice.url)
 
     ws.onopen = () ->
       ws.send(window.streamingservice.name)
@@ -86,7 +86,7 @@ MainComponent = React.createClass
           if !data.error
             $('#artistBox').removeClass('hidden')
             $('#dropzone').removeClass('dropped hover')
-            @setTheState(data, true)
+            ws.send('itunes')
           else
             window.alert("We could not read the file.")
         error: (jqXHR, status, error) =>

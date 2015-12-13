@@ -59,15 +59,13 @@ object User extends MainDatabaseAccess with HasDatabaseConfig[JdbcProfile] {
       case Left(userId) =>
         db.run(accountQuery.filter(_.id === userId).result map { account =>
           account.head.itunesFileHash match {
-            case Some(s) =>
-              s == hash
+            case Some(s) => s == hash
             case None => false
           }
         })
       case Right(sessionKey) =>
         val result = Cache.getAs[String](Constants.fileHashCacheKeyPrefix + sessionKey) match {
-          case Some(storedHash) =>
-            storedHash == hash
+          case Some(storedHash) => storedHash == hash
           case None => false
         }
         Future.successful(result)
