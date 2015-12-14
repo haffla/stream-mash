@@ -17,12 +17,6 @@ class Application extends Controller {
     Ok(views.html.privacy())
   }
 
-  def test = Action.async { implicit request =>
-    MusicBrainzApi.findAlbumOfTrack("jealous guy", "beatles") map { res =>
-      Ok(res.toString())
-    }
-  }
-
   def socket = WebSocket.using[String] { request =>
     val (out, channel) = Concurrent.broadcast[String]
     val identifier = Helper.getUserIdentifier(request.session)
