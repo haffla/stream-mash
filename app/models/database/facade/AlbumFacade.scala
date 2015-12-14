@@ -7,6 +7,7 @@ import scalikejdbc._
 import slick.driver.JdbcProfile
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object AlbumFacade {
   def apply(identifier:Either[Int,String]) = new AlbumFacade(identifier)
@@ -14,9 +15,9 @@ object AlbumFacade {
 
 class AlbumFacade(identifier:Either[Int,String]) extends MainDatabaseAccess with HasDatabaseConfig[JdbcProfile] {
 
-  import driver.api._
   implicit val session = AutoSession
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+  import driver.api._
 
   def deleteUsersAlbums():Future[Int] = {
     val query = identifier match {
@@ -57,5 +58,33 @@ class AlbumFacade(identifier:Either[Int,String]) extends MainDatabaseAccess with
 
   def findAlbumsByName(album:String) = {
     db.run(albumQuery.filter(_.name === album).result)
+  }
+  /**
+   * Gets all collections (album / artist) of user from DB
+   */
+  def getUsersAlbumCollection:Future[Option[Map[String, Set[String]]]] = {
+    import driver.api._
+    val query = identifier match {
+      case Left(userId) =>
+        albumQuery.filter(_.idUser === userId)
+      case Right(sessionKey) =>
+        albumQuery.filter(_.userSessionKey === sessionKey)
+    }
+    db.run(query.result map { album =>
+      if(album.isEmpty) None
+      else {
+        Some(
+          album.foldLeft(Map[String, Set[String]]()) {(prev, curr) =>
+            val interpret = curr.interpret
+            val interpretAlbums:Set[String] = prev get interpret match {
+              case None => Set.empty
+              case Some(albums) => albums
+            }
+            val added:Set[String] = interpretAlbums + curr.name
+            prev + (interpret -> added)
+          }
+        )
+      }
+    })
   }
 }

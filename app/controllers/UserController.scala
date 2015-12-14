@@ -2,6 +2,8 @@ package controllers
 
 import models.User
 import models.auth.{Authenticated, AdminAccess, IdentifiedBySession, Helper}
+import models.database.facade.AlbumFacade
+import models.service.analysis.SpotifyAnalysis
 import models.service.library.Library
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
@@ -37,9 +39,15 @@ class UserController extends Controller {
 
   private def collectionFromDb(identifier: Either[Int, String]) = {
     val library = new Library(identifier)
-    library.getUsersAlbumCollection map {
+    AlbumFacade(identifier).getUsersAlbumCollection map {
       case Some(collection) => Ok(library.prepareCollectionForFrontend(collection))
       case None => Ok(Json.toJson(Map("error" -> "You have no records stored in our database.")))
+    }
+  }
+
+  def analysis = IdentifiedBySession.async { implicit request =>
+    SpotifyAnalysis(Helper.getUserIdentifier(request.session)).analyse() map {
+      res => Ok(res)
     }
   }
 }

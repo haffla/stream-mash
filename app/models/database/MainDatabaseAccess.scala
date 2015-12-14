@@ -38,10 +38,12 @@ trait MainDatabaseAccess {
     def spotifyId = column[String]("spotify_id")
     def rdioId = column[String]("rdio_id")
     def soundcloudId = column[String]("soundcloud_id")
+    def deezerId = column[String]("deezer_id")
     def indexSpotify:Index = index("name_spotifyId", (name, spotifyId), unique=true)
     def indexRdio:Index = index("name_rdioId", (name, rdioId), unique=true)
     def indexSoundcloud:Index = index("name_soundcloudId", (name, soundcloudId), unique=true)
-    def * = (id.?, name, spotifyId.?, rdioId.?, spotifyId.?) <> ((alias.Artist.apply _).tupled, alias.Artist.unapply _)
+    def indexDeezer:Index = index("name_deezerId", (name, deezerId), unique=true)
+    def * = (id.?, name, spotifyId.?, rdioId.?, soundcloudId.?, deezerId.?) <> ((alias.Artist.apply _).tupled, alias.Artist.unapply _)
   }
 
   val artistQuery = TableQuery[Artist]

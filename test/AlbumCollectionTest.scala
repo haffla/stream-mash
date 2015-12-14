@@ -20,7 +20,7 @@ class AlbumCollectionTest extends UnitSpec with ScalaFutures {
 
     Thread.sleep(500) // Need to wait a little for the data to be saved in DB
 
-    val fromDb = library.getUsersAlbumCollection
+    val fromDb = AlbumFacade(identifier).getUsersAlbumCollection
     whenReady(fromDb) { collection =>
       val col = collection.getOrElse(Map.empty)
       val forFrontEnd = library.prepareCollectionForFrontend(col)

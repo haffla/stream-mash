@@ -27,9 +27,11 @@ CREATE TABLE IF NOT EXISTS artist(
     spotify_id VARCHAR(32) DEFAULT NULL,
     rdio_id VARCHAR(32) DEFAULT NULL,
     soundcloud_id VARCHAR(32) DEFAULT NULL,
+    deezer_id VARCHAR(32) DEFAULT NULL,
     UNIQUE (name,spotify_id),
     UNIQUE (name,rdio_id),
-    UNIQUE (name,soundcloud_id)
+    UNIQUE (name,soundcloud_id),
+    UNIQUE (name,deezer_id)
 );
 
 # --- !Downs

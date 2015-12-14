@@ -2,7 +2,7 @@ package models.messaging.listen.spotify
 
 import com.rabbitmq.client._
 import models.Config
-import models.database.facade.{SoundcloudFacade, RdioFacade, ServiceFacade, SpotifyFacade}
+import models.database.facade._
 import models.messaging.RabbitMQConnection
 import play.api.libs.json.Json
 
@@ -11,7 +11,8 @@ object ArtistIdListener {
   var facades:Map[String, ServiceFacade] = Map(
     "spotify" -> SpotifyFacade,
     "rdio" -> RdioFacade,
-    "soundcloud" -> SoundcloudFacade
+    "soundcloud" -> SoundcloudFacade,
+    "deezer" -> DeezerFacade
   )
 
   def listen() = {

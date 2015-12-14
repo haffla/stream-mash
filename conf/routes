@@ -1,39 +1,40 @@
-GET         /                           controllers.Application.index
-GET         /privacy                    controllers.Application.privacy
-GET         /soundcloud/socket          controllers.Application.socket
+GET           /                             controllers.Application.index
+GET           /privacy                      controllers.Application.privacy
+GET           /soundcloud/socket            controllers.Application.socket
 
-POST        /login                      controllers.AuthController.login
-GET         /login                      controllers.AuthController.loginPage
-GET         /logout                     controllers.AuthController.logout
-GET         /register                   controllers.AuthController.registerPage
-POST        /register                   controllers.AuthController.register
+POST          /login                        controllers.AuthController.login
+GET           /login                        controllers.AuthController.loginPage
+GET           /logout                       controllers.AuthController.logout
+GET           /register                     controllers.AuthController.registerPage
+POST          /register                     controllers.AuthController.register
 
 ### Spotify
-GET         /spotify/login              controllers.SpotifyController.login
-GET         /spotify/callback           controllers.SpotifyController.callback
-GET         /spotify/spotifyid          controllers.SpotifyController.getSpotifyArtistId
+GET           /spotify/login                controllers.SpotifyController.login
+GET           /spotify/callback             controllers.SpotifyController.callback
+GET           /spotify/spotifyid            controllers.SpotifyController.getSpotifyArtistId
 
 ### Soundcloud
-GET         /soundcloud/callback        controllers.SoundcloudController.callback
-GET         /soundcloud/login           controllers.SoundcloudController.login
+GET           /soundcloud/callback          controllers.SoundcloudController.callback
+GET           /soundcloud/login             controllers.SoundcloudController.login
 
 ### iTunes
-GET         /itunes                     controllers.ItunesController.index(service:String ?= "", openModal:String ?= "no")
-POST        /itunes                     controllers.ItunesController.fileUpload
+GET           /itunes                       controllers.ItunesController.index(service:String ?= "", openModal:String ?= "no")
+POST          /itunes                       controllers.ItunesController.fileUpload
 
 ### Deezer
-GET         /deezer/login               controllers.DeezerController.login
-GET         /deezer/callback            controllers.DeezerController.callback
+GET           /deezer/login                 controllers.DeezerController.login
+GET           /deezer/callback              controllers.DeezerController.callback
 
 ### Rdio
-GET         /rdio/login                 controllers.RdioController.login
-GET         /rdio/callback              controllers.RdioController.callback
+GET           /rdio/login                   controllers.RdioController.login
+GET           /rdio/callback                controllers.RdioController.callback
 
 ### User management
-GET         /users                      controllers.UserController.list
-GET         /collection/fromdb          controllers.UserController.artistAlbumCollectionFromDb
-DELETE      /collection/delete/:id      controllers.UserController.deleteCollectionByUser(id:Int)
+GET           /users                        controllers.UserController.list
+GET           /collection/fromdb            controllers.UserController.artistAlbumCollectionFromDb
+DELETE        /collection/delete/:id        controllers.UserController.deleteCollectionByUser(id:Int)
+GET           /user/analysis                controllers.UserController.analysis
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
-GET         /webjars/*file              controllers.WebJarAssets.versioned(path="/public", file: Asset)
+GET           /assets/*file                 controllers.Assets.versioned(path="/public", file: Asset)
+GET           /webjars/*file                controllers.WebJarAssets.versioned(path="/public", file: Asset)

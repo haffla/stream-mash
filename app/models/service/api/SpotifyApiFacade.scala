@@ -25,6 +25,7 @@ object SpotifyApiFacade extends ApiFacade {
               id
             }
             else None
+
           case http_code =>
             Logging.error(ich, "Error getting ID for artist from Spotify: " + http_code + "\n" + response.body)
             None

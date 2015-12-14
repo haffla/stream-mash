@@ -4,6 +4,7 @@ import com.github.haffla.soundcloud.Client
 import models.service.Constants
 import models.service.library.SoundcloudLibrary
 import models.service.oauth.SoundcloudService._
+import models.service.util.ServiceAccessTokenCache
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.{JsValue, Json}
 
@@ -12,6 +13,7 @@ import scala.concurrent.Future
 class SoundcloudService(identifier: Either[Int, String]) extends ApiDataRequest("soundcloud", identifier) {
 
   val library = new SoundcloudLibrary(identifier)
+  val serviceAccessTokenCache = new ServiceAccessTokenCache("soundcloud", identifier)
 
   def doDataRequest(code:String) = {
     for {
@@ -20,7 +22,7 @@ class SoundcloudService(identifier: Either[Int, String]) extends ApiDataRequest(
       response <- requestUsersTracks(userId)
       seq <- library.convertJsonToSeq(response)
       result = library.convertSeqToMap(seq)
-    } yield true
+    } yield (Json.parse(authCredentials) \ "access_token").asOpt[String]
   }
 }
 

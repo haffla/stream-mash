@@ -1,6 +1,7 @@
 package models.service.oauth
 
 import models.service.Constants
+import models.service.util.ServiceAccessTokenCache
 import models.util.Logging
 import play.api.libs.json.{Json, JsValue}
 import play.api.libs.ws.WSResponse

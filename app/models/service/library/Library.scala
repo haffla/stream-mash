@@ -89,35 +89,6 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
     }
   }
 
-  /**
-    * Gets all collections (album / artist) of user from DB
-    */
-  def getUsersAlbumCollection:Future[Option[Map[String, Set[String]]]] = {
-    import driver.api._
-    val query = identifier match {
-      case Left(userId) =>
-        albumQuery.filter(_.idUser === userId)
-      case Right(sessionKey) =>
-        albumQuery.filter(_.userSessionKey === sessionKey)
-    }
-    db.run(query.result map { album =>
-      if(album.isEmpty) None
-      else {
-        Some(
-          album.foldLeft(Map[String, Set[String]]()) {(prev, curr) =>
-            val interpret = curr.interpret
-            val interpretAlbums:Set[String] = prev get interpret match {
-              case None => Set.empty
-              case Some(albums) => albums
-            }
-            val added:Set[String] = interpretAlbums + curr.name
-            prev + (interpret -> added)
-          }
-        )
-      }
-    })
-  }
-
   def pushToArtistIdQueue(name: String, id: String, typ:String) = {
     val connection = RabbitMQConnection.getConnection()
     val channel = connection.createChannel()
