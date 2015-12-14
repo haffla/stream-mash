@@ -1,7 +1,6 @@
 package models.service.api
 
 import models.database.facade.SpotifyFacade
-import models.service.oauth.SpotifyService
 import models.service.oauth.SpotifyService.apiEndpoints
 import models.util.Logging
 import play.api.Play.current

@@ -1,7 +1,7 @@
 package models.service.oauth
 
 import models.service.Constants
-import models.service.api.discover.ApiHelper
+import models.service.api.discover.RetrievalProcessMonitor
 import models.service.library.SpotifyLibrary
 import models.service.oauth.SpotifyService.{apiEndpoints, _}
 import models.util.Logging

@@ -1,7 +1,7 @@
 package controllers
 
 import models.auth.Helper
-import models.service.api.discover.{ApiHelper, MusicBrainzApi}
+import models.service.api.discover.{RetrievalProcessMonitor, MusicBrainzApi}
 import play.api.libs.iteratee.{Concurrent, Iteratee}
 import play.api.mvc.{WebSocket, Action, Controller}
 
@@ -27,11 +27,8 @@ class Application extends Controller {
     val (out, channel) = Concurrent.broadcast[String]
     val identifier = Helper.getUserIdentifier(request.session)
     val in = Iteratee.foreach[String] { service =>
-        val apiHelper = new ApiHelper(service, identifier)
-        // Wait a maximum of 2 minutes
-        (1 to 120).toStream.takeWhile { _ =>
-          !apiHelper.retrievalProcessIsDone(channel, 1000)
-        } foreach( _ => apiHelper.getRetrievalProcessStatus)
+        val apiHelper = new RetrievalProcessMonitor(service, identifier)
+        apiHelper.waitForRetrievalProcessToBeDone(channel, 1000)
     }
     (in, out)
   }

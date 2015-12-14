@@ -6,11 +6,11 @@ import play.api.Play.current
 import play.api.libs.iteratee.Concurrent
 import scala.concurrent.duration._
 
-class ApiHelper(service:String, identifier:Either[Int,String]) {
+class RetrievalProcessMonitor(service:String, identifier:Either[Int,String]) {
 
   val id = Helper.userIdentifierToString(identifier)
   val serviceId = id + "|" + service
-  val progressId = id + "|" + service + "|progress"
+  val progressId = serviceId + "|progress"
 
   private def setRetrievalProcess(flag: String) = Cache.set(serviceId, flag, Duration(1, HOURS))
 
@@ -21,9 +21,10 @@ class ApiHelper(service:String, identifier:Either[Int,String]) {
   }
   def setRetrievalProcessPending() = setRetrievalProcess("pending")
 
+
   def getRetrievalProcessStatus = Cache.get(serviceId)
 
-  def retrievalProcessIsDone(channel:Concurrent.Channel[String], pollingTimeout:Int): Boolean = {
+  def waitForRetrievalProcessToBeDone(channel:Concurrent.Channel[String], pollingTimeout:Int):Unit = {
     getRetrievalProcessStatus match {
       case Some(status) =>
         channel push status.toString
@@ -31,14 +32,12 @@ class ApiHelper(service:String, identifier:Either[Int,String]) {
           case Some(progress) => channel push("progress:" + progress.toString)
           case None => channel push "progress:1"
         }
-        if(status == "done") true
-        else {
+        if(status != "done") {
           Thread.sleep(pollingTimeout)
-          false
+          waitForRetrievalProcessToBeDone(channel, pollingTimeout)
         }
       case None =>
         channel push "done"
-        true
     }
   }
 

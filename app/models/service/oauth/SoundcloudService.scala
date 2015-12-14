@@ -3,7 +3,7 @@ package models.service.oauth
 import com.github.haffla.soundcloud.Client
 import models.auth.Helper
 import models.service.Constants
-import models.service.api.discover.ApiHelper
+import models.service.api.discover.RetrievalProcessMonitor
 import models.service.library.SoundcloudLibrary
 import models.service.oauth.SoundcloudService._
 import play.api.cache.Cache

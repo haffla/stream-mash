@@ -28,8 +28,7 @@ class AlbumFacade(identifier:Either[Int,String]) extends MainDatabaseAccess with
     db.run(query.delete)
   }
 
-  def findSingleUserAlbum(name: String, interpret:String)
-                                              :Future[Seq[AlbumFacade.this.Album#TableElementType]] = {
+  def findSingleUserAlbum(name: String, interpret:String):Future[Seq[AlbumFacade.this.Album#TableElementType]] = {
     db.run(albumQuery.filter { albums =>
       identifier match {
         case Left(userId) =>

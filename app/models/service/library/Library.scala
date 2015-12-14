@@ -6,7 +6,7 @@ import models.database.MainDatabaseAccess
 import models.database.alias.Album
 import models.database.facade.AlbumFacade
 import models.messaging.RabbitMQConnection
-import models.service.api.discover.ApiHelper
+import models.service.api.discover.RetrievalProcessMonitor
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import play.api.libs.json.{JsObject, JsValue, Json}
@@ -16,13 +16,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
+import scalikejdbc._
+
 class Library(identifier: Either[Int, String], name:String = "") extends HasDatabaseConfig[JdbcProfile]
                                             with MainDatabaseAccess {
 
-  import driver.api._
+  implicit val session = AutoSession
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
 
-  val apiHelper = new ApiHelper(name, identifier)
+  val apiHelper = new RetrievalProcessMonitor(name, identifier)
 
   /**
    * Cleans the data by transforming the Seq[Map[String,String]]
@@ -63,29 +65,18 @@ class Library(identifier: Either[Int, String], name:String = "") extends HasData
   }
 
   def persist(library: Map[String, Set[String]]):Unit = {
+    val totalLength = library.size
+    var position = 1.0
     library.foreach { collection =>
+      apiHelper.setRetrievalProcessProgress(0.66 + position / totalLength / 3)
+      position = position + 1.0
       val interpret = collection._1
       val albums = collection._2
       albums.foreach { album =>
-        findOrCreateUserAlbum(album, interpret).onComplete {
-          case Success(id) => //println(id)
-          case Failure(t) => println(t.getMessage)
+        sql"select * from album where name=$album and interpret=$interpret".toMap().first().apply() match {
+          case Some(res) =>
+          case None => sql"insert into album (name, interpret, fk_user) values ($album, $interpret, 1)".update().apply()
         }
-      }
-    }
-  }
-
-  private def findOrCreateUserAlbum(name: String, interpret:String):Future[Int] = {
-    AlbumFacade(identifier).findSingleUserAlbum(name,interpret) flatMap { albumList =>
-      if (albumList.nonEmpty) Future.successful(albumList.head.id.get)
-      else {
-        val album = identifier match {
-          case Left(userId) =>
-            Album(name = name, interpret = interpret, fkUser = Some(userId))
-          case Right(sessionKey) =>
-            Album(name = name, interpret = interpret, userSessionKey = Some(sessionKey))
-        }
-        db.run(albumQuery returning albumQuery.map(_.id) += album)
       }
     }
   }
@@ -94,6 +85,7 @@ class Library(identifier: Either[Int, String], name:String = "") extends HasData
     * Gets all collections (album / artist) of user from DB
     */
   def getUsersAlbumCollection:Future[Option[Map[String, Set[String]]]] = {
+    import driver.api._
     val query = identifier match {
       case Left(userId) =>
         albumQuery.filter(_.idUser === userId)

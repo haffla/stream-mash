@@ -31,7 +31,6 @@ class UserController extends Controller {
 
   def deleteCollectionByUser(userId:Int) = AdminAccess.async { implicit request =>
     User.deleteUsersAlbumCollection(userId) map { count =>
-      println(count)
       Ok(Json.toJson(Map("success" -> true)))
     }
   }

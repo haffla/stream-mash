@@ -1,7 +1,7 @@
 package models.service.library
 
 import models.service.Constants
-import models.service.api.discover.{ApiHelper, MusicBrainzApi}
+import models.service.api.discover.{RetrievalProcessMonitor, MusicBrainzApi}
 import play.api.libs.json.JsValue
 
 import scala.concurrent.ExecutionContext.Implicits.global
