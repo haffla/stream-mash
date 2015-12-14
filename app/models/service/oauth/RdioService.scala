@@ -31,7 +31,7 @@ class RdioService(identifier: Either[Int, String]) extends ApiDataRequest("rdio"
   }
 }
 
-object RdioService extends StreamingServiceAbstract {
+object RdioService extends OAuthStreamingServiceAbstract with FavouriteMusicRetrieval {
 
   def apply(identifier: Either[Int, String]) = new RdioService(identifier)
 
@@ -59,24 +59,10 @@ object RdioService extends StreamingServiceAbstract {
     )
   }
 
-  private def requestUsersTracks(token:Option[String]):Future[Option[JsValue]] = {
-    token match {
-      case Some(access_token) =>
-        val data = Map(Constants.jsonKeyAccessToken -> Seq(access_token), "method" -> Seq(apiEndpoints.getFavourites))
-        WS.url(apiEndpoints.mainApi)
-          .withHeaders("Authorization" -> s"Bearer $access_token")
-          .post(data) map {
-            response =>
-              response.status match {
-                case 200 =>
-                  val json = Json.parse(response.body)
-                  Some(json)
-                case http_code =>
-                  Logging.error(ich, Constants.userTracksRetrievalError + ": " +  http_code + "\n" + response.body)
-                  None
-              }
-        }
-      case None => throw new Exception(Constants.accessTokenRetrievalError)
-    }
+  override def favouriteMusicRetrievalRequest(accessToken: String): Future[WSResponse] = {
+    val data = Map(Constants.jsonKeyAccessToken -> Seq(accessToken), "method" -> Seq(apiEndpoints.getFavourites))
+    WS.url(apiEndpoints.mainApi)
+      .withHeaders("Authorization" -> s"Bearer $accessToken")
+      .post(data)
   }
 }

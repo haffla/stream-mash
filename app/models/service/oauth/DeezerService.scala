@@ -9,7 +9,7 @@ import play.api.libs.ws.{WS, WSResponse}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object DeezerService extends StreamingServiceAbstract {
+object DeezerService extends OAuthStreamingServiceAbstract with FavouriteMusicRetrieval {
 
   val clientIdKey = "deezer.app.id"
   val clientSecretKey = "deezer.app.secret"
@@ -42,21 +42,6 @@ object DeezerService extends StreamingServiceAbstract {
     } yield response
   }
 
-  private def requestUsersTracks(token:Option[String]):Future[Option[JsValue]] = {
-    token match {
-      case Some(access_token) =>
-        WS.url(apiEndpoints.tracks).withQueryString("access_token" -> access_token).get() map {
-          response =>
-            response.status match {
-              case 200 =>
-                val json = Json.parse(response.body)
-                Some(json)
-              case http_code =>
-                Logging.error(ich, Constants.userTracksRetrievalError + ": " + http_code + "\n" + response.body)
-                None
-            }
-        }
-      case None => throw new Exception(Constants.accessTokenRetrievalError)
-    }
-  }
+  override def favouriteMusicRetrievalRequest(accessToken: String): Future[WSResponse] =
+    WS.url(apiEndpoints.tracks).withQueryString("access_token" -> accessToken).get()
 }

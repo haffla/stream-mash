@@ -28,7 +28,7 @@ class SpotifyService(identifier: Either[Int, String]) extends ApiDataRequest("sp
   }
 }
 
-object SpotifyService extends StreamingServiceAbstract {
+object SpotifyService extends OAuthStreamingServiceAbstract with FavouriteMusicRetrieval {
 
   def apply(identifier: Either[Int, String]) = new SpotifyService(identifier)
   val clientIdKey = "spotify.client.id"
@@ -63,21 +63,6 @@ object SpotifyService extends StreamingServiceAbstract {
     )
   }
 
-  private def requestUsersTracks(token:Option[String]):Future[Option[JsValue]] = {
-    token match {
-      case Some(accessToken) =>
-        WS.url(apiEndpoints.tracks).withHeaders("Authorization" -> s"Bearer $accessToken").get() map { response =>
-          response.status match {
-            case 200 =>
-              val json = Json.parse(response.body)
-              Some(json)
-            case http_code =>
-              Logging.error(ich, Constants.userTracksRetrievalError + ": " +  http_code + "\n" + response.body)
-              None
-          }
-        }
-      case None => throw new Exception (Constants.accessTokenRetrievalError)
-    }
-
-  }
+  override def favouriteMusicRetrievalRequest(accessToken:String):Future[WSResponse] =
+    WS.url(apiEndpoints.tracks).withHeaders("Authorization" -> s"Bearer $accessToken").get()
 }

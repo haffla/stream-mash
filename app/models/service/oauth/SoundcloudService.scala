@@ -1,12 +1,9 @@
 package models.service.oauth
 
 import com.github.haffla.soundcloud.Client
-import models.auth.Helper
 import models.service.Constants
-import models.service.api.discover.RetrievalProcessMonitor
 import models.service.library.SoundcloudLibrary
 import models.service.oauth.SoundcloudService._
-import play.api.cache.Cache
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.{JsValue, Json}
 
@@ -27,7 +24,7 @@ class SoundcloudService(identifier: Either[Int, String]) extends ApiDataRequest(
   }
 }
 
-object SoundcloudService extends StreamingServiceAbstract {
+object SoundcloudService extends OAuthStreamingServiceAbstract {
 
   def apply(identifier: Either[Int, String]) = new SoundcloudService(identifier)
 
@@ -46,17 +43,21 @@ object SoundcloudService extends StreamingServiceAbstract {
 
   val client = Client(clientId, clientSecret, redirectUri)
 
-  private def requestUsersTracks(userId:String):Future[Option[JsValue]] = {
-    client.users(userId)("favorites") map { favorites =>
-      Some(Json.parse(favorites))
+  def requestUsersTracks(token:Option[String]):Future[Option[JsValue]] = {
+    token match {
+      case Some(userId) =>
+        client.users(userId)("favorites") map { favorites =>
+          Some(Json.parse(favorites))
+        }
+      case None => Future.failed(new Exception(Constants.accessTokenRetrievalError))
     }
   }
 
-  private def getUserId(authCredentials: String):Future[String] = {
+  private def getUserId(authCredentials: String):Future[Option[String]] = {
     (Json.parse(authCredentials) \ "access_token").asOpt[String] match {
       case Some(token) => client.me(token)().map { user =>
         val json = Json.parse(user)
-        (json \ "id").as[Int].toString
+        Some((json \ "id").as[Int].toString)
       }
       case None => Future.failed(new Exception(Constants.accessTokenRetrievalError))
     }

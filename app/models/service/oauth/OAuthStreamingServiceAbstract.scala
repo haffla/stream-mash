@@ -2,14 +2,14 @@ package models.service.oauth
 
 import models.service.Constants
 import models.util.Logging
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSResponse
 import play.api.{Play, PlayException}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-abstract class StreamingServiceAbstract {
+abstract class OAuthStreamingServiceAbstract {
 
   val clientIdKey:String
   val clientSecretKey:String
@@ -41,7 +41,6 @@ abstract class StreamingServiceAbstract {
       "Example: current.host=\"http://example.com\". Falling back to development uri http://localhost:9000")
 
       "http://localhost:9000" + redirectUriPath
-
   }
 
   def getAccessToken(futureReponse: Future[WSResponse]): Future[Option[String]] = {
