@@ -1,10 +1,11 @@
-@(service:String)(implicit flash: Flash, session: Session, request: RequestHeader)
+@(service:String, openModal:String)(implicit flash: Flash, session: Session, request: RequestHeader)
 
 @main("iTunes", List("lodash", "react")) {
     <div id="content"></div>
 
     <script type='text/javascript'>
         window.streamingservice = {'name': '@service', 'url': '@routes.Application.socket().webSocketURL()'};
+        window.itunes = {'openmodal': '@openModal'};
     </script>
 
     <script type='text/javascript' src='@routes.Assets.versioned("javascripts/artistbox.js")'></script>

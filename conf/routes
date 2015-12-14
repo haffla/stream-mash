@@ -19,7 +19,7 @@ GET         /soundcloud/callback        controllers.SoundcloudController.callbac
 GET         /soundcloud/login           controllers.SoundcloudController.login
 
 ### iTunes
-GET         /itunes                     controllers.ItunesController.index(service:String ?= "")
+GET         /itunes                     controllers.ItunesController.index(service:String ?= "", openModal:String ?= "no")
 POST        /itunes                     controllers.ItunesController.fileUpload
 
 ### Deezer

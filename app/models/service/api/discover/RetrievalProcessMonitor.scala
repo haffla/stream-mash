@@ -36,8 +36,7 @@ class RetrievalProcessMonitor(service:String, identifier:Either[Int,String]) {
           Thread.sleep(pollingTimeout)
           waitForRetrievalProcessToBeDone(channel, pollingTimeout)
         }
-      case None =>
-        channel push "done"
+      case None => channel push "done"
     }
   }
 

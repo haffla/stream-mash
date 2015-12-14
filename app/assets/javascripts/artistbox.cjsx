@@ -62,6 +62,9 @@ MainComponent = React.createClass
         if _.size(data) > 0
           $('#artistBox').removeClass('hidden')
         @setTheState(data, true)
+        if window.itunes.openmodal is 'yes'
+          $('#fileuploadmodal').modal('show')
+
       line.animate(0)
     $.get '/collection/fromdb', callback, 'json'
 
@@ -83,6 +86,8 @@ MainComponent = React.createClass
         contentType: false
         processData: false
         success: (data) =>
+          $('#fileuploadmodal').modal 'hide'
+          window.itunes.openmodal = 'no'
           if !data.error
             $('#artistBox').removeClass('hidden')
             $('#dropzone').removeClass('dropped hover')
@@ -147,23 +152,7 @@ MainComponent = React.createClass
 
         <div className="row">
 
-            <div className="col-lg-8 col-md-8 col-sm-12">
-              <div title="Drop your iTunes Library file here" id="dropzone" onDragOver={@preventDef}
-                   onDrop={@drop} onDragEnter={@dragEnter} onDragLeave={@dragLeave}>
-              </div>
-              <div className="drop-instruction centered">
-                {
-                  if @isMac()
-                    <h4>{sentence} <br/>/Users/[username]/Music/iTunes/iTunes Music Library.xml<br/>{dropSentence}</h4>
-                  else if @isWindows()
-                    <h4>{sentence} <br/>C:\Users\[username]\Music\iTunes\iTunes Music Library.xml<br/>{dropSentence}</h4>
-                  else
-                    <h4>You don&apos;t seem to be neither a Mac nor a Windows user.<br/>Drop your iTunes Music Library.xml above!</h4>
-                }
-              </div>
-            </div>
-
-            <div className="col-lg-4 col-md-4">
+            <div className="col-md-4 col-sm-6 col-xs-6">
               <div className="collection-stats">
                 <p>Artists: {@state.nr_artists}</p>
                 <p>Albums: {@state.nr_albums}</p>
@@ -174,6 +163,46 @@ MainComponent = React.createClass
                   <input type="text" className="form-control" onKeyUp={@filterArtists} placeholder="Filter by artist" aria-describedby="basic-addon1" />
                 </div>
               </div>
+            </div>
+
+            <div className="col-md-5 col-md-offset-3 col-sm-6 col-xs-6">
+
+              <button className="btn btn-primary" data-target="#fileuploadmodal" role="button" class="btn btn-large btn-primary" data-toggle="modal">
+                Import Music from Itunes XML File
+              </button>
+
+              {### MODAL TO UPLOAD Itunes File ###}
+
+              <div id="fileuploadmodal" className="modal fade">
+                  <div className="modal-dialog">
+                      <div className="modal-content">
+                          <div className="modal-header">
+                              <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                          </div>
+                          <div className="modal-body">
+                              <div title="Drop your iTunes Library file here" id="dropzone" onDragOver={@preventDef}
+                                   onDrop={@drop} onDragEnter={@dragEnter} onDragLeave={@dragLeave}>
+                              </div>
+                              <div className="drop-instruction centered">
+                                {
+                                  if @isMac()
+                                    <h4>{sentence} <br/>/Users/[username]/Music/iTunes/iTunes Music Library.xml<br/>{dropSentence}</h4>
+                                  else if @isWindows()
+                                    <h4>{sentence} <br/>C:\Users\[username]\Music\iTunes\iTunes Music Library.xml<br/>{dropSentence}</h4>
+                                  else
+                                    <h4>Drop your iTunes Music Library.xml above on the logo!</h4>
+                                }
+                              </div>
+                          </div>
+                          <div className="modal-footer">
+                              <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+                              <button type="button" className="btn btn-primary">Show Normal File Upload Dialog</button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              {### END MODAL ###}
+
             </div>
 
         </div>

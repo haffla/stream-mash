@@ -14,8 +14,8 @@ import scala.concurrent.Future
 
 class ItunesController extends Controller {
 
-  def index(service:String = "") = IdentifiedBySession { implicit request =>
-    Ok(views.html.itunes.index(service))
+  def index(service:String = "", openModal:String = "no") = IdentifiedBySession { implicit request =>
+    Ok(views.html.itunes.index(service, openModal))
   }
 
   def fileUpload = IdentifiedBySession.async(parse.multipartFormData) { implicit request =>

@@ -65,6 +65,14 @@ class Library(identifier: Either[Int, String], name:String = "") extends HasData
   }
 
   def persist(library: Map[String, Set[String]]):Unit = {
+    val fkUserField:SQLSyntax = identifier match {
+      case Left(_) => sqls"fk_user"
+      case Right(_) => sqls"user_session_key"
+    }
+    val id = identifier match {
+      case Left(id) => id
+      case Right(sessionKey) => sessionKey
+    }
     val totalLength = library.size
     var position = 1.0
     library.foreach { collection =>
@@ -75,7 +83,7 @@ class Library(identifier: Either[Int, String], name:String = "") extends HasData
       albums.foreach { album =>
         sql"select * from album where name=$album and interpret=$interpret".toMap().first().apply() match {
           case Some(res) =>
-          case None => sql"insert into album (name, interpret, fk_user) values ($album, $interpret, 1)".update().apply()
+          case None => sql"insert into album (name, interpret, $fkUserField) values ($album, $interpret, $id)".update().apply()
         }
       }
     }
