@@ -26,15 +26,13 @@ class ItunesController extends Controller {
         .getOrElse("user-" + System.currentTimeMillis)
       val xmlPath = s"/tmp/$filename$username"
       file.ref.moveTo(new File(xmlPath))
-      val f = new File(xmlPath)
-      val fileBody:String = scala.io.Source.fromFile(f).getLines().mkString
+      val fileBody:String = scala.io.Source.fromFile(xmlPath).getLines().mkString
       val fileHash = MessageDigest.md5(fileBody)
       User.iTunesFileProcessedAlready(identifier,fileHash) map {
         bool => if (!bool) {
           //user has submitted the exact same file. load from db.
           User.saveItunesFileHash(identifier, fileHash)
           new ItunesLibrary(identifier, xmlPath).saveCollection()
-          cleanUp(f)
         }
       }
       Future.successful(Ok(Json.toJson(Map("error" -> false))))
@@ -42,9 +40,5 @@ class ItunesController extends Controller {
       val jsonResponse = Json.toJson(Map("error" -> "Could not read the file"))
       Future.successful(Ok(jsonResponse))
     }
-  }
-
-  private def cleanUp(f:File) = {
-    Files.delete(f.toPath)
   }
 }

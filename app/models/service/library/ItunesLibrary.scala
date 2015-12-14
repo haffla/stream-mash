@@ -1,9 +1,14 @@
 package models.service.library
 
-import scala.xml.Node
+import java.io.File
+import java.nio.file.Files
 
-class ItunesLibrary(identifier: Either[Int, String], xmlPath:String = "")
-                                    extends Library(identifier, "itunes") {
+import scala.concurrent.Future
+import scala.xml.Node
+import scala.concurrent.ExecutionContext.Implicits.global
+
+class ItunesLibrary(identifier: Either[Int, String], xmlPath:String = "", persist:Boolean = true)
+                                    extends Library(identifier, "itunes", persist) {
 
   val labelDict = "dict"
   val labelKey  = "key"
@@ -31,10 +36,19 @@ class ItunesLibrary(identifier: Either[Int, String], xmlPath:String = "")
     }.filter(_.size >= minTupleLength)
   }
 
-  def saveCollection():Unit = {
+  def saveCollection():Future[Map[String, Set[String]]] = {
     apiHelper.setRetrievalProcessPending()
-    val lib:Seq[Map[String,String]] = parseXml
-    convertSeqToMap(lib, informationToExtract.head, informationToExtract(1))
-    apiHelper.setRetrievalProcessDone()
+    Future {
+      val lib:Seq[Map[String,String]] = parseXml
+      val seq = convertSeqToMap(lib, informationToExtract.head, informationToExtract(1))
+      cleanUp()
+      apiHelper.setRetrievalProcessDone()
+      seq
+    }
+  }
+
+  private def cleanUp() = {
+    val f = new File(xmlPath)
+    Files.delete(f.toPath)
   }
 }

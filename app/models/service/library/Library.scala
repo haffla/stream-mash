@@ -18,7 +18,7 @@ import scala.util.{Failure, Success}
 
 import scalikejdbc._
 
-class Library(identifier: Either[Int, String], name:String = "") extends HasDatabaseConfig[JdbcProfile]
+class Library(identifier: Either[Int, String], name:String = "", persist:Boolean = true) extends HasDatabaseConfig[JdbcProfile]
                                             with MainDatabaseAccess {
 
   implicit val session = AutoSession
@@ -44,7 +44,7 @@ class Library(identifier: Either[Int, String], name:String = "") extends HasData
       }
       prev + (artist -> added)
     }
-    persist(result)
+    if(persist) persist(result)
     result
   }
 
