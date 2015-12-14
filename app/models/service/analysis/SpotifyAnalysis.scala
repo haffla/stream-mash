@@ -13,10 +13,7 @@ import scala.concurrent.Future
 class SpotifyAnalysis(identifier:Either[Int,String]) {
 
   val serviceAccessTokenCache = new ServiceAccessTokenCache("spotify", identifier)
-  val token:String = serviceAccessTokenCache.getAccessToken match {
-    case Some(t) => t
-    case None => "affenkot"
-  }
+  val token:Option[String] = serviceAccessTokenCache.getAccessToken
 
   val searchEndpoint = "https://api.spotify.com/v1/artists/"
 
@@ -52,9 +49,14 @@ class SpotifyAnalysis(identifier:Either[Int,String]) {
     val results:Future[Set[JsValue]] = Future.sequence {
       searchList map { artistId =>
         val url = searchEndpoint + artistId + "/albums?market=DE&album_type=album"
-        WS.url(url).withHeaders("Authorization" -> s"Bearer $token").get() map { response =>
-          Json.parse(response.body)
+        token match {
+          case Some(t) =>
+            WS.url(url).withHeaders("Authorization" -> s"Bearer $t").get() map { response =>
+              Json.parse(response.body)
+            }
+          case None => Future.failed(new Exception("An access token could not be found"))
         }
+
       }
     }
     results map(_.head) // TODO
