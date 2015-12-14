@@ -1,7 +1,7 @@
 package controllers
 
 import models.auth.{IdentifiedBySession, Helper}
-import models.database.facade.SpotifyFacade
+import models.database.facade.ArtistFacade
 import models.service.Constants
 import models.service.api.SpotifyApiFacade
 import models.service.oauth.SpotifyService
@@ -40,15 +40,21 @@ class SpotifyController extends Controller {
   }
 
   def getSpotifyArtistId = IdentifiedBySession.async { implicit request =>
-    val artist = request.getQueryString("artist").get
-    SpotifyFacade.getSpotifyIdForArtistFromDb(artist) flatMap {
-      case Some(spotifyId) => Future.successful(Ok(Json.toJson(Map("spotify_id" -> spotifyId))))
+    val identifier = Helper.getUserIdentifier(request.session)
+    val artistName = request.getQueryString("artist").get
+    val x = ArtistFacade(identifier).getArtistByName(artistName) map {
+      case Some(artist) => artist.spotifyId
+      case None => None
+    }
+    x flatMap {
+      case Some(id) => Future.successful(Ok(Json.toJson(Map("spotify_id" -> id))))
       case None =>
-        val id:Future[Option[String]] = SpotifyApiFacade.getArtistId(artist)
+        val id:Future[Option[String]] = SpotifyApiFacade.getArtistId(artistName)
         id map {
-          case Some(sp) => Ok(Json.toJson(Map("spotify_id" -> sp)))
+          case Some(spId) => Ok(Json.toJson(Map("spotify_id" -> spId)))
           case None => Ok(Json.toJson(Map("error" -> "Did not find a Spotify ID")))
         }
     }
+
   }
 }
