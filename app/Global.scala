@@ -1,4 +1,4 @@
-import models.messaging.listen.spotify.ArtistIdListener
+import models.messaging.listen.ArtistIdListener
 
 object Global extends play.api.GlobalSettings {
 

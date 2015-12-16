@@ -1,4 +1,4 @@
-package models.messaging.listen.spotify
+package models.messaging.listen
 
 import com.rabbitmq.client._
 import models.Config

@@ -1,25 +1,18 @@
 package models.service.library
 
-import com.rabbitmq.client.MessageProperties
-import models.Config
 import models.database.MainDatabaseAccess
-import models.database.alias.Album
-import models.database.facade.AlbumFacade
-import models.messaging.RabbitMQConnection
+import models.messaging.push.ArtistIdPusher
 import models.service.api.discover.RetrievalProcessMonitor
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import play.api.libs.json.{JsObject, JsValue, Json}
 import slick.driver.JdbcProfile
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-import scala.util.{Failure, Success}
-
 import scalikejdbc._
 
 class Library(identifier: Either[Int, String], name:String = "", persist:Boolean = true) extends HasDatabaseConfig[JdbcProfile]
-                                            with MainDatabaseAccess {
+                                            with MainDatabaseAccess
+                                            with ArtistIdPusher {
 
   implicit val session = AutoSession
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
@@ -70,7 +63,7 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
       case Right(_) => sqls"user_session_key"
     }
     val id = identifier match {
-      case Left(id) => id
+      case Left(userId) => userId
       case Right(sessionKey) => sessionKey
     }
     val totalLength = library.size
@@ -87,15 +80,5 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
         }
       }
     }
-  }
-
-  def pushToArtistIdQueue(name: String, id: String, typ:String) = {
-    val connection = RabbitMQConnection.getConnection()
-    val channel = connection.createChannel()
-    channel.queueDeclare(Config.rabbitArtistIdQueue, true, false, false, null)
-    val message = Json.toJson(Map("name" -> name, "id" -> id, "type" -> typ)).toString()
-    channel.basicPublish("", Config.rabbitArtistIdQueue, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes)
-    channel.close()
-    connection.close()
   }
 }

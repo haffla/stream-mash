@@ -12,6 +12,8 @@ import scala.concurrent.Future
 
 object SpotifyApiFacade extends ApiFacade {
 
+  val typ = "spotify"
+
   def getArtistId(artist:String):Future[Option[String]] = {
     WS.url(apiEndpoints.search).withQueryString("type" -> "artist", "q" -> artist).get().map {
       response =>
@@ -21,7 +23,7 @@ object SpotifyApiFacade extends ApiFacade {
             val artists = (json \ "artists" \ "items").as[List[JsObject]]
             if(artists.nonEmpty) {
               val id = (artists.head \ "id").asOpt[String]
-              SpotifyFacade.saveArtistWithServiceId(artist, id.get)
+              pushToArtistIdQueue(artist, id.get)
               id
             }
             else None
