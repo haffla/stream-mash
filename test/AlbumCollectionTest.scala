@@ -18,7 +18,7 @@ class AlbumCollectionTest extends UnitSpec with ScalaFutures {
     val library = new Library(identifier)
     library.persist(albums)
 
-    Thread.sleep(500) // Need to wait a little for the data to be saved in DB
+    Thread.sleep(1000) // Need to wait a little for the data to be saved in DB
 
     val fromDb = AlbumFacade(identifier).getUsersAlbumCollection
     whenReady(fromDb) { collection =>
