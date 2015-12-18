@@ -12,8 +12,9 @@ trait MainDatabaseAccess {
     def name = column[String]("name")
     def password = column[String]("password")
     def itunesFileHash = column[String]("itunes_file_hash")
+    def spotifyToken = column[String]("spotify_token")
     def index:Index = index("idx_name", name, unique=true)
-    def * = (id.?, name, password, itunesFileHash.?) <> ((alias.Account.apply _).tupled, alias.Account.unapply _)
+    def * = (id.?, name, password, itunesFileHash.?, spotifyToken.?) <> ((alias.Account.apply _).tupled, alias.Account.unapply _)
   }
 
   val accountQuery = TableQuery[Account]
