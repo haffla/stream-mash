@@ -16,10 +16,8 @@ class ServiceAccessTokenCache(service:String, identifier:Either[Int,String]) {
       case Some(t) => Cache.set(cacheKey + service, t)
       case None =>
     }
-
   }
 
-  def getAccessToken:Option[String] = {
-    Cache.getAs[String](cacheKey + service)
-  }
+  def getAccessToken:Option[String] = Cache.getAs[String](cacheKey + service)
+
 }

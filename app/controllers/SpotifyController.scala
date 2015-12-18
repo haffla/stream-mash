@@ -48,9 +48,11 @@ class SpotifyController extends Controller {
     } flatMap {
       case Some(id) => Future.successful(Ok(Json.toJson(Map("spotify_id" -> id))))
       case None =>
-        val id:Future[Option[String]] = SpotifyApiFacade.getArtistId(artistName)
+        val id:Future[Option[(String,String)]] = SpotifyApiFacade.getArtistId(artistName)
         id map {
-          case Some(spId) => Ok(Json.toJson(Map("spotify_id" -> spId)))
+          case Some(spId) =>
+            val id = spId._2
+            Ok(Json.toJson(Map("spotify_id" -> id)))
           case None => Ok(Json.toJson(Map("error" -> "Did not find a Spotify ID")))
         }
     }

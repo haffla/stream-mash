@@ -24,7 +24,7 @@
         <h3>@messages.getOrElse("title", "Ouch, something terrible must have happened. Please excuse us.")</h3>
         @messages.get("exceptionMessage").map { ex =>
             <p>I've got some nice piece of literature for you here. Get ready!</p>
-            <pre>ex</pre>
+            <pre>@ex</pre>
         }
         @messages.get("path").map { path =>
             <p>What were you looking for here?</p>

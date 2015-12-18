@@ -10,9 +10,8 @@ import play.api.Play.current
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SpotifyAnalysis(identifier:Either[Int,String]) {
+class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(identifier, "spotify") {
 
-  val serviceAccessTokenCache = new ServiceAccessTokenCache("spotify", identifier)
   val token:Option[String] = serviceAccessTokenCache.getAccessToken
 
   val searchEndpoint = "https://api.spotify.com/v1/artists/"
@@ -24,18 +23,22 @@ class SpotifyAnalysis(identifier:Either[Int,String]) {
     for {
       albums <- albumFacade.getUsersAlbumCollection
       ids <- getIds(albums)
-      artists <- getSeveralArtists(ids)
-    } yield artists
+      artists <- getAlbumsOfArtists(ids)
+    } yield artists.head._2
   }
 
-  def getIds(albums: Option[Map[String, Set[String]]]):Future[Set[Option[String]]] = {
+  def getIds(albums: Option[Map[String, Set[String]]]):Future[Set[Option[(String,String)]]] = {
     albums match {
       case Some(albs) =>
         val artists = albs.keySet
         Future.sequence {
           artists.map { artist =>
             artistFacade.getArtistByName(artist) flatMap {
-              case Some(art) => Future.successful(art.spotifyId)
+              case Some(art) =>
+                art.spotifyId match {
+                  case Some(id) => Future.successful(Some((artist, id)))
+                  case None => SpotifyApiFacade.getArtistId(artist)
+                }
               case None => SpotifyApiFacade.getArtistId(artist)
             }
           }
@@ -44,22 +47,37 @@ class SpotifyAnalysis(identifier:Either[Int,String]) {
     }
   }
 
-  def getSeveralArtists(ids: Set[Option[String]]):Future[JsValue] = {
-    val searchList:Set[String] = ids.filter(_.isDefined).map(_.get)
-    val results:Future[Set[JsValue]] = Future.sequence {
-      searchList map { artistId =>
+  def getAlbumsOfArtists(ids: Set[Option[(String,String)]]):Future[Set[(String,JsValue)]] = {
+    val searchList:Set[(String,String)] = ids.filter(_.isDefined).map(_.get)
+    Future.sequence {
+      searchList map { artist =>
+        val artistName = artist._1
+        val artistId = artist._2
         val url = searchEndpoint + artistId + "/albums?market=DE&album_type=album"
         token match {
           case Some(t) =>
             WS.url(url).withHeaders("Authorization" -> s"Bearer $t").get() map { response =>
-              Json.parse(response.body)
+              (artistName, Json.parse(response.body))
             }
           case None => Future.failed(new Exception("An access token could not be found"))
         }
-
       }
     }
-    results map(_.head) // TODO
+  }
+
+  def processResponses(responses: Future[Set[(String,JsValue)]]) = {
+    responses map { jsSet =>
+      jsSet.foreach { jsTuple =>
+        processSingleResponse(jsTuple)
+      }
+    }
+  }
+
+  def processSingleResponse(jsTuple:(String,JsValue)) = {
+    val artist = jsTuple._1
+    val js = jsTuple._2
+    val items = (js \ "items").as[JsValue]
+    
   }
 }
 
