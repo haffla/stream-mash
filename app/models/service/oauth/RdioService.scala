@@ -4,7 +4,7 @@ import models.auth.MessageDigest
 import models.service.Constants
 import models.service.library.RdioLibrary
 import models.service.oauth.RdioService._
-import models.service.util.ServiceAccessTokenCache
+import models.service.util.ServiceAccessTokenHelper
 import models.util.Logging
 import play.api.Play.current
 import play.api.libs.json.{JsValue, Json}
@@ -16,7 +16,7 @@ import scala.concurrent.Future
 class RdioService(identifier: Either[Int, String]) extends ApiDataRequest("rdio", identifier) {
 
   val library = new RdioLibrary(identifier)
-  override val serviceAccessTokenCache = new ServiceAccessTokenCache("rdio", identifier)
+  override val serviceAccessTokenCache = new ServiceAccessTokenHelper("rdio", identifier)
 
   def doDataRequest(code:String) = {
     val data = apiEndpoints.data + ("code" -> Seq(code))

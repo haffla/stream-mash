@@ -2,7 +2,7 @@ package models.service.api.refresh
 
 import models.auth.MessageDigest
 import models.service.oauth.OAuthStreamingServiceAbstract
-import models.service.util.ServiceAccessTokenCache
+import models.service.util.ServiceAccessTokenHelper
 import play.api.libs.ws.WS
 import play.api.Play.current
 
@@ -16,7 +16,7 @@ class SpotifyRefresh(identifier:Either[Int,String]) extends OAuthStreamingServic
   val cookieKey = null
   val redirectUriPath = null
 
-  val serviceAccessTokenCache = new ServiceAccessTokenCache("spotify", identifier)
+  val serviceAccessTokenCache = new ServiceAccessTokenHelper("spotify", identifier)
 
   private def getRequest(token:String) = {
     println("got some token: " + token)

@@ -4,7 +4,7 @@ import models.service.Constants
 import models.service.api.discover.RetrievalProcessMonitor
 import models.service.library.SpotifyLibrary
 import models.service.oauth.SpotifyService.{apiEndpoints, _}
-import models.service.util.ServiceAccessTokenCache
+import models.service.util.ServiceAccessTokenHelper
 import models.util.Logging
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -16,7 +16,7 @@ import scala.concurrent.Future
 class SpotifyService(identifier: Either[Int, String]) extends ApiDataRequest("spotify", identifier) {
 
   val library = new SpotifyLibrary(identifier)
-  override val serviceAccessTokenCache = new ServiceAccessTokenCache("spotify", identifier)
+  override val serviceAccessTokenCache = new ServiceAccessTokenHelper("spotify", identifier)
 
   def doDataRequest(code:String) = {
     val data = apiEndpoints.data + ("code" -> Seq(code))

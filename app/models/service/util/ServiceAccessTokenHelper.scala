@@ -4,7 +4,7 @@ import models.User
 import play.api.cache.Cache
 import play.api.Play.current
 
-class ServiceAccessTokenCache(service:String, identifier:Either[Int,String]) {
+class ServiceAccessTokenHelper(service:String, identifier:Either[Int,String]) {
 
   val id = identifier match {
     case Left(i) => i

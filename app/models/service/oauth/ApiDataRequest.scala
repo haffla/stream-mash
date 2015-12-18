@@ -1,14 +1,14 @@
 package models.service.oauth
 
 import models.service.api.discover.RetrievalProcessMonitor
-import models.service.util.ServiceAccessTokenCache
+import models.service.util.ServiceAccessTokenHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 abstract class ApiDataRequest(name:String, identifier:Either[Int,String]) {
   val apiHelper = new RetrievalProcessMonitor(name, identifier)
-  val serviceAccessTokenCache:ServiceAccessTokenCache
+  val serviceAccessTokenCache:ServiceAccessTokenHelper
 
   def requestUserData(code:String):Unit = {
     apiHelper.setRetrievalProcessPending()
