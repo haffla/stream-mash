@@ -2,7 +2,6 @@ package models.service.analysis
 
 import models.database.facade.{ArtistFacade, AlbumFacade}
 import models.service.api.SpotifyApiFacade
-import models.service.util.ServiceAccessTokenCache
 import models.util.Logging
 import play.api.libs.json.{Json, JsValue}
 import play.api.libs.ws.WS
@@ -24,11 +23,12 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
     for {
       albums <- albumFacade.getUsersAlbumCollection
       ids <- getIds(albums)
-      artists <- getAlbumsOfArtists(ids)
-    } yield artists.head._2
+      albums <- getAlbumsOfArtists(ids)
+      res = processResponses(albums)
+    } yield albums.head._2
   }
 
-  def getIds(albums: Option[Map[String, Set[String]]]):Future[Set[Option[(String,String)]]] = {
+  private def getIds(albums: Option[Map[String, Set[String]]]):Future[Set[Option[(String,String)]]] = {
     albums match {
       case Some(albs) =>
         val artists = albs.keySet
@@ -48,13 +48,13 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
     }
   }
 
-  def getAlbumsOfArtists(ids: Set[Option[(String,String)]]):Future[Set[(String,JsValue)]] = {
+  private def getAlbumsOfArtists(ids: Set[Option[(String,String)]]):Future[Set[(String,JsValue)]] = {
     val searchList:Set[(String,String)] = ids.filter(_.isDefined).map(_.get)
     Future.sequence {
       searchList map { artist =>
         val artistName = artist._1
         val artistId = artist._2
-        val url = searchEndpoint + artistId + "/albums?market=DE&album_type=album"
+        val url = searchEndpoint + artistId + "/albums?market=DE&album_type=album,single&limit=50"
         token match {
           case Some(t) =>
             WS.url(url).withHeaders("Authorization" -> s"Bearer $t").get() map { response =>
@@ -69,19 +69,18 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
     }
   }
 
-  def processResponses(responses: Future[Set[(String,JsValue)]]) = {
-    responses map { jsSet =>
-      jsSet.foreach { jsTuple =>
-        processSingleResponse(jsTuple)
-      }
+  private def processResponses(jsSet: Set[(String,JsValue)]):Map[String,Set[String]] = {
+    jsSet.toList.foldLeft(Map[String,Set[String]]()) { (prev, jsTuple) =>
+      prev ++ processSingleResponse(jsTuple)
     }
   }
 
-  def processSingleResponse(jsTuple:(String,JsValue)) = {
-    val artist = jsTuple._1
-    val js = jsTuple._2
-    val items = (js \ "items").as[JsValue]
-    
+  private def processSingleResponse(artistJsTuple:(String,JsValue)):Map[String,Set[String]] = {
+    val artist = artistJsTuple._1
+    val js = artistJsTuple._2
+    val items = (js \ "items").as[List[JsValue]]
+    val albums:Set[String] = items.map(item => (item \ "name").as[String]).toSet
+    Map(artist -> albums)
   }
 }
 
