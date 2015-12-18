@@ -74,7 +74,7 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
       val interpret = collection._1
       val albums = collection._2
       albums.foreach { album =>
-        sql"select * from album where name=$album and interpret=$interpret".toMap().first().apply() match {
+        sql"select * from album where name=$album and interpret=$interpret and $fkUserField=$id".toMap().first().apply() match {
           case Some(res) =>
           case None => sql"insert into album (name, interpret, $fkUserField) values ($album, $interpret, $id)".update().apply()
         }
