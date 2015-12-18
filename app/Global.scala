@@ -12,7 +12,6 @@ object Global extends play.api.GlobalSettings {
   }
 
   override def onError(request: RequestHeader, ex: Throwable) = {
-    val title = "Melody Mess - No Luck"
     val exceptionMessage = ex.getMessage
     Future.successful(InternalServerError(views.html.error(
       Map(

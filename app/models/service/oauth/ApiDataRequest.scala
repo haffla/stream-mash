@@ -14,7 +14,11 @@ abstract class ApiDataRequest(name:String, identifier:Either[Int,String]) {
     apiHelper.setRetrievalProcessPending()
     doDataRequest(code) map {token =>
       apiHelper.setRetrievalProcessDone()
-      serviceAccessTokenCache.setAccessToken(token)
+      token match {
+        case Some(tkn) => serviceAccessTokenCache.setAccessToken(tkn)
+        case None =>
+      }
+
     }
   }
 

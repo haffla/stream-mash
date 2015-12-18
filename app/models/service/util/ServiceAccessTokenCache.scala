@@ -12,13 +12,9 @@ class ServiceAccessTokenCache(service:String, identifier:Either[Int,String]) {
   }
   val cacheKey = "access_token" + id
   
-  def setAccessToken(token:Option[String]) = {
-    token match {
-      case Some(t) =>
-        Cache.set(cacheKey + service, t)
-        if(identifier.isLeft) User(identifier).setServiceToken(service, t)
-      case None =>
-    }
+  def setAccessToken(token:String) = {
+    Cache.set(cacheKey + service, token)
+    if(identifier.isLeft) User(identifier).setServiceToken(service, token)
   }
 
   def getAccessToken:Option[String] = {

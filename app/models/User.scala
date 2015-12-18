@@ -33,7 +33,6 @@ class User(identifier:Either[Int, String]) extends MainDatabaseAccess with HasDa
   }
 
   def setServiceToken(service:String, token:String) = {
-    println("hello")
     identifier match {
       case Left(id) =>
         val field = service match {
