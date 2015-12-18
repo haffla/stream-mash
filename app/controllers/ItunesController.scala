@@ -28,10 +28,11 @@ class ItunesController extends Controller {
       file.ref.moveTo(new File(xmlPath))
       val fileBody:String = scala.io.Source.fromFile(xmlPath).getLines().mkString
       val fileHash = MessageDigest.md5(fileBody)
-      User.iTunesFileProcessedAlready(identifier,fileHash) map {
+      val userModel = User(identifier)
+      userModel.iTunesFileProcessedAlready(fileHash) map {
         bool => if (!bool) {
           //user has submitted the exact same file. load from db.
-          User.saveItunesFileHash(identifier, fileHash)
+          userModel.saveItunesFileHash(fileHash)
           new ItunesLibrary(identifier, xmlPath).saveCollection()
         }
       }

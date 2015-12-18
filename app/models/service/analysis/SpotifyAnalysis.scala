@@ -3,6 +3,7 @@ package models.service.analysis
 import models.database.facade.{ArtistFacade, AlbumFacade}
 import models.service.api.SpotifyApiFacade
 import models.service.util.ServiceAccessTokenCache
+import models.util.Logging
 import play.api.libs.json.{Json, JsValue}
 import play.api.libs.ws.WS
 import play.api.Play.current
@@ -57,6 +58,9 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
         token match {
           case Some(t) =>
             WS.url(url).withHeaders("Authorization" -> s"Bearer $t").get() map { response =>
+              if(response.status != 200) {
+                Logging.debug(this.getClass.toString, response.body.toString)
+              }
               (artistName, Json.parse(response.body))
             }
           case None => Future.failed(new Exception("An access token could not be found"))

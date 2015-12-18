@@ -34,10 +34,10 @@ abstract class ServiceFacade extends MainDatabaseAccess with HasDatabaseConfig[J
   }
 
   private def updateServiceId(artistId: Int, serviceId: String): Unit = {
-    sql"update artist set ${serviceFieldName}=$serviceId where id_artist=$artistId".update().apply()
+    sql"update artist set $serviceFieldName=$serviceId where id_artist=$artistId".update().apply()
   }
 
   private def createNewArtistWithId(artistName: String, serviceId: String) = {
-    sql"insert into artist (name, ${serviceFieldName}) VALUES ($artistName, $serviceId)".update().apply()
+    sql"insert into artist (name, $serviceFieldName) VALUES ($artistName, $serviceId)".update().apply()
   }
 }

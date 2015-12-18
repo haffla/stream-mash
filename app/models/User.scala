@@ -11,12 +11,78 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.Play.current
 import slick.driver.JdbcProfile
 
+import scalikejdbc._
+
 import scala.concurrent.Future
+
+class User(identifier:Either[Int, String]) extends MainDatabaseAccess with HasDatabaseConfig[JdbcProfile] {
+
+  val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+  implicit val session = AutoSession
+
+  def getServiceToken(service:String):Option[String] = {
+    identifier match {
+      case Left(id) =>
+        val tokenField = service match {
+          case "spotify" => sqls"spotify_token"
+          case _ => throw new IllegalArgumentException("The given service '$service' is not supported")
+        }
+        sql"select $tokenField from account where id_user=$id".map(rs => rs.string(service + "_token")).single.apply()
+      case Right(_) => None
+    }
+  }
+
+  def setServiceToken(service:String, token:String) = {
+    println("hello")
+    identifier match {
+      case Left(id) =>
+        val field = service match {
+          case "spotify" => sqls"spotify_token"
+          case _ => throw new IllegalArgumentException("The given service '$service' is not supported")
+        }
+        sql"update account set $field=$token where id_user=$id".update.apply()
+
+      case Right(_) =>
+    }
+  }
+
+  import driver.api._
+
+  def saveItunesFileHash(hash:String) = {
+    identifier match {
+      case Left(userId) =>
+        val iTunesFileHash = for { account <- accountQuery if account.id === userId } yield account.itunesFileHash
+        db.run(iTunesFileHash.update(hash))
+      case Right(sessionKey) =>
+        Cache.set(Constants.fileHashCacheKeyPrefix + sessionKey, hash)
+    }
+  }
+
+  def iTunesFileProcessedAlready(hash:String):Future[Boolean] =  {
+    identifier match {
+      case Left(userId) =>
+        db.run(accountQuery.filter(_.id === userId).result map { account =>
+          account.head.itunesFileHash match {
+            case Some(s) => s == hash
+            case None => false
+          }
+        })
+      case Right(sessionKey) =>
+        val result = Cache.getAs[String](Constants.fileHashCacheKeyPrefix + sessionKey) match {
+          case Some(storedHash) => storedHash == hash
+          case None => false
+        }
+        Future.successful(result)
+    }
+  }
+}
 
 object User extends MainDatabaseAccess with HasDatabaseConfig[JdbcProfile] {
 
   val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
   import driver.api._
+
+  def apply(identifier:Either[Int,String]) = new User(identifier)
 
   /**
    * Updates all album entities of the session identified user
@@ -42,34 +108,6 @@ object User extends MainDatabaseAccess with HasDatabaseConfig[JdbcProfile] {
   def exists(name: String):Future[Boolean] = {
     val account = accountQuery.filter(_.name === name)
     db.run(account.exists.result)
-  }
-
-  def saveItunesFileHash(identifier: Either[Int, String], hash:String) = {
-    identifier match {
-      case Left(userId) =>
-        val iTunesFileHash = for { account <- accountQuery if account.id === userId } yield account.itunesFileHash
-        db.run(iTunesFileHash.update(hash))
-      case Right(sessionKey) =>
-        Cache.set(Constants.fileHashCacheKeyPrefix + sessionKey, hash)
-    }
-  }
-
-  def iTunesFileProcessedAlready(identifier: Either[Int, String], hash:String):Future[Boolean] =  {
-    identifier match {
-      case Left(userId) =>
-        db.run(accountQuery.filter(_.id === userId).result map { account =>
-          account.head.itunesFileHash match {
-            case Some(s) => s == hash
-            case None => false
-          }
-        })
-      case Right(sessionKey) =>
-        val result = Cache.getAs[String](Constants.fileHashCacheKeyPrefix + sessionKey) match {
-          case Some(storedHash) => storedHash == hash
-          case None => false
-        }
-        Future.successful(result)
-    }
   }
 
   def getAccountByUserName(username:String) = {
