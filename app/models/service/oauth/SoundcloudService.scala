@@ -26,7 +26,7 @@ class SoundcloudService(identifier: Either[Int, String]) extends ApiDataRequest(
   }
 }
 
-object SoundcloudService extends OAuthStreamingServiceAbstract {
+object SoundcloudService extends OAuthStreamingServiceAbstract with OauthRedirection {
 
   def apply(identifier: Either[Int, String]) = new SoundcloudService(identifier)
 

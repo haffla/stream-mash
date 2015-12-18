@@ -33,7 +33,7 @@ class RdioService(identifier: Either[Int, String]) extends ApiDataRequest("rdio"
   }
 }
 
-object RdioService extends OAuthStreamingServiceAbstract with FavouriteMusicRetrieval {
+object RdioService extends OAuthStreamingServiceAbstract with FavouriteMusicRetrieval with OauthRedirection {
 
   def apply(identifier: Either[Int, String]) = new RdioService(identifier)
 

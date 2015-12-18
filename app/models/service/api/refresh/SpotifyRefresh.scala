@@ -13,8 +13,6 @@ class SpotifyRefresh(identifier:Either[Int,String]) extends OAuthStreamingServic
 
   val clientIdKey = "spotify.client.id"
   val clientSecretKey = "spotify.client.secret"
-  val cookieKey = null
-  val redirectUriPath = null
 
   val serviceAccessTokenCache = new ServiceAccessTokenHelper("spotify", identifier)
 

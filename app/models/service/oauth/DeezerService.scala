@@ -1,15 +1,13 @@
 package models.service.oauth
 
-import models.service.Constants
-import models.util.Logging
 import play.api.Play.current
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.JsValue
 import play.api.libs.ws.{WS, WSResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object DeezerService extends OAuthStreamingServiceAbstract with FavouriteMusicRetrieval {
+object DeezerService extends OAuthStreamingServiceAbstract with FavouriteMusicRetrieval with OauthRedirection {
 
   val clientIdKey = "deezer.app.id"
   val clientSecretKey = "deezer.app.secret"

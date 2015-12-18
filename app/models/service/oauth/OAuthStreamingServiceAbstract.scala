@@ -13,8 +13,6 @@ abstract class OAuthStreamingServiceAbstract {
 
   val clientIdKey:String
   val clientSecretKey:String
-  val cookieKey:String
-  val redirectUriPath:String
 
   lazy val ich = this.getClass.toString
 
@@ -32,15 +30,6 @@ abstract class OAuthStreamingServiceAbstract {
   lazy val clientSecret = Play.current.configuration.getString(clientSecretKey) match {
     case Some(secret) => secret
     case None => throw new PlayException(confErrorTitle("client secret"), confErrorDescription("client secret", clientSecretKey))
-  }
-
-  lazy val redirectUri = Play.current.configuration.getString("current.host") match {
-    case Some(uri) => uri + redirectUriPath
-    case None =>
-      Logging.info(ich, "Current host could not be determined. It is used for all callbacks from third party APIs" + "\n" +
-      "Example: current.host=\"http://example.com\". Falling back to development uri http://localhost:9000")
-
-      "http://localhost:9000" + redirectUriPath
   }
 
   def getAccessToken(futureReponse: Future[WSResponse]): Future[Option[String]] = {

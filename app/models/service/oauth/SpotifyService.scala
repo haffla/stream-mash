@@ -1,14 +1,10 @@
 package models.service.oauth
 
-import models.service.Constants
-import models.service.api.discover.RetrievalProcessMonitor
 import models.service.library.SpotifyLibrary
 import models.service.oauth.SpotifyService.{apiEndpoints, _}
 import models.service.util.ServiceAccessTokenHelper
-import models.util.Logging
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WS, WSResponse}
 
 import scala.concurrent.Future
@@ -30,7 +26,7 @@ class SpotifyService(identifier: Either[Int, String]) extends ApiDataRequest("sp
   }
 }
 
-object SpotifyService extends OAuthStreamingServiceAbstract with FavouriteMusicRetrieval {
+object SpotifyService extends OAuthStreamingServiceAbstract with FavouriteMusicRetrieval with OauthRedirection {
 
   def apply(identifier: Either[Int, String]) = new SpotifyService(identifier)
   val clientIdKey = "spotify.client.id"
