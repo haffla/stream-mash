@@ -23,23 +23,9 @@ trait MainDatabaseAccess {
 
   val accountQuery = TableQuery[Account]
 
-  class Album(tag:Tag) extends Table[alias.Album](tag, "album") {
-    def id = column[Int]("id_album", O.AutoInc, O.PrimaryKey)
-    def name = column[String]("name")
-    def interpret = column[String]("interpret")
-    def idUser = column[Int]("fk_user")
-    def userSessionKey = column[String]("user_session_key")
-    def fkUser = foreignKey("id_user", idUser, accountQuery)(_.id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.Cascade)
-    def indexWithId:Index = index("name_interpret_id", (name,interpret,idUser), unique=true)
-    def indexWithSession:Index = index("name_interpret_session", (name,interpret, userSessionKey), unique=true)
-    def * = (id.?, name, interpret, idUser.?, userSessionKey.?) <> ((alias.Album.apply _).tupled, alias.Album.unapply _)
-  }
-
-  val albumQuery = TableQuery[Album]
-
   class Artist(tag:Tag) extends Table[alias.Artist](tag, "artist") {
     def id = column[Int]("id_artist", O.AutoInc, O.PrimaryKey)
-    def name = column[String]("name")
+    def name = column[String]("artist_name")
     def spotifyId = column[String]("spotify_id")
     def rdioId = column[String]("rdio_id")
     def soundcloudId = column[String]("soundcloud_id")
@@ -54,5 +40,26 @@ trait MainDatabaseAccess {
   }
 
   val artistQuery = TableQuery[Artist]
+
+  class Album(tag:Tag) extends Table[alias.Album](tag, "album") {
+    def id = column[Int]("id_album", O.AutoInc, O.PrimaryKey)
+    def name = column[String]("album_name")
+    def artistId = column[Int]("fk_artist")
+    def indexWithId:Index = index("idx_name_id", (name,artistId), unique=true)
+    def * = (id.?, name, artistId) <> ((alias.Album.apply _).tupled, alias.Album.unapply _)
+  }
+
+  val albumQuery = TableQuery[Album]
+
+  class Track(tag:Tag) extends Table[alias.Track](tag, "track") {
+    def id = column[Int]("track_id", O.AutoInc, O.PrimaryKey)
+    def name = column[String]("track_name")
+    def artistId = column[Int]("fk_artist")
+    def albumId = column[Int]("album_id")
+    def index:Index = index("track_idx", (name, artistId, albumId), unique=true)
+    def * = (id.?, name, artistId, albumId.?) <> ((alias.Track.apply _).tupled, alias.Track.unapply _)
+  }
+
+  val trackQuery = TableQuery[Track]
 
 }

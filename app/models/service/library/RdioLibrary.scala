@@ -1,5 +1,6 @@
 package models.service.library
 
+import models.database.facade.RdioFacade
 import models.service.Constants
 import models.service.library.util.JsonConversion
 import play.api.libs.json.JsValue
@@ -46,7 +47,7 @@ class RdioLibrary(identifier: Either[Int, String]) extends Library(identifier) w
         case _ =>
           throw new UnsupportedOperationException("The JSON key for 'type' has not been defined.")
       }
-      saveArtistsRdioIds(data)
+      RdioFacade.saveArtistWithServiceId(data._1, data._2)
       data match {
         case (art,key,alb) =>
           if(alb.nonEmpty) {
@@ -57,11 +58,5 @@ class RdioLibrary(identifier: Either[Int, String]) extends Library(identifier) w
           }
       }
     }
-  }
-
-  private def saveArtistsRdioIds(artistTuple:(String,String,String)) = {
-      val artist = artistTuple._1
-      val id = artistTuple._2
-      pushToArtistIdQueue(artist, id, "rdio")
   }
 }

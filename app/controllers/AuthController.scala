@@ -1,25 +1,15 @@
 package controllers
 
 import models.auth.MessageDigest
-import models.database.MainDatabaseAccess
 import models.service.Constants
-import models.{User, UserData}
-import play.api.Play
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
+import models.User
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc.{Action, Controller}
 import play.cache.Cache
-import slick.driver.JdbcProfile
 
 import scala.concurrent.Future
 
-class AuthController extends Controller
-        with MainDatabaseAccess
-        with HasDatabaseConfig[JdbcProfile]
-        with models.auth.form.Forms {
-
-  import driver.api._
-  val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+class AuthController extends Controller with models.auth.form.Forms {
 
   def register = Action.async { implicit request =>
 
@@ -38,7 +28,7 @@ class AuthController extends Controller
             User.create(user.name, user.password) map { incrementId =>
               request.session.get(Constants.userSessionKey) match {
                 case Some(sessionKey) =>
-                  User.transferData(incrementId, sessionKey)
+                  //TODO User.transferData(incrementId, sessionKey)
                 case None => //NADA
               }
               val hash = authenticateUser(user.name, user.password)
@@ -71,7 +61,7 @@ class AuthController extends Controller
           case Some(result) =>
             request.session.get(Constants.userSessionKey) match {
               case Some(sessionKey) =>
-                User.transferData(result._3, sessionKey)
+                //TODO User.transferData(result._3, sessionKey)
               case None => //NADA
             }
             val newSession = request.session +

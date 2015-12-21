@@ -1,4 +1,3 @@
-import models.messaging.listen.ArtistIdListener
 import play.api.mvc.RequestHeader
 import play.api.mvc.Results._
 
@@ -6,10 +5,6 @@ import scala.concurrent.Future
 
 
 object Global extends play.api.GlobalSettings {
-
-  override def onStart(app: play.api.Application) {
-    ArtistIdListener.listen()
-  }
 
   override def onError(request: RequestHeader, ex: Throwable) = {
     val exceptionMessage = ex.getMessage

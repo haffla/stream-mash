@@ -1,11 +1,9 @@
 package models.service.library
 
+import models.database.facade.SpotifyFacade
 import models.service.Constants
 import models.service.library.util.JsonConversion
 import play.api.libs.json.JsValue
-
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class SpotifyLibrary(identifier: Either[Int, String]) extends Library(identifier, "spotify") with JsonConversion {
 
@@ -15,29 +13,14 @@ class SpotifyLibrary(identifier: Either[Int, String]) extends Library(identifier
     items.zipWithIndex.map { case (entity,i) =>
       val position = i + 1
       apiHelper.setRetrievalProcessProgress(position.toDouble / totalLength)
-      val track = (entity \ "track").asOpt[JsValue]
-      track match {
-        case Some(trackJson) =>
-          val album = (trackJson \ "album" \ "name").as[String]
-          val artists = (trackJson \ "artists").as[Seq[JsValue]]
-          saveArtistsSpotifyIds(artists)
-          val artist = (artists.head \ "name").as[String]
-          Map(Constants.mapKeyArtist -> artist, Constants.mapKeyAlbum -> album)
-        case None => throw new Exception("Missing key 'track' in JSON")
-      }
-    }
-  }
-
-  private def saveArtistsSpotifyIds(artists:Seq[JsValue]) = {
-    Future {
-      artists.foreach { artist =>
-        val name = (artist \ "name").as[String]
-        val id = (artist \ "id").as[String]
-        val artistType = (artist \ "type").as[String]
-        if (artistType == "artist") {
-          pushToArtistIdQueue(name, id, "spotify")
-        }
-      }
+      val trackEntity = (entity \ "track").as[JsValue]
+      val album = (trackEntity \ "album" \ "name").as[String]
+      val artists = (trackEntity \ "artists").as[Seq[JsValue]]
+      val artist = (artists.head \ "name").as[String]
+      val id = (artists.head \ "id").as[String]
+      val track = (trackEntity \ "name").as[String]
+      SpotifyFacade.saveArtistWithServiceId(artist, id)
+      Map(Constants.mapKeyArtist -> artist, Constants.mapKeyAlbum -> album, Constants.mapKeyTrack -> track)
     }
   }
 }

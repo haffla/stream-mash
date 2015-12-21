@@ -90,7 +90,7 @@ object User extends MainDatabaseAccess with HasDatabaseConfig[JdbcProfile] {
   /**
    * Updates all album entities of the session identified user
    * with his userId in order to prevent loss of data for the user
-   */
+  //TODO
   def transferData(userId: Int, sessionKey: String) = {
     db.run(
       albumQuery.filter(_.userSessionKey === sessionKey)
@@ -98,6 +98,7 @@ object User extends MainDatabaseAccess with HasDatabaseConfig[JdbcProfile] {
         .update(userId, null)
     )
   }
+   */
 
   def create(name:String, password:String):Future[Int] = {
     val hashedPassword = MessageDigest.digest(password)
@@ -117,10 +118,10 @@ object User extends MainDatabaseAccess with HasDatabaseConfig[JdbcProfile] {
     val account = accountQuery.filter(_.name === username).take(1)
     db.run(account.result.headOption)
   }
-
-  def deleteUsersAlbumCollection(id:Int):Future[Int] = {
+  //TODO
+  /*def deleteUsersAlbumCollection(id:Int):Future[Int] = {
     db.run(albumQuery.filter(a => a.idUser === id).delete)
-  }
+  }*/
 
 }
 

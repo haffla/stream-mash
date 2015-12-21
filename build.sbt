@@ -31,7 +31,6 @@ libraryDependencies ++= Seq(
   "org.webjars" % "font-awesome" % "4.4.0",
   "org.webjars" % "lodash" % "3.10.1",
   play.sbt.Play.autoImport.cache,
-  "com.rabbitmq" % "amqp-client" % "3.5.6",
   "com.github.haffla" %% "soundcloud-scala" % "0.1-SNAPSHOT"
 )
 

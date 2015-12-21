@@ -18,36 +18,36 @@ class UserController extends Controller {
     users.map(res => Ok(views.html.users.list(res.toList)))
   }
 
-  def artistAlbumCollectionFromDb = IdentifiedBySession.async { implicit request =>
+  def userCollectionFromDb = IdentifiedBySession.async { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
     collectionFromDb(identifier)
   }
 
-  def deleteMyCollections() = Authenticated.async { implicit request =>
+  /* TODO def deleteMyCollections() = Authenticated.async { implicit request =>
     request.session.get("user_id") map { userId =>
       User.deleteUsersAlbumCollection(userId.toInt) map { count =>
         Ok(Json.toJson(Json.toJson(Map("success" -> true))))
       }
     } getOrElse Future.successful(Ok(Json.toJson(Map("success" -> false))))
-  }
+  }*/
 
-  def deleteCollectionByUser(userId:Int) = AdminAccess.async { implicit request =>
+  /*TODO def deleteCollectionByUser(userId:Int) = AdminAccess.async { implicit request =>
     User.deleteUsersAlbumCollection(userId) map { count =>
       Ok(Json.toJson(Map("success" -> true)))
     }
-  }
+  }*/
 
   private def collectionFromDb(identifier: Either[Int, String]) = {
     val library = new Library(identifier)
-    AlbumFacade(identifier).getUsersAlbumCollection map {
-      case Some(collection) => Ok(library.prepareCollectionForFrontend(collection))
-      case None => Ok(Json.toJson(Map("error" -> "You have no records stored in our database.")))
+    AlbumFacade(identifier).userCollection map { collection =>
+        if(collection.nonEmpty) Ok(library.prepareCollectionForFrontend(collection))
+        else Ok(Json.toJson(Map("error" -> "You have no records stored in our database.")))
     }
   }
 
-  def analysis = IdentifiedBySession.async { implicit request =>
+  /*def analysis = IdentifiedBySession.async { implicit request =>
     SpotifyAnalysis(Helper.getUserIdentifier(request.session)).analyse() map {
       res => Ok(res)
     }
-  }
+  }*/
 }

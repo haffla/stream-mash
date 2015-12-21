@@ -1,13 +1,5 @@
 package models.service.api
 
-import models.messaging.push.ArtistIdPusher
-
-abstract class ApiFacade extends ArtistIdPusher {
-
+abstract class ApiFacade {
   lazy val ich = this.getClass.toString
-  val typ:String
-
-  def pushToArtistIdQueue(artist:String, id:String):Unit = {
-    pushToArtistIdQueue(artist, id, typ)
-  }
 }

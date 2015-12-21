@@ -36,7 +36,7 @@ class ItunesLibrary(identifier: Either[Int, String], xmlPath:String = "", persis
     }.filter(_.size >= minTupleLength)
   }
 
-  def saveCollection():Future[Map[String, Set[String]]] = {
+  def saveCollection():Future[Map[String, Map[String,Set[String]]]] = {
     apiHelper.setRetrievalProcessPending()
     Future {
       val lib:Seq[Map[String,String]] = parseXml

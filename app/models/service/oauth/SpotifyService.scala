@@ -1,7 +1,7 @@
 package models.service.oauth
 
 import models.service.library.SpotifyLibrary
-import models.service.oauth.SpotifyService.{apiEndpoints, _}
+import models.service.oauth.SpotifyService._
 import models.service.util.ServiceAccessTokenHelper
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext

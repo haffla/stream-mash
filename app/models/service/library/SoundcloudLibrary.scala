@@ -1,5 +1,6 @@
 package models.service.library
 
+import models.database.facade.SoundcloudFacade
 import models.service.Constants
 import models.service.api.discover.MusicBrainzApi
 import play.api.libs.json.JsValue
@@ -47,7 +48,7 @@ class SoundcloudLibrary(identifier: Either[Int, String]) extends Library(identif
     musicBrainzApiResponse.map {
         case Some(result) =>
           val artist = result(MusicBrainzApi.keyArtist)
-          pushToArtistIdQueue(artist, id.toString, "soundcloud")
+          SoundcloudFacade.saveArtistWithServiceId(artist, id.toString)
         case None => //do nothing
       }
   }
