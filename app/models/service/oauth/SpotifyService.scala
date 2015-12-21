@@ -5,6 +5,7 @@ import models.service.oauth.SpotifyService.{apiEndpoints, _}
 import models.service.util.ServiceAccessTokenHelper
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.libs.json.JsValue
 import play.api.libs.ws.{WS, WSResponse}
 
 import scala.concurrent.Future
@@ -61,7 +62,16 @@ object SpotifyService extends OAuthStreamingServiceAbstract with FavouriteMusicR
     )
   }
 
-  override def favouriteMusicRetrievalRequest(accessToken:String):Future[WSResponse] =
-    WS.url(apiEndpoints.tracks).withHeaders("Authorization" -> s"Bearer $accessToken").get()
+  override def favouriteMusicRetrievalRequest(accessToken:String, page:String):Future[WSResponse] =
+    WS.url(apiEndpoints.tracks)
+      .withQueryString("limit" -> "50", "offset" -> page)
+      .withHeaders("Authorization" -> s"Bearer $accessToken").get()
 
+  override def getPageInformation(json: JsValue): (Boolean, Int) = {
+    val offset = (json \ "offset").as[Int]
+    val total = (json \ "total").as[Int]
+    val limit = (json \ "limit").as[Int]
+    val next = offset + limit
+    (next < total, next)
+  }
 }

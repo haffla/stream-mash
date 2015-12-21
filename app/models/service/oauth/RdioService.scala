@@ -6,6 +6,7 @@ import models.service.library.RdioLibrary
 import models.service.oauth.RdioService._
 import models.service.util.ServiceAccessTokenHelper
 import play.api.Play.current
+import play.api.libs.json.JsValue
 import play.api.libs.ws.{WS, WSResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -59,10 +60,13 @@ object RdioService extends OAuthStreamingServiceAbstract with FavouriteMusicRetr
     )
   }
 
-  override def favouriteMusicRetrievalRequest(accessToken: String): Future[WSResponse] = {
-    val data = Map(Constants.jsonKeyAccessToken -> Seq(accessToken), "method" -> Seq(apiEndpoints.getFavourites))
+  override def favouriteMusicRetrievalRequest(accessToken: String, page:String): Future[WSResponse] = {
+    val data = Map(Constants.jsonKeyAccessToken -> Seq(accessToken), "method" -> Seq(apiEndpoints.getFavourites), "count" -> Seq("9999999999"))
     WS.url(apiEndpoints.mainApi)
-      .withHeaders("Authorization" -> s"Bearer $accessToken")
       .post(data)
+  }
+
+  override def getPageInformation(json: JsValue): (Boolean, Int) = {
+    (false,0)
   }
 }

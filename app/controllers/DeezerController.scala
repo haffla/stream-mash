@@ -1,6 +1,6 @@
 package controllers
 
-import models.auth.IdentifiedBySession
+import models.auth.{Helper, IdentifiedBySession}
 import models.service.Constants
 import models.service.oauth.DeezerService
 import models.util.TextWrangler
@@ -19,15 +19,13 @@ class DeezerController extends Controller {
   }
 
   def callback = IdentifiedBySession.async { implicit request =>
+    val identifier = Helper.getUserIdentifier(request.session)
     val state = request.getQueryString("state")
     val code = request.getQueryString("code").orNull
     val cookieState = request.cookies.get(DeezerService.cookieKey)
     if(TextWrangler.validateState(cookieState, state)) {
-      val futureJson = DeezerService.requestUserData(code)
-      futureJson map {
-        case Some(json) => Ok(json)
-        case None => Ok("An error has occurred.")
-      }
+      DeezerService(identifier).requestUserData(code)
+      Future.successful(Redirect(routes.ItunesController.index("deezer")))
     }
     else Future.successful(Ok(Constants.stateMismatchError))
   }

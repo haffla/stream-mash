@@ -60,10 +60,8 @@ class RdioLibrary(identifier: Either[Int, String]) extends Library(identifier) w
   }
 
   private def saveArtistsRdioIds(artistTuple:(String,String,String)) = {
-    Future {
       val artist = artistTuple._1
       val id = artistTuple._2
       pushToArtistIdQueue(artist, id, "rdio")
-    }
   }
 }
