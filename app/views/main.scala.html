@@ -11,6 +11,7 @@
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
         <script src="@routes.WebJarAssets.versioned("lib/jquery/jquery.min.js")" type="text/javascript"></script>
         <script src="@routes.Assets.versioned("javascripts/facebook.js")"></script>
+        @*helper.requireJs(core = routes.WebJarAssets.versioned("lib/requirejs/require.min.js").url, module = routes.Assets.versioned("javascripts/artistbox").url)*@
         @if(modules.contains("lodash")) {
             <script src="@routes.WebJarAssets.versioned("lib/lodash/lodash.min.js")" type="text/javascript"></script>
         }
@@ -36,6 +37,7 @@
                                 <li><a href="@routes.DeezerController.login()">Deezer</a></li>
                                 <li><a href="@routes.SoundcloudController.login()">Soundcloud</a></li>
                                 <li><a href="@routes.RdioController.login()">Rdio</a></li>
+                                <li><a href="@routes.LastfmController.login()">Lastfm</a></li>
                                 <li><a href="#">
                                     <fb:login-button scope="user_actions.music" onlogin="checkLoginState();"></fb:login-button>
                                 </a></li>

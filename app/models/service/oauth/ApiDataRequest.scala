@@ -8,14 +8,14 @@ import scala.concurrent.Future
 
 abstract class ApiDataRequest(name:String, identifier:Either[Int,String]) {
   val apiHelper = new RetrievalProcessMonitor(name, identifier)
-  val serviceAccessTokenCache:ServiceAccessTokenHelper
+  val serviceAccessTokenHelper:ServiceAccessTokenHelper
 
   def requestUserData(code:String):Unit = {
     apiHelper.setRetrievalProcessPending()
     doDataRequest(code) map {token =>
       apiHelper.setRetrievalProcessDone()
       token match {
-        case Some(tkn) => serviceAccessTokenCache.setAccessToken(tkn)
+        case Some(tkn) => serviceAccessTokenHelper.setAccessToken(tkn)
         case None =>
       }
 

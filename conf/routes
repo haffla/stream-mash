@@ -25,6 +25,10 @@ POST          /itunes                       controllers.ItunesController.fileUpl
 GET           /deezer/login                 controllers.DeezerController.login
 GET           /deezer/callback              controllers.DeezerController.callback
 
+### Lastfm
+GET           /lastfm/login                 controllers.LastfmController.login
+GET           /lastfm/callback              controllers.LastfmController.callback
+
 ### Rdio
 GET           /rdio/login                   controllers.RdioController.login
 GET           /rdio/callback                controllers.RdioController.callback

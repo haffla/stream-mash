@@ -12,7 +12,7 @@ import scala.concurrent.Future
 class SpotifyService(identifier: Either[Int, String]) extends ApiDataRequest("spotify", identifier) {
 
   val library = new SpotifyLibrary(identifier)
-  override val serviceAccessTokenCache = new ServiceAccessTokenHelper("spotify", identifier)
+  override val serviceAccessTokenHelper = new ServiceAccessTokenHelper("spotify", identifier)
 
   def doDataRequest(code:String) = {
     val data = apiEndpoints.data + ("code" -> Seq(code))

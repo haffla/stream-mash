@@ -12,7 +12,8 @@ object ArtistIdListener {
     "spotify" -> SpotifyFacade,
     "rdio" -> RdioFacade,
     "soundcloud" -> SoundcloudFacade,
-    "deezer" -> DeezerFacade
+    "deezer" -> DeezerFacade,
+    "lastfm" -> LastfmFacade
   )
 
   def listen() = {

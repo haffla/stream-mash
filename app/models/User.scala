@@ -37,6 +37,10 @@ class User(identifier:Either[Int, String]) extends MainDatabaseAccess with HasDa
       case Left(id) =>
         val field = service match {
           case "spotify" => sqls"spotify_token"
+          case "rdio" => sqls"rdio_token"
+          case "deezer" => sqls"deezer_token"
+          case "soundcloud" => sqls"soundcloud_token"
+          case "lastfm" => sqls"lastfm_token"
           case _ => throw new IllegalArgumentException("The given service '$service' is not supported")
         }
         sql"update account set $field=$token where id_user=$id".update.apply()

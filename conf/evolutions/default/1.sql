@@ -5,7 +5,11 @@ CREATE TABLE IF NOT EXISTS account(
     name VARCHAR(64) NOT NULL,
     password VARCHAR(64) NOT NULL,
     itunes_file_hash VARCHAR(32),
-    spotify_token VARCHAR(256)
+    spotify_token VARCHAR(256),
+    deezer_token VARCHAR(256),
+    rdio_token VARCHAR(256),
+    lastfm_token VARCHAR(256),
+    soundcloud_token VARCHAR(256)
 );
 
 INSERT INTO account(name, password)
@@ -29,10 +33,12 @@ CREATE TABLE IF NOT EXISTS artist(
     rdio_id VARCHAR(32) DEFAULT NULL,
     soundcloud_id VARCHAR(32) DEFAULT NULL,
     deezer_id VARCHAR(32) DEFAULT NULL,
+    lastfm_id VARCHAR(40) DEFAULT NULL,
     UNIQUE (name,spotify_id),
     UNIQUE (name,rdio_id),
     UNIQUE (name,soundcloud_id),
-    UNIQUE (name,deezer_id)
+    UNIQUE (name,deezer_id),
+    UNIQUE (name,lastfm_id)
 );
 
 # --- !Downs

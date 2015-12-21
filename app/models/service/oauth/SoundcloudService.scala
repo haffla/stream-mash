@@ -13,7 +13,7 @@ import scala.concurrent.Future
 class SoundcloudService(identifier: Either[Int, String]) extends ApiDataRequest("soundcloud", identifier) {
 
   val library = new SoundcloudLibrary(identifier)
-  val serviceAccessTokenCache = new ServiceAccessTokenHelper("soundcloud", identifier)
+  val serviceAccessTokenHelper = new ServiceAccessTokenHelper("soundcloud", identifier)
 
   def doDataRequest(code:String) = {
     for {
