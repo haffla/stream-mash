@@ -19,13 +19,11 @@ MainComponent = React.createClass
     {data: []}
 
   componentDidMount: () ->
-    $('#artistBox').removeClass('hidden')
 
     ws.onopen = () ->
       ws.send(window.streamingservice.name)
 
     ws.onmessage = (data) =>
-      console.log(data.data)
       if data.data.startsWith "progress"
         line.animate(data.data.split(':')[1])
       else if data.data is 'done'
@@ -59,12 +57,9 @@ MainComponent = React.createClass
   loadFromDb: (event) ->
     callback = (data) =>
       if !data.error
-        if _.size(data) > 0
-          $('#artistBox').removeClass('hidden')
         @setTheState(data, true)
-        if window.itunes.openmodal is 'yes'
-          $('#fileuploadmodal').modal('show')
-
+      if window.itunes.openmodal is 'yes'
+        $('#fileuploadmodal').modal('show')
       line.animate(0)
     $.get '/collection/fromdb', callback, 'json'
 
@@ -89,7 +84,6 @@ MainComponent = React.createClass
           $('#fileuploadmodal').modal 'hide'
           window.itunes.openmodal = 'no'
           if !data.error
-            $('#artistBox').removeClass('hidden')
             $('#dropzone').removeClass('dropped hover')
             ws.send('itunes')
           else
@@ -215,7 +209,7 @@ MainComponent = React.createClass
 
 ArtistBox = React.createClass
   render: () ->
-    <div className="hidden" id="artistBox">
+    <div id="artistBox">
         <ArtistList data={@props.data} onButtonClick={@props.onButtonClick}/>
     </div>
 
