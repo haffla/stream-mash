@@ -27,7 +27,6 @@ trait FavouriteMusicRetrieval {
       response.status match {
         case 200 =>
           val json = Json.parse(response.body)
-          println(json)
           val (tobeContinued, next) = getPageInformation(json)
           if(tobeContinued) doIt(accessToken, aggregatedResponses :+ json, next)
           else Future.successful(aggregatedResponses :+ json)
