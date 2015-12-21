@@ -31,7 +31,6 @@ class LastfmService(identifier: Either[Int, String]) extends ApiDataRequest  ("l
       credentials <- getAccessToken(futureResponse)
       (username,token) = credentials match {
         case Some(secret) =>
-          println(secret)
           val split = secret.split(LastfmService.credentialDevider)
           (Some(split.head), Some(split(1)))
         case None => (None,None)
