@@ -19,7 +19,7 @@ libraryDependencies ++= Seq(
   specs2 % Test,
   evolutions,
   "org.squeryl" %% "squeryl" % "0.9.5-7",
-  "org.scalatest" %% "scalatest" % "2.2.1" % "test",
+  "org.scalatest" %% "scalatest" % "2.2.4" % "test",
   "org.scalikejdbc" %% "scalikejdbc" % "2.2.9",
   "org.scalikejdbc" %% "scalikejdbc-config" % "2.2.9",
   "org.scalikejdbc" %% "scalikejdbc-play-initializer" % "2.4.3",
@@ -32,7 +32,8 @@ libraryDependencies ++= Seq(
   "org.webjars" % "font-awesome" % "4.4.0",
   "org.webjars" % "lodash" % "3.10.1",
   play.sbt.Play.autoImport.cache,
-  "com.github.haffla" %% "soundcloud-scala" % "0.1-SNAPSHOT"
+  "com.github.haffla" %% "soundcloud-scala" % "0.1-SNAPSHOT",
+  "org.seleniumhq.selenium" % "selenium-java" % "2.48.2" % "test"
 )
 
 val alternateTestOptions = "-Dconfig.file=conf/" + Option(System.getProperty("test.config")).getOrElse("application") + ".conf"

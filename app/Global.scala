@@ -19,7 +19,7 @@ object Global extends play.api.GlobalSettings {
 
   def getSession(adapter:DatabaseAdapter, app: Application) = {
     (app.configuration.getString("db.default.password"),
-      app.configuration.getString("db.default.user"),
+      app.configuration.getString("db.default.username"),
       app.configuration.getString("db.default.url")) match {
 
       case (Some(password), Some(username), Some(url)) =>
