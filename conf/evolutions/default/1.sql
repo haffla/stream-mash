@@ -6,12 +6,13 @@ CREATE TABLE IF NOT EXISTS account(
     id_user BIGINT DEFAULT nextval('s_account_id') PRIMARY KEY,
     name VARCHAR(64) NOT NULL,
     password VARCHAR(64) NOT NULL,
-    itunes_file_hash VARCHAR(32),
-    spotify_token VARCHAR(256),
-    deezer_token VARCHAR(256),
-    rdio_token VARCHAR(256),
-    lastfm_token VARCHAR(256),
-    soundcloud_token VARCHAR(256)
+    itunes_file_hash VARCHAR(32) DEFAULT NULL,
+    spotify_token VARCHAR(256) DEFAULT NULL,
+    deezer_token VARCHAR(256) DEFAULT NULL,
+    rdio_token VARCHAR(256) DEFAULT NULL,
+    lastfm_token VARCHAR(256) DEFAULT NULL,
+    soundcloud_token VARCHAR(256) DEFAULT NULL,
+    UNIQUE (name)
 );
 
 INSERT INTO account(name, password)

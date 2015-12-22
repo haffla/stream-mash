@@ -81,7 +81,7 @@ object User {
   def getAccountByUserName(username:String):Future[Option[database.alias.User]] = {
     Future {
       transaction {
-        AppDB.userTable.where(u => u.name === username).headOption
+        AppDB.users.where(u => u.name === username).headOption
       }
     }
   }
@@ -112,7 +112,7 @@ object User {
   def list:Future[Seq[database.alias.User]] = {
     Future {
       transaction {
-        Seq(AppDB.userTable.where(u => u.name === "jacke").single)
+        AppDB.users.toList
       }
     }
   }
