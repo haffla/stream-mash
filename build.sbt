@@ -30,7 +30,8 @@ libraryDependencies ++= Seq(
   "org.webjars" % "font-awesome" % "4.4.0",
   "org.webjars" % "lodash" % "3.10.1",
   play.sbt.Play.autoImport.cache,
-  "com.github.haffla" %% "soundcloud-scala" % "0.1-SNAPSHOT"
+  "com.github.haffla" %% "soundcloud-scala" % "0.1-SNAPSHOT",
+  evolutions
 )
 
 val alternateTestOptions = "-Dconfig.file=conf/" + Option(System.getProperty("test.config")).getOrElse("application") + ".conf"

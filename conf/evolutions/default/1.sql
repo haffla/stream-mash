@@ -1,9 +1,9 @@
 # --- !Ups
 
-create sequence s_account_id;
+CREATE SEQUENCE s_account_id;
 
 CREATE TABLE IF NOT EXISTS account(
-    id_user bigint DEFAULT nextval('s_account_id') PRIMARY KEY,
+    id_user BIGINT DEFAULT nextval('s_account_id') PRIMARY KEY,
     name VARCHAR(64) NOT NULL,
     password VARCHAR(64) NOT NULL,
     itunes_file_hash VARCHAR(32),
@@ -17,8 +17,10 @@ CREATE TABLE IF NOT EXISTS account(
 INSERT INTO account(name, password)
 VALUES('jacke', 'a92f6bdb75789bccc118adfcf704029aa58063c604bab4fcdd9cd126ef9b69af');
 
+CREATE SEQUENCE s_artist_id;
+
 CREATE TABLE IF NOT EXISTS artist(
-    id_artist SERIAL PRIMARY KEY,
+    id_artist BIGINT DEFAULT nextval('s_artist_id') PRIMARY KEY,
     artist_name VARCHAR(256) NOT NULL,
     spotify_id VARCHAR(32) DEFAULT NULL,
     rdio_id VARCHAR(32) DEFAULT NULL,
@@ -33,16 +35,20 @@ CREATE TABLE IF NOT EXISTS artist(
     UNIQUE (artist_name,lastfm_id)
 );
 
+CREATE SEQUENCE s_album_id;
+
 CREATE TABLE IF NOT EXISTS album(
-    id_album SERIAL PRIMARY KEY,
+    id_album BIGINT DEFAULT nextval('s_album_id') PRIMARY KEY,
     album_name VARCHAR(256) NOT NULL,
     fk_artist INT NOT NULL REFERENCES artist(id_artist),
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     UNIQUE (album_name,fk_artist)
 );
 
+CREATE SEQUENCE s_track_id;
+
 CREATE TABLE IF NOT EXISTS track(
-    id_track SERIAL PRIMARY KEY,
+    id_track BIGINT DEFAULT nextval('s_track_id') PRIMARY KEY,
     track_name VARCHAR(256) NOT NULL,
     fk_artist INT NOT NULL REFERENCES artist(id_artist),
     fk_album INT DEFAULT NULL REFERENCES album(id_album),
@@ -50,8 +56,10 @@ CREATE TABLE IF NOT EXISTS track(
     UNIQUE (track_name, fk_artist, fk_album)
 );
 
+CREATE SEQUENCE s_user_collection_id;
+
 CREATE TABLE IF NOT EXISTS user_collection(
-    id_collection SERIAL PRIMARY KEY,
+    id_collection BIGINT DEFAULT nextval('s_user_collection_id') PRIMARY KEY,
     fk_user INT DEFAULT NULL REFERENCES account(id_user),
     fk_track INT NOT NULL REFERENCES track(id_track),
     user_session VARCHAR(32) DEFAULT NULL,
@@ -62,6 +70,10 @@ CREATE TABLE IF NOT EXISTS user_collection(
 # --- !Downs
 
 DROP SEQUENCE IF EXISTS s_account_id CASCADE;
+DROP SEQUENCE IF EXISTS s_album_id CASCADE;
+DROP SEQUENCE IF EXISTS s_artist_id CASCADE;
+DROP SEQUENCE IF EXISTS s_track_id CASCADE;
+DROP SEQUENCE IF EXISTS s_user_collection_id CASCADE;
 DROP TABLE IF EXISTS album CASCADE;
 DROP TABLE IF EXISTS account CASCADE;
 DROP TABLE IF EXISTS artist CASCADE;
