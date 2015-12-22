@@ -33,19 +33,17 @@ class AlbumFacade(identifier:Either[Int,String]) extends MainDatabaseAccess with
     }
   }
 
-  import driver.api._
-
-  /* TODO def deleteUsersAlbums():Future[Int] = {
-    val query = identifier match {
-      case Left(userId) =>
-        albumQuery.filter(_.idUser === userId)
-      case Right(sessionKey) =>
-        albumQuery.filter(_.userSessionKey === sessionKey)
+  def deleteUsersAlbums() = {
+    val (userId, userField) = identifier match {
+      case Left(id) => (id, sqls"fk_user")
+      case Right(sessionKey) => (sessionKey, sqls"user_session")
     }
-    db.run(query.delete)
+    sql"delete from user_collection where $userField = $userId".update().apply()
   }
 
-  def findSingleUserAlbum(name: String, interpret:String):Future[Seq[AlbumFacade.this.Album#TableElementType]] = {
+  import driver.api._
+
+  /*def findSingleUserAlbum(name: String, interpret:String):Future[Seq[AlbumFacade.this.Album#TableElementType]] = {
     db.run(albumQuery.filter { albums =>
       identifier match {
         case Left(userId) =>
