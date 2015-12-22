@@ -34,9 +34,9 @@ GET           /rdio/login                   controllers.RdioController.login
 GET           /rdio/callback                controllers.RdioController.callback
 
 ### User management
-#GET           /users                        controllers.UserController.list
+GET            /users                        controllers.UserController.list
 GET            /collection/fromdb            controllers.UserController.userCollectionFromDb
-#DELETE        /collection/delete/:id        controllers.UserController.deleteCollectionByUser(id:Int)
+DELETE        /collection/delete/:id        controllers.UserController.deleteCollectionByUser(id:Long)
 #GET           /user/analysis                controllers.UserController.analysis
 
 # Map static resources from the /public folder to the /assets URL path

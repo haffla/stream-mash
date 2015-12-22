@@ -1,7 +1,9 @@
 # --- !Ups
 
+create sequence s_account_id;
+
 CREATE TABLE IF NOT EXISTS account(
-    id_user SERIAL PRIMARY KEY,
+    id_user bigint DEFAULT nextval('s_account_id') PRIMARY KEY,
     name VARCHAR(64) NOT NULL,
     password VARCHAR(64) NOT NULL,
     itunes_file_hash VARCHAR(32),
@@ -59,6 +61,7 @@ CREATE TABLE IF NOT EXISTS user_collection(
 
 # --- !Downs
 
+DROP SEQUENCE IF EXISTS s_account_id CASCADE;
 DROP TABLE IF EXISTS album CASCADE;
 DROP TABLE IF EXISTS account CASCADE;
 DROP TABLE IF EXISTS artist CASCADE;

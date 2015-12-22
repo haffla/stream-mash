@@ -1,5 +1,5 @@
 @import models.database.alias.Account
-@(users: List[Account])(implicit flash: Flash, session: Session)
+@(users: List[models.database.alias.User])(implicit flash: Flash, session: Session)
 
 @main("Users", List("admin")) {
 
@@ -12,7 +12,7 @@
     <tr>
         <td>@u.name</td>
         <th>
-            @*<button class="btn btn-danger coll-delete-button" data-url='@routes.UserController.deleteCollectionByUser(u.id.get)'>Delete Collection</button>*@
+            <button class="btn btn-danger coll-delete-button" data-url='@routes.UserController.deleteCollectionByUser(u.id)'>Delete Collection</button>
         </th>
     </tr>
     }

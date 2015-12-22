@@ -1,10 +1,11 @@
-import models.database.facade.AlbumFacade
+import models.User
+import models.database.facade.CollectionFacade
 import models.service.library._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.libs.json.JsValue
 import play.api.test.WithApplication
 
-class AlbumCollectionTest extends UnitSpec with ScalaFutures {
+class UserCollectionTest extends UnitSpec with ScalaFutures {
 
   val identifier = Right("testusersession")
 
@@ -20,7 +21,7 @@ class AlbumCollectionTest extends UnitSpec with ScalaFutures {
 
     Thread.sleep(1000) // Need to wait a little for the data to be saved in DB
 
-    val fromDb = AlbumFacade(identifier).userCollection
+    val fromDb = CollectionFacade(identifier).userCollection
     whenReady(fromDb) { col =>
       val forFrontEnd = library.prepareCollectionForFrontend(col)
 
@@ -37,6 +38,6 @@ class AlbumCollectionTest extends UnitSpec with ScalaFutures {
       albums.toSet should equal(Set("Sgt. Pepper’s Lonely Hearts Club Band", "Dark Side Of The Moon", "Walls"))
     }
 
-    AlbumFacade(identifier).deleteUsersAlbums()
+    User(identifier).deleteUsersCollection()
   }
 }

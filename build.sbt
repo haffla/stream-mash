@@ -23,8 +23,6 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc" %% "scalikejdbc-play-initializer" % "2.4.3",
   "org.scalatestplus" %% "play" % "1.4.0-M3" % "test",
   "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
-  "com.typesafe.play" %% "play-slick" % "1.1.0",
-  "com.typesafe.play" %% "play-slick-evolutions" % "1.1.0",
   "org.webjars" %% "webjars-play" % "2.4.0-1",
   "org.webjars.bower" % "progressbar.js" % "0.9.0",
   "org.webjars" % "bootstrap" % "3.1.1-2",

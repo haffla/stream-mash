@@ -1,21 +1,14 @@
 package models.service.library
 
-import models.database.MainDatabaseAccess
 import models.service.Constants
 import models.service.api.discover.RetrievalProcessMonitor
-import play.api.Play
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import play.api.libs.json.{JsObject, JsValue, Json}
-import slick.driver.JdbcProfile
 
 import scalikejdbc._
 
-class Library(identifier: Either[Int, String], name:String = "", persist:Boolean = true)
-            extends HasDatabaseConfig[JdbcProfile]
-            with MainDatabaseAccess {
+class Library(identifier: Either[Int, String], name:String = "", persist:Boolean = true) {
 
   implicit val session = AutoSession
-  val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
 
   val apiHelper = new RetrievalProcessMonitor(name, identifier)
 

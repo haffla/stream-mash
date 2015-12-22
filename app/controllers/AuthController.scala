@@ -28,7 +28,7 @@ class AuthController extends Controller with models.auth.form.Forms {
             User.create(user.name, user.password) map { incrementId =>
               request.session.get(Constants.userSessionKey) match {
                 case Some(sessionKey) =>
-                  //TODO User.transferData(incrementId, sessionKey)
+                  User.transferData(incrementId, sessionKey)
                 case None => //NADA
               }
               val hash = authenticateUser(user.name, user.password)
@@ -54,7 +54,7 @@ class AuthController extends Controller with models.auth.form.Forms {
               val password = user.password
               val incrementId = user.id
               val hash = authenticateUser(username, password)
-              Some((true, hash, incrementId.get)) // Tuple[Boolean, String, Int]
+              Some((true, hash, incrementId)) // Tuple[Boolean, String, Long]
             } else None
           case None => None
         } map {

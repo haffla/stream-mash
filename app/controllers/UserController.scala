@@ -1,20 +1,18 @@
 package controllers
 
 import models.User
-import models.auth.{Authenticated, AdminAccess, IdentifiedBySession, Helper}
-import models.database.facade.AlbumFacade
+import models.auth.{AdminAccess, IdentifiedBySession, Helper}
+import models.database.facade.CollectionFacade
 import models.service.analysis.SpotifyAnalysis
 import models.service.library.Library
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
 import play.api.mvc.Controller
 
-import scala.concurrent.Future
-
 class UserController extends Controller {
 
   def list = AdminAccess.async { implicit request =>
-    val users:Future[Seq[User.Account#TableElementType]] = User.list
+    val users = User.list
     users.map(res => Ok(views.html.users.list(res.toList)))
   }
 
@@ -31,15 +29,21 @@ class UserController extends Controller {
     } getOrElse Future.successful(Ok(Json.toJson(Map("success" -> false))))
   }*/
 
-  /*TODO def deleteCollectionByUser(userId:Int) = AdminAccess.async { implicit request =>
-    User.deleteUsersAlbumCollection(userId) map { count =>
+  def deleteCollectionByUser(userId:Long) = AdminAccess { implicit request =>
+    try {
+      User(Left(userId.toInt)).deleteUsersCollection()
       Ok(Json.toJson(Map("success" -> true)))
     }
-  }*/
+    catch {
+      case e: Exception => {
+        Ok(Json.toJson(Map("success" -> false)))
+      }
+    }
+  }
 
   private def collectionFromDb(identifier: Either[Int, String]) = {
     val library = new Library(identifier)
-    AlbumFacade(identifier).userCollection map { collection =>
+    CollectionFacade(identifier).userCollection map { collection =>
         if(collection.nonEmpty) Ok(library.prepareCollectionForFrontend(collection))
         else Ok(Json.toJson(Map("error" -> "You have no records stored in our database.")))
     }
