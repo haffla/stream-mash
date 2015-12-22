@@ -15,7 +15,7 @@ class AlbumCollectionTest extends UnitSpec with ScalaFutures {
       "Apparat" -> Set("Walls")
     )
 
-    val library = new Library(identifier)
+    /*val library = new Library(identifier)
     library.persist(albums)
 
     Thread.sleep(1000) // Need to wait a little for the data to be saved in DB
@@ -41,7 +41,7 @@ class AlbumCollectionTest extends UnitSpec with ScalaFutures {
     val futureDelete = AlbumFacade(identifier).deleteUsersAlbums()
     whenReady(futureDelete) { countDeletedRows =>
       countDeletedRows should equal(4)
-    }
+    }*/
 
   }
 }

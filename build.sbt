@@ -16,6 +16,7 @@ libraryDependencies ++= Seq(
   cache,
   ws,
   specs2 % Test,
+  "org.squeryl" %% "squeryl" % "0.9.5-7",
   "org.scalatest" %% "scalatest" % "2.2.1" % "test",
   "org.scalikejdbc" %% "scalikejdbc" % "2.2.9",
   "org.scalikejdbc" %% "scalikejdbc-config" % "2.2.9",

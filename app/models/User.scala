@@ -43,7 +43,7 @@ class User(identifier:Either[Int, String]) extends MainDatabaseAccess with HasDa
           case "lastfm" => sqls"lastfm_token"
           case _ => throw new IllegalArgumentException("The given service '$service' is not supported")
         }
-        sql"update account set $field=$token where id_user=$id".update.apply()
+        sql"update account set $field=$token where id_user=$id".update().apply()
 
       case Right(_) =>
     }
