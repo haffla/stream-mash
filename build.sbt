@@ -13,9 +13,11 @@ scalacOptions ++= Seq(
 )
 
 libraryDependencies ++= Seq(
+  jdbc,
   cache,
   ws,
   specs2 % Test,
+  evolutions,
   "org.squeryl" %% "squeryl" % "0.9.5-7",
   "org.scalatest" %% "scalatest" % "2.2.1" % "test",
   "org.scalikejdbc" %% "scalikejdbc" % "2.2.9",
@@ -30,8 +32,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "font-awesome" % "4.4.0",
   "org.webjars" % "lodash" % "3.10.1",
   play.sbt.Play.autoImport.cache,
-  "com.github.haffla" %% "soundcloud-scala" % "0.1-SNAPSHOT",
-  evolutions
+  "com.github.haffla" %% "soundcloud-scala" % "0.1-SNAPSHOT"
 )
 
 val alternateTestOptions = "-Dconfig.file=conf/" + Option(System.getProperty("test.config")).getOrElse("application") + ".conf"
