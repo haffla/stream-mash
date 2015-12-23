@@ -37,6 +37,7 @@ libraryDependencies ++= Seq(
 )
 
 val alternateTestOptions = "-Dconfig.file=conf/" + Option(System.getProperty("test.config")).getOrElse("application") + ".conf"
+
 javaOptions in Test += alternateTestOptions
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
