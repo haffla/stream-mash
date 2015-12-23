@@ -1,5 +1,5 @@
-import org.scalatest.{Matchers, FlatSpec}
 import org.scalatest.selenium.HtmlUnit
+import org.scalatest.{FlatSpec, Matchers}
 
 class RegistrationTest extends FlatSpec with Matchers with HtmlUnit {
 
