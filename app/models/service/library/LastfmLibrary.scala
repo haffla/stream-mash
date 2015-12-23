@@ -1,5 +1,6 @@
 package models.service.library
 
+import models.database.facade.LastfmFacade
 import models.service.Constants
 import models.service.library.util.JsonConversion
 import play.api.libs.json.JsValue
@@ -12,13 +13,9 @@ class LastfmLibrary(identifier: Either[Int, String]) extends Library(identifier)
         val album = (item \ "name").as[String]
         val artist = (item \ "artist" \ "name").as[String]
         val artistId = (item \ "artist" \ "mbid").as[String]
-        saveArtistsLastfmIds((artist, artistId))
+        LastfmFacade.saveArtistWithServiceId(artist, artistId)
         Map(Constants.mapKeyArtist -> artist, Constants.mapKeyAlbum -> album)
       }
     } getOrElse Seq.empty
-  }
-
-  private def saveArtistsLastfmIds(artistTuple:(String,String)) = {
-    pushToArtistIdQueue(artistTuple._1, artistTuple._2, "lastfm")
   }
 }

@@ -17,7 +17,6 @@ class SpotifyRefresh(identifier:Either[Int,String]) extends OAuthStreamingServic
   val serviceAccessTokenCache = new ServiceAccessTokenHelper("spotify", identifier)
 
   private def getRequest(token:String) = {
-    println("got some token: " + token)
     val data = Map("grant_type" -> Seq("refresh_token"), "refresh_token" -> Seq(token))
     val baseEncodedCredentials = MessageDigest.encodeBase64(clientId + ":" + clientSecret)
     WS.url("https://accounts.spotify.com/api/token")
@@ -26,7 +25,6 @@ class SpotifyRefresh(identifier:Either[Int,String]) extends OAuthStreamingServic
   }
 
   def refreshToken(token:String):Future[String] = {
-    println("refreshing")
     getAccessToken(getRequest(token)) map {
       case Some(tkn) =>
         identifier match {

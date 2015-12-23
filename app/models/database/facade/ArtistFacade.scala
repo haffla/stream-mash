@@ -1,25 +1,16 @@
 package models.database.facade
 
-import models.database.MainDatabaseAccess
-import play.api.Play
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
-import scalikejdbc._
-import slick.driver.JdbcProfile
-
-import scala.concurrent.Future
+import models.database.alias.{AppDB, Artist}
+import org.squeryl.PrimitiveTypeMode._
+import org.squeryl.Session
 
 object ArtistFacade {
   def apply(identifier:Either[Int,String]) = new ArtistFacade(identifier)
 }
 
-class ArtistFacade(identifier:Either[Int,String]) extends MainDatabaseAccess with HasDatabaseConfig[JdbcProfile] {
+class ArtistFacade(identifier:Either[Int,String]) extends Facade {
 
-  import driver.api._
-  implicit val session = AutoSession
-  val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
-
-  def getArtistByName(artistName:String):Future[Option[models.database.alias.Artist]] = {
-    val artist = for { a <- artistQuery if a.name === artistName } yield a
-    db.run(artist.result.headOption)
+  def getArtistByName(artistName:String):Option[Artist] = {
+    transaction(AppDB.artists.where(a => a.name === artistName).headOption)
   }
 }

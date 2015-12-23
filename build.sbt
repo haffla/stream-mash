@@ -13,17 +13,18 @@ scalacOptions ++= Seq(
 )
 
 libraryDependencies ++= Seq(
+  jdbc,
   cache,
   ws,
   specs2 % Test,
-  "org.scalatest" %% "scalatest" % "2.2.1" % "test",
+  evolutions,
+  "org.squeryl" %% "squeryl" % "0.9.5-7",
+  "org.scalatest" %% "scalatest" % "2.2.4" % "test",
   "org.scalikejdbc" %% "scalikejdbc" % "2.2.9",
   "org.scalikejdbc" %% "scalikejdbc-config" % "2.2.9",
   "org.scalikejdbc" %% "scalikejdbc-play-initializer" % "2.4.3",
   "org.scalatestplus" %% "play" % "1.4.0-M3" % "test",
   "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
-  "com.typesafe.play" %% "play-slick" % "1.1.0",
-  "com.typesafe.play" %% "play-slick-evolutions" % "1.1.0",
   "org.webjars" %% "webjars-play" % "2.4.0-1",
   "org.webjars.bower" % "progressbar.js" % "0.9.0",
   "org.webjars" % "bootstrap" % "3.1.1-2",
@@ -31,11 +32,12 @@ libraryDependencies ++= Seq(
   "org.webjars" % "font-awesome" % "4.4.0",
   "org.webjars" % "lodash" % "3.10.1",
   play.sbt.Play.autoImport.cache,
-  "com.rabbitmq" % "amqp-client" % "3.5.6",
-  "com.github.haffla" %% "soundcloud-scala" % "0.1-SNAPSHOT"
+  "com.github.haffla" %% "soundcloud-scala" % "0.1-SNAPSHOT",
+  "org.seleniumhq.selenium" % "selenium-java" % "2.48.2" % "test"
 )
 
 val alternateTestOptions = "-Dconfig.file=conf/" + Option(System.getProperty("test.config")).getOrElse("application") + ".conf"
+
 javaOptions in Test += alternateTestOptions
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"

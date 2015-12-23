@@ -21,16 +21,16 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
   val albumFacade = AlbumFacade(identifier)
   val artistFacade = ArtistFacade(identifier)
 
-  def analyse():Future[JsValue] = {
-    for {
+  def analyse() = {
+    /*for {
       albums <- albumFacade.getUsersAlbumCollection
       ids <- getIds(albums)
       albums <- getAlbumsOfArtists(ids)
       res = processResponses(albums)
-    } yield albums.head._2
+    } yield albums.head._2*/
   }
 
-  private def getIds(albums: Option[Map[String, Set[String]]]):Future[Set[Option[(String,String)]]] = {
+  /*private def getIds(albums: Option[Map[String, Set[String]]]):Future[Set[Option[(String,String)]]] = {
     albums match {
       case Some(albs) =>
         val artists = albs.keySet
@@ -48,7 +48,7 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
         }
       case None => Future.successful(Set())
     }
-  }
+  }*/
 
   private def getAlbumsOfArtists(ids: Set[Option[(String,String)]]):Future[Set[(String,JsValue)]] = {
     val searchList:Set[(String,String)] = ids.filter(_.isDefined).map(_.get)

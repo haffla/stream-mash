@@ -7,7 +7,7 @@ import models.service.oauth.LastfmService.apiEndpoints
 import models.service.util.ServiceAccessTokenHelper
 import models.util.Logging
 import play.api.Play.current
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WS, WSResponse}
 import models.service.oauth.LastfmService._
 
@@ -20,7 +20,7 @@ class LastfmService(identifier: Either[Int, String]) extends ApiDataRequest  ("l
   override val serviceAccessTokenHelper = new ServiceAccessTokenHelper("lastfm", identifier)
 
   def generateApiSig(code: String) = {
-    MessageDigest.md5("api_key" + clientId + apiEndpoints.authMethod + "token" + code + clientSecret)
+    MessageDigest.md5("api_key" + clientId + "method" + apiEndpoints.authMethod + "token" + code + clientSecret)
   }
 
   def doDataRequest(code:String) = {
@@ -31,7 +31,6 @@ class LastfmService(identifier: Either[Int, String]) extends ApiDataRequest  ("l
       credentials <- getAccessToken(futureResponse)
       (username,token) = credentials match {
         case Some(secret) =>
-          println(secret)
           val split = secret.split(LastfmService.credentialDevider)
           (Some(split.head), Some(split(1)))
         case None => (None,None)
@@ -65,7 +64,7 @@ object LastfmService extends OAuthStreamingServiceAbstract with FavouriteMusicRe
     val authorize = "http://www.last.fm/api/auth"
     val mainApi = "http://ws.audioscrobbler.com/2.0/"
     val getFavourites = "user.getTopAlbums"
-    val authMethod = "methodauth.getSession"
+    val authMethod = "auth.getSession"
 
     val data = Map(
       "method" -> Seq("auth.getSession"),
@@ -93,9 +92,15 @@ object LastfmService extends OAuthStreamingServiceAbstract with FavouriteMusicRe
     )
   }
 
-  override def favouriteMusicRetrievalRequest(username: String): Future[WSResponse] = {
+  override def favouriteMusicRetrievalRequest(username: String, page:String): Future[WSResponse] = {
     WS.url(apiEndpoints.mainApi)
-      .withQueryString("method" -> apiEndpoints.getFavourites, "api_key" -> clientId, "format" -> "json", "user" -> username)
+      .withQueryString("method" -> apiEndpoints.getFavourites, "api_key" -> clientId, "format" -> "json", "user" -> username, "page" -> page)
       .get()
+  }
+
+  override def getPageInformation(json:JsValue):(Boolean,Int) = {
+    val page = (json \ "topalbums" \ "@attr" \ "page").as[String].toInt
+    val total = (json \"topalbums" \ "@attr" \ "totalPages").as[String].toInt
+    (page < total, page + 1)
   }
 }

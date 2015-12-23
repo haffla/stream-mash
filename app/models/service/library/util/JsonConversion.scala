@@ -4,13 +4,13 @@ import models.service.Constants
 import play.api.libs.json.JsValue
 
 trait JsonConversion {
-  def convertJsonToSeq(json: Option[JsValue]):Seq[Map[String,String]] = {
-    json match {
-      case Some(js) =>
-        doJsonConversion(js)
-      case None =>
-        throw new Exception(Constants.userTracksRetrievalError)
+  def convertJsonToSeq(jsonList: Seq[JsValue]):Seq[Map[String,String]] = {
+    if(jsonList.nonEmpty) {
+      jsonList.foldLeft(Seq[Map[String,String]]()) { (prev, curr) =>
+        prev ++ doJsonConversion(curr)
+      }
     }
+    else throw new Exception(Constants.userTracksRetrievalError)
   }
   def doJsonConversion(js: JsValue): Seq[Map[String, String]]
 }

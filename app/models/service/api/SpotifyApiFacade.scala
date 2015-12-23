@@ -1,5 +1,6 @@
 package models.service.api
 
+import models.database.facade.SpotifyFacade
 import models.service.oauth.SpotifyService.apiEndpoints
 import models.util.Logging
 import play.api.Play.current
@@ -10,8 +11,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 object SpotifyApiFacade extends ApiFacade {
-
-  val typ = "spotify"
 
   def getArtistId(artist:String):Future[Option[(String,String)]] = {
     WS.url(apiEndpoints.search).withQueryString("type" -> "artist", "q" -> artist).get().map {
@@ -24,7 +23,7 @@ object SpotifyApiFacade extends ApiFacade {
               val id = (head \ "id").asOpt[String]
               id match {
                 case Some(i) =>
-                  pushToArtistIdQueue(artist, i)
+                  SpotifyFacade.saveArtistWithServiceId(artist, i)
                   Some((artist, i))
                 case None => None
               }

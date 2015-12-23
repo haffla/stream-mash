@@ -41,21 +41,20 @@ class SpotifyController extends Controller {
 
   def getSpotifyArtistId = IdentifiedBySession.async { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
-    val artistName = request.getQueryString("artist").get
-    ArtistFacade(identifier).getArtistByName(artistName) map {
-      case Some(artist) => artist.spotifyId
-      case None => None
-    } flatMap {
-      case Some(id) => Future.successful(Ok(Json.toJson(Map("spotify_id" -> id))))
-      case None =>
-        val id:Future[Option[(String,String)]] = SpotifyApiFacade.getArtistId(artistName)
-        id map {
+    request.getQueryString("artist").map { artist =>
+      val mayBeId = ArtistFacade(identifier).getArtistByName(artist) match {
+        case Some(a) => a.spotifyId
+        case None => None
+      }
+      mayBeId match {
+        case Some(spoId) => Future.successful(Ok(Json.toJson(Map("spotify_id" -> spoId))))
+        case None => SpotifyApiFacade.getArtistId(artist).map {
           case Some(spId) =>
             val id = spId._2
             Ok(Json.toJson(Map("spotify_id" -> id)))
           case None => Ok(Json.toJson(Map("error" -> "Did not find a Spotify ID")))
         }
-    }
-
+      }
+    }.getOrElse(Future.successful(Ok(Json.toJson(Map("error" -> "No artist specified")))))
   }
 }

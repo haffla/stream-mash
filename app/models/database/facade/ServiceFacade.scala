@@ -1,43 +1,41 @@
 package models.database.facade
 
-import models.database.MainDatabaseAccess
-import play.api.Play
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import scalikejdbc._
-import slick.driver.JdbcProfile
 
-abstract class ServiceFacade extends MainDatabaseAccess with HasDatabaseConfig[JdbcProfile] {
-
-  implicit val session = AutoSession
-  val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+abstract class ServiceFacade extends Facade {
 
   val serviceFieldName:SQLSyntax
 
   def saveArtistWithServiceId(artistName: String, serviceId: String): Unit = {
-    val artistsByName = sql"select * from artist where name=$artistName"
-      .toMap().list().apply()
-      .map(_.mapValues(_.toString))
-    artistsByName.headOption match {
-      case Some(artist) =>
-        val artistId = artist("id_artist").toInt
-        artist.get(serviceFieldName.toString()) match {
-          case Some(id) =>
-            if(id != serviceId) {
-              updateServiceId(artistId, serviceId)
-            }
-          case None =>
-            updateServiceId(artistId, serviceId)
+    sql"select $serviceFieldName from artist where artist_name=$artistName".map(rs => rs.string(serviceFieldName.value)).single().apply() match {
+      case Some(id) =>
+        if(id != serviceId) {
+          updateServiceId(artistName, serviceId)
         }
-      case None =>
-        createNewArtistWithId(artistName, serviceId)
+      case None => createNewArtistWithId(artistName, serviceId)
     }
   }
 
-  private def updateServiceId(artistId: Int, serviceId: String): Unit = {
-    sql"update artist set $serviceFieldName=$serviceId where id_artist=$artistId".update().apply()
+  private def updateServiceId(artistName: String, serviceId: String): Unit = {
+    sql"update artist set $serviceFieldName=$serviceId where artist_name=$artistName".update().apply()
   }
 
   private def createNewArtistWithId(artistName: String, serviceId: String) = {
-    sql"insert into artist (name, $serviceFieldName) VALUES ($artistName, $serviceId)".update().apply()
+    sql"insert into artist (artist_name, $serviceFieldName) VALUES ($artistName, $serviceId)".update().apply()
+  }
+}
+
+object Services extends ServiceFacade {
+  override val serviceFieldName = null
+
+  def getFieldForService(service:String) = {
+    service match {
+      case "spotify" => sqls"spotify_token"
+      case "rdio" => sqls"rdio_token"
+      case "deezer" => sqls"deezer_token"
+      case "soundcloud" => sqls"soundcloud_token"
+      case "lastfm" => sqls"lastfm_token"
+      case _ => throw new IllegalArgumentException("The given service '$service' is not supported")
+    }
   }
 }
