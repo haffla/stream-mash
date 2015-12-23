@@ -56,6 +56,7 @@ MainComponent = React.createClass
 
   loadFromDb: (event) ->
     callback = (data) =>
+      console.log(data)
       if !data.error
         @setTheState(data, true)
       if window.itunes.openmodal is 'yes'

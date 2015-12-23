@@ -1,9 +1,8 @@
 package controllers
 
 import models.User
-import models.auth.{AdminAccess, IdentifiedBySession, Helper}
+import models.auth.{Authenticated, AdminAccess, IdentifiedBySession, Helper}
 import models.database.facade.CollectionFacade
-import models.service.analysis.SpotifyAnalysis
 import models.service.library.Library
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
@@ -21,23 +20,24 @@ class UserController extends Controller {
     collectionFromDb(identifier)
   }
 
-  /* TODO def deleteMyCollections() = Authenticated.async { implicit request =>
+  def deleteMyCollections() = Authenticated { implicit request =>
     request.session.get("user_id") map { userId =>
-      User.deleteUsersAlbumCollection(userId.toInt) map { count =>
-        Ok(Json.toJson(Json.toJson(Map("success" -> true))))
-      }
-    } getOrElse Future.successful(Ok(Json.toJson(Map("success" -> false))))
-  }*/
+      deleteCollection(userId.toInt)
+    } getOrElse Ok(Json.toJson(Map("success" -> false)))
+  }
 
   def deleteCollectionByUser(userId:Long) = AdminAccess { implicit request =>
+    deleteCollection(userId.toInt)
+  }
+
+  private def deleteCollection(userId:Int) = {
     try {
-      User(Left(userId.toInt)).deleteUsersCollection()
+      User(Left(userId)).deleteUsersCollection()
       Ok(Json.toJson(Map("success" -> true)))
     }
     catch {
-      case e: Exception => {
+      case e: Exception =>
         Ok(Json.toJson(Map("success" -> false)))
-      }
     }
   }
 

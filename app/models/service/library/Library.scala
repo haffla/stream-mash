@@ -125,7 +125,7 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
           }
 
           sql"select id_collection from user_collection where $fkUserField = $userId and fk_track = $trackId".map(rs => rs.long("id_collection")).single().apply() match {
-            case None => sql"insert into user_collection (fk_track, user_session) values ($trackId, $userId)".update().apply()
+            case None => sql"insert into user_collection (fk_track, $fkUserField) values ($trackId, $userId)".update().apply()
             case Some(_) =>
           }
         }

@@ -15,7 +15,7 @@ import scala.concurrent.Future
 
 class User(identifier:Either[Int, String]) {
 
-  implicit val session = AutoSession
+  implicit val session = User.session
 
   def getServiceToken(service:String):Option[String] = {
     identifier match {
@@ -37,11 +37,11 @@ class User(identifier:Either[Int, String]) {
   }
 
   def deleteUsersCollection() = {
-    val (userId, userField) = identifier match {
-      case Left(id) => (id, sqls"fk_user")
-      case Right(sessionKey) => (sessionKey, sqls"user_session")
+    lazy val action = identifier match {
+      case Left(id) => AppDB.collections.deleteWhere(c => c.userId === id)
+      case Right(sessionKey) => AppDB.collections.deleteWhere(c => c.userSession like sessionKey)
     }
-    sql"delete from user_collection where $userField = $userId".update().apply()
+    transaction(action)
   }
 
   def saveItunesFileHash(hash:String) = {

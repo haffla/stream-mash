@@ -35,4 +35,6 @@ object AppDB extends Schema {
   on(tracks)(t => declare(
     columns(t.name, t.artistId, t.albumId) are unique
   ))
+
+  val artistToAlbums = oneToManyRelation(artists, albums).via((art, alb) => art.id === alb.artistId)
 }

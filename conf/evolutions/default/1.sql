@@ -50,7 +50,7 @@ CREATE SEQUENCE s_track_id;
 
 CREATE TABLE IF NOT EXISTS track(
     id_track BIGINT DEFAULT nextval('s_track_id') PRIMARY KEY,
-    track_name VARCHAR(256) NOT NULL,
+    track_name VARCHAR(255) NOT NULL,
     fk_artist INT NOT NULL REFERENCES artist(id_artist),
     fk_album INT DEFAULT NULL REFERENCES album(id_album),
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
