@@ -37,4 +37,11 @@ object AppDB extends Schema {
   ))
 
   val artistToAlbums = oneToManyRelation(artists, albums).via((art, alb) => art.id === alb.artistId)
+
+  def findAlbumsByArtistName(artist:String) = {
+    from(albums)(alb =>
+      where(alb.artistId in
+        from(artists)(art => where(art.name like artist) select art.id
+        )) select alb).toList
+  }
 }

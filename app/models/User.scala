@@ -111,9 +111,7 @@ object User {
 
   def list:Future[Seq[database.alias.User]] = {
     Future {
-      transaction {
-        AppDB.users.toList
-      }
+      transaction(AppDB.users.toList)
     }
   }
 
