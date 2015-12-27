@@ -1,7 +1,6 @@
 package controllers
 
 import java.io.File
-import java.nio.file.Files
 
 import models.User
 import models.auth.{IdentifiedBySession, Helper, MessageDigest}

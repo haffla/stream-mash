@@ -1,12 +1,17 @@
 @(service:String, openModal:String)(implicit flash: Flash, session: Session, request: RequestHeader)
 
-@main("iTunes", List("lodash", "react")) {
+@import play.api.Play.current
+
+@main("iTunes") {
     <div id="content"></div>
 
     <script type='text/javascript'>
         window.streamingservice = {'name': '@service', 'url': '@routes.Application.socket().webSocketURL()'};
         window.itunes = {'openmodal': '@openModal'};
     </script>
-
-    <script type='text/javascript' src='@routes.Assets.versioned("javascripts/artistbox.js")'></script>
+    @if(play.api.Play.isDev) {
+        <script type='text/javascript' src='http://localhost:3000/static/bundle.js'></script>
+    } else {
+        <script type='text/javascript' src='@routes.Assets.versioned("javascripts/bundle.js")'></script>
+    }
 }
