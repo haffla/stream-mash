@@ -4,12 +4,11 @@ scala:
 jdk:
    - oraclejdk8
 
-#services:
-   #- postgresql
-
-#before_script:
-  #- psql -c "CREATE DATABASE playdb ENCODING 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8'" -U postgres
-  #- psql -U postgres -d playdb -a -f ./conf/evolutions/default/1.sql
+before_script:
+  - cd react-frontend
+  - npm install
+  - npm install -g gulp
+  - gulp build
 
 script:
   - sbt -Dtest.config=test clean coverage test
