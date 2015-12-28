@@ -1,9 +1,8 @@
 {
   "name": "stream-mashup-react-frontend",
   "version": "1.0.0",
-  "description": "Frontend Code",
   "scripts": {
-    "start": "node server.js"
+    "start": "node dev-server.js"
   },
   "devDependencies": {
     "react": "^0.14.0",

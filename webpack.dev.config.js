@@ -6,10 +6,10 @@ module.exports = {
   entry: [
     'webpack-dev-server/client?http://localhost:3000',
     'webpack/hot/only-dev-server',
-    './src/index'
+    './react-frontend/index'
   ],
   output: {
-    path: path.join(__dirname, '../public/javascripts'),
+    path: path.join(__dirname, 'public', 'javascripts'),
     filename: 'bundle.js',
     publicPath: '/static/'
   },
@@ -21,9 +21,9 @@ module.exports = {
   },
   module: {
     loaders: [
-      {test: /\.js$/, loaders: ['react-hot', 'babel'], include: path.join(__dirname, 'src')},
-      {test: /\.cjsx$/, loaders: ['react-hot', 'coffee', 'cjsx']},
-      {test: /\.coffee$/, loaders: ['react-hot', 'coffee']}
+      {test: /\.js$/, loaders: ['react-hot', 'babel'], include: path.join(__dirname, 'react-frontend')},
+      {test: /\.cjsx$/, loaders: ['react-hot', 'coffee', 'cjsx'], include: path.join(__dirname, 'react-frontend')},
+      {test: /\.coffee$/, loaders: ['react-hot', 'coffee'], include: path.join(__dirname, 'react-frontend')}
     ]
   }
 };
