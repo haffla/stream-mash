@@ -22,17 +22,6 @@ class AuthenticationFlowTest extends PlaySpec with OneServerPerSuite with OneBro
                 pageTitle mustBe titleHome
             }
 
-            go to s"$home/login"
-            pageTitle mustBe "Login"
-            click on find(name("name")).value
-            enter(user)
-            click on find(name("password")).value
-            enter(password)
-            submit()
-            eventually {
-                pageTitle mustBe titleHome
-            }
-
             click on linkText(" Logout")
             eventually {
                 pageTitle mustBe "Login"
@@ -43,7 +32,6 @@ class AuthenticationFlowTest extends PlaySpec with OneServerPerSuite with OneBro
             click on find(name("password")).value
             enter(password)
             submit()
-
             eventually {
                 pageTitle mustBe titleHome
             }
