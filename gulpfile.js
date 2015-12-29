@@ -4,7 +4,7 @@ var gutil = require('gutil');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 
-/* use webpack to compile all code into one file and put it in the public/javascripts folder */
+/* use webpack to compile all code into one file */
 gulp.task("webpack", function() {
     webpack(require('./webpack.build.config'), function(error, stats) {
         if(error) {
@@ -15,12 +15,14 @@ gulp.task("webpack", function() {
 });
 
 var JS_FOLDER = 'public/javascripts';
+var DIST = 'react-frontend/dist';
 
+/* uglify javascript and output to public/javascripts folder */
 gulp.task('uglify', ['webpack'], function() {
-  return gulp.src(JS_FOLDER + '/bundle.js')
+  return gulp.src('./' + DIST + '/bundle.js')
     .pipe(uglify())
     .pipe(rename({ extname: '.min.js' }))
-    .pipe(gulp.dest(JS_FOLDER));
+    .pipe(gulp.dest('./' + JS_FOLDER));
 });
 
 gulp.task('build', ['webpack', 'uglify']);

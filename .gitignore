@@ -11,3 +11,4 @@ target
 /RUNNING_PID
 *.log
 conf/*-credentials.conf
+react-frontend/dist
