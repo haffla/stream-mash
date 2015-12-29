@@ -22,36 +22,30 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
   val artistFacade = ArtistFacade(identifier)
 
   def analyse() = {
-    /*for {
-      albums <- albumFacade.getUsersAlbumCollection
-      ids <- getIds(albums)
+    val artists = artistFacade.getUsersArtists
+    for {
+      ids <- getIds(artists)
       albums <- getAlbumsOfArtists(ids)
       res = processResponses(albums)
-    } yield albums.head._2*/
+    } yield albums.head._2
   }
 
-  /*private def getIds(albums: Option[Map[String, Set[String]]]):Future[Set[Option[(String,String)]]] = {
-    albums match {
-      case Some(albs) =>
-        val artists = albs.keySet
-        Future.sequence {
-          artists.map { artist =>
-            artistFacade.getArtistByName(artist) flatMap {
-              case Some(art) =>
-                art.spotifyId match {
-                  case Some(id) => Future.successful(Some((artist, id)))
-                  case None => SpotifyApiFacade.getArtistId(artist)
-                }
-              case None => SpotifyApiFacade.getArtistId(artist)
-            }
+  private def getIds(artists: List[models.database.alias.Artist]):Future[List[Option[(String,String)]]] = {
+    if(artists.nonEmpty) {
+      Future.sequence {
+        artists.map { artist =>
+          artist.spotifyId match {
+            case Some(spoId) => Future.successful(Some(artist.name, spoId))
+            case None => SpotifyApiFacade.getArtistId(artist.name)
           }
         }
-      case None => Future.successful(Set())
+      }
     }
-  }*/
+    else Future.successful(Nil)
+  }
 
-  private def getAlbumsOfArtists(ids: Set[Option[(String,String)]]):Future[Set[(String,JsValue)]] = {
-    val searchList:Set[(String,String)] = ids.filter(_.isDefined).map(_.get)
+  private def getAlbumsOfArtists(ids: List[Option[(String,String)]]):Future[List[(String,JsValue)]] = {
+    val searchList:List[(String,String)] = ids.filter(_.isDefined).map(_.get)
     Future.sequence {
       searchList map { artist =>
         val artistName = artist._1
@@ -88,8 +82,8 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
     }
   }
 
-  private def processResponses(jsSet: Set[(String,JsValue)]):Map[String,Set[String]] = {
-    jsSet.toList.foldLeft(Map[String,Set[String]]()) { (prev, jsTuple) =>
+  private def processResponses(jsSet: List[(String,JsValue)]):Map[String,Set[String]] = {
+    jsSet.foldLeft(Map[String,Set[String]]()) { (prev, jsTuple) =>
       prev ++ processSingleResponse(jsTuple)
     }
   }

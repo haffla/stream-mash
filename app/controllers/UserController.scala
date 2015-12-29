@@ -4,6 +4,7 @@ import models.User
 import models.auth.{Authenticated, AdminAccess, IdentifiedBySession, Helper}
 import models.database.alias.AppDB
 import models.database.facade.CollectionFacade
+import models.service.analysis.SpotifyAnalysis
 import models.service.library.Library
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
@@ -51,9 +52,9 @@ class UserController extends Controller {
     }
   }
 
-  /*def analysis = IdentifiedBySession.async { implicit request =>
+  def analysis = IdentifiedBySession.async { implicit request =>
     SpotifyAnalysis(Helper.getUserIdentifier(request.session)).analyse() map {
       res => Ok(res)
     }
-  }*/
+  }
 }
