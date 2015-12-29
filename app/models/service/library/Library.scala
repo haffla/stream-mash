@@ -112,14 +112,14 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
       }
 
       for((album,tracks) <- albums) {
-        val existingAlbumId:Long = sql"select id_album from album where album_name = $album".map(rs => rs.long("id_album")).single().apply() match {
+        val existingAlbumId:Long = sql"select id_album from album where album_name = $album and fk_artist = $existingArtistId".map(rs => rs.long("id_album")).single().apply() match {
           case Some(rowId) => rowId
           case None => sql"insert into album (album_name, fk_artist) values ($album, $existingArtistId)".updateAndReturnGeneratedKey().apply()
         }
 
         for(track <- tracks) {
           position = position + 1.0
-          val trackId:Long = sql"select id_track from track where track_name = $track".map(rs => rs.long("id_track")).single().apply() match {
+          val trackId:Long = sql"select id_track from track where track_name = $track and fk_artist = $existingArtistId and fk_album = $existingAlbumId".map(rs => rs.long("id_track")).single().apply() match {
             case None => sql"insert into track (track_name, fk_artist, fk_album) values ($track, $existingArtistId, $existingAlbumId)".updateAndReturnGeneratedKey().apply()
             case Some(rowId) => rowId
           }
