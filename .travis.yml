@@ -5,11 +5,9 @@ jdk:
    - oraclejdk8
 
 before_script:
-  - cd react-frontend
   - npm install
   - npm install -g gulp
   - gulp build
-  - cd ..
 
 script:
   - sbt -Dtest.config=test clean coverage test
