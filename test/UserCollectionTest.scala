@@ -2,10 +2,13 @@ import models.User
 import models.database.facade.CollectionFacade
 import models.service.library._
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.libs.json.JsValue
 import play.api.test.WithApplication
 
 class UserCollectionTest extends UnitSpec with ScalaFutures {
+
+  implicit val defaultPatience = PatienceConfig(timeout = Span(4, Seconds), interval = Span(500, Millis))
 
   val identifier = Right("testusersession")
 

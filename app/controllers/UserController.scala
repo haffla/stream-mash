@@ -2,6 +2,7 @@ package controllers
 
 import models.User
 import models.auth.{Authenticated, AdminAccess, IdentifiedBySession, Helper}
+import models.database.alias.AppDB
 import models.database.facade.CollectionFacade
 import models.service.library.Library
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -43,6 +44,7 @@ class UserController extends Controller {
 
   private def collectionFromDb(identifier: Either[Int, String]) = {
     val library = new Library(identifier)
+    AppDB.getCollectionByUser(identifier)
     CollectionFacade(identifier).userCollection map { collection =>
         if(collection.nonEmpty) Ok(library.prepareCollectionForFrontend(collection))
         else Ok(Json.toJson(Map("error" -> "You have no records stored in our database.")))

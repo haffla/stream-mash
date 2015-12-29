@@ -38,10 +38,24 @@ object AppDB extends Schema {
 
   val artistToAlbums = oneToManyRelation(artists, albums).via((art, alb) => art.id === alb.artistId)
 
-  def findAlbumsByArtistName(artist:String) = {
-    from(albums)(alb =>
-      where(alb.artistId in
-        from(artists)(art => where(art.name like artist) select art.id
-        )) select alb).toList
+  /**
+   * Currently only returns artists and albums connected to a user
+   */
+  def getCollectionByUser(identifier:Either[Int,String]):List[(Album, Artist)] = {
+    transaction {
+      val res = identifier match {
+        case Left(fkUser) =>
+          from(collections, tracks, albums, artists)((coll, tr, alb, art) =>
+            where(coll.userId === fkUser and coll.trackId === tr.id and tr.albumId === alb.id and tr.artistId === art.id)
+              select (alb,art)
+          )
+        case Right(session) =>
+          from(collections, tracks, albums, artists)((coll, tr, alb, art) =>
+            where(coll.userSession === Some(session) and coll.trackId === tr.id and tr.albumId === alb.id and tr.artistId === art.id)
+              select (alb,art)
+          )
+      }
+      res.toList
+    }
   }
 }

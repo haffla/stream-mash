@@ -68,7 +68,7 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
   /**
    * Transforms the collection to a Json Array of Json Objects
    */
-  def prepareCollectionForFrontend(data:List[Map[String, Any]]):JsValue = {
+  def prepareCollectionForFrontend(data:List[(models.database.alias.Album, models.database.alias.Artist)]):JsValue = {
     val converted = convert(data)
     val formattedData:List[JsObject] = converted.keySet.toList.map { artist =>
       val albums:List[Map[String,String]] = converted(artist).toList.map { albumName =>
@@ -82,10 +82,10 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
     Json.toJson(formattedData)
   }
 
-  private def convert(data:List[Map[String, Any]]):Map[String, Set[String]] = {
+  private def convert(data:List[(models.database.alias.Album, models.database.alias.Artist)]):Map[String, Set[String]] = {
     data.foldLeft(Map[String, Set[String]]()) { (prev, curr) =>
-      val artist = curr("artist_name").asInstanceOf[String]
-      val album = curr("album_name").asInstanceOf[String]
+      val artist = curr._2.name
+      val album = curr._1.name
       val albums:Set[String] = prev.getOrElse(artist, Set.empty) + album
       prev + (artist -> albums)
     }

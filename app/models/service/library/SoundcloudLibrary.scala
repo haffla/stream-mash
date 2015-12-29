@@ -26,30 +26,28 @@ class SoundcloudLibrary(identifier: Either[Int, String]) extends Library(identif
       result.zipWithIndex.map { case (entity, i) =>
         val position = i + 1
         apiHelper.setRetrievalProcessProgress(position.toDouble / totalLength)
-        Thread.sleep(1000)
         val isTrack = (entity \ "kind").as[String] == "track"
         if(isTrack) {
+          Thread.sleep(1000)
           val id = (entity \ "id").as[Int]
           val user = (entity \ "user").as[JsValue]
           val artist = (user \ "username").as[String]
-          val title = (entity \ "title").as[String]
+          //val title = (entity \ "title").as[String]
           val res = for {
-            musicBrainzResult <- MusicBrainzApi.findAlbumOfTrack(title, artist)
-          } yield musicBrainzResult.headOption
-          saveArtistsSoundcloudId(res, id)
+            musicBrainzResult <- MusicBrainzApi.isKnownArtist(artist)
+          } yield {
+              musicBrainzResult match {
+                case Some(art) =>
+                  SoundcloudFacade.saveArtistWithServiceId(art, id.toString)
+                  Some(Map(Constants.mapKeyArtist -> art, Constants.mapKeyAlbum -> Constants.mapKeyUnknownAlbum, Constants.mapKeyTrack -> "UNKNOWNTRACK"))
+                case None => None
+              }
+
+            }
           res
         }
         else Future.successful(None)
       }
     } map(x => x filter(y => y.isDefined) map(z => z.get))
-  }
-
-  private def saveArtistsSoundcloudId(musicBrainzApiResponse:Future[Option[Map[String,String]]], id:Int) = {
-    musicBrainzApiResponse.map {
-        case Some(result) =>
-          val artist = result(MusicBrainzApi.keyArtist)
-          SoundcloudFacade.saveArtistWithServiceId(artist, id.toString)
-        case None => //do nothing
-      }
   }
 }
