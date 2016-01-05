@@ -12,11 +12,11 @@ class UserCollectionTest extends UnitSpec with ScalaFutures {
 
   val identifier = Right("testusersession")
 
-  "Creating albums, saving them to DB and retrieving them" should "work" in new WithApplication {
+  "The Library" should "correctly save a collection to DB and retrieve it" in new WithApplication {
     val collection = Map(
       "The Beatles" -> Map("Sgt. Pepper’s Lonely Hearts Club Band" -> Set("With a Little Help from My Friends", "Getting Better")),
-      "Extrawelt" -> Map("Dark Side Of The Moon" -> Set("Track One", "Track Two")),
-      "Apparat" -> Map("Walls" -> Set("Walls"))
+      "Extrawelt" -> Map("Dark Side Of The Moon" -> Set("Etre", "Colomb")),
+      "Apparat" -> Map("Walls" -> Set("Useless Information", "Limelight"))
     )
 
     val library = new Library(identifier)
@@ -29,15 +29,23 @@ class UserCollectionTest extends UnitSpec with ScalaFutures {
       val forFrontEnd = library.prepareCollectionForFrontend(col)
 
       val converted:List[JsValue] = forFrontEnd.as[List[JsValue]]
-      val names = converted map(x => (x \ "name").as[String])
+      val artists = converted map(x => (x \ "name").as[String])
+      val albumObjects = converted map(x => (x \ "albums").as[List[JsValue]])
 
-      val albums = converted map(x => (x \ "albums").as[List[JsValue]]) flatMap { albumSet =>
-        albumSet map { album =>
+      val albums = albumObjects flatMap { albumObj =>
+        albumObj map { album =>
           (album \ "name").as[String]
         }
       }
 
-      names.toSet should equal(Set("The Beatles", "Apparat", "Extrawelt"))
+      val tracks:List[String] = albumObjects flatMap { albumObj =>
+        albumObj flatMap { album =>
+          (album \ "tracks").as[Set[String]]
+        }
+      }
+
+      tracks.toSet should equal(Set("With a Little Help from My Friends", "Getting Better", "Etre", "Colomb", "Useless Information", "Limelight"))
+      artists.toSet should equal(Set("The Beatles", "Apparat", "Extrawelt"))
       albums.toSet should equal(Set("Sgt. Pepper’s Lonely Hearts Club Band", "Dark Side Of The Moon", "Walls"))
     }
 
