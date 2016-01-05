@@ -24,7 +24,7 @@ class ArtistFacade(identifier:Either[Int,String]) extends Facade {
         case Right(s) =>
           from(AppDB.collections, AppDB.tracks, AppDB.artists)((coll, tr, art) =>
             where(coll.userSession === Some(s) and coll.trackId === tr.id and tr.artistId === art.id)
-              select art
+            select art
           )
       }
       res.distinct.toList

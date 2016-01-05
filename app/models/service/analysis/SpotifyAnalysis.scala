@@ -13,7 +13,7 @@ import scala.concurrent.Future
 
 class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(identifier, "spotify") {
 
-  val token:Option[String] = serviceAccessTokenCache.getAccessToken
+  val token:Option[String] = serviceAccessTokenHelper.getAccessToken
   var refreshToken:Option[String] = None
 
   val searchEndpoint = "https://api.spotify.com/v1/artists/"
