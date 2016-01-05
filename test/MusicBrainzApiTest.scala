@@ -24,4 +24,18 @@ class MusicBrainzApiTest extends UnitSpec with ScalaFutures {
       )
     }
   }
+
+  "The API" should "return None for an unknown artist" in new WithApplication {
+    val apiRequest = MusicBrainzApi.isKnownArtist("The Undercover Heros")
+    whenReady(apiRequest) { res =>
+      res should be(None)
+    }
+  }
+
+  "The API" should "return a name for an artist" in new WithApplication {
+    val apiRequest = MusicBrainzApi.isKnownArtist("Beatles")
+    whenReady(apiRequest) { res =>
+      res should be(Some("The Beatles"))
+    }
+  }
 }
