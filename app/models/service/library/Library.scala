@@ -14,7 +14,9 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
 
   /**
    * Cleans the data by transforming the Seq[Map[String,String]]
-   * to a Map[String, Set[String]]
+   * to a Map[String, Map[String,Set[String]]]
+   * The artist key maps to a map of which the keys are the album titles
+   * and the values are sets of track names
    */
   def convertSeqToMap(data: Seq[Map[String,String]],
                       keyArtist:String = Constants.mapKeyArtist,

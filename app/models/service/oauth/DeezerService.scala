@@ -51,7 +51,7 @@ object DeezerService extends OAuthStreamingServiceAbstract with FavouriteMusicRe
   object apiEndpoints {
     val token = "https://connect.deezer.com/oauth/access_token.php"
     val authorize = "https://connect.deezer.com/oauth/auth.php"
-    val albums = "http://api.deezer.com/user/me/albums"
+    val albums = "http://api.deezer.com/user/me/tracks"
   }
 
   override def favouriteMusicRetrievalRequest(accessToken: String, page:String): Future[WSResponse] =

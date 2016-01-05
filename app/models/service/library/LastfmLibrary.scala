@@ -10,6 +10,7 @@ class LastfmLibrary(identifier: Either[Int, String]) extends Library(identifier)
   def doJsonConversion(js: JsValue): Seq[Map[String, String]] = {
     (js \ "toptracks" \ "track").asOpt[Seq[JsValue]] map { items =>
       items map { item =>
+        //TODO: Get playcount
         val track = (item \ "name").as[String]
         val artist = (item \ "artist" \ "name").as[String]
         val artistId = (item \ "artist" \ "mbid").as[String]
