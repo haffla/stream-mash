@@ -8,13 +8,13 @@ import play.api.libs.json.JsValue
 class LastfmLibrary(identifier: Either[Int, String]) extends Library(identifier) with JsonConversion {
 
   def doJsonConversion(js: JsValue): Seq[Map[String, String]] = {
-    (js \ "topalbums" \ "album").asOpt[Seq[JsValue]] map { items =>
+    (js \ "toptracks" \ "track").asOpt[Seq[JsValue]] map { items =>
       items map { item =>
-        val album = (item \ "name").as[String]
+        val track = (item \ "name").as[String]
         val artist = (item \ "artist" \ "name").as[String]
         val artistId = (item \ "artist" \ "mbid").as[String]
         LastfmFacade.saveArtistWithServiceId(artist, artistId)
-        Map(Constants.mapKeyArtist -> artist, Constants.mapKeyAlbum -> album)
+        Map(Constants.mapKeyArtist -> artist, Constants.mapKeyTrack -> track)
       }
     } getOrElse Seq.empty
   }
