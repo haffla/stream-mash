@@ -9,7 +9,6 @@ class DeezerLibrary(identifier: Either[Int, String]) extends Library(identifier)
 
   def doJsonConversion(js: JsValue): Seq[Map[String, String]] = {
     val data = (js \ "data").as[Seq[JsValue]]
-    println(data)
     data map { item =>
       val track = (item \ "title").as[String]
       val album = (item \ "album" \ "title").as[String]
