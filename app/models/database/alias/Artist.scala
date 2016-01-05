@@ -6,7 +6,6 @@ import org.squeryl.dsl.OneToMany
 
 case class Artist(@Column("artist_name") name:String,
                   @Column("spotify_id") spotifyId:Option[String] = None,
-                  @Column("rdio_id") rdioId:Option[String] = None,
                   @Column("soundcloud_id") soundcloudId:Option[String] = None,
                   @Column("deezer_id") deezerId:Option[String] = None,
                   @Column("lastfm_id") lastfmId:Option[String] = None) extends KeyedEntity[Long] {
