@@ -40,18 +40,18 @@ object AppDB extends Schema {
   /**
    * Currently only returns artists and albums connected to a user
    */
-  def getCollectionByUser(identifier:Either[Int,String]):List[(Album, Artist)] = {
+  def getCollectionByUser(identifier:Either[Int,String]):List[(Album, Artist, Track)] = {
     transaction {
       val res = identifier match {
         case Left(fkUser) =>
           from(collections, tracks, albums, artists)((coll, tr, alb, art) =>
             where(coll.userId === fkUser and coll.trackId === tr.id and tr.albumId === alb.id and tr.artistId === art.id)
-              select (alb,art)
+              select (alb,art,tr)
           )
         case Right(session) =>
           from(collections, tracks, albums, artists)((coll, tr, alb, art) =>
             where(coll.userSession === Some(session) and coll.trackId === tr.id and tr.albumId === alb.id and tr.artistId === art.id)
-              select (alb,art)
+              select (alb,art,tr)
           )
       }
       res.toList

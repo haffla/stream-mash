@@ -3,6 +3,7 @@ package models.service.library
 import models.service.Constants
 import models.service.api.discover.RetrievalProcessMonitor
 import play.api.libs.json.{JsObject, JsValue, Json}
+import models.database.alias.{Album,Artist,Track}
 
 import scalikejdbc._
 
@@ -70,26 +71,36 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
   /**
    * Transforms the collection to a Json Array of Json Objects
    */
-  def prepareCollectionForFrontend(data:List[(models.database.alias.Album, models.database.alias.Artist)]):JsValue = {
+  def prepareCollectionForFrontend(data:List[(Album,Artist,Track)]):JsValue = {
     val converted = convert(data)
-    val formattedData:List[JsObject] = converted.keySet.toList.map { artist =>
-      val albums:List[Map[String,String]] = converted(artist).toList.map { albumName =>
-        Map("name" -> albumName)
+    val JsObjects = converted.map { artist =>
+      val artistName:String = artist._1
+      val albums:Map[String,Set[String]] = artist._2
+      val albumObjects = albums.map { album =>
+        val albumName:String = album._1
+        val tracks:Set[String] = album._2
+        Json.obj(
+          "name" -> albumName,
+          "tracks" -> tracks
+        )
       }
       Json.obj(
-        "name" -> artist,
-        "albums" -> albums
+        "name" -> artistName,
+        "albums" -> albumObjects
       )
     }
-    Json.toJson(formattedData)
+    Json.toJson(JsObjects)
   }
 
-  private def convert(data:List[(models.database.alias.Album, models.database.alias.Artist)]):Map[String, Set[String]] = {
-    data.foldLeft(Map[String, Set[String]]()) { (prev, curr) =>
+  private def convert(data:List[(Album,Artist,Track)]):Map[String, Map[String,Set[String]]] = {
+    data.foldLeft(Map[String, Map[String,Set[String]]]()) { (prev, curr) =>
       val artist = curr._2.name
       val album = curr._1.name
-      val albums:Set[String] = prev.getOrElse(artist, Set.empty) + album
-      prev + (artist -> albums)
+      val track = curr._3.name
+      val albums:Map[String,Set[String]] = prev.getOrElse(artist, Map.empty)
+      val tracks:Set[String] = albums.getOrElse(album, Set.empty) + track
+      val added:Map[String,Set[String]] = albums + (album -> tracks)
+      prev + (artist -> added)
     }
   }
 
