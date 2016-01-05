@@ -29,10 +29,6 @@ GET           /deezer/callback              controllers.DeezerController.callbac
 GET           /lastfm/login                 controllers.LastfmController.login
 GET           /lastfm/callback              controllers.LastfmController.callback
 
-### Rdio
-GET           /rdio/login                   controllers.RdioController.login
-GET           /rdio/callback                controllers.RdioController.callback
-
 ### User management
 GET            /users                        controllers.UserController.list
 GET            /collection/fromdb            controllers.UserController.userCollectionFromDb

@@ -63,7 +63,7 @@ object LastfmService extends OAuthStreamingServiceAbstract with FavouriteMusicRe
   object apiEndpoints {
     val authorize = "http://www.last.fm/api/auth"
     val mainApi = "http://ws.audioscrobbler.com/2.0/"
-    val getFavourites = "user.getTopAlbums"
+    val getFavourites = "user.getTopTracks"
     val authMethod = "auth.getSession"
 
     val data = Map(
@@ -99,8 +99,8 @@ object LastfmService extends OAuthStreamingServiceAbstract with FavouriteMusicRe
   }
 
   override def getPageInformation(json:JsValue):(Boolean,Int) = {
-    val page = (json \ "topalbums" \ "@attr" \ "page").as[String].toInt
-    val total = (json \"topalbums" \ "@attr" \ "totalPages").as[String].toInt
+    val page = (json \ "toptracks" \ "@attr" \ "page").as[String].toInt
+    val total = (json \"toptracks" \ "@attr" \ "totalPages").as[String].toInt
     (page < total, page + 1)
   }
 }

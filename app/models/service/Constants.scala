@@ -15,7 +15,6 @@ object Constants {
   val mapKeyAlbum = "album"
   val mapKeyServiceId = "service_id"
   val mapKeyService = "service"
-  val mapKeyRdioArtistId = "rdio_artist_id"
   val mapKeyUnknownAlbum = "UNKNOWNALBUM"
 
   val jsonKeyAccessToken = "access_token"

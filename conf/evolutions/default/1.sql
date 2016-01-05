@@ -7,7 +7,6 @@ CREATE TABLE IF NOT EXISTS account(
     itunes_file_hash VARCHAR(32) DEFAULT NULL,
     spotify_token VARCHAR(255) DEFAULT NULL,
     deezer_token VARCHAR(256) DEFAULT NULL,
-    rdio_token VARCHAR(256) DEFAULT NULL,
     lastfm_token VARCHAR(256) DEFAULT NULL,
     soundcloud_token VARCHAR(256) DEFAULT NULL
 );
@@ -20,13 +19,11 @@ CREATE TABLE IF NOT EXISTS artist(
     id_artist SERIAL PRIMARY KEY,
     artist_name VARCHAR(256) NOT NULL,
     spotify_id VARCHAR(32) DEFAULT NULL,
-    rdio_id VARCHAR(32) DEFAULT NULL,
     soundcloud_id VARCHAR(32) DEFAULT NULL,
     deezer_id VARCHAR(32) DEFAULT NULL,
     lastfm_id VARCHAR(40) DEFAULT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     UNIQUE (artist_name,spotify_id),
-    UNIQUE (artist_name,rdio_id),
     UNIQUE (artist_name,soundcloud_id),
     UNIQUE (artist_name,deezer_id),
     UNIQUE (artist_name,lastfm_id)

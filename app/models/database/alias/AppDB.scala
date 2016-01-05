@@ -22,7 +22,6 @@ object AppDB extends Schema {
 
   on(artists)(a => declare(
     columns(a.name, a.spotifyId) are unique,
-    columns(a.name, a.rdioId) are unique,
     columns(a.name, a.soundcloudId) are unique,
     columns(a.name, a.deezerId) are unique,
     columns(a.name, a.lastfmId) are unique

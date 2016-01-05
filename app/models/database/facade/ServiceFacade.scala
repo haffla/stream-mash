@@ -31,7 +31,6 @@ object Services extends ServiceFacade {
   def getFieldForService(service:String) = {
     service match {
       case "spotify" => sqls"spotify_token"
-      case "rdio" => sqls"rdio_token"
       case "deezer" => sqls"deezer_token"
       case "soundcloud" => sqls"soundcloud_token"
       case "lastfm" => sqls"lastfm_token"
