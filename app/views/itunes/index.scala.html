@@ -10,7 +10,7 @@
         window.itunes = {'openmodal': '@openModal'};
     </script>
     @if(play.api.Play.isDev) {
-        <script type='text/javascript' src='http://localhost:3000/static/bundle.js'></script>
+        <script type='text/javascript' src='http://localhost:3000/bundle.js'></script>
     } else {
         <script type='text/javascript' src='@routes.Assets.versioned("javascripts/bundle.min.js")'></script>
     }

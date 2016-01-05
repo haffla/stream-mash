@@ -1,5 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import MainComponent from './ArtistBox.cjsx';
+import ArtistBox from './user_collection/ArtistBox.cjsx';
 
-ReactDOM.render(<MainComponent />, document.getElementById('content'));
+ReactDOM.render(<ArtistBox />, document.getElementById('content'));
