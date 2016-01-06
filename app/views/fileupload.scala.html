@@ -1,0 +1,16 @@
+@()(implicit flash: Flash, session: Session)
+
+@main("Melody Mess - Index", List("audio")) {
+
+    <div id="audio-drop">
+        <span class="btn btn-default btn-file">
+            Browse <input type="file" id="audio-files" accept="audio/*" multiple>
+        </span>
+        <button id="audio-submit" class="btn btn-default">Upload</button>
+        <span id="dropzone-indicator">You can drag and drop files here!</span>
+    </div>
+
+    <script>
+
+    </script>
+}

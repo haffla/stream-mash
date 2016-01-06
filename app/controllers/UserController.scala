@@ -5,7 +5,7 @@ import models.auth.{Authenticated, AdminAccess, IdentifiedBySession, Helper}
 import models.database.alias.AppDB
 import models.database.facade.CollectionFacade
 import models.service.analysis.SpotifyAnalysis
-import models.service.library.Library
+import models.service.library.{AudioFileLibrary, Library}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
 import play.api.mvc.Controller
@@ -56,5 +56,29 @@ class UserController extends Controller {
     SpotifyAnalysis(Helper.getUserIdentifier(request.session)).analyse() map {
       res => Ok(res)
     }
+  }
+
+  def fileupload = IdentifiedBySession { implicit request =>
+    Ok(views.html.fileupload())
+  }
+
+  def test = IdentifiedBySession(parse.multipartFormData) { implicit request =>
+    val identifier = Helper.getUserIdentifier(request.session)
+    val files = request.body.files
+    val allFilesAreAudioFiles = files.forall { file =>
+      file.contentType match {
+        case Some(t) => t.matches("audio(.*)")
+        case None => false
+      }
+    }
+    if(allFilesAreAudioFiles) {
+      AudioFileLibrary(identifier).process(request.body.files)
+      Ok(Json.obj("redirect" -> routes.ItunesController.index("audio").toString))
+    }
+    else {
+      Ok(Json.obj("error" -> "One or more files are not audio files. Only audio files are accepted. Aborting."))
+    }
+
+
   }
 }

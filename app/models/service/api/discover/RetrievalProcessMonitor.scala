@@ -19,8 +19,8 @@ class RetrievalProcessMonitor(service:String, identifier:Either[Int,String]) {
     Cache.remove(serviceId)
     Cache.remove(progressId)
   }
-  def setRetrievalProcessPending() = setRetrievalProcess("pending")
 
+  def setRetrievalProcessPending() = setRetrievalProcess("pending")
 
   def getRetrievalProcessStatus = Cache.get(serviceId)
 

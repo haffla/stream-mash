@@ -2,7 +2,7 @@ package models.service.library
 
 import models.service.Constants
 import models.service.api.discover.RetrievalProcessMonitor
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.json.{JsValue, Json}
 import models.database.alias.{Album,Artist,Track}
 
 import scalikejdbc._

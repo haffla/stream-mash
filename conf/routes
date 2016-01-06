@@ -1,3 +1,6 @@
+POST          /fileupload                   controllers.UserController.test
+GET           /files                        controllers.UserController.fileupload
+
 GET           /                             controllers.Application.index
 GET           /privacy                      controllers.Application.privacy
 GET           /soundcloud/socket            controllers.Application.socket
