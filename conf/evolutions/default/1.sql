@@ -54,8 +54,20 @@ CREATE TABLE IF NOT EXISTS user_collection(
     fk_user INT DEFAULT NULL REFERENCES account(id_user),
     fk_track INT NOT NULL REFERENCES track(id_track),
     user_session VARCHAR(32) DEFAULT NULL,
+    times_played INTEGER DEFAULT 1,
+    score REAL DEFAULT 1.0,
     UNIQUE (fk_user, fk_track),
-    UNIQUE (fk_user, user_session)
+    UNIQUE (user_session, fk_track)
+);
+
+CREATE TABLE IF NOT EXISTS user_artist_liking(
+    id_user_artist_liking SERIAL PRIMARY KEY,
+    fk_user INT DEFAULT NULL REFERENCES account(id_user),
+    user_session VARCHAR(32) DEFAULT NULL,
+    fk_artist INT NOT NULL REFERENCES artist(id_artist),
+    score REAL DEFAULT 1.0,
+    UNIQUE (fk_user, fk_artist),
+    UNIQUE (user_session, fk_artist)
 );
 
 # --- !Downs

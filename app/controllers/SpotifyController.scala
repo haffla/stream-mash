@@ -42,7 +42,7 @@ class SpotifyController extends Controller {
   def getSpotifyArtistId = IdentifiedBySession.async { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
     request.getQueryString("artist").map { artist =>
-      val mayBeId = ArtistFacade(identifier).getArtistByName(artist) match {
+      val mayBeId = ArtistFacade.getArtistByName(artist) match {
         case Some(a) => a.spotifyId
         case None => None
       }

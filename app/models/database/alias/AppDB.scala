@@ -10,10 +10,16 @@ object AppDB extends Schema {
   val artists = table[Artist]("artist")
   val albums = table[Album]("album")
   val tracks = table[Track]("track")
+  val userArtistLiking = table[UserArtistLiking]("user_artist_liking")
+
+  on(userArtistLiking)(ual => declare(
+    columns(ual.userId, ual.artistId) are unique,
+    columns(ual.userSession, ual.artistId) are unique
+  ))
 
   on(collections)(c => declare(
     columns(c.userId, c.trackId) are unique,
-    columns(c.userId, c.userSession) are unique
+    columns(c.userSession, c.trackId) are unique
   ))
 
   on(users)(u => declare(
@@ -34,8 +40,6 @@ object AppDB extends Schema {
   on(tracks)(t => declare(
     columns(t.name, t.artistId, t.albumId) are unique
   ))
-
-  val artistToAlbums = oneToManyRelation(artists, albums).via((art, alb) => art.id === alb.artistId)
 
   def getCollectionByUser(identifier:Either[Int,String]):List[(Album, Artist, Track)] = {
     transaction {

@@ -5,13 +5,13 @@ import org.squeryl.PrimitiveTypeMode._
 
 object ArtistFacade {
   def apply(identifier:Either[Int,String]) = new ArtistFacade(identifier)
-}
-
-class ArtistFacade(identifier:Either[Int,String]) extends Facade {
 
   def getArtistByName(artistName:String):Option[Artist] = {
     transaction(AppDB.artists.where(a => a.name === artistName).headOption)
   }
+}
+
+class ArtistFacade(identifier:Either[Int,String]) extends Facade {
 
   def getUsersArtists:List[models.database.alias.Artist] = {
     transaction {

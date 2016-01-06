@@ -1,6 +1,6 @@
 package models.service.library
 
-import models.database.facade.SoundcloudFacade
+import models.database.facade.{ArtistFacade, SoundcloudFacade}
 import models.service.Constants
 import models.service.api.discover.MusicBrainzApi
 import play.api.libs.json.JsValue
@@ -28,23 +28,32 @@ class SoundcloudLibrary(identifier: Either[Int, String]) extends Library(identif
         apiHelper.setRetrievalProcessProgress(position.toDouble / totalLength)
         val isTrack = (entity \ "kind").as[String] == "track"
         if(isTrack) {
-          Thread.sleep(1000)
           val id = (entity \ "id").as[Int]
           val user = (entity \ "user").as[JsValue]
           val artist = (user \ "username").as[String]
-          //val title = (entity \ "title").as[String]
-          val res = for {
-            musicBrainzResult <- MusicBrainzApi.isKnownArtist(artist)
-          } yield {
-              musicBrainzResult match {
-                case Some(art) =>
-                  SoundcloudFacade.saveArtistWithServiceId(art, id.toString)
-                  Some(Map(Constants.mapKeyArtist -> art, Constants.mapKeyAlbum -> Constants.mapKeyUnknownAlbum, Constants.mapKeyTrack -> "UNKNOWNTRACK"))
-                case None => None
+          val title = (entity \ "title").as[String]
+          val artistFromDb = ArtistFacade.getArtistByName(artist)
+          artistFromDb match {
+            case Some(art) =>
+              SoundcloudFacade.saveArtistWithServiceId(art.name, id.toString)
+              Future.successful(Some(Map(
+                Constants.mapKeyArtist -> art.name,
+                Constants.mapKeyAlbum -> Constants.mapKeyUnknownAlbum,
+                Constants.mapKeyTrack -> title
+              )))
+            case None =>
+              Thread.sleep(1000)
+              for {
+                musicBrainzResult <- MusicBrainzApi.isKnownArtist(artist)
+              } yield {
+                musicBrainzResult match {
+                  case Some(artistName) =>
+                    SoundcloudFacade.saveArtistWithServiceId(artistName, id.toString)
+                    Some(Map(Constants.mapKeyArtist -> artistName, Constants.mapKeyAlbum -> Constants.mapKeyUnknownAlbum, Constants.mapKeyTrack -> title))
+                  case None => None
+                }
               }
-
-            }
-          res
+          }
         }
         else Future.successful(None)
       }
