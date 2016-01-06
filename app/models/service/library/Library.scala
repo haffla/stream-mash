@@ -73,7 +73,7 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
    */
   def prepareCollectionForFrontend(data:List[(Album,Artist,Track)]):JsValue = {
     val converted = convert(data)
-    val JsObjects = converted.map { artist =>
+    val jsObjects = converted.map { artist =>
       val artistName:String = artist._1
       val albums:Map[String,Set[String]] = artist._2
       val albumObjects = albums.map { album =>
@@ -89,7 +89,7 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
         "albums" -> albumObjects
       )
     }
-    Json.toJson(JsObjects)
+    Json.toJson(jsObjects)
   }
 
   private def convert(data:List[(Album,Artist,Track)]):Map[String, Map[String,Set[String]]] = {

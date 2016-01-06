@@ -37,9 +37,6 @@ object AppDB extends Schema {
 
   val artistToAlbums = oneToManyRelation(artists, albums).via((art, alb) => art.id === alb.artistId)
 
-  /**
-   * Currently only returns artists and albums connected to a user
-   */
   def getCollectionByUser(identifier:Either[Int,String]):List[(Album, Artist, Track)] = {
     transaction {
       val res = identifier match {
