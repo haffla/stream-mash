@@ -2,7 +2,11 @@ React = require 'react'
 Helper = require '../util/Helper'
 ItunesUpload = require './ItunesUpload'
 _ = require 'lodash'
-ProgressBar = require 'progressbar.js'
+
+LinearProgress = require 'material-ui/lib/linear-progress'
+RaisedButton = require 'material-ui/lib/raised-button'
+TextField = require 'material-ui/lib/text-field'
+Badge = require 'material-ui/lib/badge'
 
 Album = require './Album'
 Artist = require './Artist'
@@ -11,14 +15,10 @@ ArtistList = require './ArtistList'
 
 ws = new WebSocket(window.streamingservice.url)
 String::startsWith ?= (s) -> @slice(0, s.length) == s
-line = new ProgressBar.Line('.spacer', {
-  color: '#FCB03C'
-  })
-
 
 ArtistBox = React.createClass
   getInitialState: () ->
-    {data: []}
+    {data: [], progress: 0}
 
   componentDidMount: () ->
 
@@ -27,7 +27,9 @@ ArtistBox = React.createClass
 
     ws.onmessage = (data) =>
       if data.data.startsWith "progress"
-        line.animate(data.data.split(':')[1])
+        progress = data.data.split(':')[1] * 100
+        console.log(progress)
+        @setState({progress: progress})
       else if data.data is 'done'
         @loadFromDb()
 
@@ -50,7 +52,7 @@ ArtistBox = React.createClass
         @setTheState(data, true)
       if window.itunes.openmodal is 'yes'
         $('#fileuploadmodal').modal('show')
-      line.animate(0)
+      @setState({progress: 0})
     $.get '/collection/fromdb', callback, 'json'
 
   filterArtists: (event) ->
@@ -94,24 +96,20 @@ ArtistBox = React.createClass
     <div className="container">
         <div className="row">
             <div className="col-md-4 col-sm-6 col-xs-6">
-              <div className="collection-stats">
-                <p>Artists: {@state.nr_artists}</p>
-                <p>Albums: {@state.nr_albums}</p>
-              </div>
               <div>
-                <div className="input-group">
-                  <span className="input-group-addon" id="basic-addon1"><i className="fa fa-music"></i></span>
-                  <input type="text" className="form-control" onKeyUp={@filterArtists} placeholder="Filter by artist" aria-describedby="basic-addon1" />
-                </div>
+                <TextField hintText="Filter by Artists" onChange={@filterArtists} />
+                <Badge badgeContent={@state.nr_artists || 0} primary={true} />
               </div>
             </div>
 
-            <div className="col-md-5 col-md-offset-3 col-sm-6 col-xs-6">
-              <button className="btn btn-primary" data-target="#fileuploadmodal" role="button" className="btn btn-large btn-primary" data-toggle="modal">
-                Import Music from Itunes XML File
-              </button>
+            <div className="col-md-4 col-sm-6 col-xs-6">
+              <RaisedButton data-target="#fileuploadmodal" data-toggle="modal" label="Import Music from Itunes XML File" primary={true} />
               <ItunesUpload ws={ws} />
             </div>
+        </div>
+
+        <div className="row progress-container" style={marginTop: '20px'}>
+          <LinearProgress mode="determinate" value={@state.progress} />
         </div>
 
         <div className="row">
