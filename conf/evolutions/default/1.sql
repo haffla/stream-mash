@@ -23,10 +23,7 @@ CREATE TABLE IF NOT EXISTS artist(
     deezer_id VARCHAR(32) DEFAULT NULL,
     lastfm_id VARCHAR(40) DEFAULT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    UNIQUE (artist_name,spotify_id),
-    UNIQUE (artist_name,soundcloud_id),
-    UNIQUE (artist_name,deezer_id),
-    UNIQUE (artist_name,lastfm_id)
+    UNIQUE (artist_name)
 );
 
 

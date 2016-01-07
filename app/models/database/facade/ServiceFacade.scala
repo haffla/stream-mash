@@ -7,11 +7,11 @@ abstract class ServiceFacade extends Facade {
   val serviceFieldName:SQLSyntax
 
   def saveArtistWithServiceId(artistName: String, serviceId: String): Unit = {
-    sql"select $serviceFieldName from artist where artist_name=$artistName".map(rs => rs.string(serviceFieldName.value)).single().apply() match {
-      case Some(id) =>
-        if(id != serviceId) {
-          updateServiceId(artistName, serviceId)
-        }
+    sql"select artist_name, $serviceFieldName from artist where artist_name=$artistName".map(
+        rs => (rs.string("artist_name"), rs.string(serviceFieldName.value))
+    ).single().apply() match {
+      case Some((artName, i)) =>
+        if(i == serviceId) updateServiceId(artistName, serviceId)
       case None => createNewArtistWithId(artistName, serviceId)
     }
   }
@@ -25,8 +25,7 @@ abstract class ServiceFacade extends Facade {
   }
 }
 
-object Services extends ServiceFacade {
-  override val serviceFieldName = null
+object Services {
 
   def getFieldForService(service:String) = {
     service match {

@@ -28,7 +28,6 @@ ArtistBox = React.createClass
     ws.onmessage = (data) =>
       if data.data.startsWith "progress"
         progress = data.data.split(':')[1] * 100
-        console.log(progress)
         @setState({progress: progress})
       else if data.data is 'done'
         @loadFromDb()

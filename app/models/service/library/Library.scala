@@ -116,9 +116,9 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
     val totalLength = library.size
     var position = 1.0
 
-    apiHelper.setRetrievalProcessProgress(0.66 + position / totalLength / 3)
-
     for((artist,albums) <- library) {
+      apiHelper.setRetrievalProcessProgress(0.66 + position / totalLength / 3)
+      position = position + 1.0
       val existingArtistId:Long = sql"select id_artist from artist where artist_name = $artist".map(rs => rs.long("id_artist")).single().apply() match {
         case Some(rowId) => rowId
         case None => sql"insert into artist (artist_name) values ($artist)".updateAndReturnGeneratedKey().apply()
@@ -131,7 +131,6 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
         }
 
         for(track <- tracks) {
-          position = position + 1.0
           val trackId:Long = sql"select id_track from track where track_name = $track and fk_artist = $existingArtistId and fk_album = $existingAlbumId".map(rs => rs.long("id_track")).single().apply() match {
             case None => sql"insert into track (track_name, fk_artist, fk_album) values ($track, $existingArtistId, $existingAlbumId)".updateAndReturnGeneratedKey().apply()
             case Some(rowId) => rowId

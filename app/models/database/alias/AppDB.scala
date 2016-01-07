@@ -3,7 +3,6 @@ package models.database.alias
 import org.squeryl.Schema
 import org.squeryl.PrimitiveTypeMode._
 
-
 object AppDB extends Schema {
   val users = table[User]("account")
   val collections = table[UserCollection]("user_collection")
@@ -27,10 +26,7 @@ object AppDB extends Schema {
   ))
 
   on(artists)(a => declare(
-    columns(a.name, a.spotifyId) are unique,
-    columns(a.name, a.soundcloudId) are unique,
-    columns(a.name, a.deezerId) are unique,
-    columns(a.name, a.lastfmId) are unique
+    a.name is unique
   ))
 
   on(albums)(a => declare(
