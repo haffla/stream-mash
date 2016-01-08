@@ -7,6 +7,10 @@ LinearProgress = require 'material-ui/lib/linear-progress'
 RaisedButton = require 'material-ui/lib/raised-button'
 TextField = require 'material-ui/lib/text-field'
 Badge = require 'material-ui/lib/badge'
+Slider = require 'material-ui/lib/slider'
+Toolbar = require 'material-ui/lib/toolbar/toolbar';
+ToolbarGroup = require 'material-ui/lib/toolbar/toolbar-group';
+ToolbarSeparator = require 'material-ui/lib/toolbar/toolbar-separator';
 
 Album = require './Album'
 Artist = require './Artist'
@@ -18,12 +22,11 @@ String::startsWith ?= (s) -> @slice(0, s.length) == s
 
 ArtistBox = React.createClass
   getInitialState: () ->
-    {data: [], progress: 0}
+    {data: [], progress: 0, nrCols: 3}
 
   componentDidMount: () ->
 
-    ws.onopen = () ->
-      ws.send(window.streamingservice.name)
+    ws.onopen = () -> ws.send(window.streamingservice.name)
 
     ws.onmessage = (data) =>
       if data.data.startsWith "progress"
@@ -90,30 +93,39 @@ ArtistBox = React.createClass
     $.get '/spotify/spotifyid', {artist: artist}, apiCallback, 'json'
     $(event.target).parents('.panel-heading').siblings('.panel-body').slideToggle()
 
+  handleSlider: (e, value) ->
+    @setState({nrCols: value})
 
   render: () ->
-    <div className="container">
-        <div className="row">
-            <div className="col-md-4 col-sm-6 col-xs-6">
-              <div>
+    <div style={width: '80%', margin: 'auto'}>
+        <div className="row" style={display: 'flex', justifyContent: 'space-between'}>
+            <div>
                 <TextField hintText="Filter by Artists" onChange={@filterArtists} />
                 <Badge badgeContent={@state.nr_artists || 0} primary={true} />
-              </div>
             </div>
 
-            <div className="col-md-4 col-sm-6 col-xs-6">
+            <div>
               <RaisedButton data-target="#fileuploadmodal" data-toggle="modal" label="Import Music from Itunes XML File" primary={true} />
               <ItunesUpload ws={ws} />
             </div>
         </div>
 
-        <div className="row progress-container" style={marginTop: '20px'}>
+        <div className="row progress-container" style={marginTop: '20px', marginBottom: '20px'}>
           <LinearProgress mode="determinate" value={@state.progress} />
         </div>
 
         <div className="row">
+        <Toolbar>
+          <ToolbarGroup>
+            <Slider description="Number of columns" name="colSlider" defaultValue={3} step={1} min={1} max={5} onChange={@handleSlider}/>
+          </ToolbarGroup>
+        </Toolbar>
+        </div>
+
+        <div className="row">
+
           <div id="artistBox">
-              <ArtistList data={@state.data} onButtonClick={@showAlbumList} />
+              <ArtistList data={@state.data} onButtonClick={@showAlbumList} nrCols={this.state.nrCols} />
           </div>
         </div>
     </div>

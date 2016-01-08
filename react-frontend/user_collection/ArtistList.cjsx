@@ -3,9 +3,10 @@ Artist = require './Artist'
 
 
 ArtistList = React.createClass
+
   render: () ->
     artists = @props.data.map (artist, idx) =>
-      <div key={idx} className="artist panel panel-default">
+      <div key={idx} className="artist panel panel-default" style={width: (100 / @props.nrCols - 0.5) + '%'}>
 
           <div className="panel-heading">
             <div><i className="fa fa-music"></i> {artist.name}</div>
