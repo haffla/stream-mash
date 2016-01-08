@@ -4,11 +4,25 @@ Artist = require './Artist'
 
 ArtistList = React.createClass
 
+  style: {
+    display: 'flex'
+    flexWrap: 'wrap'
+    justifyContent: 'space-between'
+    alignItems: 'flex-start'
+    height: 400
+    overflowY: 'auto'
+  }
+
   render: () ->
     artists = @props.data.map (artist, idx) =>
-      <Artist key={idx} artist={artist} nrCols={@props.nrCols} onButtonClick={@props.onButtonClick} idx={idx} />
+      <Artist
+        key={idx}
+        artist={artist}
+        nrCols={@props.nrCols}
+        onArtistClick={@props.onArtistClick}
+        idx={idx} />
 
-    <div className="artistList" style={display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start'}>
+    <div className="artistList" style={@style}>
         {artists}
     </div>
 

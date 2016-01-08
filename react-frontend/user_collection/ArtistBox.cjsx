@@ -11,6 +11,10 @@ Slider = require 'material-ui/lib/slider'
 Toolbar = require 'material-ui/lib/toolbar/toolbar';
 ToolbarGroup = require 'material-ui/lib/toolbar/toolbar-group';
 ToolbarSeparator = require 'material-ui/lib/toolbar/toolbar-separator';
+List = require 'material-ui/lib/lists/list';
+ListItem = require 'material-ui/lib/lists/list-item';
+IconMenu = require 'material-ui/lib/menus/icon-menu';
+MenuItem = require 'material-ui/lib/menus/menu-item';
 
 Colors = require 'material-ui/lib/styles/colors'
 
@@ -43,16 +47,17 @@ ArtistBox = React.createClass
     nr_albums = Helper.calculateNrOfAlbums(data)
     nr_artists = _.keys(data).length
     if setOriginalData
-      @setState({data: data, nr_artists: nr_artists, nr_albums: nr_albums}, () ->
+      @setState({data: data, nr_artists: nr_artists, nr_albums: nr_albums, selectedArtist: data[0]}, () ->
         @originalState = @state
       )
     else
-      @setState({data: data, nr_artists: nr_artists, nr_albums: nr_albums})
+      @setState({data: data, nr_artists: nr_artists, nr_albums: nr_albums, selectedArtist: data[0]})
 
 
   loadFromDb: (event) ->
     callback = (data) =>
       if !data.error
+        console.log(data)
         @setTheState(data, true)
       if window.itunes.openmodal is 'yes'
         $('#fileuploadmodal').modal('show')
@@ -69,34 +74,11 @@ ArtistBox = React.createClass
 
     @setState({data: newData, nr_artists: nr_artists  || 0, nr_albums: nr_albums || 0})
 
-  showAlbumList: (artist, idx, event) ->
-    #TODO: move all spotify api logic to server
-    apiCallback = (data) =>
-      unless data.error
-        unless @state.data[idx].fetched
-          spotifyApiCallback = (albums) =>
-            spotifyAlbums = albums.items.map (album) ->
-              {name: album.name}
-            existingAlbums = @state.data[idx].albums
-            namesOfExistingAlbums = existingAlbums.map (album) ->
-              album.name
-            result = _.union(existingAlbums,spotifyAlbums)
-            result = result.map (album) ->
-              userHas = if album.name in namesOfExistingAlbums then true else false
-              {name: album.name, userHas: userHas}
-            result = _.uniq(result, 'name')
-            _.set(@state.data[idx], 'albums', result)
-            _.set(@state.data[idx], 'fetched', true)
-            @setTheState(@state.data)
-          # maybe also concider album_type=single
-          $.get "https://api.spotify.com/v1/artists/#{data.spotify_id}/albums?album_type=album", spotifyApiCallback, 'json'
-      else
-        # Artist does not exist on Spotify
-    $.get '/spotify/spotifyid', {artist: artist}, apiCallback, 'json'
-    $(event.target).parents('.panel-heading').siblings('.panel-body').slideToggle()
-
   handleSlider: (e, value) ->
     @setState({nrCols: value})
+
+  handleArtistClick: (idx) ->
+    @setState({selectedArtist: @state.data[idx]})
 
   render: () ->
     <div style={width: '80%', margin: 'auto'}>
@@ -130,12 +112,45 @@ ArtistBox = React.createClass
           </Toolbar>
         </div>
 
+        {
+          if @state.selectedArtist
+
+            <div className="row" style={display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '25px'}>
+
+              <List insetSubheader={true} subheader="Selected Artist" style={width: '33%'}>
+                <ListItem primaryText={@state.selectedArtist.name} />
+              </List>
+
+              <List insetSubheader={true} subheader={@state.selectedArtist.name + "'s Albums"} style={width: '33%'}>
+                {
+                  @state.selectedArtist.albums.map (alb, idx) ->
+                    <ListItem key={idx} primaryText={alb.name} />
+                }
+              </List>
+
+              <List insetSubheader={true} subheader={@state.selectedArtist.name + "'s Tracks"} style={width: '33%'}>
+                {
+                  tracks = @state.selectedArtist.albums.map (alb) -> alb.tracks
+                  _.flatten(tracks).map (track, idx) ->
+                    <ListItem key={idx} primaryText={track} />
+                }
+              </List>
+
+            </div>
+
+          else
+            <h4>Start importing music!</h4>
+        }
+
         <div className="row">
           <div className="row progress-container" style={marginTop: '20px', marginBottom: '20px'}>
             <LinearProgress mode="determinate" value={@state.progress} />
           </div>
           <div id="artistBox">
-              <ArtistList data={@state.data} onButtonClick={@showAlbumList} nrCols={this.state.nrCols} />
+              <ArtistList
+                data={@state.data}
+                onArtistClick={@handleArtistClick}
+                nrCols={this.state.nrCols} />
           </div>
         </div>
     </div>
