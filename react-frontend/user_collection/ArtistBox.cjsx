@@ -98,7 +98,7 @@ ArtistBox = React.createClass
 
   render: () ->
     <div style={width: '80%', margin: 'auto'}>
-        <div className="row" style={display: 'flex', justifyContent: 'space-between'}>
+        <div className="row" style={display: 'flex', justifyContent: 'space-between', marginBottom: '25px'}>
             <div>
                 <TextField hintText="Filter by Artists" onChange={@filterArtists} />
                 <Badge badgeContent={@state.nr_artists || 0} primary={true} />
@@ -110,20 +110,18 @@ ArtistBox = React.createClass
             </div>
         </div>
 
-        <div className="row progress-container" style={marginTop: '20px', marginBottom: '20px'}>
-          <LinearProgress mode="determinate" value={@state.progress} />
+        <div className="row">
+          <Toolbar>
+            <ToolbarGroup style={width: '33%'}>
+              <Slider description="Number of columns" name="colSlider" defaultValue={3} step={1} min={1} max={5} onChange={@handleSlider}/>
+            </ToolbarGroup>
+          </Toolbar>
         </div>
 
         <div className="row">
-        <Toolbar>
-          <ToolbarGroup>
-            <Slider description="Number of columns" name="colSlider" defaultValue={3} step={1} min={1} max={5} onChange={@handleSlider}/>
-          </ToolbarGroup>
-        </Toolbar>
-        </div>
-
-        <div className="row">
-
+          <div className="row progress-container" style={marginTop: '20px', marginBottom: '20px'}>
+            <LinearProgress mode="determinate" value={@state.progress} />
+          </div>
           <div id="artistBox">
               <ArtistList data={@state.data} onButtonClick={@showAlbumList} nrCols={this.state.nrCols} />
           </div>
