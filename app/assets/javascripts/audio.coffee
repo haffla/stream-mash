@@ -22,14 +22,14 @@ class Uploader
             console.log(percentComplete)
         , false
         xhr
-      success: (data) =>
+      success: (data) ->
         if data.error
           alert data.error
         else if data.redirect
           window.location.href = data.redirect
         else
           alert "Sorry, something went wrong!"
-      error: (jqXHR, status, error) =>
+      error: (jqXHR, status, error) ->
         console.log('Error: '  + error + '\n' + 'Status: ' + status)
 
 
@@ -64,6 +64,3 @@ $ ->
   $('#audio-drop').on 'drop', (e) ->
     files = e.target.files || e.dataTransfer.files
     Uploader.upload files
-
-
-

@@ -9,7 +9,7 @@ ArtistList = React.createClass
 
           <div className="panel-heading">
             <div><i className="fa fa-music"></i> {artist.name}</div>
-            <button className="btn btn-default album-list-opener" onClick={@props.onButtonClick.bind(null, artist.name, idx)}>
+            <button className="btn btn-default album-list-opener" onTouchTap={@props.onButtonClick.bind(null, artist.name, idx)}>
               <i className="fa fa-plus"></i>
             </button>
           </div>

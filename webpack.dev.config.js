@@ -23,7 +23,7 @@ module.exports = {
     loaders: [
       {test: /\.js$/, loaders: ['react-hot', 'babel'], include: path.join(__dirname, 'react-frontend')},
       {test: /\.cjsx$/, loaders: ['react-hot', 'coffee', 'cjsx'], include: path.join(__dirname, 'react-frontend')},
-      {test: /\.coffee$/, loaders: ['react-hot', 'coffee'], include: path.join(__dirname, 'react-frontend')}
+      {test: /\.coffee$/, loaders: ['coffee'], include: path.join(__dirname, 'react-frontend')}
     ]
   }
 };
