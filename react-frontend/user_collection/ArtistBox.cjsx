@@ -15,12 +15,8 @@ List = require 'material-ui/lib/lists/list';
 ListItem = require 'material-ui/lib/lists/list-item';
 IconMenu = require 'material-ui/lib/menus/icon-menu';
 MenuItem = require 'material-ui/lib/menus/menu-item';
-
 Colors = require 'material-ui/lib/styles/colors'
 
-Album = require './Album'
-Artist = require './Artist'
-AlbumList = require './AlbumList'
 ArtistList = require './ArtistList'
 
 ws = new WebSocket(window.streamingservice.url)
