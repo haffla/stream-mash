@@ -10,6 +10,8 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
 import play.api.mvc.Controller
 
+import scala.util.{Failure, Success, Try}
+
 class UserController extends Controller {
 
   def list = AdminAccess.async { implicit request =>
@@ -33,13 +35,11 @@ class UserController extends Controller {
   }
 
   private def deleteCollection(userId:Int) = {
-    try {
+    Try {
       User(Left(userId)).deleteUsersCollection()
-      Ok(Json.toJson(Map("success" -> true)))
-    }
-    catch {
-      case e: Exception =>
-        Ok(Json.toJson(Map("success" -> false)))
+    } match {
+      case Success(_) => Ok(Json.toJson(Map("success" -> true)))
+      case Failure(e) => Ok(Json.toJson(Map("success" -> false)))
     }
   }
 
