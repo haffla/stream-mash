@@ -19,7 +19,7 @@ ArtistList = React.createClass
           </div>
 
       </div>
-    <div className="artistList">
+    <div className="artistList" style={display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start'}>
         {artists}
     </div>
 
