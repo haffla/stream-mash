@@ -10,7 +10,6 @@ gulp.task("webpack", function() {
         if(error) {
             throw new gutil.PluginError("webpack", error);
         }
-        gutil.log("[webpack]", stats.toString());
     });
 });
 
