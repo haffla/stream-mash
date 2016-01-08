@@ -112,7 +112,7 @@ ArtistBox = React.createClass
 
         <div className="row">
           <Toolbar>
-            <ToolbarGroup style={width: '33%'}>
+            <ToolbarGroup style={width: '25%'}>
               <Slider description="Number of columns" name="colSlider" defaultValue={3} step={1} min={1} max={5} onChange={@handleSlider}/>
             </ToolbarGroup>
           </Toolbar>
