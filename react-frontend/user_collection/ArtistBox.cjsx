@@ -12,6 +12,8 @@ Toolbar = require 'material-ui/lib/toolbar/toolbar';
 ToolbarGroup = require 'material-ui/lib/toolbar/toolbar-group';
 ToolbarSeparator = require 'material-ui/lib/toolbar/toolbar-separator';
 
+Colors = require 'material-ui/lib/styles/colors'
+
 Album = require './Album'
 Artist = require './Artist'
 AlbumList = require './AlbumList'
@@ -100,7 +102,10 @@ ArtistBox = React.createClass
     <div style={width: '80%', margin: 'auto'}>
         <div className="row" style={display: 'flex', justifyContent: 'space-between', marginBottom: '25px'}>
             <div>
-                <TextField hintText="Filter by Artists" onChange={@filterArtists} />
+                <TextField
+                  underlineStyle={{borderColor:Colors.amber300}}
+                  hintText="Filter by Artists"
+                  onChange={@filterArtists} />
                 <Badge badgeContent={@state.nr_artists || 0} primary={true} />
             </div>
 
@@ -113,7 +118,14 @@ ArtistBox = React.createClass
         <div className="row">
           <Toolbar>
             <ToolbarGroup style={width: '25%'}>
-              <Slider description="Number of columns" name="colSlider" defaultValue={3} step={1} min={1} max={5} onChange={@handleSlider}/>
+              <Slider
+                description="Number of columns"
+                name="colSlider"
+                defaultValue={3}
+                step={1}
+                min={1}
+                max={5}
+                onChange={@handleSlider} />
             </ToolbarGroup>
           </Toolbar>
         </div>
