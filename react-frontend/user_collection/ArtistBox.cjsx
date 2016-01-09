@@ -98,15 +98,6 @@ ArtistBox = React.createClass
             </div>
 
             <div>
-              <AutoComplete
-                floatingLabelText="Select Artist"
-                filter={AutoComplete.caseInsensitiveFilter}
-                onNewRequest={@handleNewRequest}
-                dataSource={@state.data.map (artist) -> artist.name}
-              />
-            </div>
-
-            <div>
               <RaisedButton onTouchTap={@openDialog} label="Import Music from Itunes XML File" primary={true} />
               <ItunesUpload ws={ws} open={@state.dialogOpen} handleClose={@closeDialog} />
             </div>
@@ -124,6 +115,14 @@ ArtistBox = React.createClass
                 min={1}
                 max={5}
                 onChange={@handleSlider} />
+            </ToolbarGroup>
+            <ToolbarGroup float="right">
+              <AutoComplete
+                floatingLabelText="Select Artist"
+                filter={AutoComplete.caseInsensitiveFilter}
+                onNewRequest={@handleNewRequest}
+                dataSource={@state.data.map (artist) -> artist.name}
+              />
             </ToolbarGroup>
           </Toolbar>
         </div>

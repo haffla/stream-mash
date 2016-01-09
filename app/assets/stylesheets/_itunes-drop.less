@@ -40,6 +40,7 @@
   position: relative;
   background-color: @grey-400;
   margin-bottom: 15px;
+  cursor: pointer;
   .album-list-opener {
     border-radius: 0;
     border-right: none;
@@ -51,7 +52,7 @@
     margin-left: 10px;
     padding: 5px 10px;
   }
-  .panel-heading {
+  .panel-body {
     overflow: hidden;
     background-color: @amber-300;
     border-color: @amber-700;
@@ -60,22 +61,6 @@
      div {
        padding: 5px;
        width: 90%;
-     }
-   }
-   .panel-body {
-     display: none;
-     padding: 0;
-   }
-
-   .albumList {
-     padding: 0;
-     .album {
-       padding: 5px;
-       height: 40px;
-       margin: 0;
-     }
-     .album.hasAlbum {
-       background-color: @green-300;
      }
    }
 }
