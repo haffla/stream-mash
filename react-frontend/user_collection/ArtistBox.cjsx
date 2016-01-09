@@ -16,6 +16,7 @@ ListItem = require 'material-ui/lib/lists/list-item'
 IconMenu = require 'material-ui/lib/menus/icon-menu'
 MenuItem = require 'material-ui/lib/menus/menu-item'
 Colors = require 'material-ui/lib/styles/colors'
+AutoComplete = require 'material-ui/lib/auto-complete'
 
 ArtistList = require './ArtistList'
 
@@ -82,6 +83,9 @@ ArtistBox = React.createClass
   openDialog: () ->
     @setState({dialogOpen: true})
 
+  handleNewRequest: (artist,idx) ->
+    @setState({selectedArtist: @state.data[idx]})
+
   render: () ->
     <div style={width: '80%', margin: 'auto'}>
         <div className="row" style={display: 'flex', justifyContent: 'space-between', marginBottom: '25px'}>
@@ -91,6 +95,15 @@ ArtistBox = React.createClass
                   hintText="Filter by Artists"
                   onChange={@filterArtists} />
                 <Badge badgeContent={@state.nr_artists || 0} primary={true} />
+            </div>
+
+            <div>
+              <AutoComplete
+                floatingLabelText="Select Artist"
+                filter={AutoComplete.caseInsensitiveFilter}
+                onNewRequest={@handleNewRequest}
+                dataSource={@state.data.map (artist) -> artist.name}
+              />
             </div>
 
             <div>
