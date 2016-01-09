@@ -8,13 +8,13 @@ RaisedButton = require 'material-ui/lib/raised-button'
 TextField = require 'material-ui/lib/text-field'
 Badge = require 'material-ui/lib/badge'
 Slider = require 'material-ui/lib/slider'
-Toolbar = require 'material-ui/lib/toolbar/toolbar';
-ToolbarGroup = require 'material-ui/lib/toolbar/toolbar-group';
-ToolbarSeparator = require 'material-ui/lib/toolbar/toolbar-separator';
-List = require 'material-ui/lib/lists/list';
-ListItem = require 'material-ui/lib/lists/list-item';
-IconMenu = require 'material-ui/lib/menus/icon-menu';
-MenuItem = require 'material-ui/lib/menus/menu-item';
+Toolbar = require 'material-ui/lib/toolbar/toolbar'
+ToolbarGroup = require 'material-ui/lib/toolbar/toolbar-group'
+ToolbarSeparator = require 'material-ui/lib/toolbar/toolbar-separator'
+List = require 'material-ui/lib/lists/list'
+ListItem = require 'material-ui/lib/lists/list-item'
+IconMenu = require 'material-ui/lib/menus/icon-menu'
+MenuItem = require 'material-ui/lib/menus/menu-item'
 Colors = require 'material-ui/lib/styles/colors'
 
 ArtistList = require './ArtistList'
@@ -24,7 +24,7 @@ String::startsWith ?= (s) -> @slice(0, s.length) == s
 
 ArtistBox = React.createClass
   getInitialState: () ->
-    {data: [], progress: 0, nrCols: 3}
+    {data: [], progress: 0, nrCols: 3, dialogOpen: false}
 
   componentDidMount: () ->
 
@@ -56,7 +56,7 @@ ArtistBox = React.createClass
         console.log(data)
         @setTheState(data, true)
       if window.itunes.openmodal is 'yes'
-        $('#fileuploadmodal').modal('show')
+        @openDialog()
       @setState({progress: 0})
     $.get '/collection/fromdb', callback, 'json'
 
@@ -76,6 +76,12 @@ ArtistBox = React.createClass
   handleArtistClick: (idx) ->
     @setState({selectedArtist: @state.data[idx]})
 
+  closeDialog: () ->
+    @setState({dialogOpen: false})
+
+  openDialog: () ->
+    @setState({dialogOpen: true})
+
   render: () ->
     <div style={width: '80%', margin: 'auto'}>
         <div className="row" style={display: 'flex', justifyContent: 'space-between', marginBottom: '25px'}>
@@ -88,8 +94,8 @@ ArtistBox = React.createClass
             </div>
 
             <div>
-              <RaisedButton data-target="#fileuploadmodal" data-toggle="modal" label="Import Music from Itunes XML File" primary={true} />
-              <ItunesUpload ws={ws} />
+              <RaisedButton onTouchTap={@openDialog} label="Import Music from Itunes XML File" primary={true} />
+              <ItunesUpload ws={ws} open={@state.dialogOpen} handleClose={@closeDialog} />
             </div>
         </div>
 
@@ -99,6 +105,7 @@ ArtistBox = React.createClass
               <Slider
                 description="Number of columns"
                 name="colSlider"
+                disabled={_.isEmpty(@state.data)}
                 defaultValue={3}
                 step={1}
                 min={1}

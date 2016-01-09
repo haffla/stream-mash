@@ -1,6 +1,9 @@
 React = require 'react'
 Helper = require '../util/Helper'
 
+Dialog = require 'material-ui/lib/dialog';
+FlatButton = require 'material-ui/lib/flat-button'
+
 ItunesUpload = React.createClass
 
   preventDef: (event) ->
@@ -48,33 +51,39 @@ ItunesUpload = React.createClass
   render: () ->
     dropSentence = "Drop it on the iTunes Logo!"
     sentence = "The iTunes Music Library file is typically located under "
-    <div id="fileuploadmodal" className="modal fade">
-        <div className="modal-dialog">
-            <div className="modal-content">
-                <div className="modal-header">
-                    <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                </div>
-                <div className="modal-body">
-                    <div title="Drop your iTunes Library file here" id="dropzone" onDragOver={@preventDef}
-                         onDrop={@drop} onDragEnter={@dragEnter} onDragLeave={@dragLeave}>
-                    </div>
-                    <div className="drop-instruction centered">
-                      {
-                        if Helper.isMac()
-                          <h4>{sentence} <br/>/Users/[username]/Music/iTunes/iTunes Music Library.xml<br/>{dropSentence}</h4>
-                        else if Helper.isWindows()
-                          <h4>{sentence} <br/>C:\Users\[username]\Music\iTunes\iTunes Music Library.xml<br/>{dropSentence}</h4>
-                        else
-                          <h4>Drop your iTunes Music Library.xml above on the logo!</h4>
-                      }
-                    </div>
-                </div>
-                <div className="modal-footer">
-                    <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" className="btn btn-primary">Show Normal File Upload Dialog</button>
-                </div>
-            </div>
+    actions = [
+      <FlatButton
+        key={"cancelbutton"}
+        label="Cancel"
+        secondary={true}
+        onTouchTap={@props.handleClose} />,
+      <FlatButton
+        key={"normalfiledialog"}
+        label="Show standard file dialog"
+        primary={true}
+        disabled={true}
+        onTouchTap={@props.handleClose} />,
+    ]
+    <div>
+      <Dialog
+        actions={actions}
+        modal={true}
+        open={@props.open}>
+        <div>
+          <div onDragOver={@preventDef} onDrop={@drop} onDragEnter={@dragEnter} onDragLeave={@dragLeave}
+          title="Drop your iTunes Library file here" id="dropzone"></div>
+          <div className="drop-instruction centered">
+          {
+            if Helper.isMac()
+              <h4>{sentence} <br/>/Users/[username]/Music/iTunes/iTunes Music Library.xml<br/>{dropSentence}</h4>
+            else if Helper.isWindows()
+              <h4>{sentence} <br/>C:\Users\[username]\Music\iTunes\iTunes Music Library.xml<br/>{dropSentence}</h4>
+            else
+              <h4>Drop your iTunes Music Library.xml above on the logo!</h4>
+          }
+          </div>
         </div>
+      </Dialog>
     </div>
 
 
