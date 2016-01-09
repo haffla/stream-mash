@@ -1,31 +1,23 @@
 React = require 'react'
 Helper = require '../util/Helper'
-ItunesUpload = require './ItunesUpload'
+UploadDialog = require './upload/UploadDialog'
+ControlBar = require './ControlBar'
+ArtistDetail = require './ArtistDetail'
+ArtistList = require './ArtistList'
 _ = require 'lodash'
 
-LinearProgress = require 'material-ui/lib/linear-progress'
-RaisedButton = require 'material-ui/lib/raised-button'
-TextField = require 'material-ui/lib/text-field'
 Badge = require 'material-ui/lib/badge'
-Slider = require 'material-ui/lib/slider'
-Toolbar = require 'material-ui/lib/toolbar/toolbar'
-ToolbarGroup = require 'material-ui/lib/toolbar/toolbar-group'
-ToolbarSeparator = require 'material-ui/lib/toolbar/toolbar-separator'
-List = require 'material-ui/lib/lists/list'
-ListItem = require 'material-ui/lib/lists/list-item'
-IconMenu = require 'material-ui/lib/menus/icon-menu'
-MenuItem = require 'material-ui/lib/menus/menu-item'
 Colors = require 'material-ui/lib/styles/colors'
-AutoComplete = require 'material-ui/lib/auto-complete'
+LinearProgress = require 'material-ui/lib/linear-progress'
 
-ArtistList = require './ArtistList'
+TextField = require 'material-ui/lib/text-field'
 
 ws = new WebSocket(window.streamingservice.url)
 String::startsWith ?= (s) -> @slice(0, s.length) == s
 
 ArtistBox = React.createClass
   getInitialState: () ->
-    {data: [], progress: 0, nrCols: 3, dialogOpen: false}
+    {data: [], progress: 0, nrCols: 3, dialog: {open: false, type: "itunes"}}
 
   componentDidMount: () ->
 
@@ -57,7 +49,7 @@ ArtistBox = React.createClass
         console.log(data)
         @setTheState(data, true)
       if window.itunes.openmodal is 'yes'
-        @openDialog()
+        @openDialog('itunes')
       @setState({progress: 0})
     $.get '/collection/fromdb', callback, 'json'
 
@@ -78,13 +70,16 @@ ArtistBox = React.createClass
     @setState({selectedArtist: @state.data[idx]})
 
   closeDialog: () ->
-    @setState({dialogOpen: false})
+    @setState({dialog: {open: false}})
 
-  openDialog: () ->
-    @setState({dialogOpen: true})
+  openDialog: (dialogType) ->
+    @setState({dialog: {open: true, type: dialogType}})
 
   handleNewRequest: (artist,idx) ->
     @setState({selectedArtist: @state.data[idx]})
+
+  handleStreamingServiceSelection: (event, item) ->
+    console.log(item.props.data)
 
   render: () ->
     <div style={width: '80%', margin: 'auto'}>
@@ -96,63 +91,22 @@ ArtistBox = React.createClass
                   onChange={@filterArtists} />
                 <Badge badgeContent={@state.nr_artists || 0} primary={true} />
             </div>
-
-            <div>
-              <RaisedButton onTouchTap={@openDialog} label="Import Music from Itunes XML File" primary={true} />
-              <ItunesUpload ws={ws} open={@state.dialogOpen} handleClose={@closeDialog} />
-            </div>
         </div>
 
         <div className="row">
-          <Toolbar>
-            <ToolbarGroup style={width: '25%'}>
-              <Slider
-                description="Number of columns"
-                name="colSlider"
-                disabled={_.isEmpty(@state.data)}
-                defaultValue={3}
-                step={1}
-                min={1}
-                max={5}
-                onChange={@handleSlider} />
-            </ToolbarGroup>
-            <ToolbarGroup float="right">
-              <AutoComplete
-                floatingLabelText="Select Artist"
-                filter={AutoComplete.caseInsensitiveFilter}
-                onNewRequest={@handleNewRequest}
-                dataSource={@state.data.map (artist) -> artist.name}
-              />
-            </ToolbarGroup>
-          </Toolbar>
+          <ControlBar
+            disabled={_.isEmpty(@state.data)}
+            handleSlider={@handleSlider}
+            openDialog={@openDialog}
+            handleStreamingServiceSelection={@handleStreamingServiceSelection} />
         </div>
 
         {
           if @state.selectedArtist
-
-            <div className="row" style={display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '25px'}>
-
-              <List insetSubheader={true} subheader="Selected Artist" style={width: '33%'}>
-                <ListItem primaryText={@state.selectedArtist.name} />
-              </List>
-
-              <List insetSubheader={true} subheader={@state.selectedArtist.name + "'s Albums"} style={width: '33%'}>
-                {
-                  @state.selectedArtist.albums.map (alb, idx) ->
-                    <ListItem key={idx} primaryText={alb.name} />
-                }
-              </List>
-
-              <List insetSubheader={true} subheader={@state.selectedArtist.name + "'s Tracks"} style={width: '33%'}>
-                {
-                  tracks = @state.selectedArtist.albums.map (alb) -> alb.tracks
-                  _.flatten(tracks).map (track, idx) ->
-                    <ListItem key={idx} primaryText={track} />
-                }
-              </List>
-
-            </div>
-
+            <ArtistDetail
+              autoCompleteSource={@state.data.map (artist) -> artist.name}
+              onNewRequest={@handleNewRequest}
+              selectedArtist={@state.selectedArtist}/>
           else
             <h4>Start importing music!</h4>
         }
@@ -168,6 +122,8 @@ ArtistBox = React.createClass
                 nrCols={this.state.nrCols} />
           </div>
         </div>
+
+        <UploadDialog ws={ws} open={@state.dialog.open} type={@state.dialog.type} handleClose={@closeDialog} />
     </div>
 
 module.exports = ArtistBox

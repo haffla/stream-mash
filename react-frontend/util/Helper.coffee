@@ -10,4 +10,8 @@ class Helper
   @isWindows: () ->
     if navigator.platform.match(/Win/i) then true else false
 
+  @preventDef: (event) ->
+    event.stopPropagation()
+    event.preventDefault()
+
 module.exports = Helper
