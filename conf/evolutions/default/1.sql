@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS artist(
     soundcloud_id VARCHAR(32) DEFAULT NULL,
     deezer_id VARCHAR(32) DEFAULT NULL,
     lastfm_id VARCHAR(40) DEFAULT NULL,
-    pic_url VARCHAR(256) DEFAULT NULL,
+    pic_url VARCHAR(256) DEFAULT '',
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     UNIQUE (artist_name)
 );

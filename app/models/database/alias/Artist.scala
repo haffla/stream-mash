@@ -7,7 +7,8 @@ case class Artist(@Column("artist_name") name:String,
                   @Column("spotify_id") spotifyId:Option[String] = None,
                   @Column("soundcloud_id") soundcloudId:Option[String] = None,
                   @Column("deezer_id") deezerId:Option[String] = None,
-                  @Column("lastfm_id") lastfmId:Option[String] = None) extends KeyedEntity[Long] {
+                  @Column("lastfm_id") lastfmId:Option[String] = None,
+                  @Column("pic_url") pic:String) extends KeyedEntity[Long] {
 
   @Column("id_artist") val id:Long = 0
 
