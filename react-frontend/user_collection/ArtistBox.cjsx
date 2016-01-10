@@ -66,7 +66,8 @@ ArtistBox = React.createClass
     @setState {nrCols: value}
 
   handleArtistClick: (idx) ->
-    @setState {selectedArtist: @state.data[idx]}
+    selectedArtist = @state.data[idx]
+    @setState selectedArtist: selectedArtist
 
   closeDialog: () ->
     @setState {dialog: {open: false}}
