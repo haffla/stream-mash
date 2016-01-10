@@ -19,8 +19,15 @@ class SpotifyLibrary(identifier: Either[Int, String]) extends Library(identifier
       val artist = (artists.head \ "name").as[String]
       val id = (artists.head \ "id").as[String]
       val track = (trackEntity \ "name").as[String]
+      val images = (trackEntity \ "images").as[Seq[JsValue]]
+      val artistPic = (images.last \ "url").as[String]
       SpotifyFacade.saveArtistWithServiceId(artist, id)
-      Map(Constants.mapKeyArtist -> artist, Constants.mapKeyAlbum -> album, Constants.mapKeyTrack -> track)
+      Map(
+        Constants.mapKeyArtist -> artist,
+        Constants.mapKeyAlbum -> album,
+        Constants.mapKeyTrack -> track,
+        Constants.mapKeyArtistPic -> artistPic
+      )
     }
   }
 }

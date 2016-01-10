@@ -14,7 +14,6 @@ CREATE TABLE IF NOT EXISTS account(
 INSERT INTO account(name, password)
 VALUES('jacke', 'a92f6bdb75789bccc118adfcf704029aa58063c604bab4fcdd9cd126ef9b69af');
 
-
 CREATE TABLE IF NOT EXISTS artist(
     id_artist SERIAL PRIMARY KEY,
     artist_name VARCHAR(256) NOT NULL,
@@ -22,10 +21,10 @@ CREATE TABLE IF NOT EXISTS artist(
     soundcloud_id VARCHAR(32) DEFAULT NULL,
     deezer_id VARCHAR(32) DEFAULT NULL,
     lastfm_id VARCHAR(40) DEFAULT NULL,
+    pic_url VARCHAR(256) DEFAULT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     UNIQUE (artist_name)
 );
-
 
 CREATE TABLE IF NOT EXISTS album(
     id_album SERIAL PRIMARY KEY,
@@ -34,7 +33,6 @@ CREATE TABLE IF NOT EXISTS album(
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     UNIQUE (album_name,fk_artist)
 );
-
 
 CREATE TABLE IF NOT EXISTS track(
     id_track SERIAL PRIMARY KEY,
@@ -45,14 +43,13 @@ CREATE TABLE IF NOT EXISTS track(
     UNIQUE (track_name, fk_artist, fk_album)
 );
 
-
 CREATE TABLE IF NOT EXISTS user_collection(
     id_collection SERIAL PRIMARY KEY,
     fk_user INT DEFAULT NULL REFERENCES account(id_user),
     fk_track INT NOT NULL REFERENCES track(id_track),
     user_session VARCHAR(32) DEFAULT NULL,
     times_played INTEGER DEFAULT 1,
-    score REAL DEFAULT 1.0,
+    imported_from VARCHAR(100) DEFAULT '',
     UNIQUE (fk_user, fk_track),
     UNIQUE (user_session, fk_track)
 );
@@ -68,7 +65,6 @@ CREATE TABLE IF NOT EXISTS user_artist_liking(
 );
 
 # --- !Downs
-
 
 DROP TABLE IF EXISTS album CASCADE;
 DROP TABLE IF EXISTS account CASCADE;

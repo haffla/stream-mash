@@ -1,5 +1,4 @@
-POST          /fileupload                   controllers.UserController.test
-GET           /files                        controllers.UserController.fileupload
+POST          /fileupload                   controllers.UserController.handleAudioFiles
 
 GET           /                             controllers.Application.index
 GET           /privacy                      controllers.Application.privacy

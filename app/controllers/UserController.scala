@@ -58,11 +58,7 @@ class UserController extends Controller {
     }
   }
 
-  def fileupload = IdentifiedBySession { implicit request =>
-    Ok(views.html.fileupload())
-  }
-
-  def test = IdentifiedBySession(parse.multipartFormData) { implicit request =>
+  def handleAudioFiles = IdentifiedBySession(parse.multipartFormData) { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
     val files = request.body.files
     val allFilesAreAudioFiles = files.forall { file =>

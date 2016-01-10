@@ -11,6 +11,7 @@ object Constants {
   val missingOAuthCodeError = "The service did not send an OAuth code."
 
   val mapKeyArtist = "artist"
+  val mapKeyArtistPic = "artist_pic"
   val mapKeyTrack = "track"
   val mapKeyAlbum = "album"
   val mapKeyServiceId = "service_id"

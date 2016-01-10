@@ -17,7 +17,7 @@ String::startsWith ?= (s) -> @slice(0, s.length) == s
 
 ArtistBox = React.createClass
   getInitialState: () ->
-    {data: [], progress: 0, nrCols: 3, dialog: {open: false, type: "itunes"}}
+    data: [], progress: 0, nrCols: 3, dialog: {open: false, type: "itunes"}
 
   componentDidMount: () ->
 
@@ -26,7 +26,7 @@ ArtistBox = React.createClass
     ws.onmessage = (data) =>
       if data.data.startsWith "progress"
         progress = data.data.split(':')[1] * 100
-        @setState({progress: progress})
+        @setState {progress: progress}
       else if data.data is 'done'
         @loadFromDb()
 
@@ -36,11 +36,10 @@ ArtistBox = React.createClass
     nr_albums = Helper.calculateNrOfAlbums(data)
     nr_artists = _.keys(data).length
     if setOriginalData
-      @setState({data: data, nr_artists: nr_artists, nr_albums: nr_albums, selectedArtist: data[0]}, () ->
+      @setState {data: data, nr_artists: nr_artists, nr_albums: nr_albums, selectedArtist: data[0]}, () ->
         @originalState = @state
-      )
     else
-      @setState({data: data, nr_artists: nr_artists, nr_albums: nr_albums, selectedArtist: data[0]})
+      @setState {data: data, nr_artists: nr_artists, nr_albums: nr_albums, selectedArtist: data[0]}
 
 
   loadFromDb: (event) ->
@@ -61,25 +60,25 @@ ArtistBox = React.createClass
       nr_artists = newData.length
       nr_albums = Helper.calculateNrOfAlbums(newData)
 
-    @setState({data: newData, nr_artists: nr_artists  || 0, nr_albums: nr_albums || 0})
+    @setState {data: newData, nr_artists: nr_artists  || 0, nr_albums: nr_albums || 0}
 
   handleSlider: (e, value) ->
-    @setState({nrCols: value})
+    @setState {nrCols: value}
 
   handleArtistClick: (idx) ->
-    @setState({selectedArtist: @state.data[idx]})
+    @setState {selectedArtist: @state.data[idx]}
 
   closeDialog: () ->
-    @setState({dialog: {open: false}})
+    @setState {dialog: {open: false}}
 
   openDialog: (dialogType) ->
-    @setState({dialog: {open: true, type: dialogType}})
+    @setState {dialog: {open: true, type: dialogType}}
 
   handleNewRequest: (artist,idx) ->
-    @setState({selectedArtist: @state.data[idx]})
+    @setState {selectedArtist: @state.data[idx]}
 
   handleStreamingServiceSelection: (event, item) ->
-    console.log(item.props.data)
+    window.location.href = "#{item.props.data}/login"
 
   render: () ->
     <div style={width: '80%', margin: 'auto'}>
@@ -95,7 +94,7 @@ ArtistBox = React.createClass
 
         <div className="row">
           <ControlBar
-            disabled={_.isEmpty(@state.data)}
+            disabled={_.isEmpty @state.data}
             handleSlider={@handleSlider}
             openDialog={@openDialog}
             handleStreamingServiceSelection={@handleStreamingServiceSelection} />

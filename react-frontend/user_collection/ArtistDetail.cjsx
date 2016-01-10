@@ -2,6 +2,7 @@ React = require 'react'
 
 ArrowForward = require 'material-ui/lib/svg-icons/navigation/arrow-forward'
 AutoComplete = require 'material-ui/lib/auto-complete'
+Avatar = require 'material-ui/lib/avatar';
 List = require 'material-ui/lib/lists/list'
 ListItem = require 'material-ui/lib/lists/list-item'
 

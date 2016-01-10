@@ -2,7 +2,11 @@ class Uploader
 
   constructor: (@url) ->
 
-  upload: (formData, successCallback, successNoErrorCallback) ->
+  upload: (
+    formData
+    successCallback = () ->
+    successNoErrorCallback = () ->
+    ) ->
     $.ajax
       url: @url
       type: 'POST'
@@ -20,13 +24,11 @@ class Uploader
         , false
         xhr
       success: (data) ->
-        if typeof successCallback is 'function'
-          successCallback()
+        successCallback()
         if data.error
           alert data.error
         else
-          if typeof successNoErrorCallback is 'function'
-            successNoErrorCallback()
+          successNoErrorCallback()
           if data.redirect
             window.location.href = data.redirect
       error: (jqXHR, status, error) ->
