@@ -66,8 +66,21 @@ ArtistBox = React.createClass
     @setState {nrCols: value}
 
   handleArtistClick: (idx) ->
-    selectedArtist = @state.data[idx]
-    @setState selectedArtist: selectedArtist
+    unless _.has(@state.data[idx], 'img')
+      $.ajax '/artist/image',
+        type: 'GET'
+        data: {artist: @state.data[idx].name}
+        dataType: 'json'
+        success: (data) =>
+          console.log(data)
+          unless data.error
+            @state.data[idx].img = data.img
+        error: (jqXHR, textStatus, e) ->
+          console.log(e)
+        complete: () =>
+          @setState selectedArtist: @state.data[idx]
+    else
+      @setState selectedArtist: @state.data[idx]
 
   closeDialog: () ->
     @setState {dialog: {open: false}}

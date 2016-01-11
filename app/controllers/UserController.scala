@@ -3,13 +3,15 @@ package controllers
 import models.User
 import models.auth.{Authenticated, AdminAccess, IdentifiedBySession, Helper}
 import models.database.alias.AppDB
-import models.database.facade.CollectionFacade
+import models.database.facade.{ArtistFacade, CollectionFacade}
 import models.service.analysis.SpotifyAnalysis
+import models.service.api.discover.EchoNestApi
 import models.service.library.{AudioFileLibrary, Library}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
 import play.api.mvc.Controller
 
+import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
 class UserController extends Controller {
@@ -74,7 +76,19 @@ class UserController extends Controller {
     else {
       Ok(Json.obj("error" -> "One or more files are not audio files. Only audio files are accepted. Aborting."))
     }
+  }
 
+  def getArtistPic = IdentifiedBySession.async { implicit request =>
+    request.getQueryString("artist").map { art =>
+      ArtistFacade.getArtistPic(art).map { img =>
+        Future.successful(Ok(Json.toJson(Map("img" -> img))))
+      }.getOrElse {
+        EchoNestApi.getArtistImage(art) map {
+          case Some(img) => Ok(Json.toJson(Map("img" -> img)))
+          case _ => Ok(Json.toJson(Map("error" -> "No picture found for artist")))
+        }
+      }
 
+    }.getOrElse(Future.successful(BadRequest("No parameter 'artist' found")))
   }
 }
