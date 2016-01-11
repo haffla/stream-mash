@@ -14,7 +14,8 @@ class DeezerLibrary(identifier: Either[Int, String]) extends Library(identifier,
       val album = (item \ "album" \ "title").as[String]
       val artist = (item \ "artist" \ "name").as[String]
       val artistId = (item \ "artist" \ "id").as[Int]
-      DeezerFacade.saveArtistWithServiceId(artist,artistId.toString)
+      val artistPic = (item \ "artist" \ "picture_small").asOpt[String]
+      DeezerFacade.saveArtistWithServiceId(artist,artistId.toString,artistPic)
       Map(Constants.mapKeyArtist -> artist, Constants.mapKeyTrack -> track, Constants.mapKeyAlbum -> album)
     }
   }

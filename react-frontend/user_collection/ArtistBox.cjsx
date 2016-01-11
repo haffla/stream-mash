@@ -36,16 +36,20 @@ ArtistBox = React.createClass
     nr_albums = Helper.calculateNrOfAlbums(data)
     nr_artists = _.keys(data).length
     if setOriginalData
-      @setState {data: data, nr_artists: nr_artists, nr_albums: nr_albums, selectedArtist: data[0]}, () ->
+      @setState {data: data, nr_artists: nr_artists, nr_albums: nr_albums}, () ->
         @originalState = @state
     else
-      @setState {data: data, nr_artists: nr_artists, nr_albums: nr_albums, selectedArtist: data[0]}
+      @setState {data: data, nr_artists: nr_artists, nr_albums: nr_albums}
 
 
   loadFromDb: (event) ->
     callback = (data) =>
       if !data.error
         console.log(data)
+        unless _.has(@state, 'selectedArtist')
+          selectedArtist = data[0]
+          selectedArtist.idx = 0
+          @setState selectedArtist: selectedArtist
         @setTheState(data, true)
       if window.itunes.openmodal is 'yes'
         @openDialog('itunes')
@@ -78,9 +82,24 @@ ArtistBox = React.createClass
         error: (jqXHR, textStatus, e) ->
           console.log(e)
         complete: () =>
+          @state.data[idx].idx = idx
           @setState selectedArtist: @state.data[idx]
     else
       @setState selectedArtist: @state.data[idx]
+
+  handleArtistSlide: (idx, evt, val) ->
+    @state.data[idx].score = val
+    @setState data: @state.data
+    artistToChange = @state.data[idx]
+    $.ajax '/artist/score',
+      type: 'POST'
+      dataType: 'json'
+      contentType: 'application/json; charset=utf-8'
+      data: JSON.stringify artistToChange
+      success: (data) ->
+        console.log(data)
+      error: (jqXHR, textStatus, e) ->
+        console.log(e)
 
   closeDialog: () ->
     @setState {dialog: {open: false}}
@@ -119,6 +138,7 @@ ArtistBox = React.createClass
             <ArtistDetail
               autoCompleteSource={@state.data.map (artist) -> artist.name}
               onNewRequest={@handleNewRequest}
+              onArtistSlideChange={@handleArtistSlide}
               selectedArtist={@state.selectedArtist}/>
           else
             <h4>Start importing music!</h4>
@@ -132,6 +152,7 @@ ArtistBox = React.createClass
               <ArtistList
                 data={@state.data}
                 onArtistClick={@handleArtistClick}
+                onArtistSlideChange={@handleArtistSlide}
                 nrCols={this.state.nrCols} />
           </div>
         </div>

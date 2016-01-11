@@ -21,7 +21,6 @@ object EchoNestApi {
 
   def getArtistImage(artist:String):Future[Option[String]] = {
     val url = root + s"/artist/images?api_key=$apiKey&format=json&name=${URLEncoder.encode(artist.toLowerCase, "UTF-8")}"
-    println(url)
     WS.url(url).get().map { res =>
       val json = Json.parse(res.body)
       val images = (json \ "response" \ "images").as[List[JsValue]]
@@ -34,7 +33,6 @@ object EchoNestApi {
       }
       val sortedBySize = filteredBySize.sortBy(image => (image \ "width").as[Int])
       val urls = sortedBySize map (img => (img \ "url").as[String])
-      println(urls)
       urls.headOption match {
         case Some(pic) =>
           ArtistFacade.setArtistPic(artist, pic)

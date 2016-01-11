@@ -5,13 +5,13 @@ AutoComplete = require 'material-ui/lib/auto-complete'
 Avatar = require 'material-ui/lib/avatar';
 List = require 'material-ui/lib/lists/list'
 ListItem = require 'material-ui/lib/lists/list-item'
+Slider = require 'material-ui/lib/slider'
 
 ArtistDetail = React.createClass
 
   componentDidMount: () ->
 
   render: () ->
-
     avatar =
       if _.has(@props.selectedArtist, 'img') then <Avatar src={@props.selectedArtist.img} />
       else
@@ -31,6 +31,18 @@ ArtistDetail = React.createClass
         }
         style={width: '33%'}>
         <ListItem primaryText={@props.selectedArtist.name} leftAvatar={avatar} />
+        <ListItem secondaryText="Score" rightAvatar={
+          <div>
+            <Slider
+              style={width: 100}
+              name="selectedArtistSlider"
+              min={0}
+              onChange={@props.onArtistSlideChange.bind(null, @props.selectedArtist.idx)}
+              max={3}
+              step={1}
+              value={if _.has(@props.selectedArtist, 'score') then @props.selectedArtist.score else 1}/>
+          </div>
+        } />
       </List>
 
       <div style={margin: "20px 10px"}><ArrowForward /></div>
@@ -51,7 +63,6 @@ ArtistDetail = React.createClass
             <ListItem key={idx} primaryText={track} />
         }
       </List>
-
     </div>
 
 module.exports = ArtistDetail

@@ -3,8 +3,8 @@ package models.database.alias
 import org.squeryl.KeyedEntity
 import org.squeryl.annotations._
 
-case class UserArtistLiking(@Column("fk_user") userId:Option[Long],
-                            @Column("user_session") userSession:Option[String],
+case class UserArtistLiking(@Column("fk_user") userId:Option[Long] = None,
+                            @Column("user_session") userSession:Option[String] = None,
                             @Column("fk_artist") artistId:Long,
                             @Column("score") score:Double) extends KeyedEntity[Long] {
 

@@ -13,7 +13,8 @@ object AppDB extends Schema {
 
   on(userArtistLiking)(ual => declare(
     columns(ual.userId, ual.artistId) are unique,
-    columns(ual.userSession, ual.artistId) are unique
+    columns(ual.userSession, ual.artistId) are unique,
+    ual.id is autoIncremented("user_artist_liking_id_user_artist_liking_seq")
   ))
 
   on(collections)(c => declare(

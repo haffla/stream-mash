@@ -1,14 +1,26 @@
 React = require 'react'
+Toggle = require 'material-ui/lib/toggle'
+Checkbox = require 'material-ui/lib/checkbox'
+Slider = require 'material-ui/lib/slider'
 
 Artist = React.createClass
+
   render: () ->
-    <div onClick={@props.onArtistClick.bind(null, @props.idx)} className="artist panel panel-default" style={width: (100 / @props.nrCols - 0.5) + '%'}>
-        <div className="panel-body">
-          <div><i className="fa fa-music"></i> {@props.artist.name}</div>
-          <button className="btn btn-default album-list-opener">
-            <i className="fa fa-plus"></i>
-          </button>
+    <div onTouchTap={@props.onArtistClick.bind(null, @props.idx)} className="artist panel panel-default" style={width: (100 / @props.nrCols - 0.5) + '%'}>
+      <div className="panel-body" style={display: 'flex', justifyContent: 'space-between'}>
+        <div style={position: 'absolute', left: 0, margin: 5}><i className="fa fa-music"></i> {@props.artist.name}</div>
+        <div style={position: 'absolute', right: 0, margin: 6}>
+          <Slider
+            style={width: 100}
+            name="artistSlider"
+            min={0}
+            onChange={@props.onArtistSlideChange.bind(null, @props.idx)}
+            max={3}
+            step={1}
+            value={if _.has(@props.artist, 'score') then @props.artist.score else 1}/>
         </div>
+      </div>
     </div>
+
 
 module.exports = Artist

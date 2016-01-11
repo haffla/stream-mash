@@ -1,5 +1,6 @@
 POST          /fileupload                   controllers.UserController.handleAudioFiles
 GET           /artist/image                 controllers.UserController.getArtistPic
+POST          /artist/score                 controllers.UserController.handleScore
 
 GET           /                             controllers.Application.index
 GET           /privacy                      controllers.Application.privacy

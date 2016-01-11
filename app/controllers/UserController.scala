@@ -3,7 +3,7 @@ package controllers
 import models.User
 import models.auth.{Authenticated, AdminAccess, IdentifiedBySession, Helper}
 import models.database.alias.AppDB
-import models.database.facade.{ArtistFacade, CollectionFacade}
+import models.database.facade.{ArtistLikingFacade, ArtistFacade, CollectionFacade}
 import models.service.analysis.SpotifyAnalysis
 import models.service.api.discover.EchoNestApi
 import models.service.library.{AudioFileLibrary, Library}
@@ -76,6 +76,17 @@ class UserController extends Controller {
     else {
       Ok(Json.obj("error" -> "One or more files are not audio files. Only audio files are accepted. Aborting."))
     }
+  }
+
+  def handleScore = IdentifiedBySession { implicit request =>
+    val identifier = Helper.getUserIdentifier(request.session)
+    request.body.asJson.map { js =>
+      val artist = (js \ "name").as[String]
+      val score = (js \ "score").as[Double]
+      println(artist, score)
+      ArtistLikingFacade(identifier).setScoreForArtist(artist, score)
+      Ok(Json.toJson(Map("success" -> true)))
+    }.getOrElse(BadRequest("No request parameters found"))
   }
 
   def getArtistPic = IdentifiedBySession.async { implicit request =>

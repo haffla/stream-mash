@@ -20,6 +20,7 @@ ArtistList = React.createClass
         artist={artist}
         nrCols={@props.nrCols}
         onArtistClick={@props.onArtistClick}
+        onArtistSlideChange={@props.onArtistSlideChange}
         idx={idx} />
 
     <div className="artistList" style={@style}>
