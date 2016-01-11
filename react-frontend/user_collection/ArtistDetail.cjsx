@@ -2,7 +2,8 @@ React = require 'react'
 
 ArrowForward = require 'material-ui/lib/svg-icons/navigation/arrow-forward'
 AutoComplete = require 'material-ui/lib/auto-complete'
-Avatar = require 'material-ui/lib/avatar';
+Avatar = require 'material-ui/lib/avatar'
+Badge = require 'material-ui/lib/badge'
 List = require 'material-ui/lib/lists/list'
 ListItem = require 'material-ui/lib/lists/list-item'
 Slider = require 'material-ui/lib/slider'
@@ -60,7 +61,10 @@ ArtistDetail = React.createClass
         {
           tracks = @props.selectedArtist.albums.map (alb) -> alb.tracks
           _.flatten(tracks).map (track, idx) ->
-            <ListItem key={idx} primaryText={track} />
+            <ListItem
+              key={idx}
+              primaryText={track.name}
+              rightAvatar={<Avatar>{track.played}</Avatar>} />
         }
       </List>
     </div>

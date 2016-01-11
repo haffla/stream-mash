@@ -38,18 +38,18 @@ object AppDB extends Schema {
     columns(t.name, t.artistId, t.albumId) are unique
   ))
 
-  def getCollectionByUser(identifier:Either[Int,String]):List[(Album, Artist, Track)] = {
+  def getCollectionByUser(identifier:Either[Int,String]):List[(Album, Artist, Track, UserCollection)] = {
     transaction {
       val res = identifier match {
         case Left(fkUser) =>
           from(collections, tracks, albums, artists)((coll, tr, alb, art) =>
             where(coll.userId === fkUser and coll.trackId === tr.id and tr.albumId === alb.id and tr.artistId === art.id)
-              select (alb,art,tr)
+              select (alb,art,tr,coll)
           )
         case Right(session) =>
           from(collections, tracks, albums, artists)((coll, tr, alb, art) =>
             where(coll.userSession === Some(session) and coll.trackId === tr.id and tr.albumId === alb.id and tr.artistId === art.id)
-              select (alb,art,tr)
+              select (alb,art,tr,coll)
           )
       }
       res.toList

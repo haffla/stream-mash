@@ -1,6 +1,6 @@
 package models.database.facade
 
-import models.database.alias.{Album,AppDB,Artist,Track}
+import models.database.alias.{Album,AppDB,Artist,Track,UserCollection}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -11,7 +11,7 @@ object CollectionFacade {
 
 class CollectionFacade(identifier:Either[Int,String]) extends Facade {
 
-  def userCollection:Future[List[(Album, Artist, Track)]] = {
+  def userCollection:Future[List[(Album, Artist, Track, UserCollection)]] = {
     Future {
       AppDB.getCollectionByUser(identifier)
     }
