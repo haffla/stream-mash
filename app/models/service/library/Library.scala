@@ -24,45 +24,17 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
                       keyAlbum:String = Constants.mapKeyAlbum,
                       keyTrack:String = Constants.mapKeyTrack):Map[String, Map[String,Set[String]]] = {
 
-    val result = data.foldLeft(Map[String, Map[String,Set[String]]]()) { (prev, curr) =>
-      val artist:String = curr(keyArtist)
-      val album:Option[String] = curr.get(keyAlbum)
-      val track:Option[String] = curr.get(keyTrack)
-
-      val artistAlbums:Map[String,Set[String]] = prev.get(artist) match {
-        case None => Map.empty
-        case Some(albums) => albums
+    val grpByArtist:Map[String, Seq[Map[String, String]]] = data.groupBy(item => item(Constants.mapKeyArtist))
+    val result = grpByArtist.foldLeft(Map[String, Map[String,Set[String]]]()) { (prev, curr) =>
+      val artist = curr._1
+      val grpByAlbum:Map[String, Seq[Map[String, String]]]
+        = curr._2.groupBy(_.getOrElse(Constants.mapKeyAlbum, Constants.mapKeyUnknownAlbum))
+      val albumsWithTracks = grpByAlbum.foldLeft(Map[String,Set[String]]()) { (p, c) =>
+        val album = c._1
+        val tracks = c._2.map(_(Constants.mapKeyTrack)).toSet
+        p + (album -> tracks)
       }
-
-      val aggregated:Map[String, Set[String]] = (album,track) match {
-        case (Some(alb), Some(tr)) =>
-          artistAlbums.get(alb) match {
-            case Some(existingTracks) =>
-              val tracks:Set[String] = existingTracks + tr
-              artistAlbums + (alb -> tracks)
-            case None =>
-              artistAlbums + (alb -> Set(tr))
-          }
-        case (Some(alb), None) =>
-          artistAlbums.get(alb) match {
-            case Some(_) =>
-              artistAlbums
-            case None =>
-              artistAlbums + (alb -> Set.empty)
-          }
-        case (None, Some(tr)) =>
-          artistAlbums.get(Constants.mapKeyUnknownAlbum) match {
-            case Some(existingTracks) =>
-              val tracks = existingTracks + tr
-              artistAlbums + (Constants.mapKeyUnknownAlbum -> tracks)
-            case None =>
-              artistAlbums + (Constants.mapKeyUnknownAlbum -> Set(tr))
-          }
-        case (None,None) =>
-          artistAlbums
-      }
-
-      prev + (artist -> aggregated)
+      prev + (artist -> albumsWithTracks)
     }
     if(persist) persist(result)
     result
