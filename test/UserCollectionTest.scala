@@ -40,7 +40,9 @@ class UserCollectionTest extends UnitSpec with ScalaFutures {
 
       val tracks:List[String] = albumObjects flatMap { albumObj =>
         albumObj flatMap { album =>
-          (album \ "tracks").as[Set[String]]
+          (album \ "tracks").as[Set[JsValue]].map { tr =>
+            (tr \ "name").as[String]
+          }
         }
       }
 

@@ -7,7 +7,8 @@ jdk:
 before_script:
   - npm install
   - npm install -g gulp
-  - gulp build
+  - gulp webpack
+  - gulp uglify
 
 script:
   - sbt -Dtest.config=test clean coverage test
