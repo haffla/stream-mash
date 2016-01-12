@@ -83,7 +83,6 @@ class UserController extends Controller {
     request.body.asJson.map { js =>
       val artist = (js \ "name").as[String]
       val score = (js \ "score").as[Double]
-      println(artist, score)
       ArtistLikingFacade(identifier).setScoreForArtist(artist, score)
       Ok(Json.toJson(Map("success" -> true)))
     }.getOrElse(BadRequest("No request parameters found"))
