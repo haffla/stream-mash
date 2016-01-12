@@ -12,7 +12,7 @@ class ItunesLibrary(identifier: Either[Int, String], xmlPath:String = "", persis
 
   val labelDict = "dict"
   val labelKey  = "key"
-  val informationToExtract = List("Artist", "Album")
+  val informationToExtract = List("Artist", "Album", "Name")
   val minTupleLength = informationToExtract.length
 
   /**
@@ -40,7 +40,7 @@ class ItunesLibrary(identifier: Either[Int, String], xmlPath:String = "", persis
     apiHelper.setRetrievalProcessPending()
     Future {
       val lib:Seq[Map[String,String]] = parseXml
-      val seq = convertSeqToMap(lib, informationToExtract.head, informationToExtract(1))
+      val seq = convertSeqToMap(lib, informationToExtract.head, informationToExtract(1), informationToExtract(2))
       cleanUp()
       apiHelper.setRetrievalProcessDone()
       seq

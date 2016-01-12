@@ -1,4 +1,4 @@
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.4")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.4" exclude("org.slf4j", "slf4j-simple"))
 
 resolvers += Resolver.typesafeRepo("releases")
 

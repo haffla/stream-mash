@@ -35,7 +35,8 @@ class ItunesController extends Controller {
           new ItunesLibrary(identifier, xmlPath).saveCollection()
         }
       }
-      Future.successful(Ok(Json.toJson(Map("error" -> false))))
+
+      Future.successful(Ok(Json.obj("error" -> false, "redirect" -> routes.ItunesController.index().toString)))
     }.getOrElse {
       val jsonResponse = Json.toJson(Map("error" -> "Could not read the file"))
       Future.successful(Ok(jsonResponse))

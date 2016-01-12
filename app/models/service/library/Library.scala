@@ -24,14 +24,14 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
                       keyAlbum:String = Constants.mapKeyAlbum,
                       keyTrack:String = Constants.mapKeyTrack):Map[String, Map[String,Set[String]]] = {
 
-    val grpByArtist:Map[String, Seq[Map[String, String]]] = data.groupBy(item => item(Constants.mapKeyArtist))
+    val grpByArtist:Map[String, Seq[Map[String, String]]] = data.groupBy(item => item(keyArtist))
     val result = grpByArtist.foldLeft(Map[String, Map[String,Set[String]]]()) { (prev, curr) =>
       val artist = curr._1
       val grpByAlbum:Map[String, Seq[Map[String, String]]]
-        = curr._2.groupBy(_.getOrElse(Constants.mapKeyAlbum, Constants.mapKeyUnknownAlbum))
+        = curr._2.groupBy(_.getOrElse(keyAlbum, Constants.mapKeyUnknownAlbum))
       val albumsWithTracks = grpByAlbum.foldLeft(Map[String,Set[String]]()) { (p, c) =>
         val album = c._1
-        val tracks = c._2.map(_(Constants.mapKeyTrack)).toSet
+        val tracks = c._2.map(_(keyTrack)).toSet
         p + (album -> tracks)
       }
       prev + (artist -> albumsWithTracks)
