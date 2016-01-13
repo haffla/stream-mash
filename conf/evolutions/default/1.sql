@@ -81,11 +81,11 @@ CREATE TABLE IF NOT EXISTS user_artist_liking(
 );
 
 CREATE TABLE IF NOT EXISTS spotify_artist(
-    id_spotify_artist INT REFERENCES artist(id_artist) PRIMARY KEY
+    id_spotify_artist INT REFERENCES artist(id_artist)
 );
 
 CREATE TABLE IF NOT EXISTS spotify_album(
-    id_spotify_album INT REFERENCES album(id_album) PRIMARY KEY,
+    id_spotify_album INT REFERENCES album(id_album),
     spotify_id VARCHAR(32)
 );
 
