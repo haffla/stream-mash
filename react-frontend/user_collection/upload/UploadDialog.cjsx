@@ -18,22 +18,27 @@ UploadDialog = React.createClass
       fileInput.removeAttr('multiple')
       fileInput.attr('accept', 'text/xml')
     fileInput.trigger('click')
-    @setState({uploadButtonDisabled: false})
+    @setState uploadButtonDisabled: false
 
   uploadFiles: () ->
     fileInput = $('#normalFileDialog')
     files = fileInput[0].files
-    formData = new FormData()
-    route = if @props.type is '/itunes' then '/itunes' else '/fileupload'
-    if @props.type is 'itunes'
-      formData.append('file', files[0])
-      uploader = new Uploader('/itunes')
+    unless _.isEmpty(files)
+      formData = new FormData()
+      route = if @props.type is 'itunes' then '/itunes' else '/fileupload'
+      if @props.type is 'itunes'
+        formData.append('file', files[0])
+        uploader = new Uploader('/itunes')
+      else
+        uploader = new Uploader('/fileupload')
+        for file in files
+          formData.append 'files[]', file, file.name
+      uploader.upload formData
+      @setState uploadButtonDisabled: true
     else
-      uploader = new Uploader('/fileupload')
-      for file in files
-        formData.append 'files[]', file, file.name
-    uploader.upload formData
-    @setState({uploadButtonDisabled: true})
+      @setState uploadButtonDisabled: true
+      alert("Please select at least one file to upload!")
+
 
   render: () ->
     actions = [
