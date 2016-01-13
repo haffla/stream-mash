@@ -18,8 +18,8 @@ object AdminAccess extends AuthenticatedAction {
 trait AuthenticatedAction extends ActionBuilder[Request] with Controller {
 
   def userNameAllowed(username:String):Boolean
-  val login = routes.AuthController.login().toString()
-  val index = routes.Application.index().toString()
+  val login = routes.AuthController.login().toString
+  val index = routes.Application.index().toString
 
   def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[Result]) = {
     request.session.get("username").map { username =>

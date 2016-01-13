@@ -34,14 +34,14 @@ object Global extends play.api.GlobalSettings {
 
   }
 
-  override def onError(request: RequestHeader, ex: Throwable) = {
+  /*override def onError(request: RequestHeader, ex: Throwable) = {
     val exceptionMessage = ex.getMessage
     Future.successful(InternalServerError(views.html.error(
       Map(
         "exceptionMessage" -> exceptionMessage
       )
     )))
-  }
+  }*/
 
   override def onHandlerNotFound(request: RequestHeader) = {
     val path = request.path

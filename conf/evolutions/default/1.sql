@@ -26,6 +26,10 @@ CREATE TABLE IF NOT EXISTS artist(
     UNIQUE (artist_name)
 );
 
+INSERT INTO artist(artist_name) VALUES ('Nicolas Jaar');
+INSERT INTO artist(artist_name) VALUES ('Four Tet');
+INSERT INTO artist(artist_name) VALUES ('Radiohead');
+
 CREATE TABLE IF NOT EXISTS album(
     id_album SERIAL PRIMARY KEY,
     album_name VARCHAR(256) NOT NULL,
@@ -33,6 +37,10 @@ CREATE TABLE IF NOT EXISTS album(
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     UNIQUE (album_name,fk_artist)
 );
+
+INSERT INTO album(album_name, fk_artist) VALUES ('Space Is Only Noise', 1);
+INSERT INTO album(album_name, fk_artist) VALUES ('Beautiful Rewind', 2);
+INSERT INTO album(album_name, fk_artist) VALUES ('The King of Limbs', 3);
 
 CREATE TABLE IF NOT EXISTS track(
     id_track SERIAL PRIMARY KEY,
@@ -42,6 +50,10 @@ CREATE TABLE IF NOT EXISTS track(
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     UNIQUE (track_name, fk_artist, fk_album)
 );
+
+INSERT INTO track(track_name, fk_artist, fk_album) VALUES ('Colomb', 1, 1);
+INSERT INTO track(track_name, fk_artist, fk_album) VALUES ('Gong', 2, 2);
+INSERT INTO track(track_name, fk_artist, fk_album) VALUES ('Bloom', 3, 3);
 
 CREATE TABLE IF NOT EXISTS user_collection(
     id_collection SERIAL PRIMARY KEY,
@@ -54,6 +66,10 @@ CREATE TABLE IF NOT EXISTS user_collection(
     UNIQUE (user_session, fk_track)
 );
 
+INSERT INTO user_collection(fk_user, fk_track, times_played) VALUES (1, 1, 25);
+INSERT INTO user_collection(fk_user, fk_track, times_played) VALUES (1, 2, 77);
+INSERT INTO user_collection(fk_user, fk_track, times_played) VALUES (1, 3, 46);
+
 CREATE TABLE IF NOT EXISTS user_artist_liking(
     id_user_artist_liking SERIAL PRIMARY KEY,
     fk_user INT DEFAULT NULL REFERENCES account(id_user),
@@ -62,6 +78,15 @@ CREATE TABLE IF NOT EXISTS user_artist_liking(
     score REAL DEFAULT 1.0,
     UNIQUE (fk_user, fk_artist),
     UNIQUE (user_session, fk_artist)
+);
+
+CREATE TABLE IF NOT EXISTS spotify_artist(
+    id_spotify_artist INT REFERENCES artist(id_artist) PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS spotify_album(
+    id_spotify_album INT REFERENCES album(id_album) PRIMARY KEY,
+    spotify_id VARCHAR(32)
 );
 
 # --- !Downs

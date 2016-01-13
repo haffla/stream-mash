@@ -1,6 +1,6 @@
 package models.service.analysis
 
-import models.database.facade.{ArtistFacade, AlbumFacade}
+import models.database.facade.{SpotifyAlbumFacade, SpotifyArtistFacade, ArtistFacade, AlbumFacade}
 import models.service.api.SpotifyApiFacade
 import models.service.api.refresh.SpotifyRefresh
 import models.util.Logging
@@ -16,10 +16,11 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
   val token:Option[String] = serviceAccessTokenHelper.getAccessToken
   var refreshToken:Option[String] = None
 
-  val searchEndpoint = "https://api.spotify.com/v1/artists/"
-
-  val albumFacade = AlbumFacade(identifier)
-  val artistFacade = ArtistFacade(identifier)
+  override val searchEndpoint = "https://api.spotify.com/v1/artists/"
+  override val albumFacade = AlbumFacade(identifier)
+  override val artistFacade = ArtistFacade(identifier)
+  val serviceArtistFacade = SpotifyArtistFacade
+  val serviceAlbumFacade = SpotifyAlbumFacade
 
   def analyse() = {
     val artists = artistFacade.getUsersArtists
@@ -65,9 +66,7 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
                   }
                 }
               }
-              else {
-                Future.successful(artistName, Json.parse(response.body))
-              }
+              else Future.successful(artistName, Json.parse(response.body))
             }
           case (_, Some(rTkn)) =>
             doRequest(url,rTkn) map { response =>
@@ -82,22 +81,42 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
     }
   }
 
-  private def processResponses(jsSet: List[(String,JsValue)]):Map[String,Set[String]] = {
-    jsSet.foldLeft(Map[String,Set[String]]()) { (prev, jsTuple) =>
+  def save(artistAlbumMap: Map[String,List[(String,String)]]) = {
+    artistAlbumMap.foreach { entity =>
+      val artist = entity._1
+      val albums = entity._2
+      val dbArtistId:Long = serviceArtistFacade.saveArtistWithName(artist)
+      albums.foreach { alb =>
+        val albumName = alb._1
+        val id = alb._2
+        serviceAlbumFacade.saveAlbumWithNameAndId(albumName, dbArtistId, id)
+      }
+    }
+  }
+
+  private def processResponses(jsSet: List[(String,JsValue)]):Map[String,List[(String,String)]] = {
+    val res = jsSet.foldLeft(Map[String,List[(String,String)]]()) { (prev, jsTuple) =>
       prev ++ processSingleResponse(jsTuple)
     }
+    save(res)
+    res
+  }
+
+  private def processSingleResponse(artistJsTuple:(String,JsValue)):Map[String,List[(String,String)]] = {
+    val artist = artistJsTuple._1
+    val js = artistJsTuple._2
+    val items = (js \ "items").as[List[JsValue]]
+    val albums:List[(String,String)] = items.map{
+      item =>
+        val albumName = (item \ "name").as[String]
+        val id = (item \ "id").as[String]
+        (albumName, id)
+    }
+    Map(artist -> albums)
   }
 
   private def doRequest(url:String, token:String):Future[WSResponse] = {
     WS.url(url).withHeaders("Authorization" -> s"Bearer $token").get()
-  }
-
-  private def processSingleResponse(artistJsTuple:(String,JsValue)):Map[String,Set[String]] = {
-    val artist = artistJsTuple._1
-    val js = artistJsTuple._2
-    val items = (js \ "items").as[List[JsValue]]
-    val albums:Set[String] = items.map(item => (item \ "name").as[String]).toSet
-    Map(artist -> albums)
   }
 }
 

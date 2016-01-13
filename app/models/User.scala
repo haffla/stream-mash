@@ -91,7 +91,11 @@ object User {
    * with his userId in order to prevent loss of data for the user
    */
   def transferData(userId: Long, sessionKey: String) = {
-    sql"update user_collection set fk_user = $userId where user_session = $sessionKey".update().apply()
+    Array(sqls"user_collection", sqls"user_artist_liking").foreach { table =>
+      sql"update $table set fk_user=$userId,user_session=null where user_session = $sessionKey".update().apply()
+    }
+
+    //sql"update user_artist_liking set fk_user=$userId,user_session=null where user_session = $sessionKey".update().apply()
   }
   def exists(name: String):Future[Boolean] = {
     Future {

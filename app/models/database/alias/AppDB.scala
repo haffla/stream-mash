@@ -10,6 +10,8 @@ object AppDB extends Schema {
   val albums = table[Album]("album")
   val tracks = table[Track]("track")
   val userArtistLiking = table[UserArtistLiking]("user_artist_liking")
+  val spotifyArtist = table[SpotifyArtist]("spotify_artist")
+  val spotifyAlbum = table[SpotifyAlbum]("spotify_album")
 
   on(userArtistLiking)(ual => declare(
     columns(ual.userId, ual.artistId) are unique,
@@ -27,11 +29,13 @@ object AppDB extends Schema {
   ))
 
   on(artists)(a => declare(
-    a.name is unique
+    a.name is unique,
+    a.id is autoIncremented("artist_id_artist_seq")
   ))
 
   on(albums)(a => declare(
-    columns(a.name, a.artistId) are unique
+    columns(a.name, a.artistId) are unique,
+    a.id is autoIncremented("album_id_album_seq")
   ))
 
   on(tracks)(t => declare(
