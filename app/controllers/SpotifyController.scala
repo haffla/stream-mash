@@ -29,7 +29,7 @@ class SpotifyController extends Controller {
       request.getQueryString("code") match {
         case Some(code) =>
           SpotifyService(identifier).requestUserData(code)
-          Future.successful(Redirect(routes.ItunesController.index("spotify")))
+          Future.successful(Redirect(routes.CollectionController.index("spotify")))
         case None =>
           Future.successful(Ok(Constants.missingOAuthCodeError))
       }

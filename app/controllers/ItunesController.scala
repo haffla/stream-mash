@@ -13,10 +13,6 @@ import scala.concurrent.Future
 
 class ItunesController extends Controller {
 
-  def index(service:String = "", openModal:String = "no") = IdentifiedBySession { implicit request =>
-    Ok(views.html.itunes.index(service, openModal))
-  }
-
   def fileUpload = IdentifiedBySession.async(parse.multipartFormData) { implicit request =>
     request.body.file("file").map { file =>
       val identifier = Helper.getUserIdentifier(request.session)
@@ -36,7 +32,7 @@ class ItunesController extends Controller {
         }
       }
 
-      Future.successful(Ok(Json.obj("error" -> false, "redirect" -> routes.ItunesController.index().toString)))
+      Future.successful(Ok(Json.obj("error" -> false, "redirect" -> routes.CollectionController.index().toString)))
     }.getOrElse {
       val jsonResponse = Json.toJson(Map("error" -> "Could not read the file"))
       Future.successful(Ok(jsonResponse))

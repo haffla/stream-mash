@@ -26,7 +26,7 @@ class SoundcloudController extends Controller {
       request.getQueryString("code") match {
         case Some(code) =>
           SoundcloudService(identifier).requestUserData(code)
-          Future.successful(Redirect(routes.ItunesController.index("soundcloud")))
+          Future.successful(Redirect(routes.CollectionController.index("soundcloud")))
         case None =>
           Future.successful(Ok(Constants.missingOAuthCodeError))
       }

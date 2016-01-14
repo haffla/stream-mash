@@ -2,7 +2,7 @@
 
 @import play.api.Play.current
 
-@main("iTunes", List(), true) {
+@main("Your Collection", List(), true) {
     <div id="content"></div>
 
     <script type='text/javascript'>
@@ -10,8 +10,8 @@
         window.itunes = {'openmodal': '@openModal'};
     </script>
     @if(play.api.Play.isDev) {
-        <script type='text/javascript' src='http://localhost:3000/bundle.js'></script>
+        <script type='text/javascript' src='http://localhost:3000/artistbox.js'></script>
     } else {
-        <script type='text/javascript' src='@routes.Assets.versioned("javascripts/bundle.min.js")'></script>
+        <script type='text/javascript' src='@routes.Assets.versioned("javascripts/artistbox.min.js")'></script>
     }
 }

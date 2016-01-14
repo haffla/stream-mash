@@ -25,7 +25,7 @@ class DeezerController extends Controller {
     val cookieState = request.cookies.get(DeezerService.cookieKey)
     if(TextWrangler.validateState(cookieState, state)) {
       DeezerService(identifier).requestUserData(code)
-      Future.successful(Redirect(routes.ItunesController.index("deezer")))
+      Future.successful(Redirect(routes.CollectionController.index("deezer")))
     }
     else Future.successful(Ok(Constants.stateMismatchError))
   }

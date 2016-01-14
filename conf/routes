@@ -21,8 +21,9 @@ GET           /spotify/spotifyid            controllers.SpotifyController.getSpo
 GET           /soundcloud/callback          controllers.SoundcloudController.callback
 GET           /soundcloud/login             controllers.SoundcloudController.login
 
+GET           /collection                   controllers.CollectionController.index(service:String ?= "", openModal:String ?= "no")
+
 ### iTunes
-GET           /itunes                       controllers.ItunesController.index(service:String ?= "", openModal:String ?= "no")
 POST          /itunes                       controllers.ItunesController.fileUpload
 
 ### Deezer

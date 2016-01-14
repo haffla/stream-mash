@@ -31,6 +31,6 @@ class LastfmController extends Controller {
     }
     else Future.successful(Ok(Constants.stateMismatchError))*/
     LastfmService(identifier).requestUserData(code)
-    Future.successful(Redirect(routes.ItunesController.index("lastfm")))
+    Future.successful(Redirect(routes.CollectionController.index("lastfm")))
   }
 }

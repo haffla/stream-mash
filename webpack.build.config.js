@@ -3,10 +3,13 @@ var path = require('path');
 var reactFrontend = 'react-frontend';
 
 module.exports = {
-    entry: ['./' + reactFrontend + '/index'],
+    entry: {
+      artistbox: ['./' + reactFrontend + '/artistbox'],
+      analysis: ['./' + reactFrontend + '/analysis']
+    }
     output: {
         path: path.join(__dirname, reactFrontend, 'dist'),
-        filename: 'bundle.js'
+        filename: '[name].js'
     },
     resolve: {
         extensions: ['', '.js', '.cjsx', '.coffee']

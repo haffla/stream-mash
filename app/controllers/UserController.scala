@@ -71,7 +71,7 @@ class UserController extends Controller {
     }
     if(allFilesAreAudioFiles) {
       AudioFileLibrary(identifier).process(request.body.files)
-      Ok(Json.obj("redirect" -> routes.ItunesController.index("audio").toString))
+      Ok(Json.obj("redirect" -> routes.CollectionController.index("audio").toString))
     }
     else {
       Ok(Json.obj("error" -> "One or more files are not audio files. Only audio files are accepted. Aborting."))

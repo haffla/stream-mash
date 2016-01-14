@@ -1,17 +1,26 @@
 var path = require('path');
 var webpack = require('webpack');
+publicPath = 'http://localhost:3000/';
+
 
 module.exports = {
   devtool: 'eval',
-  entry: [
-    'webpack-dev-server/client?http://localhost:3000',
-    'webpack/hot/only-dev-server',
-    './react-frontend/index'
-  ],
+  entry: {
+    artistbox: [
+      'webpack-dev-server/client?' + publicPath,
+      'webpack/hot/only-dev-server',
+      './react-frontend/artistbox'
+    ],
+    analysis: [
+      'webpack-dev-server/client?' + publicPath,
+      'webpack/hot/only-dev-server',
+      './react-frontend/analysis'
+    ]
+  },
   output: {
     path: path.join(__dirname, 'public', 'javascripts'),
-    filename: 'bundle.js',
-    publicPath: 'http://localhost:3000/'
+    filename: '[name].js',
+    publicPath: publicPath
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin()
