@@ -6,7 +6,7 @@ module.exports = {
     entry: {
       artistbox: ['./' + reactFrontend + '/artistbox'],
       analysis: ['./' + reactFrontend + '/analysis']
-    }
+    },
     output: {
         path: path.join(__dirname, reactFrontend, 'dist'),
         filename: '[name].js'

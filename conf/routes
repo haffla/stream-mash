@@ -22,6 +22,7 @@ GET           /soundcloud/callback          controllers.SoundcloudController.cal
 GET           /soundcloud/login             controllers.SoundcloudController.login
 
 GET           /collection                   controllers.CollectionController.index(service:String ?= "", openModal:String ?= "no")
+GET           /overview                     controllers.CollectionController.analysis
 
 ### iTunes
 POST          /itunes                       controllers.ItunesController.fileUpload

@@ -8,4 +8,8 @@ class CollectionController extends Controller {
   def index(service:String = "", openModal:String = "no") = IdentifiedBySession { implicit request =>
     Ok(views.html.collection.index(service, openModal))
   }
+
+  def analysis() = IdentifiedBySession { implicit request =>
+    Ok(views.html.collection.analysis())
+  }
 }

@@ -1,0 +1,13 @@
+@()(implicit flash: Flash, session: Session, request: RequestHeader)
+
+@import play.api.Play.current
+
+@main("Analysis", wide = true) {
+  <div id="content"></div>
+
+  @if(play.api.Play.isDev) {
+    <script type='text/javascript' src='http://localhost:3000/analysis.js'></script>
+  } else {
+    <script type='text/javascript' src='@routes.Assets.versioned("javascripts/analysis.min.js")'></script>
+  }
+}
