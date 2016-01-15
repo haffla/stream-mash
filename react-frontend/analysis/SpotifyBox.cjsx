@@ -6,15 +6,15 @@ Avatar = require 'material-ui/lib/avatar'
 Card = require 'material-ui/lib/card/card'
 CardHeader = require 'material-ui/lib/card/card-header'
 CardMedia = require 'material-ui/lib/card/card-media'
+CardText = require 'material-ui/lib/card/card-text'
 CardTitle = require 'material-ui/lib/card/card-title'
 Colors = require 'material-ui/lib/styles/colors'
+FontIcon = require 'material-ui/lib/font-icon'
 List = require 'material-ui/lib/lists/list'
 ListItem = require 'material-ui/lib/lists/list-item'
-FontIcon = require 'material-ui/lib/font-icon'
+
 
 SpotifyBox = React.createClass
-
-  albumEndpoint: "https://api.spotify.com/v1/albums/"
 
   getInitialState: () ->
     spotifyArtists: [], selectedArtist: {albums: []}
@@ -47,12 +47,14 @@ SpotifyBox = React.createClass
 
   handleAlbumClick: (idx) ->
     unless _.has(@state.selectedArtist.albums[idx], 'img')
-      url = @albumEndpoint + @state.selectedArtist.albums[idx].id
-      $.ajax url,
+      $.ajax '/spotify/album-detail',
         type: 'GET'
+        data: {'spId': @state.selectedArtist.albums[idx].id}
         dataType: 'json'
         success: (data) =>
-          @state.selectedArtist.albums[idx].img = data.images[0].url
+          img = Helper.getBestSpotifyImage(data.images)
+          @state.selectedArtist.albums[idx].img = img
+          @state.selectedArtist.albums[idx].tracks = data.tracks
           @setState selectedAlbum: @state.selectedArtist.albums[idx]
         error: (jqXHR, textStatus, e) ->
           console.log(e)
@@ -88,42 +90,57 @@ SpotifyBox = React.createClass
        <List subheader="Spotify Artist">
         {artists}
        </List>
-     </div>
+      </div>
 
      {
        if _.has(@state, 'selectedAlbum') && !_.isEmpty(@state.selectedAlbum)
+         nrOfTracksInUsersCollection = _.size(@state.selectedAlbum.tracks.filter (track) -> track.inCollection)
          <div style={width: '40%'}>
           <Card>
-            <CardHeader
-              title={@state.selectedAlbum.name}
-              subtitle={@state.selectedArtist.name}
-              avatar="http://lorempixel.com/100/100/nature/"/>
+            <CardTitle title={@state.selectedAlbum.name} />
             <CardMedia>
               <img src={@state.selectedAlbum.img}/>
             </CardMedia>
-            <CardTitle title="Naja" subtitle="OK" />
+            <CardTitle title={_.size(@state.selectedAlbum.tracks) + " Tracks"} subtitle={"In your Collection: " + nrOfTracksInUsersCollection} />
+            <div>
+              <List>
+                {
+                  @state.selectedAlbum.tracks.map (tr) ->
+                    icon = if tr.inCollection then "check_box" else "check_box_outline_blank"
+                    <ListItem className="trackListItem"
+                      style={height: 40, cursor: 'auto'}
+                      primaryText={tr.name}
+                      rightAvatar={<FontIcon className="material-icons" >{icon}</FontIcon>}
+                    />
+                }
+              </List>
+            </div>
+            <div style={display: 'flex', justifyContent: 'space-around', margin: 10}>
+              <iframe src={"https://embed.spotify.com/?uri=spotify:album:#{@state.selectedAlbum.id}"} style={width: "300px", height: '80px'} frameborder="0" allowtransparency="true"></iframe>
+            </div>
           </Card>
          </div>
        else if _.has(@state, 'selectedArtist') && !_.isEmpty(@state.selectedArtist)
+         nrAlbumsOnSpotify = _.size(@state.selectedArtist.albums)
+         nrAlbumsInUserCollection = _.size(@state.selectedArtist.albums.filter (alb) -> alb.inCollection)
          <div style={width: '40%'}>
           <Card>
-            <CardHeader
-              title={@state.selectedArtist.name}
-              subtitle={@state.selectedArtist.name}
-              avatar="http://lorempixel.com/100/100/nature/"/>
             <CardMedia>
               <img src={@state.selectedArtist.img}/>
             </CardMedia>
-            <CardTitle title="Naja" subtitle="OK" />
+            <CardTitle
+              title={@state.selectedArtist.name}
+              subtitle={
+                nrAlbumsOnSpotify + " Albums on Spotify of which you seem to know " + nrAlbumsInUserCollection
+                } />
           </Card>
          </div>
      }
-
      <div style={width: '33%'}>
         <List subheader={@state.selectedArtist.name + "'s " + "Albums on Spotify"}>
          {selectedAlbums}
         </List>
-      </div>
+     </div>
 
     </div>
 

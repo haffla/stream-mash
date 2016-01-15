@@ -18,6 +18,7 @@ GET           /spotify/callback             controllers.SpotifyController.callba
 GET           /spotify/spotifyid            controllers.SpotifyController.getSpotifyArtistId
 GET           /spotify/artists              controllers.SpotifyController.getArtistsForAnalysis
 GET           /spotify/artist-detail        controllers.SpotifyController.getArtistDetail
+GET           /spotify/album-detail         controllers.SpotifyController.getAlbumDetail
 
 ### Soundcloud
 GET           /soundcloud/callback          controllers.SoundcloudController.callback

@@ -1,7 +1,7 @@
 package controllers
 
 import models.auth.{IdentifiedBySession, Helper}
-import models.database.facade.{SpotifyArtistFacade, ArtistFacade}
+import models.database.facade.{TrackFacade, SpotifyArtistFacade, ArtistFacade}
 import models.service.Constants
 import models.service.api.SpotifyApiFacade
 import models.service.oauth.SpotifyService
@@ -56,8 +56,19 @@ class SpotifyController extends Controller {
     )
   }
 
-  def getSpotifyArtistId = IdentifiedBySession.async { implicit request =>
+  def getAlbumDetail = IdentifiedBySession.async { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
+    request.getQueryString("spId").map { spId =>
+      val usersTracks = TrackFacade(identifier).getUsersTracks
+      SpotifyApiFacade.getAlbumInfoForFrontend(spId,usersTracks).map { spotifyResponse =>
+        Ok(spotifyResponse)
+      }
+    }.getOrElse(
+      Future.successful(BadRequest("Missing parameter 'spId', e.g. Spotify ID of the album"))
+    )
+  }
+
+  def getSpotifyArtistId = IdentifiedBySession.async { implicit request =>
     request.getQueryString("artist").map { artist =>
       val mayBeId = ArtistFacade.getArtistByName(artist) match {
         case Some(a) => a.spotifyId
