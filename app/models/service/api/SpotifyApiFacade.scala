@@ -1,10 +1,10 @@
 package models.service.api
 
-import models.database.facade.SpotifyFacade
+import models.database.facade.{SpotifyArtistFacade, SpotifyFacade}
 import models.service.oauth.SpotifyService.apiEndpoints
 import models.util.Logging
 import play.api.Play.current
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsValue, JsObject, Json}
 import play.api.libs.ws.WS
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -30,9 +30,27 @@ object SpotifyApiFacade extends ApiFacade {
             }.getOrElse(None)
 
           case http_code =>
-            Logging.error(ich, "Error getting ID for artist from Spotify: " + http_code + "\n" + response.body)
+            logError(http_code, response.body)
             None
         }
     }
+  }
+
+  def getArtistInfoForFrontend(id:String):Future[JsValue] = {
+    WS.url(apiEndpoints.artists + "/" + id).get().map { response =>
+      response.status match {
+        case 200 =>
+          val js = Json.parse(response.body)
+          SpotifyArtistFacade.saveInfoAboutArtist(js)
+          js
+        case http_code =>
+          logError(http_code, response.body)
+          Json.obj("error" -> true)
+      }
+    }
+  }
+
+  private def logError(code:Int, error:String) = {
+    Logging.error(ich, "Error getting Spotify artist: " + code + "\n" + error)
   }
 }

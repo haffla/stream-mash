@@ -46,6 +46,16 @@ class SpotifyController extends Controller {
     }
   }
 
+  def getArtistDetail = IdentifiedBySession.async { implicit request =>
+    request.getQueryString("spId").map { spId =>
+      SpotifyApiFacade.getArtistInfoForFrontend(spId).map { spotifyResponse =>
+        Ok(spotifyResponse)
+      }
+    }.getOrElse(
+      Future.successful(BadRequest("Missing parameter 'spId', e.g. Spotify ID of the artist"))
+    )
+  }
+
   def getSpotifyArtistId = IdentifiedBySession.async { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
     request.getQueryString("artist").map { artist =>

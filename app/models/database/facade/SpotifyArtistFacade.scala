@@ -51,20 +51,19 @@ class SpotifyArtistFacade(identifier:Either[Int,String]) {
   }
 
   private def convertToJson(albums:List[(Album,Artist,String)], albumsInUserCollection:List[Long] = Nil):JsValue = {
-    val convertedToMap = albums.foldLeft(Map[(String,String),Set[(String,String,Boolean)]]()) { (prev,curr) =>
-      val artist = curr._2.name
-      val artistSpotifyId = curr._2.spotifyId.getOrElse("")
+    val convertedToMap = albums.foldLeft(Map[Artist,Set[(String,String,Boolean)]]()) { (prev,curr) =>
+      val artist = curr._2
       val currentAlbum = curr._1.name
       val albumSpotifyId = curr._3
       val userHasAlbumInCollection = albumsInUserCollection.contains(curr._1.id)
-      val aggregatedAlbums = prev.getOrElse((artist,artistSpotifyId), Set.empty) ++ Set((currentAlbum,albumSpotifyId,userHasAlbumInCollection))
-      prev + ((artist,artistSpotifyId) -> aggregatedAlbums)
+      val aggregatedAlbums = prev.getOrElse(artist, Set.empty) ++ Set((currentAlbum,albumSpotifyId,userHasAlbumInCollection))
+      prev + (artist -> aggregatedAlbums)
     }
     doJsonConversion(convertedToMap)
   }
 
-  private def doJsonConversion(t: Map[(String,String),Set[(String,String,Boolean)]]): JsValue = {
-    val list = t.map { elem =>
+  private def doJsonConversion(artistAlbumMap: Map[Artist,Set[(String,String,Boolean)]]): JsValue = {
+    val list = artistAlbumMap.map { elem =>
       val albums = elem._2.map { album =>
         Json.obj(
           "name" -> album._1,
@@ -72,9 +71,12 @@ class SpotifyArtistFacade(identifier:Either[Int,String]) {
           "inCollection" -> album._3
         )
       }
+      val spotifyId:String = elem._1.spotifyId.getOrElse("")
+      val pic = elem._1.pic.getOrElse("")
       Json.obj(
-        "name" -> elem._1._1,
-        "id" -> elem._1._2,
+        "name" -> elem._1.name,
+        "id" -> spotifyId,
+        "img" -> pic,
         "albums" -> albums
       )
     }
@@ -109,6 +111,21 @@ object SpotifyArtistFacade {
     ).headOption match {
       case None => AppDB.spotifyArtists.insert(SpotifyArtist(id)).id
       case _ => id
+    }
+  }
+
+  def saveInfoAboutArtist(js:JsValue):Unit = {
+    (js \ "images").asOpt[List[JsValue]] match {
+      case Some(images) =>
+        val filtered = images.filter { image =>
+          val width = (image \ "width").as[Int]
+          width < 1000 && width > 300
+        }
+        filtered.headOption.map { img =>
+          val url = (img \ "url").as[String]
+          ArtistFacade.setArtistPic((js \ "name").as[String], url)
+        }
+      case None =>
     }
   }
 }

@@ -29,7 +29,21 @@ SpotifyBox = React.createClass
         console.log(e)
 
   handleArtistClick: (idx) ->
-    @setState selectedArtist: @state.spotifyArtists[idx], album: {}
+    if _.isEmpty(@state.spotifyArtists[idx].img)
+      $.ajax '/spotify/artist-detail',
+        type: 'GET'
+        dataType: 'json'
+        data: {'spId': @state.spotifyArtists[idx].id}
+        success: (data) =>
+          console.log(data)
+          img = Helper.getBestSpotifyImage data.images, 'big'
+          @state.spotifyArtists[idx].img = img
+        error: (jqXHR, textStatus, e) ->
+          console.log(e)
+        complete: () =>
+          @setState selectedArtist: @state.spotifyArtists[idx], selectedAlbum: {}
+    else
+      @setState selectedArtist: @state.spotifyArtists[idx], selectedAlbum: {}
 
   handleAlbumClick: (idx) ->
     unless _.has(@state.selectedArtist.albums[idx], 'img')
@@ -39,11 +53,11 @@ SpotifyBox = React.createClass
         dataType: 'json'
         success: (data) =>
           @state.selectedArtist.albums[idx].img = data.images[0].url
-          @setState album: @state.selectedArtist.albums[idx]
+          @setState selectedAlbum: @state.selectedArtist.albums[idx]
         error: (jqXHR, textStatus, e) ->
           console.log(e)
     else
-      @setState album: @state.selectedArtist.albums[idx]
+      @setState selectedAlbum: @state.selectedArtist.albums[idx]
 
   render: () ->
     artists = @state.spotifyArtists.map (artist, idx) =>
@@ -58,7 +72,7 @@ SpotifyBox = React.createClass
 
     selectedAlbums = @state.selectedArtist.albums.map (album, idx) =>
       icon = if album.inCollection then "check_box" else "check_box_outline_blank"
-      isSelected = _.has(@state, 'album') && album.name == @state.album.name
+      isSelected = _.has(@state, 'selectedAlbum') && album.name == @state.selectedAlbum.name
       color = if isSelected then Colors.amber500 else 'white'
       <ListItem
         key={idx}
@@ -70,29 +84,42 @@ SpotifyBox = React.createClass
 
 
     <div style={display: 'flex', justifyContent: 'space-between'}>
-      <div style={width: '27%'}>
+      <div style={width: '25%'}>
        <List subheader="Spotify Artist">
         {artists}
        </List>
      </div>
 
      {
-       if _.has(@state, 'album') && !_.isEmpty(@state.album)
+       if _.has(@state, 'selectedAlbum') && !_.isEmpty(@state.selectedAlbum)
          <div style={width: '40%'}>
           <Card>
             <CardHeader
-              title={@state.album.name}
+              title={@state.selectedAlbum.name}
               subtitle={@state.selectedArtist.name}
               avatar="http://lorempixel.com/100/100/nature/"/>
             <CardMedia>
-              <img src={@state.album.img}/>
+              <img src={@state.selectedAlbum.img}/>
+            </CardMedia>
+            <CardTitle title="Naja" subtitle="OK" />
+          </Card>
+         </div>
+       else if _.has(@state, 'selectedArtist') && !_.isEmpty(@state.selectedArtist)
+         <div style={width: '40%'}>
+          <Card>
+            <CardHeader
+              title={@state.selectedArtist.name}
+              subtitle={@state.selectedArtist.name}
+              avatar="http://lorempixel.com/100/100/nature/"/>
+            <CardMedia>
+              <img src={@state.selectedArtist.img}/>
             </CardMedia>
             <CardTitle title="Naja" subtitle="OK" />
           </Card>
          </div>
      }
 
-     <div style={width: '27%'}>
+     <div style={width: '33%'}>
         <List subheader={@state.selectedArtist.name + "'s " + "Albums on Spotify"}>
          {selectedAlbums}
         </List>

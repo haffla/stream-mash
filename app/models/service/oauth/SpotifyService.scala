@@ -53,6 +53,7 @@ object SpotifyService extends OAuthStreamingServiceAbstract with FavouriteMusicR
     val token = "https://accounts.spotify.com/api/token"
     val authorize = "https://accounts.spotify.com/authorize"
     val search = "https://api.spotify.com/v1/search"
+    val artists = "https://api.spotify.com/v1/artists"
 
     val data = Map(
       "redirect_uri" -> Seq(redirectUri),
