@@ -81,7 +81,7 @@ SpotifyBox = React.createClass
         style={backgroundColor: color}
         onTouchTap={@handleAlbumClick.bind(null, idx)}
         primaryText={album.name}
-        rightAvatar={<FontIcon className="material-icons" >{icon}</FontIcon>}
+        rightAvatar={<FontIcon color="#455a64" className="material-icons" >{icon}</FontIcon>}
         />
 
 
@@ -110,7 +110,7 @@ SpotifyBox = React.createClass
                     <ListItem className="trackListItem"
                       style={height: 40, cursor: 'auto'}
                       primaryText={tr.name}
-                      rightAvatar={<FontIcon className="material-icons" >{icon}</FontIcon>}
+                      rightAvatar={<FontIcon color="#455a64" className="material-icons" >{icon}</FontIcon>}
                     />
                 }
               </List>
