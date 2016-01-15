@@ -14,17 +14,17 @@ object SpotifyAlbumFacade {
         case Some(id) => insertAlbum(id, spotifyId)
         case _ =>
           val newAlbum:Album = AppDB.albums.insert(Album(albumName, artistId))
-          AppDB.spotifyAlbum.insert(SpotifyAlbum(newAlbum.id, spotifyId)).id
+          AppDB.spotifyAlbums.insert(SpotifyAlbum(newAlbum.id, spotifyId)).id
       }
     }
   }
 
   def insertAlbum(id:Long, spotifyId:String):Long = {
-    from(AppDB.spotifyAlbum)(sa =>
+    from(AppDB.spotifyAlbums)(sa =>
       where(sa.id === id)
         select sa.id
     ).headOption match {
-      case None => AppDB.spotifyAlbum.insert(SpotifyAlbum(id, spotifyId)).id
+      case None => AppDB.spotifyAlbums.insert(SpotifyAlbum(id, spotifyId)).id
       case _ => id
     }
   }

@@ -14,4 +14,8 @@ class Helper
     event.stopPropagation()
     event.preventDefault()
 
+  @getInitials: (name) ->
+    arr = (name.split(' ').map (s) -> s[0].toUpperCase())
+    if arr.length > 2 then _.first(arr).concat(_.last(arr)) else arr.join('')
+
 module.exports = Helper

@@ -9,7 +9,7 @@ class ArtistLikingFacade(identifier:Either[Int,String]) extends Facade {
     transaction {
       getEntityIdByArtist(artist) match {
         case Some(id) =>
-          update(AppDB.userArtistLiking)(ual =>
+          update(AppDB.userArtistLikings)(ual =>
             where(ual.id === id)
               set(ual.score := score)
           )
@@ -22,12 +22,12 @@ class ArtistLikingFacade(identifier:Either[Int,String]) extends Facade {
   def getEntityIdByArtist(artist:String):Option[Long] = {
     val res = identifier match {
       case Left(id) =>
-        from(AppDB.userArtistLiking, AppDB.artists)((ual,a) =>
+        from(AppDB.userArtistLikings, AppDB.artists)((ual, a) =>
           where(a.name === artist and ual.userId === Some(id) and a.id === ual.artistId)
             select ual.id
         )
       case Right(userSession) =>
-        from(AppDB.userArtistLiking, AppDB.artists)((ual,a) =>
+        from(AppDB.userArtistLikings, AppDB.artists)((ual, a) =>
           where(a.name === artist and ual.userSession === Some(userSession))
             select ual.id
         )
@@ -42,7 +42,7 @@ class ArtistLikingFacade(identifier:Either[Int,String]) extends Facade {
           case Left(id) => UserArtistLiking(artistId = art.id, userId = Some(id.toLong), score = score)
           case Right(userSession) => UserArtistLiking(artistId = art.id, userSession = Some(userSession), score = score)
         }
-        AppDB.userArtistLiking.insert(ual)
+        AppDB.userArtistLikings.insert(ual)
       case _ =>
     }
   }

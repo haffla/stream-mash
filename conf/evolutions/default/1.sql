@@ -33,7 +33,7 @@ INSERT INTO artist(artist_name) VALUES ('Radiohead');
 CREATE TABLE IF NOT EXISTS album(
     id_album SERIAL PRIMARY KEY,
     album_name VARCHAR(256) NOT NULL,
-    fk_artist INT NOT NULL REFERENCES artist(id_artist),
+    fk_artist INT NOT NULL REFERENCES artist(id_artist) ON DELETE CASCADE,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     UNIQUE (album_name,fk_artist)
 );
@@ -45,8 +45,8 @@ INSERT INTO album(album_name, fk_artist) VALUES ('The King of Limbs', 3);
 CREATE TABLE IF NOT EXISTS track(
     id_track SERIAL PRIMARY KEY,
     track_name VARCHAR(256) NOT NULL,
-    fk_artist INT NOT NULL REFERENCES artist(id_artist),
-    fk_album INT DEFAULT NULL REFERENCES album(id_album),
+    fk_artist INT NOT NULL REFERENCES artist(id_artist) ON DELETE CASCADE,
+    fk_album INT DEFAULT NULL REFERENCES album(id_album) ON DELETE CASCADE,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     UNIQUE (track_name, fk_artist, fk_album)
 );
@@ -57,8 +57,8 @@ INSERT INTO track(track_name, fk_artist, fk_album) VALUES ('Bloom', 3, 3);
 
 CREATE TABLE IF NOT EXISTS user_collection(
     id_collection SERIAL PRIMARY KEY,
-    fk_user INT DEFAULT NULL REFERENCES account(id_user),
-    fk_track INT NOT NULL REFERENCES track(id_track),
+    fk_user INT DEFAULT NULL REFERENCES account(id_user) ON DELETE CASCADE,
+    fk_track INT NOT NULL REFERENCES track(id_track) ON DELETE CASCADE,
     user_session VARCHAR(32) DEFAULT NULL,
     times_played INTEGER DEFAULT 1,
     imported_from VARCHAR(100) DEFAULT NULL,
@@ -72,20 +72,20 @@ INSERT INTO user_collection(fk_user, fk_track, times_played) VALUES (1, 3, 46);
 
 CREATE TABLE IF NOT EXISTS user_artist_liking(
     id_user_artist_liking SERIAL PRIMARY KEY,
-    fk_user INT DEFAULT NULL REFERENCES account(id_user),
+    fk_user INT DEFAULT NULL REFERENCES account(id_user) ON DELETE CASCADE,
     user_session VARCHAR(32) DEFAULT NULL,
-    fk_artist INT NOT NULL REFERENCES artist(id_artist),
+    fk_artist INT NOT NULL REFERENCES artist(id_artist) ON DELETE CASCADE,
     score REAL DEFAULT 1.0,
     UNIQUE (fk_user, fk_artist),
     UNIQUE (user_session, fk_artist)
 );
 
 CREATE TABLE IF NOT EXISTS spotify_artist(
-    id_spotify_artist INT REFERENCES artist(id_artist)
+    id_spotify_artist INT REFERENCES artist(id_artist) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS spotify_album(
-    id_spotify_album INT REFERENCES album(id_album),
+    id_spotify_album INT REFERENCES album(id_album) ON DELETE CASCADE,
     spotify_id VARCHAR(32)
 );
 

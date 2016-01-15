@@ -6,9 +6,6 @@ import models.service.oauth.DeezerService
 import models.util.TextWrangler
 import play.api.mvc._
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-
 class DeezerController extends Controller {
 
   def login = IdentifiedBySession { implicit request =>
@@ -18,15 +15,15 @@ class DeezerController extends Controller {
       .withCookies(Cookie(DeezerService.cookieKey, state))
   }
 
-  def callback = IdentifiedBySession.async { implicit request =>
+  def callback = IdentifiedBySession { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
     val state = request.getQueryString("state")
     val code = request.getQueryString("code").orNull
     val cookieState = request.cookies.get(DeezerService.cookieKey)
     if(TextWrangler.validateState(cookieState, state)) {
       DeezerService(identifier).requestUserData(code)
-      Future.successful(Redirect(routes.CollectionController.index("deezer")))
+      Redirect(routes.CollectionController.index("deezer"))
     }
-    else Future.successful(Ok(Constants.stateMismatchError))
+    else Ok(Constants.stateMismatchError)
   }
 }

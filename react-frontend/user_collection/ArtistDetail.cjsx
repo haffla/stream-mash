@@ -1,4 +1,5 @@
 React = require 'react'
+Helper = require '../util/Helper'
 
 ArrowForward = require 'material-ui/lib/svg-icons/navigation/arrow-forward'
 AutoComplete = require 'material-ui/lib/auto-complete'
@@ -16,9 +17,8 @@ ArtistDetail = React.createClass
     avatar =
       if _.has(@props.selectedArtist, 'img') then <Avatar src={@props.selectedArtist.img} />
       else
-        arr = (@props.selectedArtist.name.split(' ').map (s) -> s[0].toUpperCase())
-        res = if arr.length > 2 then _.first(arr).concat(_.last(arr)) else arr.join('')
-        <Avatar>{res}</Avatar>
+        initials = Helper.getInitials @props.selectedArtist.name
+        <Avatar>{initials}</Avatar>
 
     <div className="row" style={display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '25px'}>
 

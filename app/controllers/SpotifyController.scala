@@ -1,7 +1,7 @@
 package controllers
 
 import models.auth.{IdentifiedBySession, Helper}
-import models.database.facade.ArtistFacade
+import models.database.facade.{SpotifyArtistFacade, ArtistFacade}
 import models.service.Constants
 import models.service.api.SpotifyApiFacade
 import models.service.oauth.SpotifyService
@@ -21,7 +21,7 @@ class SpotifyController extends Controller {
       .withCookies(Cookie(SpotifyService.cookieKey, state))
   }
 
-  def callback = IdentifiedBySession.async { implicit request =>
+  def callback = IdentifiedBySession { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
     val state = request.getQueryString("state")
     val stateCookie = request.cookies.get(SpotifyService.cookieKey)
@@ -29,13 +29,20 @@ class SpotifyController extends Controller {
       request.getQueryString("code") match {
         case Some(code) =>
           SpotifyService(identifier).requestUserData(code)
-          Future.successful(Redirect(routes.CollectionController.index("spotify")))
+          Redirect(routes.CollectionController.index("spotify"))
         case None =>
-          Future.successful(Ok(Constants.missingOAuthCodeError))
+          Ok(Constants.missingOAuthCodeError)
       }
     }
     else {
-      Future.successful(Ok(Constants.stateMismatchError))
+      Ok(Constants.stateMismatchError)
+    }
+  }
+
+  def getArtistsForAnalysis = IdentifiedBySession.async { implicit request =>
+    val identifier = Helper.getUserIdentifier(request.session)
+    SpotifyArtistFacade(identifier).getArtistsAndAlbumsForOverview.map { jsonResult =>
+      Ok(Json.obj("artists" -> jsonResult))
     }
   }
 

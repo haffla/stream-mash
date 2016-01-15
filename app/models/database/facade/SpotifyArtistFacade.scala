@@ -1,9 +1,91 @@
 package models.database.facade
 
-import models.database.alias.{SpotifyArtist, Artist, AppDB}
+import models.database.alias._
 import org.squeryl.PrimitiveTypeMode._
+import play.api.libs.json.{Json, JsValue}
+
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
+class SpotifyArtistFacade(identifier:Either[Int,String]) {
+
+  /**
+    * Get all Spotify albums of those artists that were imported by the user
+    */
+  def getUserRelatedSpotifyAlbums:List[(Album,Artist,String)] = {
+    transaction {
+      /** First get all related artist */
+      val usersArtistQuery = identifier match {
+        case Left(userId) =>
+          from(AppDB.artists, AppDB.collections, AppDB.tracks)((a,c,t) =>
+            where(c.trackId === t.id and t.artistId === a.id and c.userId === userId)
+              select a.id
+          )
+        case Right(session) =>
+          from(AppDB.artists, AppDB.collections, AppDB.tracks)((a,c,t) =>
+            where(c.trackId === t.id and t.artistId === a.id and c.userSession === Some(session))
+              select a.id
+          )
+      }
+
+      join(AppDB.albums,
+           AppDB.artists,
+           AppDB.spotifyAlbums,
+           AppDB.spotifyArtists)( (alb,art,spAlb,spArt) =>
+        where(art.id in usersArtistQuery.toList)
+          select(alb, art, spAlb.spotifyId)
+          on(
+            alb.artistId === art.id,
+            alb.id === spAlb.id,
+            art.id === spArt.id
+          )
+      ).toList
+    }
+  }
+
+  def getArtistsAndAlbumsForOverview:Future[JsValue] = {
+    for {
+      albumsInUserCollection <- Future { AlbumFacade(identifier).getUsersAlbums }
+      spotifyAlbums <- Future { getUserRelatedSpotifyAlbums }
+    } yield convertToJson(spotifyAlbums,albumsInUserCollection)
+  }
+
+  private def convertToJson(albums:List[(Album,Artist,String)], albumsInUserCollection:List[Long] = Nil):JsValue = {
+    val convertedToMap = albums.foldLeft(Map[(String,String),Set[(String,String,Boolean)]]()) { (prev,curr) =>
+      val artist = curr._2.name
+      val artistSpotifyId = curr._2.spotifyId.getOrElse("")
+      val currentAlbum = curr._1.name
+      val albumSpotifyId = curr._3
+      val userHasAlbumInCollection = albumsInUserCollection.contains(curr._1.id)
+      val aggregatedAlbums = prev.getOrElse((artist,artistSpotifyId), Set.empty) ++ Set((currentAlbum,albumSpotifyId,userHasAlbumInCollection))
+      prev + ((artist,artistSpotifyId) -> aggregatedAlbums)
+    }
+    doJsonConversion(convertedToMap)
+  }
+
+  private def doJsonConversion(t: Map[(String,String),Set[(String,String,Boolean)]]): JsValue = {
+    val list = t.map { elem =>
+      val albums = elem._2.map { album =>
+        Json.obj(
+          "name" -> album._1,
+          "id" -> album._2,
+          "inCollection" -> album._3
+        )
+      }
+      Json.obj(
+        "name" -> elem._1._1,
+        "id" -> elem._1._2,
+        "albums" -> albums
+      )
+    }
+    Json.toJson(list)
+  }
+
+}
 
 object SpotifyArtistFacade {
+
+  def apply(identifier: Either[Int,String]) = new SpotifyArtistFacade(identifier)
 
   def saveArtistWithName(artistName:String):Long = {
     transaction {
@@ -14,18 +96,18 @@ object SpotifyArtistFacade {
         case Some(artistId) => insertArtist(artistId)
         case _ =>
           val newArtist:Artist = AppDB.artists.insert(Artist(artistName))
-          AppDB.spotifyArtist.insert(SpotifyArtist(newArtist.id)).id
+          AppDB.spotifyArtists.insert(SpotifyArtist(newArtist.id)).id
 
       }
     }
   }
 
   def insertArtist(id:Long):Long = {
-    from(AppDB.spotifyArtist)(sa =>
+    from(AppDB.spotifyArtists)(sa =>
       where(sa.id === id)
         select sa.id
     ).headOption match {
-      case None => AppDB.spotifyArtist.insert(SpotifyArtist(id)).id
+      case None => AppDB.spotifyArtists.insert(SpotifyArtist(id)).id
       case _ => id
     }
   }
