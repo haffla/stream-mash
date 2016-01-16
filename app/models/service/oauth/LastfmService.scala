@@ -23,12 +23,12 @@ class LastfmService(identifier: Either[Int, String]) extends ApiDataRequest  ("l
     MessageDigest.md5("api_key" + clientId + "method" + apiEndpoints.authMethod + "token" + code + clientSecret)
   }
 
-  def doDataRequest(code:String) = {
+  override def doDataRequest(code:String):Future[(Option[String],Option[String])] = {
     val apiSig:String = generateApiSig(code)
     val data = apiEndpoints.data + ("token" -> Seq(code), "api_sig" -> Seq(apiSig))
     val futureResponse: Future[WSResponse] = WS.url(apiEndpoints.mainApi).post(data)
     for {
-      credentials <- getAccessToken(futureResponse)
+      (credentials,_) <- getAccessToken(futureResponse)
       (username,token) = credentials match {
         case Some(secret) =>
           val split = secret.split(LastfmService.credentialDevider)
@@ -39,7 +39,7 @@ class LastfmService(identifier: Either[Int, String]) extends ApiDataRequest  ("l
       seq = library.convertJsonToSeq(response)
       res = library.convertSeqToMap(seq)
     } yield {
-      token
+      (token,None)
     }
   }
 
@@ -76,18 +76,18 @@ object LastfmService extends OAuthStreamingServiceAbstract with FavouriteMusicRe
 
   val credentialDevider = "DIVIDER"
 
-  override def getAccessToken(futureReponse: Future[WSResponse]): Future[Option[String]] = {
+  override def getAccessToken(futureReponse: Future[WSResponse]): Future[(Option[String],Option[String])] = {
     futureReponse.map(response =>
       response.status match {
         case 200 =>
           val json = Json.parse(response.body)
           (json \ "session" \ "name").asOpt[String] match {
-            case Some(name) => Some(name + credentialDevider + (json \ "session" \ "key").as[String])
-            case None => None
+            case Some(name) => (Some(name + credentialDevider + (json \ "session" \ "key").as[String]),None)
+            case None => (None,None)
           }
         case http_code =>
           Logging.error(ich, Constants.accessTokenRetrievalError + ": " + http_code + "\n" + response.body)
-          None
+          (None,None)
       }
     )
   }

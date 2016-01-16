@@ -3,6 +3,7 @@ package models.service.analysis
 import models.database.facade.{SpotifyAlbumFacade, SpotifyArtistFacade, ArtistFacade, AlbumFacade}
 import models.service.api.SpotifyApiFacade
 import models.service.api.refresh.SpotifyRefresh
+import models.service.oauth.SpotifyService
 import models.util.Logging
 import play.api.libs.json.{Json, JsValue}
 import play.api.libs.ws.{WSResponse, WS}
@@ -13,22 +14,39 @@ import scala.concurrent.Future
 
 class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(identifier, "spotify") {
 
-  val token:Option[String] = serviceAccessTokenHelper.getAccessToken
-  var refreshToken:Option[String] = None
-
-  override val searchEndpoint = "https://api.spotify.com/v1/artists/"
+  override val searchEndpoint = SpotifyService.apiEndpoints.artists
   override val albumFacade = AlbumFacade(identifier)
   override val artistFacade = ArtistFacade(identifier)
   val serviceArtistFacade = SpotifyArtistFacade
   val serviceAlbumFacade = SpotifyAlbumFacade
 
-  def analyse() = {
+  def analyse():Future[Boolean] = {
     val artists = artistFacade.getUsersArtists
     for {
+      accessToken <- testAndGetAccessToken()
       ids <- getIds(artists)
-      albums <- getAlbumsOfArtists(ids)
+      albums <- getAlbumsOfArtistsFromSpotify(ids, accessToken)
       res = processResponses(albums)
-    } yield albums.head._2
+    } yield true
+  }
+
+  def testAndGetAccessToken():Future[String] = {
+    serviceAccessTokenHelper.getAccessToken match {
+      case Some(accessTkn) =>
+        val url = searchEndpoint + s"/0OdUWJ0sBjDrqHygGUXeCF"
+        doRequest(url, accessTkn).flatMap { response =>
+          if(response.status == 401)
+            SpotifyRefresh(identifier).refreshToken map(refreshToken => refreshToken)
+          else Future.successful(accessTkn)
+        }
+      case None =>
+        serviceAccessTokenHelper.getAnyAccessTokens match {
+          case Some(tokens) =>
+            serviceAccessTokenHelper.setAccessToken(tokens.accessToken, Some(tokens.refreshToken))
+            testAndGetAccessToken()
+          case None => Future.failed(new Exception("Cannot continue without access tokens."))
+        }
+    }
   }
 
   private def getIds(artists: List[models.database.alias.Artist]):Future[List[Option[(String,String)]]] = {
@@ -37,7 +55,7 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
         artists.map { artist =>
           artist.spotifyId match {
             case Some(spoId) => Future.successful(Some(artist.name, spoId))
-            case None => SpotifyApiFacade.getArtistId(artist.name)
+            case None => SpotifyApiFacade.getArtistId(artist.name, recordAbsence = true)
           }
         }
       }
@@ -45,37 +63,18 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
     else Future.successful(Nil)
   }
 
-  private def getAlbumsOfArtists(ids: List[Option[(String,String)]]):Future[List[(String,JsValue)]] = {
+  private def getAlbumsOfArtistsFromSpotify(ids: List[Option[(String,String)]], accessToken:String):Future[List[(String,JsValue)]] = {
     val searchList:List[(String,String)] = ids.filter(_.isDefined).map(_.get)
     Future.sequence {
       searchList map { artist =>
         val artistName = artist._1
         val artistId = artist._2
-        val url = searchEndpoint + artistId + "/albums?market=DE&album_type=album,single&limit=50"
-        (token, refreshToken) match {
-          case (Some(t), None) =>
-            doRequest(url,t) flatMap { response =>
-              if(response.status != 200) {
-                Logging.debug(this.getClass.toString, response.body.toString)
-              }
-              if(response.status == 401) {
-                SpotifyRefresh(identifier).refreshToken(t) flatMap { refreshTkn =>
-                  refreshToken = Some(refreshTkn)
-                  doRequest(url, refreshTkn) map  { resp =>
-                    (artistName, Json.parse(response.body))
-                  }
-                }
-              }
-              else Future.successful(artistName, Json.parse(response.body))
-            }
-          case (_, Some(rTkn)) =>
-            doRequest(url,rTkn) map { response =>
-              if(response.status != 200) {
-                Logging.debug(this.getClass.toString, response.body.toString)
-              }
-              (artistName, Json.parse(response.body))
-            }
-          case _ => Future.failed(new Exception("An access token could not be found"))
+        val url = searchEndpoint + "/" + artistId + "/albums?market=DE&album_type=album,single&limit=50"
+        doRequest(url,accessToken) map { response =>
+          if(response.status != 200) {
+            Logging.debug(this.getClass.toString, response.body.toString)
+          }
+          (artistName, Json.parse(response.body))
         }
       }
     }

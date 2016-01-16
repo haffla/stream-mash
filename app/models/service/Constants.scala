@@ -19,4 +19,5 @@ object Constants {
   val mapKeyUnknownAlbum = "UNKNOWNALBUM"
 
   val jsonKeyAccessToken = "access_token"
+  val jsonKeyRefreshToken = "refresh_token"
 }

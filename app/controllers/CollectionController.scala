@@ -9,7 +9,7 @@ class CollectionController extends Controller {
     Ok(views.html.collection.index(service, openModal))
   }
 
-  def analysis() = IdentifiedBySession { implicit request =>
+  def overview() = IdentifiedBySession { implicit request =>
     Ok(views.html.collection.analysis())
   }
 }

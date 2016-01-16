@@ -9,6 +9,7 @@ _ = require 'lodash'
 Badge = require 'material-ui/lib/badge'
 Colors = require 'material-ui/lib/styles/colors'
 LinearProgress = require 'material-ui/lib/linear-progress'
+RaisedButton = require 'material-ui/lib/raised-button'
 
 TextField = require 'material-ui/lib/text-field'
 
@@ -113,16 +114,28 @@ ArtistBox = React.createClass
   handleStreamingServiceSelection: (event, item) ->
     window.location.href = "#{item.props.data}/login"
 
+  handleAnalyseClick: () ->
+    $.ajax '/user/analysis',
+      type: 'POST'
+      dataType: 'json'
+      success: (data) ->
+        console.log(data)
+      error: (jqXHR, textStatus, e) ->
+        console.log(e)
+
   render: () ->
     <div style={width: '80%', margin: 'auto'}>
         <div className="row" style={display: 'flex', justifyContent: 'space-between', marginBottom: '25px'}>
-            <div>
-                <TextField
-                  underlineStyle={{borderColor:Colors.amber300}}
-                  hintText="Filter by Artists"
-                  onChange={@filterArtists} />
-                <Badge badgeContent={@state.nr_artists || 0} primary={true} />
-            </div>
+          <div>
+            <RaisedButton label="Analyse!" onTouchTap={@handleAnalyseClick} />
+          </div>
+          <div>
+              <TextField
+                underlineStyle={{borderColor:Colors.amber300}}
+                hintText="Filter by Artists"
+                onChange={@filterArtists} />
+              <Badge badgeContent={@state.nr_artists || 0} primary={true} />
+          </div>
         </div>
 
         <div className="row">

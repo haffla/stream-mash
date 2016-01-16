@@ -32,15 +32,17 @@ abstract class OAuthStreamingServiceAbstract {
     case None => throw new PlayException(confErrorTitle("client secret"), confErrorDescription("client secret", clientSecretKey))
   }
 
-  def getAccessToken(futureReponse: Future[WSResponse]): Future[Option[String]] = {
+  def getAccessToken(futureReponse: Future[WSResponse]): Future[(Option[String],Option[String])] = {
     futureReponse.map(response =>
       response.status match {
         case 200 =>
           val json = Json.parse(response.body)
-          (json \ Constants.jsonKeyAccessToken).asOpt[String]
+          val accessToken = (json \ Constants.jsonKeyAccessToken).asOpt[String]
+          val refreshToken = (json \ Constants.jsonKeyRefreshToken).asOpt[String]
+          (accessToken,refreshToken)
         case http_code =>
           Logging.error(ich, Constants.accessTokenRetrievalError + ": " + http_code + "\n" + response.body)
-          None
+          (None,None)
       }
     )
   }

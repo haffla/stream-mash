@@ -43,6 +43,13 @@ abstract class ServiceFacade extends Facade {
 
 object Services {
 
+  def getRefreshFieldForService(service:String) = {
+    service match {
+      case "spotify" => sqls"spotify_token_refresh"
+      case _ => throw new IllegalArgumentException("The given service '$service' has no refresh token field yet")
+    }
+  }
+
   def getFieldForService(service:String) = {
     service match {
       case "spotify" => sqls"spotify_token"

@@ -15,14 +15,14 @@ class SoundcloudService(identifier: Either[Int, String]) extends ApiDataRequest(
   val library = new SoundcloudLibrary(identifier)
   val serviceAccessTokenHelper = new ServiceAccessTokenHelper("soundcloud", identifier)
 
-  def doDataRequest(code:String) = {
+  override def doDataRequest(code:String):Future[(Option[String],Option[String])] = {
     for {
       authCredentials <- client.exchange_token(code)
       userId <- getUserId(authCredentials)
       response <- requestUsersTracks(userId)
       seq <- library.convertJsonToSeq(response)
       result = library.convertSeqToMap(seq)
-    } yield (Json.parse(authCredentials) \ "access_token").asOpt[String]
+    } yield ((Json.parse(authCredentials) \ "access_token").asOpt[String],None)
   }
 }
 

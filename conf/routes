@@ -25,7 +25,7 @@ GET           /soundcloud/callback          controllers.SoundcloudController.cal
 GET           /soundcloud/login             controllers.SoundcloudController.login
 
 GET           /collection                   controllers.CollectionController.index(service:String ?= "", openModal:String ?= "no")
-GET           /overview                     controllers.CollectionController.analysis
+GET           /overview                     controllers.CollectionController.overview
 
 ### iTunes
 POST          /itunes                       controllers.ItunesController.fileUpload
@@ -42,7 +42,7 @@ GET           /lastfm/callback              controllers.LastfmController.callbac
 GET            /users                        controllers.UserController.list
 GET            /collection/fromdb            controllers.UserController.userCollectionFromDb
 DELETE         /collection/delete/:id        controllers.UserController.deleteCollectionByUser(id:Long)
-GET            /user/analysis                controllers.UserController.analysis
+POST           /user/analysis                controllers.UserController.analysis
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                 controllers.Assets.versioned(path="/public", file: Asset)

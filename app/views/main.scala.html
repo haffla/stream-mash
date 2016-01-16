@@ -21,7 +21,7 @@
                 </div>
                 <div>
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href='@routes.CollectionController.analysis()'>Overview</a></li>
+                        <li class="active"><a href='@routes.CollectionController.overview()'>Overview</a></li>
                         <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Import Music Taste<span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a href='@routes.SpotifyController.login()'>Spotify</a></li>
@@ -34,7 +34,6 @@
                                 </a></li>
                             </ul>
                         </li>
-                        <li><a href="@routes.UserController.analysis()">Analysis</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         @if(!session.get("username").isDefined) {

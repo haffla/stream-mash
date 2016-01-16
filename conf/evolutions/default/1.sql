@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS account(
     password VARCHAR(64) NOT NULL,
     itunes_file_hash VARCHAR(32) DEFAULT NULL,
     spotify_token VARCHAR(255) DEFAULT NULL,
+    spotify_token_refresh VARCHAR(255) DEFAULT NULL,
     deezer_token VARCHAR(256) DEFAULT NULL,
     lastfm_token VARCHAR(256) DEFAULT NULL,
     soundcloud_token VARCHAR(256) DEFAULT NULL

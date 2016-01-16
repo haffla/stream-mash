@@ -14,7 +14,7 @@ class SpotifyRefresh(identifier:Either[Int,String]) extends OAuthStreamingServic
   val clientIdKey = "spotify.client.id"
   val clientSecretKey = "spotify.client.secret"
 
-  val serviceAccessTokenCache = new ServiceAccessTokenHelper("spotify", identifier)
+  val serviceAccessTokenHelper = new ServiceAccessTokenHelper("spotify", identifier)
 
   private def getRequest(token:String) = {
     val data = Map("grant_type" -> Seq("refresh_token"), "refresh_token" -> Seq(token))
@@ -24,16 +24,23 @@ class SpotifyRefresh(identifier:Either[Int,String]) extends OAuthStreamingServic
       .post(data)
   }
 
-  def refreshToken(token:String):Future[String] = {
-    getAccessToken(getRequest(token)) map {
-      case Some(tkn) =>
-        identifier match {
-          case Left(id) => serviceAccessTokenCache.setAccessToken(tkn)
-          case Right(_) =>
+  def refreshToken():Future[String] = {
+    println("Refreshing")
+    serviceAccessTokenHelper.getRefreshToken match {
+      case Some(refreshTkn) =>
+        getAccessToken(getRequest(refreshTkn)) map { tokens =>
+          val (accessToken,refreshToken) = tokens
+          accessToken match {
+            case Some(accTkn) =>
+              serviceAccessTokenHelper.setAccessToken(accTkn,refreshToken)
+              accTkn
+            case None =>
+              throw new Exception("We did not receive a refresh token from Spotify.")
+          }
         }
-        tkn
-      case None => throw new Exception("We did not receive a refresh token.")
+      case None => Future.failed(new Exception("There is no refresh token present."))
     }
+
   }
 }
 

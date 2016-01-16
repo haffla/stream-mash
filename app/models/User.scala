@@ -26,12 +26,27 @@ class User(identifier:Either[Int, String]) {
     }
   }
 
-  def setServiceToken(service:String, token:String) = {
+  def getServiceRefreshToken(service:String):Option[String] = {
+    identifier match {
+      case Left(id) =>
+        val tokenField = Services.getRefreshFieldForService(service)
+        sql"select $tokenField from account where id_user=$id".map(rs => rs.string(service + "_token_refresh")).single().apply()
+      case Right(_) => None
+    }
+  }
+
+  def setServiceToken(service:String, token:String, refreshToken:Option[String]) = {
     identifier match {
       case Left(id) =>
         val field = Services.getFieldForService(service)
-        sql"update account set $field=$token where id_user=$id".update().apply()
-
+        val sql = refreshToken match {
+          case Some(refreshTkn) =>
+            val refreshTokenField = Services.getRefreshFieldForService(service)
+            sql"update account set $field=$token, $refreshTokenField=$refreshTkn where id_user=$id"
+          case None =>
+            sql"update account set $field=$token where id_user=$id"
+        }
+        sql.update().apply()
       case Right(_) =>
     }
   }
@@ -73,6 +88,15 @@ class User(identifier:Either[Int, String]) {
 }
 
 object User {
+  def getAnyAccessTokens(service:String):Option[models.Tokens] = {
+    val tokenField = Services.getFieldForService(service)
+    val refreshTokenField = Services.getRefreshFieldForService(service)
+    sql"select $tokenField, $refreshTokenField where $tokenField is not null"
+      .map(rs => models.Tokens(rs.string(tokenField.value), rs.string(refreshTokenField.value)))
+        .single().apply()
+  }
+
+
 
   implicit val session = AutoSession
 
@@ -122,3 +146,4 @@ object User {
 }
 
 case class UserData(name: String, password: String)
+case class Tokens(accessToken:String, refreshToken:String)

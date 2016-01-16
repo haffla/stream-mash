@@ -56,7 +56,7 @@ class UserController extends Controller {
 
   def analysis = IdentifiedBySession.async { implicit request =>
     SpotifyAnalysis(Helper.getUserIdentifier(request.session)).analyse() map {
-      res => Ok(res)
+      res => Ok(Json.obj("result" -> res))
     }
   }
 

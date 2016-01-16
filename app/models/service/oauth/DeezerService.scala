@@ -15,7 +15,7 @@ class DeezerService(identifier:Either[Int,String]) extends ApiDataRequest("deeze
   override val serviceAccessTokenHelper: ServiceAccessTokenHelper = new ServiceAccessTokenHelper("deezer", identifier)
   val library = new DeezerLibrary(identifier)
 
-  override def doDataRequest(code: String): Future[Option[String]] = {
+  override def doDataRequest(code: String): Future[(Option[String],Option[String])] = {
     val futureResponse: Future[WSResponse] = WS.url(apiEndpoints.token).withQueryString(
       "app_id" -> clientId,
       "secret" -> clientSecret,
@@ -24,7 +24,7 @@ class DeezerService(identifier:Either[Int,String]) extends ApiDataRequest("deeze
 
     for {
       token <- getAccessToken(futureResponse)
-      response <- requestUsersTracks(token)
+      response <- requestUsersTracks(token._1)
       seq = library.convertJsonToSeq(response)
       res = library.convertSeqToMap(seq)
     } yield token

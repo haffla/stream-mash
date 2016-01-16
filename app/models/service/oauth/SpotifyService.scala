@@ -15,12 +15,12 @@ class SpotifyService(identifier: Either[Int, String]) extends ApiDataRequest("sp
   val library = new SpotifyLibrary(identifier)
   override val serviceAccessTokenHelper = new ServiceAccessTokenHelper("spotify", identifier)
 
-  def doDataRequest(code:String) = {
+  override def doDataRequest(code:String):Future[(Option[String],Option[String])] = {
     val data = apiEndpoints.data + ("code" -> Seq(code))
     val futureResponse: Future[WSResponse] = WS.url(apiEndpoints.token).post(data)
     for {
       token <- getAccessToken(futureResponse)
-      response <- requestUsersTracks(token)
+      response <- requestUsersTracks(token._1)
       seq = library.convertJsonToSeq(response)
       result = library.convertSeqToMap(seq)
     } yield token

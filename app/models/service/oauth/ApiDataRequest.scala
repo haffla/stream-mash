@@ -12,15 +12,15 @@ abstract class ApiDataRequest(name:String, identifier:Either[Int,String]) {
 
   def requestUserData(code:String):Unit = {
     apiHelper.setRetrievalProcessPending()
-    doDataRequest(code) map {token =>
+    doDataRequest(code) map { tokens =>
       apiHelper.setRetrievalProcessDone()
-      token match {
-        case Some(tkn) => serviceAccessTokenHelper.setAccessToken(tkn)
+      val (accessToken, refreshToken) = tokens
+      accessToken match {
+        case Some(tkn) => serviceAccessTokenHelper.setAccessToken(tkn, refreshToken)
         case None =>
       }
-
     }
   }
 
-  def doDataRequest(code:String):Future[Option[String]]
+  def doDataRequest(code:String):Future[(Option[String],Option[String])]
 }

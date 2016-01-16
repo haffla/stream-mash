@@ -105,9 +105,10 @@ SpotifyBox = React.createClass
             <div>
               <List>
                 {
-                  @state.selectedAlbum.tracks.map (tr) ->
+                  @state.selectedAlbum.tracks.map (tr,idx) ->
                     icon = if tr.inCollection then "check_box" else "check_box_outline_blank"
                     <ListItem className="trackListItem"
+                      key={"track" + idx}
                       style={height: 40, cursor: 'auto'}
                       primaryText={tr.name}
                       rightAvatar={<FontIcon color="#455a64" className="material-icons" >{icon}</FontIcon>}
@@ -116,7 +117,7 @@ SpotifyBox = React.createClass
               </List>
             </div>
             <div style={display: 'flex', justifyContent: 'space-around', margin: 10}>
-              <iframe src={"https://embed.spotify.com/?uri=spotify:album:#{@state.selectedAlbum.id}"} style={width: "300px", height: '80px'} frameborder="0" allowtransparency="true"></iframe>
+              <iframe src={"https://embed.spotify.com/?uri=spotify:album:#{@state.selectedAlbum.id}"} style={width: "300px", height: '80px'} frameBorder="0" allowTransparency="true"></iframe>
             </div>
           </Card>
          </div>

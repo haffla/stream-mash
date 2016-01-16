@@ -12,7 +12,7 @@ import scala.concurrent.Future
 
 object SpotifyApiFacade extends ApiFacade {
 
-  def getArtistId(artist:String):Future[Option[(String,String)]] = {
+  override def getArtistId(artist:String, recordAbsence:Boolean = false):Future[Option[(String,String)]] = {
     WS.url(apiEndpoints.search).withQueryString("type" -> "artist", "q" -> artist).get().map {
       response =>
         response.status match {
@@ -27,7 +27,12 @@ object SpotifyApiFacade extends ApiFacade {
                   Some((artist, i))
                 case None => None
               }
-            }.getOrElse(None)
+            }.getOrElse {
+              if(recordAbsence) {
+                // The artist does not exist on Spotify
+              }
+              None
+            }
 
           case http_code =>
             logError(http_code, response.body)

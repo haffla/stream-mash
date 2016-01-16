@@ -114,6 +114,9 @@ object SpotifyArtistFacade {
     }
   }
 
+  /**
+    * Save whatever info is needed about an artist from Spotify
+    */
   def saveInfoAboutArtist(js:JsValue):Unit = {
     (js \ "images").asOpt[List[JsValue]] match {
       case Some(images) =>
