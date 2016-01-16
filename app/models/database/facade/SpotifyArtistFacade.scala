@@ -15,24 +15,17 @@ class SpotifyArtistFacade(identifier:Either[Int,String]) {
   def getUserRelatedSpotifyAlbums:List[(Album,Artist,String)] = {
     transaction {
       /** First get all related artist */
-      val usersArtistQuery = identifier match {
-        case Left(userId) =>
+      val usersArtists =
           from(AppDB.artists, AppDB.collections, AppDB.tracks)((a,c,t) =>
-            where(c.trackId === t.id and t.artistId === a.id and c.userId === userId)
+            where(c.trackId === t.id and t.artistId === a.id and AppDB.userWhereClause(c,identifier))
               select a.id
           )
-        case Right(session) =>
-          from(AppDB.artists, AppDB.collections, AppDB.tracks)((a,c,t) =>
-            where(c.trackId === t.id and t.artistId === a.id and c.userSession === Some(session))
-              select a.id
-          )
-      }
 
       join(AppDB.albums,
            AppDB.artists,
            AppDB.spotifyAlbums,
            AppDB.spotifyArtists)( (alb,art,spAlb,spArt) =>
-        where(art.id in usersArtistQuery.toList)
+        where(art.id in usersArtists.toList)
           select(alb, art, spAlb.spotifyId)
           on(
             alb.artistId === art.id,

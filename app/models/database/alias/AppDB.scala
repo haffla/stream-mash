@@ -2,6 +2,7 @@ package models.database.alias
 
 import org.squeryl.Schema
 import org.squeryl.PrimitiveTypeMode._
+import org.squeryl.dsl.ast.LogicalBoolean
 
 object AppDB extends Schema {
   val users = table[User]("account")
@@ -12,6 +13,7 @@ object AppDB extends Schema {
   val userArtistLikings = table[UserArtistLiking]("user_artist_liking")
   val spotifyArtists = table[SpotifyArtist]("spotify_artist")
   val spotifyAlbums = table[SpotifyAlbum]("spotify_album")
+  val serviceArtistAbsence = table[ServiceArtistAbsence]("service_artist_absence")
 
   on(userArtistLikings)(ual => declare(
     columns(ual.userId, ual.artistId) are unique,
@@ -42,21 +44,25 @@ object AppDB extends Schema {
     columns(t.name, t.artistId, t.albumId) are unique
   ))
 
+  on(serviceArtistAbsence)(saa => declare(
+    columns(saa.artistId, saa.userId, saa.service) are unique,
+    columns(saa.artistId, saa.userSession, saa.service) are unique,
+    saa.id is autoIncremented("service_artist_absence_id_service_artist_absence_seq")
+  ))
+
   def getCollectionByUser(identifier:Either[Int,String]):List[(Album, Artist, Track, UserCollection)] = {
     transaction {
-      val res = identifier match {
-        case Left(fkUser) =>
-          from(collections, tracks, albums, artists)((coll, tr, alb, art) =>
-            where(coll.userId === fkUser and coll.trackId === tr.id and tr.albumId === alb.id and tr.artistId === art.id)
-              select (alb,art,tr,coll)
-          )
-        case Right(session) =>
-          from(collections, tracks, albums, artists)((coll, tr, alb, art) =>
-            where(coll.userSession === Some(session) and coll.trackId === tr.id and tr.albumId === alb.id and tr.artistId === art.id)
-              select (alb,art,tr,coll)
-          )
-      }
-      res.toList
+      from(collections, tracks, albums, artists)((coll, tr, alb, art) =>
+        where(userWhereClause(coll, identifier) and coll.trackId === tr.id and tr.albumId === alb.id and tr.artistId === art.id)
+          select (alb,art,tr,coll)
+      ).toList
+    }
+  }
+
+  def userWhereClause(userRelatedEntity:HasUserOrSession, id:Either[Int,String]):LogicalBoolean = {
+    id match {
+      case Left(i) => userRelatedEntity.getUserId === i
+      case Right(userSession) => userRelatedEntity.getUserSession === Some(userSession)
     }
   }
 }

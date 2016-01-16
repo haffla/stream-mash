@@ -87,7 +87,7 @@ SpotifyBox = React.createClass
 
     <div style={display: 'flex', justifyContent: 'space-between'}>
       <div style={width: '25%'}>
-       <List subheader="Spotify Artist">
+       <List subheader="Spotify Artists">
         {artists}
        </List>
       </div>

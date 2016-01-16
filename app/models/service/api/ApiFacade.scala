@@ -4,5 +4,5 @@ import scala.concurrent.Future
 
 abstract class ApiFacade {
   lazy val ich = this.getClass.toString
-  def getArtistId(artist:String, recordAbsence:Boolean = false):Future[Option[(String,String)]]
+  def getArtistId(artist:String, token:Option[String] = None, recordAbsence:Boolean = false):Future[Option[(String,String)]]
 }

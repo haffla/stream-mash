@@ -90,6 +90,16 @@ CREATE TABLE IF NOT EXISTS spotify_album(
     spotify_id VARCHAR(32)
 );
 
+CREATE TABLE IF NOT EXISTS service_artist_absence(
+    id_service_artist_absence SERIAL PRIMARY KEY,
+    fk_artist INT NOT NULL REFERENCES artist(id_artist) ON DELETE CASCADE,
+    fk_user INT DEFAULT NULL REFERENCES account(id_user),
+    user_session VARCHAR(32) DEFAULT NULL,
+    service VARCHAR(32) NOT NULL,
+    UNIQUE (fk_artist, fk_user, service),
+    UNIQUE (fk_artist, user_session, service)
+);
+
 # --- !Downs
 
 DROP TABLE IF EXISTS album CASCADE;
@@ -100,4 +110,5 @@ DROP TABLE IF EXISTS user_collection CASCADE;
 DROP TABLE IF EXISTS user_artist_liking CASCADE;
 DROP TABLE IF EXISTS spotify_artist CASCADE;
 DROP TABLE IF EXISTS spotify_album CASCADE;
+DROP TABLE IF EXISTS service_artist_absence CASCADE;
 

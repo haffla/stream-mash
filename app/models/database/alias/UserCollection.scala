@@ -7,7 +7,9 @@ case class UserCollection(@Column("fk_user") userId:Option[Long],
                           @Column("fk_track") trackId:Long,
                           @Column("user_session") userSession:Option[String],
                           @Column("imported_from") importedFrom:Option[String],
-                          @Column("times_played") played:Int) extends KeyedEntity[Long] {
+                          @Column("times_played") played:Int) extends KeyedEntity[Long] with HasUserOrSession {
 
   @Column("id_collection") val id: Long = 0
+  override def getUserId:Option[Long] = this.userId
+  override def getUserSession:Option[String] = this.userSession
 }

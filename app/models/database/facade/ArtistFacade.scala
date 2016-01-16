@@ -31,19 +31,10 @@ class ArtistFacade(identifier:Either[Int,String]) extends Facade {
 
   def getUsersArtists:List[models.database.alias.Artist] = {
     transaction {
-      val res = identifier match {
-        case Left(id) =>
-          from(AppDB.collections, AppDB.tracks, AppDB.artists)((coll, tr, art) =>
-            where(coll.userId === id and coll.trackId === tr.id and tr.artistId === art.id)
-            select art
-          )
-        case Right(s) =>
-          from(AppDB.collections, AppDB.tracks, AppDB.artists)((coll, tr, art) =>
-            where(coll.userSession === Some(s) and coll.trackId === tr.id and tr.artistId === art.id)
-            select art
-          )
-      }
-      res.distinct.toList
+      from(AppDB.collections, AppDB.tracks, AppDB.artists)((coll, tr, art) =>
+        where(AppDB.userWhereClause(coll,identifier) and coll.trackId === tr.id and tr.artistId === art.id)
+        select art
+      ).distinct.toList
     }
   }
 }

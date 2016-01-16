@@ -5,15 +5,24 @@ import models.service.oauth.SpotifyService.apiEndpoints
 import models.util.Logging
 import play.api.Play.current
 import play.api.libs.json.{JsValue, JsObject, Json}
-import play.api.libs.ws.{WSResponse, WS}
+import play.api.libs.ws.{WSRequest, WSResponse, WS}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 object SpotifyApiFacade extends ApiFacade {
 
-  override def getArtistId(artist:String, recordAbsence:Boolean = false):Future[Option[(String,String)]] = {
-    WS.url(apiEndpoints.search).withQueryString("type" -> "artist", "q" -> artist).get().map {
+  private def authenticateRequest(ws:WSRequest, token:String) = {
+    ws.withHeaders("Authorization" -> s"Bearer $token")
+  }
+
+  override def getArtistId(artist:String, token:Option[String] = None, recordAbsence:Boolean = false):Future[Option[(String,String)]] = {
+    val unAuthenticatedRequest = WS.url(apiEndpoints.search).withQueryString("type" -> "artist", "q" -> artist)
+    val request = token match {
+      case Some(tkn) => authenticateRequest(unAuthenticatedRequest, tkn)
+      case _ => unAuthenticatedRequest
+    }
+    request.get().map {
       response =>
         response.status match {
           case 200 =>

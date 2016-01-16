@@ -24,16 +24,19 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
     val artists = artistFacade.getUsersArtists
     for {
       accessToken <- testAndGetAccessToken()
-      ids <- getIds(artists)
+      ids <- getIds(artists, Some(accessToken))
       albums <- getAlbumsOfArtistsFromSpotify(ids, accessToken)
       res = processResponses(albums)
     } yield true
   }
 
+  /**
+    * Before we get started, test the access token with some random request
+    */
   def testAndGetAccessToken():Future[String] = {
     serviceAccessTokenHelper.getAccessToken match {
       case Some(accessTkn) =>
-        val url = searchEndpoint + s"/0OdUWJ0sBjDrqHygGUXeCF"
+        val url = searchEndpoint + "/0OdUWJ0sBjDrqHygGUXeCF"
         doRequest(url, accessTkn).flatMap { response =>
           if(response.status == 401)
             SpotifyRefresh(identifier).refreshToken map(refreshToken => refreshToken)
@@ -49,13 +52,15 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
     }
   }
 
-  private def getIds(artists: List[models.database.alias.Artist]):Future[List[Option[(String,String)]]] = {
+  private def getIds(
+          artists: List[models.database.alias.Artist],
+          token:Option[String]):Future[List[Option[(String,String)]]] = {
     if(artists.nonEmpty) {
       Future.sequence {
         artists.map { artist =>
           artist.spotifyId match {
             case Some(spoId) => Future.successful(Some(artist.name, spoId))
-            case None => SpotifyApiFacade.getArtistId(artist.name, recordAbsence = true)
+            case None => SpotifyApiFacade.getArtistId(artist.name, token, recordAbsence = true)
           }
         }
       }
@@ -63,13 +68,15 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
     else Future.successful(Nil)
   }
 
-  private def getAlbumsOfArtistsFromSpotify(ids: List[Option[(String,String)]], accessToken:String):Future[List[(String,JsValue)]] = {
+  private def getAlbumsOfArtistsFromSpotify(
+          ids: List[Option[(String,String)]],
+          accessToken:String):Future[List[(String,JsValue)]] = {
     val searchList:List[(String,String)] = ids.filter(_.isDefined).map(_.get)
     Future.sequence {
       searchList map { artist =>
         val artistName = artist._1
         val artistId = artist._2
-        val url = searchEndpoint + "/" + artistId + "/albums?market=DE&album_type=album,single&limit=50"
+        val url = searchEndpoint + "/" + artistId + "/albums?market=DE&limit=50"
         doRequest(url,accessToken) map { response =>
           if(response.status != 200) {
             Logging.debug(this.getClass.toString, response.body.toString)
