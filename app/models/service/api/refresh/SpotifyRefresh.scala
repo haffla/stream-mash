@@ -23,8 +23,7 @@ class SpotifyRefresh(identifier:Either[Int,String]) extends OAuthStreamingServic
       .withHeaders("Authorization" -> s"Basic $baseEncodedCredentials").post(data)
   }
 
-  def refreshToken():Future[String] = {
-    println("Refreshing")
+  def refreshToken():Future[Option[String]] = {
     serviceAccessTokenHelper.getRefreshToken match {
       case Some(refreshTkn) =>
         getAccessToken(getRequest(refreshTkn)) map { tokens =>
@@ -32,12 +31,13 @@ class SpotifyRefresh(identifier:Either[Int,String]) extends OAuthStreamingServic
           accessToken match {
             case Some(accTkn) =>
               serviceAccessTokenHelper.setAccessToken(accTkn,refreshToken)
-              accTkn
+              Some(accTkn)
             case None =>
               throw new Exception("We did not receive a refresh token from Spotify.")
+              None
           }
         }
-      case None => Future.failed(new Exception("There is no refresh token present."))
+      case _ => Future.successful(None)
     }
 
   }

@@ -24,7 +24,7 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
     val artists = artistFacade.getUsersArtists
     for {
       accessToken <- testAndGetAccessToken()
-      ids <- getIds(artists, Some(accessToken))
+      ids <- getIds(artists, accessToken)
       albums <- getAlbumsOfArtistsFromSpotify(ids, accessToken)
       res = processResponses(albums)
     } yield true
@@ -34,7 +34,7 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
     * Before we get started, test the access token with some random request
     * If we get a 401 we need to refresh the token
     */
-  def testAndGetAccessToken():Future[String] = {
+  def testAndGetAccessToken():Future[Option[String]] = {
     serviceAccessTokenHelper.getAccessToken match {
       case Some(accessTkn) =>
         val url = searchEndpoint + "/0OdUWJ0sBjDrqHygGUXeCF"
@@ -42,14 +42,14 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
           response =>
             if(response.status == 401)
               SpotifyRefresh(identifier).refreshToken()
-            else Future.successful(accessTkn)
+            else Future.successful(Some(accessTkn))
         }
       case None =>
         serviceAccessTokenHelper.getAnyAccessTokens match {
           case Some(tokens) =>
             serviceAccessTokenHelper.setAccessToken(tokens.accessToken, Some(tokens.refreshToken))
             testAndGetAccessToken()
-          case None => Future.failed(new Exception("Cannot continue without access tokens."))
+          case None => Future.successful(None)
         }
     }
   }
@@ -72,7 +72,7 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
 
   private def getAlbumsOfArtistsFromSpotify(
           ids: List[Option[(String,String)]],
-          accessToken:String):Future[List[(String,List[JsValue])]] = {
+          accessToken:Option[String]):Future[List[(String,List[JsValue])]] = {
     val searchList:List[(String,String)] = ids.filter(_.isDefined).map(_.get)
     Future.sequence {
       searchList map { artist =>
@@ -120,8 +120,12 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
     Map(artist -> albums)
   }
 
-  private def doRequest(url:String, token:String, jsonResponses:List[JsValue]):Future[List[JsValue]] = {
-    WS.url(url).withHeaders("Authorization" -> s"Bearer $token").get().flatMap { response =>
+  private def doRequest(url:String, token:Option[String], jsonResponses:List[JsValue]):Future[List[JsValue]] = {
+    val request = token match {
+      case Some(tkn) => WS.url(url).withHeaders("Authorization" -> s"Bearer $token")
+      case _ => WS.url(url)
+    }
+    request.get().flatMap { response =>
       if(response.status != 200) Logging.debug(this.getClass.toString, response.body.toString)
       val js = Json.parse(response.body)
       (js \ "next").asOpt[String] match {
