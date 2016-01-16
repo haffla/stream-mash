@@ -10,7 +10,7 @@ import play.api.libs.ws.{WSRequest, WSResponse, WS}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object SpotifyApiFacade extends ApiFacade {
+object SpotifyApiFacade {
 
   private def authenticateRequest(ws:WSRequest, token:String) = {
     ws.withHeaders("Authorization" -> s"Bearer $token")
@@ -105,6 +105,6 @@ object SpotifyApiFacade extends ApiFacade {
   }
 
   private def logError(code:Int, error:String) = {
-    Logging.error(ich, "Error getting Spotify artist: " + code + "\n" + error)
+    Logging.error(this.getClass.toString, "Error getting Spotify artist: " + code + "\n" + error)
   }
 }
