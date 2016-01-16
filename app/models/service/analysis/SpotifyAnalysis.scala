@@ -6,7 +6,7 @@ import models.service.api.refresh.SpotifyRefresh
 import models.service.oauth.SpotifyService
 import models.util.Logging
 import play.api.libs.json.{Json, JsValue}
-import play.api.libs.ws.{WSResponse, WS}
+import play.api.libs.ws.WS
 import play.api.Play.current
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -32,15 +32,17 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
 
   /**
     * Before we get started, test the access token with some random request
+    * If we get a 401 we need to refresh the token
     */
   def testAndGetAccessToken():Future[String] = {
     serviceAccessTokenHelper.getAccessToken match {
       case Some(accessTkn) =>
         val url = searchEndpoint + "/0OdUWJ0sBjDrqHygGUXeCF"
-        doRequest(url, accessTkn).flatMap { response =>
-          if(response.status == 401)
-            SpotifyRefresh(identifier).refreshToken map(refreshToken => refreshToken)
-          else Future.successful(accessTkn)
+        WS.url(url).withHeaders("Authorization" -> s"Bearer $accessTkn").get().flatMap {
+          response =>
+            if(response.status == 401)
+              SpotifyRefresh(identifier).refreshToken()
+            else Future.successful(accessTkn)
         }
       case None =>
         serviceAccessTokenHelper.getAnyAccessTokens match {
@@ -60,7 +62,7 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
         artists.map { artist =>
           artist.spotifyId match {
             case Some(spoId) => Future.successful(Some(artist.name, spoId))
-            case None => SpotifyApiFacade.getArtistId(artist.name, token, recordAbsence = true)
+            case None => SpotifyApiFacade.getArtistId(artist.name, token, Some(identifier))
           }
         }
       }
@@ -70,19 +72,14 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
 
   private def getAlbumsOfArtistsFromSpotify(
           ids: List[Option[(String,String)]],
-          accessToken:String):Future[List[(String,JsValue)]] = {
+          accessToken:String):Future[List[(String,List[JsValue])]] = {
     val searchList:List[(String,String)] = ids.filter(_.isDefined).map(_.get)
     Future.sequence {
       searchList map { artist =>
         val artistName = artist._1
         val artistId = artist._2
         val url = searchEndpoint + "/" + artistId + "/albums?market=DE&limit=50"
-        doRequest(url,accessToken) map { response =>
-          if(response.status != 200) {
-            Logging.debug(this.getClass.toString, response.body.toString)
-          }
-          (artistName, Json.parse(response.body))
-        }
+        doRequest(url,accessToken,Nil) map(jsonResponses => (artistName, jsonResponses))
       }
     }
   }
@@ -100,7 +97,7 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
     }
   }
 
-  private def processResponses(jsSet: List[(String,JsValue)]):Map[String,List[(String,String)]] = {
+  private def processResponses(jsSet: List[(String,List[JsValue])]):Map[String,List[(String,String)]] = {
     val res = jsSet.foldLeft(Map[String,List[(String,String)]]()) { (prev, jsTuple) =>
       prev ++ processSingleResponse(jsTuple)
     }
@@ -108,21 +105,30 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
     res
   }
 
-  private def processSingleResponse(artistJsTuple:(String,JsValue)):Map[String,List[(String,String)]] = {
+  private def processSingleResponse(artistJsTuple:(String,List[JsValue])):Map[String,List[(String,String)]] = {
     val artist = artistJsTuple._1
-    val js = artistJsTuple._2
-    val items = (js \ "items").as[List[JsValue]]
-    val albums:List[(String,String)] = items.map{
-      item =>
-        val albumName = (item \ "name").as[String]
-        val id = (item \ "id").as[String]
-        (albumName, id)
+    val jsResponseList = artistJsTuple._2
+    val albums:List[(String,String)] = jsResponseList.flatMap { jsResp =>
+      val items = (jsResp \ "items").as[List[JsValue]]
+      items.map {
+        item =>
+          val albumName = (item \ "name").as[String]
+          val id = (item \ "id").as[String]
+          (albumName, id)
+      }
     }
     Map(artist -> albums)
   }
 
-  private def doRequest(url:String, token:String):Future[WSResponse] = {
-    WS.url(url).withHeaders("Authorization" -> s"Bearer $token").get()
+  private def doRequest(url:String, token:String, jsonResponses:List[JsValue]):Future[List[JsValue]] = {
+    WS.url(url).withHeaders("Authorization" -> s"Bearer $token").get().flatMap { response =>
+      if(response.status != 200) Logging.debug(this.getClass.toString, response.body.toString)
+      val js = Json.parse(response.body)
+      (js \ "next").asOpt[String] match {
+        case Some(nextUrl) => doRequest(nextUrl, token, js::jsonResponses)
+        case _ => Future.successful(js::jsonResponses)
+      }
+    }
   }
 }
 

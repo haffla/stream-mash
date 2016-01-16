@@ -18,10 +18,11 @@ class User(identifier:Either[Int, String]) {
   implicit val session = User.session
 
   def getServiceToken(service:String):Option[String] = {
+    println("GETTING TOKEN FOR", service)
     identifier match {
       case Left(id) =>
         val tokenField = Services.getFieldForService(service)
-        sql"select $tokenField from account where id_user=$id".map(rs => rs.string(service + "_token")).single().apply()
+        sql"select $tokenField from account where id_user=$id".map(rs => rs.string(tokenField.value)).single().apply()
       case Right(_) => None
     }
   }
@@ -91,7 +92,7 @@ object User {
   def getAnyAccessTokens(service:String):Option[models.Tokens] = {
     val tokenField = Services.getFieldForService(service)
     val refreshTokenField = Services.getRefreshFieldForService(service)
-    sql"select $tokenField, $refreshTokenField where $tokenField is not null"
+    sql"select $tokenField, $refreshTokenField from account where $tokenField is not null"
       .map(rs => models.Tokens(rs.string(tokenField.value), rs.string(refreshTokenField.value)))
         .single().apply()
   }

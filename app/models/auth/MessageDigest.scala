@@ -1,5 +1,7 @@
 package models.auth
 
+import java.util.Base64
+
 object MessageDigest {
   def digest(s: String, method:String = "SHA-256"): String = {
     val m = java.security.MessageDigest.getInstance(method).digest(s.getBytes("UTF-8"))
@@ -11,6 +13,6 @@ object MessageDigest {
   }
 
   def encodeBase64(s:String): String = {
-    new sun.misc.BASE64Encoder().encode(s.getBytes)
+    Base64.getEncoder.encodeToString(s.getBytes())
   }
 }

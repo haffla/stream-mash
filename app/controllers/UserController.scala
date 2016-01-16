@@ -54,12 +54,6 @@ class UserController extends Controller {
     }
   }
 
-  def analysis = IdentifiedBySession.async { implicit request =>
-    SpotifyAnalysis(Helper.getUserIdentifier(request.session)).analyse() map {
-      res => Ok(Json.obj("result" -> res))
-    }
-  }
-
   def handleAudioFiles = IdentifiedBySession(parse.multipartFormData) { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
     val files = request.body.files

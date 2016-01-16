@@ -20,8 +20,7 @@ class SpotifyRefresh(identifier:Either[Int,String]) extends OAuthStreamingServic
     val data = Map("grant_type" -> Seq("refresh_token"), "refresh_token" -> Seq(token))
     val baseEncodedCredentials = MessageDigest.encodeBase64(clientId + ":" + clientSecret)
     WS.url("https://accounts.spotify.com/api/token")
-      .withHeaders("Authorization" -> s"Basic $baseEncodedCredentials")
-      .post(data)
+      .withHeaders("Authorization" -> s"Basic $baseEncodedCredentials").post(data)
   }
 
   def refreshToken():Future[String] = {

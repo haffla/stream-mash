@@ -7,6 +7,7 @@ ArtistList = require './ArtistList'
 _ = require 'lodash'
 
 Badge = require 'material-ui/lib/badge'
+CircularProgress = require 'material-ui/lib/circular-progress'
 Colors = require 'material-ui/lib/styles/colors'
 LinearProgress = require 'material-ui/lib/linear-progress'
 RaisedButton = require 'material-ui/lib/raised-button'
@@ -18,7 +19,7 @@ String::startsWith ?= (s) -> @slice(0, s.length) == s
 
 ArtistBox = React.createClass
   getInitialState: () ->
-    data: [], progress: 0, nrCols: 3, dialog: {open: false, type: "itunes"}
+    data: [], progress: 0, nrCols: 3, dialog: {open: false, type: "itunes"}, analysing: false, isAnalysed: false
 
   componentDidMount: () ->
 
@@ -115,19 +116,31 @@ ArtistBox = React.createClass
     window.location.href = "#{item.props.data}/login"
 
   handleAnalyseClick: () ->
+    @setState analysing: true
     $.ajax '/user/analysis',
       type: 'POST'
       dataType: 'json'
-      success: (data) ->
-        console.log(data)
+      success: (data) =>
+        if data.success
+          @setState analysing: false, isAnalysed: true
       error: (jqXHR, textStatus, e) ->
         console.log(e)
 
   render: () ->
     <div style={width: '80%', margin: 'auto'}>
         <div className="row" style={display: 'flex', justifyContent: 'space-between', marginBottom: '25px'}>
-          <div>
-            <RaisedButton label="Analyse!" onTouchTap={@handleAnalyseClick} />
+          <div style={width: 100, height: 50}>
+            {
+              if !_.isEmpty(@state.data)
+                if @state.analysing
+                  <div>
+                  <CircularProgress mode="indeterminate" size={0.5} />
+                  </div>
+                else
+                  <div style={marginTop: 10, witdth: 100}>
+                  <RaisedButton disabled={@state.isAnalysed} label="Analyse" onTouchTap={@handleAnalyseClick} />
+                  </div>
+            }
           </div>
           <div>
               <TextField

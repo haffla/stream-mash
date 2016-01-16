@@ -1,6 +1,6 @@
 package models.service.api
 
-import models.database.facade.{SpotifyArtistFacade, SpotifyFacade}
+import models.database.facade.{ServiceArtistAbsenceFacade, SpotifyArtistFacade, SpotifyFacade}
 import models.service.oauth.SpotifyService.apiEndpoints
 import models.util.Logging
 import play.api.Play.current
@@ -16,8 +16,12 @@ object SpotifyApiFacade extends ApiFacade {
     ws.withHeaders("Authorization" -> s"Bearer $token")
   }
 
-  override def getArtistId(artist:String, token:Option[String] = None, recordAbsence:Boolean = false):Future[Option[(String,String)]] = {
+  def getArtistId(
+           artist:String,
+           token:Option[String] = None,
+           identifier:Option[Either[Int,String]] = None):Future[Option[(String,String)]] = {
     val unAuthenticatedRequest = WS.url(apiEndpoints.search).withQueryString("type" -> "artist", "q" -> artist)
+    // In case a token is supplied as argument, authenticate the request with that token
     val request = token match {
       case Some(tkn) => authenticateRequest(unAuthenticatedRequest, tkn)
       case _ => unAuthenticatedRequest
@@ -37,8 +41,10 @@ object SpotifyApiFacade extends ApiFacade {
                 case None => None
               }
             }.getOrElse {
-              if(recordAbsence) {
-                // The artist does not exist on Spotify
+              // If an identifier is supplied and no artist was found, record this in DB
+              identifier match {
+                case Some(id) => ServiceArtistAbsenceFacade(id).save(artist, "spotify")
+                case None =>
               }
               None
             }
