@@ -36,7 +36,7 @@ StreamingServiceBox = React.createClass
         dataType: 'json'
         data: {'id': @state.artists[idx].id}
         success: (data) =>
-          img = Helper.getBestSpotifyImage data.images, 'big'
+          img = Helper.getBestImage data.images, 'big'
           @state.artists[idx].img = img
         error: (jqXHR, textStatus, e) ->
           console.log(e)

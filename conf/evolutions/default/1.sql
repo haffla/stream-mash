@@ -62,7 +62,6 @@ CREATE TABLE IF NOT EXISTS user_collection(
     fk_track INT NOT NULL REFERENCES track(id_track) ON DELETE CASCADE,
     user_session VARCHAR(32) DEFAULT NULL,
     times_played INTEGER DEFAULT 1,
-    imported_from VARCHAR(100) DEFAULT NULL,
     UNIQUE (fk_user, fk_track),
     UNIQUE (user_session, fk_track)
 );

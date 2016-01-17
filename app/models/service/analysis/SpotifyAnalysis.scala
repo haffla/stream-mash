@@ -30,6 +30,10 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
     } yield true
   }
 
+  def getAuthenticatedRequest(url:String, accessToken:String) = {
+    WS.url(url).withHeaders("Authorization" -> s"Bearer $accessToken")
+  }
+
   /**
     * Before we get started, test the access token with some random request
     * If we get a 401 we need to refresh the token
@@ -37,12 +41,15 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
   def testAndGetAccessToken():Future[Option[String]] = {
     serviceAccessTokenHelper.getAccessToken match {
       case Some(accessTkn) =>
-        val url = searchEndpoint + "/0OdUWJ0sBjDrqHygGUXeCF"
-        WS.url(url).withHeaders("Authorization" -> s"Bearer $accessTkn").get().flatMap {
+        val url = searchEndpoint + "/" + "0OdUWJ0sBjDrqHygGUXeCF" + "/albums?market=DE&limit=50"
+        getAuthenticatedRequest(url, accessTkn).get().flatMap {
           response =>
+            println("TESTING", url, response.status)
             if(response.status == 401)
               SpotifyRefresh(identifier).refreshToken()
-            else Future.successful(Some(accessTkn))
+            else {
+              Future.successful(Some(accessTkn))
+            }
         }
       case None =>
         serviceAccessTokenHelper.getAnyAccessTokens match {
@@ -121,16 +128,22 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
   }
 
   private def doRequest(url:String, token:Option[String], jsonResponses:List[JsValue]):Future[List[JsValue]] = {
+    //println("Token for prod",token)
     val request = token match {
-      case Some(tkn) => WS.url(url).withHeaders("Authorization" -> s"Bearer $token")
+      case Some(tkn) => getAuthenticatedRequest(url, tkn)
       case _ => WS.url(url)
     }
     request.get().flatMap { response =>
-      if(response.status != 200) Logging.debug(this.getClass.toString, response.body.toString)
-      val js = Json.parse(response.body)
-      (js \ "next").asOpt[String] match {
-        case Some(nextUrl) => doRequest(nextUrl, token, js::jsonResponses)
-        case _ => Future.successful(js::jsonResponses)
+      if(response.status != 200) {
+        Logging.debug(this.getClass.toString, response.body.toString + "\n" + response.status + "\n")
+        Future.successful(jsonResponses)
+      }
+      else {
+        val js = Json.parse(response.body)
+        (js \ "next").asOpt[String] match {
+          case Some(nextUrl) => doRequest(nextUrl, token, js::jsonResponses)
+          case _ => Future.successful(js::jsonResponses)
+        }
       }
     }
   }

@@ -7,10 +7,12 @@ class Helper
     , 0
 
   @calculateNrOfAlbumsInCollection: (data) ->
-    _.values(data).reduce (x,y) ->
-      x + y.albums.reduce (a,b) ->
-        if b.inCollection then a + b else a
+    _.values(data).reduce (prev,curr) ->
+      inCollection = curr.albums.reduce (prevCount,currTrack) ->
+        c = if currTrack.inCollection then 1 else 0
+        prevCount + c
       , 0
+      prev + inCollection
     , 0
 
   @isMac: () ->

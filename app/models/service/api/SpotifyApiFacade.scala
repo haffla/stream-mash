@@ -2,7 +2,6 @@ package models.service.api
 
 import models.database.facade.{ServiceArtistAbsenceFacade, SpotifyArtistFacade, SpotifyFacade}
 import models.service.oauth.SpotifyService.apiEndpoints
-import models.util.Logging
 import play.api.Play.current
 import play.api.libs.json.{JsValue, JsObject, Json}
 import play.api.libs.ws.{WSRequest, WSResponse, WS}
@@ -10,13 +9,17 @@ import play.api.libs.ws.{WSRequest, WSResponse, WS}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object SpotifyApiFacade {
+object SpotifyApiFacade extends ApiFacade {
 
-  private def authenticateRequest(ws:WSRequest, token:String) = {
+  override val serviceName = "spotify"
+
+  def authenticateRequest(ws:WSRequest, token:String):WSRequest = {
     ws.withHeaders("Authorization" -> s"Bearer $token")
   }
 
-  def getArtistId(
+  def unAuthRequest(artist:String): WSRequest = WS.url(apiEndpoints.search).withQueryString("type" -> "artist", "q" -> artist)
+
+  override def getArtistId(
            artist:String,
            token:Option[String] = None,
            identifier:Option[Either[Int,String]] = None):Future[Option[(String,String)]] = {
@@ -104,7 +107,20 @@ object SpotifyApiFacade {
     } yield handleAlbumInfoResponses(albumDetailResponse:WSResponse, usersTracks)
   }
 
-  private def logError(code:Int, error:String) = {
-    Logging.error(this.getClass.toString, "Error getting Spotify artist: " + code + "\n" + error)
+  override def handleJsonResponse(
+                                 json: JsValue,
+                                 artist:String,
+                                 identifier:Option[Either[Int,String]],
+                                 artistNotPresentCallback: (String, Option[Either[Int,String]]) => Option[(String, String)]): Option[(String, String)] = {
+    val artists = (json \ "artists" \ "items").as[List[JsObject]]
+    artists.headOption.map { head =>
+      val id = (head \ "id").asOpt[String]
+      id match {
+        case Some(i) =>
+          SpotifyFacade.saveArtistWithServiceId(artist, i)
+          Some((artist, i))
+        case None => None
+      }
+    }.getOrElse(artistNotPresentCallback(artist, identifier))
   }
 }
