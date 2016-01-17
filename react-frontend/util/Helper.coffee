@@ -6,6 +6,13 @@ class Helper
       x + y.albums.length
     , 0
 
+  @calculateNrOfAlbumsInCollection: (data) ->
+    _.values(data).reduce (x,y) ->
+      x + y.albums.reduce (a,b) ->
+        if b.inCollection then a + b else a
+      , 0
+    , 0
+
   @isMac: () ->
     if navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i) then true else false
 

@@ -12,6 +12,7 @@ Colors = require 'material-ui/lib/styles/colors'
 FontIcon = require 'material-ui/lib/font-icon'
 List = require 'material-ui/lib/lists/list'
 ListItem = require 'material-ui/lib/lists/list-item'
+Paper = require 'material-ui/lib/paper'
 
 
 SpotifyBox = React.createClass
@@ -87,6 +88,32 @@ SpotifyBox = React.createClass
 
     <div style={display: 'flex', justifyContent: 'space-between'}>
       <div style={width: '25%'}>
+       <Paper style={width: '100%', marginBottom: 10, padding: 10} zDepth={0} children={
+         <div>
+          <h4>Spotify</h4>
+          <table className="table">
+            <thead>
+              <tr>
+                <td></td>
+                <td>Available</td>
+                <td>In your Collection</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Artists</td>
+                <td>{@state.spotifyArtists.length}</td>
+              </tr>
+              <tr>
+                <td>Albums</td>
+                <td>{Helper.calculateNrOfAlbums(@state.spotifyArtists)}</td>
+                <td>{Helper.calculateNrOfAlbumsInCollection(@state.spotifyArtists)}</td>
+              </tr>
+            </tbody>
+          </table>
+         </div>
+         } />
+
        <List subheader="Spotify Artists">
         {artists}
        </List>
@@ -132,7 +159,7 @@ SpotifyBox = React.createClass
             <CardTitle
               title={@state.selectedArtist.name}
               subtitle={
-                nrAlbumsOnSpotify + " Albums on Spotify of which you seem to know " + nrAlbumsInUserCollection
+                nrAlbumsOnSpotify + " Albums on Spotify of which you have " + nrAlbumsInUserCollection + "in your Collection"
                 } />
           </Card>
          </div>
