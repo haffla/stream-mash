@@ -1,6 +1,7 @@
 package models.database.facade
 
-import models.database.alias.{AppDB, Album, SpotifyAlbum}
+import models.database.alias.service.SpotifyAlbum
+import models.database.alias.{AppDB, Album}
 import org.squeryl.PrimitiveTypeMode._
 
 object SpotifyAlbumFacade extends ServiceAlbumFacade {

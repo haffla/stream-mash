@@ -1,4 +1,4 @@
-package models.database.alias
+package models.database.alias.service
 
 import org.squeryl.annotations._
 

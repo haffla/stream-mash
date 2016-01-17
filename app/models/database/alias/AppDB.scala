@@ -1,5 +1,6 @@
 package models.database.alias
 
+import models.database.alias.service.{SpotifyArtist, SpotifyAlbum, DeezerArtist, DeezerAlbum}
 import org.squeryl.Schema
 import org.squeryl.PrimitiveTypeMode._
 import org.squeryl.dsl.ast.LogicalBoolean

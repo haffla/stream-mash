@@ -1,6 +1,7 @@
 package models.database.facade
 
-import models.database.alias.{DeezerAlbum, AppDB}
+import models.database.alias.AppDB
+import models.database.alias.service.DeezerAlbum
 import org.squeryl.PrimitiveTypeMode._
 
 object DeezerAlbumFacade extends ServiceAlbumFacade {
