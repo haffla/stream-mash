@@ -5,7 +5,8 @@ import org.squeryl.PrimitiveTypeMode._
 
 trait ServiceArtistTrait {
 
-  def insertArtist(id:Long):Long
+  def insertIfNotExists(id:Long):Long
+  def insert(id:Long):Long
 
   def saveArtistWithName(artistName:String):Long = {
     transaction {
@@ -13,10 +14,10 @@ trait ServiceArtistTrait {
         where(a.name === artistName)
           select a.id
       ).headOption match {
-        case Some(artistId) => insertArtist(artistId)
+        case Some(artistId) => insertIfNotExists(artistId)
         case _ =>
           val newArtist:Artist = AppDB.artists.insert(Artist(artistName))
-          insertArtist(newArtist.id)
+          insert(newArtist.id)
       }
     }
   }
