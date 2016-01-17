@@ -20,6 +20,10 @@ GET           /spotify/artists              controllers.SpotifyController.getArt
 GET           /spotify/artist-detail        controllers.SpotifyController.getArtistDetail
 GET           /spotify/album-detail         controllers.SpotifyController.getAlbumDetail
 
+### Napster
+GET           /napster/login                controllers.NapsterController.login
+GET           /napster/callback             controllers.NapsterController.callback
+
 ### Soundcloud
 GET           /soundcloud/callback          controllers.SoundcloudController.callback
 GET           /soundcloud/login             controllers.SoundcloudController.login

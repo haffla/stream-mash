@@ -46,6 +46,7 @@ object Services {
   def getRefreshFieldForService(service:String) = {
     service match {
       case "spotify" => sqls"spotify_token_refresh"
+      case "napster" => sqls"napster_token_refresh"
       case _ => throw new IllegalArgumentException("The given service '$service' has no refresh token field yet")
     }
   }
@@ -56,6 +57,7 @@ object Services {
       case "deezer" => sqls"deezer_token"
       case "soundcloud" => sqls"soundcloud_token"
       case "lastfm" => sqls"lastfm_token"
+      case "napster" => sqls"napster_token"
       case _ => throw new IllegalArgumentException("The given service '$service' is not supported")
     }
   }

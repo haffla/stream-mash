@@ -26,10 +26,10 @@ trait FavouriteMusicRetrieval {
    */
   def getPageInformation(json:JsValue):(Boolean,Int)
 
-  def requestUsersTracks(token:Option[String]):Future[Seq[JsValue]] = {
+  def requestUsersTracks(token:Option[String], begin:Int = 1):Future[Seq[JsValue]] = {
     token match {
       case Some(accessToken) =>
-        doPaginatedRequest(accessToken, Seq.empty, 1)
+        doPaginatedRequest(accessToken, Seq.empty, begin)
       case None => throw new Exception (Constants.accessTokenRetrievalError)
     }
   }

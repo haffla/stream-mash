@@ -11,7 +11,7 @@ ToolbarSeparator = require 'material-ui/lib/toolbar/toolbar-separator'
 ToolbarTitle = require 'material-ui/lib/toolbar/toolbar-title'
 Slider = require 'material-ui/lib/slider'
 
-services = ["spotify", "deezer", "soundcloud", "lastfm"]
+services = ["spotify", "deezer", "napster", "soundcloud", "lastfm"]
 
 ControlBar = React.createClass
 
