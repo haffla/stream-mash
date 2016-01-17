@@ -18,7 +18,6 @@ class User(identifier:Either[Int, String]) {
   implicit val session = User.session
 
   def getServiceToken(service:String):Option[String] = {
-    println("GETTING TOKEN FOR", service)
     identifier match {
       case Left(id) =>
         val tokenField = Services.getFieldForService(service)
@@ -89,17 +88,22 @@ class User(identifier:Either[Int, String]) {
 }
 
 object User {
-  def getAnyAccessTokens(service:String):Option[models.Tokens] = {
+
+  implicit val session = AutoSession
+
+  def getAnyAccessToken(service: String): Option[String] = {
+    val tokenField = Services.getFieldForService(service)
+    sql"select $tokenField from account where $tokenField is not null"
+      .map(rs => rs.string(tokenField.value)).single().apply()
+  }
+
+  def getAnyAccessTokenPair(service:String):Option[models.Tokens] = {
     val tokenField = Services.getFieldForService(service)
     val refreshTokenField = Services.getRefreshFieldForService(service)
     sql"select $tokenField, $refreshTokenField from account where $tokenField is not null"
       .map(rs => models.Tokens(rs.string(tokenField.value), rs.string(refreshTokenField.value)))
         .single().apply()
   }
-
-
-
-  implicit val session = AutoSession
 
   def apply(identifier:Either[Int,String]) = new User(identifier)
 

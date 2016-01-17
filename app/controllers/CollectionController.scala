@@ -1,7 +1,7 @@
 package controllers
 
 import models.auth.{Helper, IdentifiedBySession}
-import models.service.analysis.SpotifyAnalysis
+import models.service.analysis.{DeezerAnalysis, SpotifyAnalysis}
 import play.api.libs.json.Json
 import play.api.mvc.Controller
 
@@ -18,8 +18,10 @@ class CollectionController extends Controller {
   }
 
   def analysis = IdentifiedBySession.async { implicit request =>
-    SpotifyAnalysis(Helper.getUserIdentifier(request.session)).analyse() map {
-      res => Ok(Json.obj("success" -> res))
-    }
+    val identifier = Helper.getUserIdentifier(request.session)
+    for {
+      deezerResult <- DeezerAnalysis(identifier).analyse()
+      spotifyResult <- SpotifyAnalysis(identifier).analyse()
+    } yield Ok(Json.obj("successDeezer" -> deezerResult, "successSpotify" -> spotifyResult))
   }
 }

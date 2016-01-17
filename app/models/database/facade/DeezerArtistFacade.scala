@@ -2,6 +2,7 @@ package models.database.facade
 
 import models.database.alias._
 import org.squeryl.PrimitiveTypeMode._
+import play.api.libs.json.JsValue
 
 class DeezerArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFacade(identifier) {
 
@@ -26,7 +27,7 @@ class DeezerArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFac
 
 object DeezerArtistFacade extends ServiceArtistTrait {
 
-  def apply(identifier: Either[Int,String]) = new SpotifyArtistFacade(identifier)
+  def apply(identifier: Either[Int,String]) = new DeezerArtistFacade(identifier)
 
   override def insertIfNotExists(id:Long):Long = {
     from(AppDB.deezerArtists)(da =>
@@ -40,6 +41,17 @@ object DeezerArtistFacade extends ServiceArtistTrait {
 
   override def insert(id: Long):Long = {
     AppDB.deezerArtists.insert(DeezerArtist(id)).id
+  }
+
+  /**
+    * Save whatever info is needed about an artist from Spotify
+    */
+  def saveInfoAboutArtist(js:JsValue):Unit = {
+    (js \ "picture_big").asOpt[String] match {
+      case Some(picture) =>
+        ArtistFacade.setArtistPic((js \ "name").as[String], picture)
+      case None =>
+    }
   }
 }
 

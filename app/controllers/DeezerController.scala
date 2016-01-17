@@ -1,10 +1,16 @@
 package controllers
 
 import models.auth.{Helper, IdentifiedBySession}
+import models.database.facade.{TrackFacade, DeezerArtistFacade}
 import models.service.Constants
+import models.service.api.{SpotifyApiFacade, DeezerApiFacade}
 import models.service.oauth.DeezerService
 import models.util.TextWrangler
+import play.api.libs.json.Json
 import play.api.mvc._
+
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class DeezerController extends Controller {
 
@@ -30,6 +36,34 @@ class DeezerController extends Controller {
         Redirect(routes.CollectionController.index())
           .flashing("message" -> Constants.missingOAuthCodeError)
     }
+  }
 
+  def getArtistsForAnalysis = IdentifiedBySession.async { implicit request =>
+    val identifier = Helper.getUserIdentifier(request.session)
+    DeezerArtistFacade(identifier).getArtistsAndAlbumsForOverview.map { jsonResult =>
+      Ok(Json.obj("artists" -> jsonResult))
+    }
+  }
+
+  def getArtistDetail = IdentifiedBySession.async { implicit request =>
+    request.getQueryString("id").map { id =>
+      DeezerApiFacade.getArtistInfoForFrontend(id).map { deezerResponse =>
+        Ok(deezerResponse)
+      }
+    }.getOrElse(
+      Future.successful(BadRequest("Missing parameter 'id', e.g. Deezer ID of the artist"))
+    )
+  }
+
+  def getAlbumDetail = IdentifiedBySession.async { implicit request =>
+    val identifier = Helper.getUserIdentifier(request.session)
+    request.getQueryString("id").map { id =>
+      val usersTracks = TrackFacade(identifier).getUsersTracks
+      DeezerApiFacade.getAlbumInfoForFrontend(id,usersTracks).map { deezer =>
+        Ok(deezer)
+      }
+    }.getOrElse(
+      Future.successful(BadRequest("Missing parameter 'id', e.g. Spotify ID of the album"))
+    )
   }
 }

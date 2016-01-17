@@ -25,7 +25,10 @@ StreamingServiceBox = React.createClass
       type: 'GET'
       dataType: 'json'
       success: (data) =>
-        @setState artists: data.artists, selectedArtist: data.artists[0]
+        unless _.isEmpty(data.artists)
+          @setState artists: data.artists, selectedArtist: data.artists[0]
+        else
+          @setState artists: [], selectedArtist: {albums: []}
       error: (jqXHR, textStatus, e) ->
         console.log(e)
 
@@ -36,7 +39,7 @@ StreamingServiceBox = React.createClass
         dataType: 'json'
         data: {'id': @state.artists[idx].id}
         success: (data) =>
-          img = Helper.getBestImage data.images, 'big'
+          img = @props.helper.getImage data, 'big'
           @state.artists[idx].img = img
         error: (jqXHR, textStatus, e) ->
           console.log(e)
@@ -52,7 +55,8 @@ StreamingServiceBox = React.createClass
         data: {'id': @state.selectedArtist.albums[idx].id}
         dataType: 'json'
         success: (data) =>
-          img = Helper.getBestImage(data.images)
+          img = @props.helper.getImage data
+          console.log img
           @state.selectedArtist.albums[idx].img = img
           @state.selectedArtist.albums[idx].tracks = data.tracks
           @setState selectedAlbum: @state.selectedArtist.albums[idx]
@@ -161,7 +165,7 @@ StreamingServiceBox = React.createClass
             <CardTitle
               title={@state.selectedArtist.name}
               subtitle={
-                nrAlbumsOnSpotify + " Albums on " + @props.name + " of which you have " + nrAlbumsInUserCollection + "in your Collection"
+                nrAlbumsOnSpotify + " Albums on " + @props.name + " of which you have " + nrAlbumsInUserCollection + " in your Collection"
                 } />
           </Card>
          </div>

@@ -60,4 +60,5 @@ object SpotifyArtistFacade extends ServiceArtistTrait {
       case None =>
     }
   }
+
 }

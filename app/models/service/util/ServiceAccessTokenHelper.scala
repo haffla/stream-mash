@@ -38,8 +38,12 @@ class ServiceAccessTokenHelper(service:String, identifier:Either[Int,String]) {
     }
   }
 
-  def getAnyAccessTokens:Option[models.Tokens] = {
-    User.getAnyAccessTokens(service)
+  def getAnyAccessTokenPair:Option[models.Tokens] = {
+    User.getAnyAccessTokenPair(service)
+  }
+
+  def getAnyAccessToken:Option[String] = {
+    User.getAnyAccessToken(service)
   }
 
 }

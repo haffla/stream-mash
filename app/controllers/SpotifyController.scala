@@ -52,7 +52,7 @@ class SpotifyController extends Controller {
         Ok(spotifyResponse)
       }
     }.getOrElse(
-      Future.successful(BadRequest("Missing parameter 'spId', e.g. Spotify ID of the artist"))
+      Future.successful(BadRequest("Missing parameter 'id', e.g. Spotify ID of the artist"))
     )
   }
 
@@ -64,7 +64,7 @@ class SpotifyController extends Controller {
         Ok(spotifyResponse)
       }
     }.getOrElse(
-      Future.successful(BadRequest("Missing parameter 'spId', e.g. Spotify ID of the album"))
+      Future.successful(BadRequest("Missing parameter 'id', e.g. Spotify ID of the album"))
     )
   }
 

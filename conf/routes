@@ -4,7 +4,7 @@ POST          /artist/score                 controllers.UserController.handleSco
 
 GET           /                             controllers.Application.index
 GET           /privacy                      controllers.Application.privacy
-GET           /soundcloud/socket            controllers.Application.socket
+GET           /socket                       controllers.Application.socket
 
 POST          /login                        controllers.AuthController.login
 GET           /login                        controllers.AuthController.loginPage
@@ -34,6 +34,9 @@ POST          /itunes                       controllers.ItunesController.fileUpl
 ### Deezer
 GET           /deezer/login                 controllers.DeezerController.login
 GET           /deezer/callback              controllers.DeezerController.callback
+GET           /deezer/artists               controllers.DeezerController.getArtistsForAnalysis
+GET           /deezer/artist-detail         controllers.DeezerController.getArtistDetail
+GET           /deezer/album-detail          controllers.DeezerController.getAlbumDetail
 
 ### Lastfm
 GET           /lastfm/login                 controllers.LastfmController.login

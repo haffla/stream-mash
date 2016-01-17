@@ -1,6 +1,6 @@
 package models.service.api
 
-import models.database.facade.{ServiceArtistAbsenceFacade, SpotifyArtistFacade, SpotifyFacade}
+import models.database.facade.{ServiceArtistTrait, SpotifyArtistFacade, SpotifyFacade}
 import models.service.oauth.SpotifyService.apiEndpoints
 import play.api.Play.current
 import play.api.libs.json.{JsValue, JsObject, Json}
@@ -12,66 +12,17 @@ import scala.concurrent.Future
 object SpotifyApiFacade extends ApiFacade {
 
   override val serviceName = "spotify"
+  override val serviceArtistFacade:ServiceArtistTrait = SpotifyArtistFacade
+
+  override def artistInfoUrl(id: String): String = {
+    apiEndpoints.artists + "/" + id
+  }
 
   def authenticateRequest(ws:WSRequest, token:String):WSRequest = {
     ws.withHeaders("Authorization" -> s"Bearer $token")
   }
 
   def unAuthRequest(artist:String): WSRequest = WS.url(apiEndpoints.search).withQueryString("type" -> "artist", "q" -> artist)
-
-  override def getArtistId(
-           artist:String,
-           token:Option[String] = None,
-           identifier:Option[Either[Int,String]] = None):Future[Option[(String,String)]] = {
-    val unAuthenticatedRequest = WS.url(apiEndpoints.search).withQueryString("type" -> "artist", "q" -> artist)
-    // In case a token is supplied as argument, authenticate the request with that token
-    val request = token match {
-      case Some(tkn) => authenticateRequest(unAuthenticatedRequest, tkn)
-      case _ => unAuthenticatedRequest
-    }
-    request.get().map {
-      response =>
-        response.status match {
-          case 200 =>
-            val json = Json.parse(response.body)
-            val artists = (json \ "artists" \ "items").as[List[JsObject]]
-            artists.headOption.map { head =>
-              val id = (head \ "id").asOpt[String]
-              id match {
-                case Some(i) =>
-                  SpotifyFacade.saveArtistWithServiceId(artist, i)
-                  Some((artist, i))
-                case None => None
-              }
-            }.getOrElse {
-              // If an identifier is supplied and no artist was found, record this in DB
-              identifier match {
-                case Some(id) => ServiceArtistAbsenceFacade(id).save(artist, "spotify")
-                case None =>
-              }
-              None
-            }
-
-          case http_code =>
-            logError(http_code, response.body)
-            None
-        }
-    }
-  }
-
-  def getArtistInfoForFrontend(id:String):Future[JsValue] = {
-    WS.url(apiEndpoints.artists + "/" + id).get().map { response =>
-      response.status match {
-        case 200 =>
-          val js = Json.parse(response.body)
-          SpotifyArtistFacade.saveInfoAboutArtist(js)
-          js
-        case http_code =>
-          logError(http_code, response.body)
-          Json.obj("error" -> true)
-      }
-    }
-  }
 
   private def handleAlbumInfoResponses(albumDetailResponse: WSResponse, usersTracks:List[String]):JsValue = {
     if(albumDetailResponse.status == 200) {
@@ -107,7 +58,7 @@ object SpotifyApiFacade extends ApiFacade {
     } yield handleAlbumInfoResponses(albumDetailResponse:WSResponse, usersTracks)
   }
 
-  override def handleJsonResponse(
+  override def handleJsonIdSearchResponse(
                                  json: JsValue,
                                  artist:String,
                                  identifier:Option[Either[Int,String]],

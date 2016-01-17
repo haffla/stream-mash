@@ -2,11 +2,13 @@ package models.database.facade
 
 import models.database.alias.{Artist, AppDB}
 import org.squeryl.PrimitiveTypeMode._
+import play.api.libs.json.JsValue
 
 trait ServiceArtistTrait {
 
   def insertIfNotExists(id:Long):Long
   def insert(id:Long):Long
+  def saveInfoAboutArtist(js:JsValue):Unit
 
   def saveArtistWithName(artistName:String):Long = {
     transaction {
@@ -21,4 +23,5 @@ trait ServiceArtistTrait {
       }
     }
   }
+
 }
