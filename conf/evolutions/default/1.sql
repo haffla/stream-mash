@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS account(
     name VARCHAR(64) NOT NULL UNIQUE,
     password VARCHAR(64) NOT NULL,
     itunes_file_hash VARCHAR(32) DEFAULT NULL,
-    spotify_token VARCHAR(255) DEFAULT NULL,
+    spotify_token VARCHAR(256) DEFAULT NULL,
     spotify_token_refresh VARCHAR(255) DEFAULT NULL,
     deezer_token VARCHAR(256) DEFAULT NULL,
     lastfm_token VARCHAR(256) DEFAULT NULL,
@@ -89,6 +89,15 @@ CREATE TABLE IF NOT EXISTS spotify_album(
     spotify_id VARCHAR(32)
 );
 
+CREATE TABLE IF NOT EXISTS deezer_artist(
+    id_deezer_artist INT REFERENCES artist(id_artist) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS deezer_album(
+    id_deezer_album INT REFERENCES album(id_album) ON DELETE CASCADE,
+    deezer_id VARCHAR(32)
+);
+
 CREATE TABLE IF NOT EXISTS service_artist_absence(
     id_service_artist_absence SERIAL PRIMARY KEY,
     fk_artist INT NOT NULL REFERENCES artist(id_artist) ON DELETE CASCADE,
@@ -109,5 +118,7 @@ DROP TABLE IF EXISTS user_collection CASCADE;
 DROP TABLE IF EXISTS user_artist_liking CASCADE;
 DROP TABLE IF EXISTS spotify_artist CASCADE;
 DROP TABLE IF EXISTS spotify_album CASCADE;
+DROP TABLE IF EXISTS deezer_artist CASCADE;
+DROP TABLE IF EXISTS deezer_album CASCADE;
 DROP TABLE IF EXISTS service_artist_absence CASCADE;
 

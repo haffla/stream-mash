@@ -2,4 +2,4 @@ package models.database.alias
 
 import org.squeryl.annotations._
 
-case class SpotifyArtist(@Column("id_spotify_artist") id:Long)
+case class DeezerArtist(@Column("id_deezer_artist") id:Long)

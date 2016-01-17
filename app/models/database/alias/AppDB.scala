@@ -13,6 +13,8 @@ object AppDB extends Schema {
   val userArtistLikings = table[UserArtistLiking]("user_artist_liking")
   val spotifyArtists = table[SpotifyArtist]("spotify_artist")
   val spotifyAlbums = table[SpotifyAlbum]("spotify_album")
+  val deezerArtists = table[DeezerArtist]("deezer_artist")
+  val deezerAlbums = table[DeezerAlbum]("deezer_album")
   val serviceArtistAbsence = table[ServiceArtistAbsence]("service_artist_absence")
 
   on(userArtistLikings)(ual => declare(
