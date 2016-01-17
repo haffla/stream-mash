@@ -21,19 +21,8 @@
                 </div>
                 <div>
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href='@routes.CollectionController.overview()'>Overview</a></li>
-                        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Import Music Taste<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a href='@routes.SpotifyController.login()'>Spotify</a></li>
-                                <li><a href='@routes.CollectionController.index("itunes", "yes")'>iTunes</a></li>
-                                <li><a href="@routes.DeezerController.login()">Deezer</a></li>
-                                <li><a href="@routes.SoundcloudController.login()">Soundcloud</a></li>
-                                <li><a href="@routes.LastfmController.login()">Lastfm</a></li>
-                                <li><a href="#">
-                                    <fb:login-button scope="user_actions.music" onlogin="checkLoginState();"></fb:login-button>
-                                </a></li>
-                            </ul>
-                        </li>
+                        <li><a href='@routes.CollectionController.index()'>Import</a></li>
+                        <li><a href='@routes.CollectionController.overview()'>Overview</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         @if(!session.get("username").isDefined) {

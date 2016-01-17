@@ -18,12 +18,18 @@ class DeezerController extends Controller {
   def callback = IdentifiedBySession { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
     val state = request.getQueryString("state")
-    val code = request.getQueryString("code").orNull
-    val cookieState = request.cookies.get(DeezerService.cookieKey)
-    if(TextWrangler.validateState(cookieState, state)) {
-      DeezerService(identifier).requestUserData(code)
-      Redirect(routes.CollectionController.index("deezer"))
+    request.getQueryString("code") match {
+      case Some(c) =>
+        val cookieState = request.cookies.get(DeezerService.cookieKey)
+        if(TextWrangler.validateState(cookieState, state)) {
+          DeezerService(identifier).requestUserData(c)
+          Redirect(routes.CollectionController.index("deezer"))
+        }
+        else Ok(Constants.stateMismatchError)
+      case _ =>
+        Redirect(routes.CollectionController.index())
+          .flashing("message" -> Constants.missingOAuthCodeError)
     }
-    else Ok(Constants.stateMismatchError)
+
   }
 }

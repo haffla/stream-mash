@@ -9,12 +9,12 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class CollectionController extends Controller {
 
-  def index(service:String = "", openModal:String = "no") = IdentifiedBySession { implicit request =>
-    Ok(views.html.collection.index(service, openModal))
+  def index(service:String = "") = IdentifiedBySession { implicit request =>
+    Ok(views.html.collection.index(service))
   }
 
   def overview() = IdentifiedBySession { implicit request =>
-    Ok(views.html.collection.analysis())
+    Ok(views.html.collection.overview())
   }
 
   def analysis = IdentifiedBySession.async { implicit request =>

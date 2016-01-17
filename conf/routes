@@ -24,7 +24,7 @@ GET           /spotify/album-detail         controllers.SpotifyController.getAlb
 GET           /soundcloud/callback          controllers.SoundcloudController.callback
 GET           /soundcloud/login             controllers.SoundcloudController.login
 
-GET           /collection                   controllers.CollectionController.index(service:String ?= "", openModal:String ?= "no")
+GET           /collection                   controllers.CollectionController.index(service:String ?= "")
 GET           /overview                     controllers.CollectionController.overview
 POST          /user/analysis                controllers.CollectionController.analysis
 

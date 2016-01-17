@@ -18,33 +18,32 @@ Paper = require 'material-ui/lib/paper'
 SpotifyBox = React.createClass
 
   getInitialState: () ->
-    spotifyArtists: [], selectedArtist: {albums: []}
+    artists: [], selectedArtist: {albums: []}
 
   componentDidMount: () ->
     $.ajax '/spotify/artists',
       type: 'GET'
       dataType: 'json'
       success: (data) =>
-        @setState spotifyArtists: data.artists, selectedArtist: data.artists[0]
+        @setState artists: data.artists, selectedArtist: data.artists[0]
       error: (jqXHR, textStatus, e) ->
         console.log(e)
 
   handleArtistClick: (idx) ->
-    if _.isEmpty(@state.spotifyArtists[idx].img)
+    if _.isEmpty(@state.artists[idx].img)
       $.ajax '/spotify/artist-detail',
         type: 'GET'
         dataType: 'json'
-        data: {'spId': @state.spotifyArtists[idx].id}
+        data: {'spId': @state.artists[idx].id}
         success: (data) =>
-          console.log(data)
           img = Helper.getBestSpotifyImage data.images, 'big'
-          @state.spotifyArtists[idx].img = img
+          @state.artists[idx].img = img
         error: (jqXHR, textStatus, e) ->
           console.log(e)
         complete: () =>
-          @setState selectedArtist: @state.spotifyArtists[idx], selectedAlbum: {}
+          @setState selectedArtist: @state.artists[idx], selectedAlbum: {}
     else
-      @setState selectedArtist: @state.spotifyArtists[idx], selectedAlbum: {}
+      @setState selectedArtist: @state.artists[idx], selectedAlbum: {}
 
   handleAlbumClick: (idx) ->
     unless _.has(@state.selectedArtist.albums[idx], 'img')
@@ -63,7 +62,7 @@ SpotifyBox = React.createClass
       @setState selectedAlbum: @state.selectedArtist.albums[idx]
 
   render: () ->
-    artists = @state.spotifyArtists.map (artist, idx) =>
+    artists = @state.artists.map (artist, idx) =>
       initials = Helper.getInitials artist.name
       color = if artist.name == @state.selectedArtist.name then Colors.amber500 else 'white'
       <ListItem
@@ -102,12 +101,12 @@ SpotifyBox = React.createClass
             <tbody>
               <tr>
                 <td>Artists</td>
-                <td>{@state.spotifyArtists.length}</td>
+                <td>{@state.artists.length}</td>
               </tr>
               <tr>
                 <td>Albums</td>
-                <td>{Helper.calculateNrOfAlbums(@state.spotifyArtists)}</td>
-                <td>{Helper.calculateNrOfAlbumsInCollection(@state.spotifyArtists)}</td>
+                <td>{Helper.calculateNrOfAlbums(@state.artists)}</td>
+                <td>{Helper.calculateNrOfAlbumsInCollection(@state.artists)}</td>
               </tr>
             </tbody>
           </table>

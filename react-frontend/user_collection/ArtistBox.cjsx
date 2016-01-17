@@ -53,8 +53,6 @@ ArtistBox = React.createClass
           selectedArtist.idx = 0
           @setState selectedArtist: selectedArtist
         @setTheState(data, true)
-      if window.itunes.openmodal is 'yes'
-        @openDialog('itunes')
       @setState({progress: 0})
     $.get '/collection/fromdb', callback, 'json'
 
@@ -78,7 +76,6 @@ ArtistBox = React.createClass
         data: {artist: @state.data[idx].name}
         dataType: 'json'
         success: (data) =>
-          console.log(data)
           unless data.error
             @state.data[idx].img = data.img
         error: (jqXHR, textStatus, e) ->
@@ -128,8 +125,8 @@ ArtistBox = React.createClass
 
   render: () ->
     <div style={width: '80%', margin: 'auto'}>
-        <div className="row" style={display: 'flex', justifyContent: 'space-between', marginBottom: '25px'}>
-          <div style={width: 100, height: 50}>
+        <div className="row" style={display: 'flex', marginBottom: '25px'}>
+          <div style={width: 100, height: 50, marginRight: 50}>
             {
               if !_.isEmpty(@state.data)
                 if @state.analysing

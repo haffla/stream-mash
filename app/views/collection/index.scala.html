@@ -1,4 +1,4 @@
-@(service:String, openModal:String)(implicit flash: Flash, session: Session, request: RequestHeader)
+@(service:String)(implicit flash: Flash, session: Session, request: RequestHeader)
 
 @import play.api.Play.current
 
@@ -7,7 +7,6 @@
 
     <script type='text/javascript'>
         window.streamingservice = {'name': '@service', 'url': '@routes.Application.socket().webSocketURL()'};
-        window.itunes = {'openmodal': '@openModal'};
     </script>
     @if(play.api.Play.isDev) {
         <script type='text/javascript' src='http://localhost:3000/artistbox.js'></script>
