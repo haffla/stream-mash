@@ -47,7 +47,7 @@ class SpotifyController extends Controller {
   }
 
   def getArtistDetail = IdentifiedBySession.async { implicit request =>
-    request.getQueryString("spId").map { spId =>
+    request.getQueryString("id").map { spId =>
       SpotifyApiFacade.getArtistInfoForFrontend(spId).map { spotifyResponse =>
         Ok(spotifyResponse)
       }
@@ -58,7 +58,7 @@ class SpotifyController extends Controller {
 
   def getAlbumDetail = IdentifiedBySession.async { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
-    request.getQueryString("spId").map { spId =>
+    request.getQueryString("id").map { spId =>
       val usersTracks = TrackFacade(identifier).getUsersTracks
       SpotifyApiFacade.getAlbumInfoForFrontend(spId,usersTracks).map { spotifyResponse =>
         Ok(spotifyResponse)
