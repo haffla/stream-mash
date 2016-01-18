@@ -2,18 +2,11 @@ React = require 'react'
 Helper = require '../util/Helper'
 _ = require 'lodash'
 
-Avatar = require 'material-ui/lib/avatar'
-Card = require 'material-ui/lib/card/card'
-CardHeader = require 'material-ui/lib/card/card-header'
-CardMedia = require 'material-ui/lib/card/card-media'
-CardText = require 'material-ui/lib/card/card-text'
-CardTitle = require 'material-ui/lib/card/card-title'
-Colors = require 'material-ui/lib/styles/colors'
-FontIcon = require 'material-ui/lib/font-icon'
+LeftView = require './LeftView'
+MidView = require './MidView'
+
 List = require 'material-ui/lib/lists/list'
 ListItem = require 'material-ui/lib/lists/list-item'
-Paper = require 'material-ui/lib/paper'
-
 
 StreamingServiceBox = React.createClass
 
@@ -87,95 +80,31 @@ StreamingServiceBox = React.createClass
         rightAvatar={<FontIcon color="#455a64" className="material-icons" >{icon}</FontIcon>}
         />
 
+    if artists.length > 0
+      <div style={display: 'flex', justifyContent: 'space-between'}>
+         <LeftView
+            name={@props.name}
+            artists={artists}
+            nrArtists={@state.artists.length}
+            albumsTotal={Helper.calculateNrOfAlbums(@state.artists)}
+            nrAlbumsInUserCollection={Helper.calculateNrOfAlbumsInCollection(@state.artists)} />
 
-    <div style={display: 'flex', justifyContent: 'space-between'}>
-      <div style={width: '25%'}>
-       <Paper style={width: '100%', marginBottom: 10, padding: 10} zDepth={0} children={
-         <div>
-          <h4>{@props.name}</h4>
-          <table className="table">
-            <thead>
-              <tr>
-                <td></td>
-                <td>Available</td>
-                <td>In your Collection</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Artists</td>
-                <td>{@state.artists.length}</td>
-              </tr>
-              <tr>
-                <td>Albums</td>
-                <td>{Helper.calculateNrOfAlbums(@state.artists)}</td>
-                <td>{Helper.calculateNrOfAlbumsInCollection(@state.artists)}</td>
-              </tr>
-            </tbody>
-          </table>
+         <MidView
+          showPlayer={@props.showPlayer}
+          selectedAlbum={@state.selectedAlbum}
+          selectedArtist={@state.selectedArtist}
+          name={@props.name}
+          />
+
+         {#Right View}
+         <div style={width: '33%'}>
+            <List subheader={@state.selectedArtist.name + "'s " + "Albums on " + @props.name}>
+             {selectedAlbums}
+            </List>
          </div>
-         } />
-
-       <List subheader={@props.name + " Artists"}>
-        {artists}
-       </List>
       </div>
-
-     {
-       if _.has(@state, 'selectedAlbum') && !_.isEmpty(@state.selectedAlbum)
-         nrOfTracksInUsersCollection = _.size(@state.selectedAlbum.tracks.filter (track) -> track.inCollection)
-         <div style={width: '40%'}>
-          <Card>
-            <CardTitle title={@state.selectedAlbum.name} />
-            <CardMedia>
-              <img src={@state.selectedAlbum.img}/>
-            </CardMedia>
-            <CardTitle title={_.size(@state.selectedAlbum.tracks) + " Tracks"} subtitle={"In your Collection: " + nrOfTracksInUsersCollection} />
-            <div>
-              <List>
-                {
-                  @state.selectedAlbum.tracks.map (tr,idx) ->
-                    icon = if tr.inCollection then "check_box" else "check_box_outline_blank"
-                    <ListItem className="trackListItem"
-                      key={"track" + idx}
-                      style={height: 40, cursor: 'auto'}
-                      primaryText={tr.name}
-                      rightAvatar={<FontIcon color="#455a64" className="material-icons" >{icon}</FontIcon>}
-                    />
-                }
-              </List>
-            </div>
-            {
-              if @props.showPlayer
-                <div style={display: 'flex', justifyContent: 'space-around', margin: 10}>
-                  <iframe src={"https://embed.spotify.com/?uri=spotify:album:#{@state.selectedAlbum.id}"} style={width: "300px", height: '80px'} frameBorder="0" allowTransparency="true"></iframe>
-                </div>
-            }
-          </Card>
-         </div>
-       else if _.has(@state, 'selectedArtist') && !_.isEmpty(@state.selectedArtist)
-         nrAlbumsOnSpotify = _.size(@state.selectedArtist.albums)
-         nrAlbumsInUserCollection = _.size(@state.selectedArtist.albums.filter (alb) -> alb.inCollection)
-         <div style={width: '40%'}>
-          <Card>
-            <CardMedia>
-              <img src={@state.selectedArtist.img}/>
-            </CardMedia>
-            <CardTitle
-              title={@state.selectedArtist.name}
-              subtitle={
-                nrAlbumsOnSpotify + " Albums on " + @props.name + " of which you have " + nrAlbumsInUserCollection + " in your Collection"
-                } />
-          </Card>
-         </div>
-     }
-     <div style={width: '33%'}>
-        <List subheader={@state.selectedArtist.name + "'s " + "Albums on " + @props.name}>
-         {selectedAlbums}
-        </List>
-     </div>
-
-    </div>
+    else
+      <p>Nothing here yet.</p>
 
 
 module.exports = StreamingServiceBox

@@ -49,6 +49,12 @@ object NapsterArtistFacade extends ServiceArtistTrait {
   override def saveInfoAboutArtist(js: JsValue): Unit = {
     //TODO do something here
   }
+
+  override def allArtistIds: List[Long] = {
+    transaction {
+      from(AppDB.napsterArtists)(da => select(da.id)).toList
+    }
+  }
 }
 
 

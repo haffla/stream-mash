@@ -13,8 +13,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class NapsterAnalysis(identifier:Either[Int,String],
-                      userFavouriteArtists: List[Artist])
-                      extends ServiceAnalysis(identifier, userFavouriteArtists, "napster") {
+                      usersFavouriteArtists: List[Artist])
+                      extends ServiceAnalysis(identifier, usersFavouriteArtists, "napster") {
 
   override val searchEndpoint = NapsterService.apiEndpoints.artists
   override val serviceArtistFacade = NapsterArtistFacade

@@ -68,4 +68,10 @@ object SpotifyArtistFacade extends ServiceArtistTrait {
       case None =>
     }
   }
+
+  override def allArtistIds: List[Long] = {
+    transaction {
+      from(AppDB.spotifyArtists)(da => select(da.id)).toList
+    }
+  }
 }

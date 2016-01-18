@@ -13,8 +13,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DeezerAnalysis(identifier:Either[Int,String],
-                     userFavouriteArtists: List[Artist])
-                     extends ServiceAnalysis(identifier, userFavouriteArtists, "deezer") {
+                     usersFavouriteArtists: List[Artist])
+                     extends ServiceAnalysis(identifier, usersFavouriteArtists, "deezer") {
 
   override val searchEndpoint = DeezerService.apiEndpoints.artists
   override val serviceArtistFacade = DeezerArtistFacade

@@ -9,6 +9,7 @@ trait ServiceArtistTrait {
   def insertIfNotExists(id:Long):Long
   def insert(id:Long):Long
   def saveInfoAboutArtist(js:JsValue):Unit
+  def allArtistIds:List[Long]
 
   def saveArtistWithName(artistName:String):Long = {
     transaction {
@@ -23,5 +24,4 @@ trait ServiceArtistTrait {
       }
     }
   }
-
 }

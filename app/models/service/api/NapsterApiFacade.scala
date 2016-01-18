@@ -34,7 +34,6 @@ object NapsterApiFacade extends ApiFacade {
 
   private def handleAlbumInfoReponse(albumDetailResponse: WSResponse, albumImagesResponse: WSResponse, usersTracks:List[String]):JsValue = {
     if(albumDetailResponse.status == 200) {
-      println(albumImagesResponse.status)
       val jsFromAlbumResponse = Json.parse(albumDetailResponse.body)
       val images = albumImagesResponse.status match {
         case 200 => Json.parse(albumImagesResponse.body).as[JsValue]

@@ -26,7 +26,6 @@ class DeezerArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFac
         )
     ).toList
   }
-
 }
 
 object DeezerArtistFacade extends ServiceArtistTrait {
@@ -55,6 +54,12 @@ object DeezerArtistFacade extends ServiceArtistTrait {
       case Some(picture) =>
         ArtistFacade.setArtistPic((js \ "name").as[String], picture)
       case None =>
+    }
+  }
+
+  override def allArtistIds: List[Long] = {
+    transaction {
+      from(AppDB.deezerArtists)(da => select(da.id)).toList
     }
   }
 }

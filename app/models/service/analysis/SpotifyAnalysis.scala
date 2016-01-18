@@ -13,15 +13,19 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class SpotifyAnalysis(identifier:Either[Int,String],
-                      userFavouriteArtists: List[Artist])
-                      extends ServiceAnalysis(identifier, userFavouriteArtists, "spotify") {
+                      usersFavouriteArtists: List[Artist])
+                      extends ServiceAnalysis(identifier, usersFavouriteArtists, "spotify") {
 
   override val searchEndpoint = SpotifyService.apiEndpoints.artists
   override val serviceArtistFacade = SpotifyArtistFacade
   override val serviceAlbumFacade = SpotifyAlbumFacade
   override val apiFacade = SpotifyApiFacade
+  val market = "DE"
+  val limit = "50"
+  val album_types = "album,single"
 
-  def urlForRequest(artistId:String):String = searchEndpoint + "/" + artistId + "/albums?market=DE&limit=50"
+  def urlForRequest(artistId:String):String = searchEndpoint + "/" + artistId +
+                                              s"/albums?market=$market&limit=$limit&album_type=$album_types"
 
   override def handleJsonResponse(jsResp:JsValue):List[(String,String)] = {
     val items = (jsResp \ "items").as[List[JsValue]]
@@ -46,7 +50,7 @@ class SpotifyAnalysis(identifier:Either[Int,String],
   override def testAndGetAccessToken():Future[Option[String]] = {
     serviceAccessTokenHelper.getAccessToken match {
       case Some(accessTkn) =>
-        val url = searchEndpoint + "/0OdUWJ0sBjDrqHygGUXeCF/albums?market=DE&limit=50"
+        val url = searchEndpoint + s"/0OdUWJ0sBjDrqHygGUXeCF/albums?market=$market&limit=1"
         getAuthenticatedRequest(url, accessTkn).get().flatMap {
           response =>
             if(response.status == 401)

@@ -14,7 +14,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 abstract class ServiceAnalysis(identifier:Either[Int,String],
-                               userFavouriteArtists: List[Artist],
+                               usersFavouriteArtists: List[Artist],
                                service:String) {
 
   lazy val ich = this.getClass.toString
@@ -36,10 +36,17 @@ abstract class ServiceAnalysis(identifier:Either[Int,String],
     (js \ "next").asOpt[String]
   }
 
+  def filterCachedArtists(usersFavouriteArtists: List[Artist]) = {
+    val cachedArtist = serviceArtistFacade.allArtistIds
+    usersFavouriteArtists.filter(a => !cachedArtist.contains(a.id))
+  }
+
   def analyse():Future[Boolean] = {
+    val artists = filterCachedArtists(usersFavouriteArtists)
+    println(artists)
     for {
       accessToken <- testAndGetAccessToken()
-      ids <- getIds(userFavouriteArtists, accessToken)
+      ids <- getIds(artists, accessToken)
       albums <- getArtistAlbumsFromService(ids, accessToken)
       res = processResponses(albums)
     } yield true
