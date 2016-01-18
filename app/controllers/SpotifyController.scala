@@ -1,7 +1,8 @@
 package controllers
 
 import models.auth.{IdentifiedBySession, Helper}
-import models.database.facade.{TrackFacade, SpotifyArtistFacade, ArtistFacade}
+import models.database.facade.service.SpotifyArtistFacade
+import models.database.facade.{TrackFacade, ArtistFacade}
 import models.service.Constants
 import models.service.api.SpotifyApiFacade
 import models.service.oauth.SpotifyService
@@ -66,23 +67,5 @@ class SpotifyController extends Controller {
     }.getOrElse(
       Future.successful(BadRequest("Missing parameter 'id', e.g. Spotify ID of the album"))
     )
-  }
-
-  def getSpotifyArtistId = IdentifiedBySession.async { implicit request =>
-    request.getQueryString("artist").map { artist =>
-      val mayBeId = ArtistFacade.getArtistByName(artist) match {
-        case Some(a) => a.spotifyId
-        case None => None
-      }
-      mayBeId match {
-        case Some(spoId) => Future.successful(Ok(Json.toJson(Map("spotify_id" -> spoId))))
-        case None => SpotifyApiFacade.getArtistId(artist).map {
-          case Some(spId) =>
-            val id = spId._2
-            Ok(Json.toJson(Map("spotify_id" -> id)))
-          case None => Ok(Json.toJson(Map("error" -> "Did not find a Spotify ID")))
-        }
-      }
-    }.getOrElse(Future.successful(Ok(Json.toJson(Map("error" -> "No artist specified")))))
   }
 }

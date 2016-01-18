@@ -1,7 +1,8 @@
-package models.database.facade
+package models.database.facade.service
 
 import models.database.alias._
 import models.database.alias.service.DeezerArtist
+import models.database.facade.ArtistFacade
 import org.squeryl.PrimitiveTypeMode._
 import play.api.libs.json.JsValue
 

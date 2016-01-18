@@ -1,7 +1,7 @@
 package models.service.analysis
 
 import models.database.alias.Artist
-import models.database.facade.{DeezerAlbumFacade, DeezerArtistFacade}
+import models.database.facade.service.{DeezerAlbumFacade, DeezerArtistFacade}
 import models.service.api.DeezerApiFacade
 import models.service.oauth.DeezerService
 import models.util.Logging

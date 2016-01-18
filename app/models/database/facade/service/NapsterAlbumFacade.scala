@@ -1,15 +1,15 @@
-package models.database.facade
+package models.database.facade.service
 
 import models.database.alias.AppDB
-import models.database.alias.service.DeezerAlbum
+import models.database.alias.service.NapsterAlbum
 import org.squeryl.PrimitiveTypeMode._
 
-object DeezerAlbumFacade extends ServiceAlbumFacade {
+object NapsterAlbumFacade extends ServiceAlbumFacade {
 
   override def insertServiceAlbumIfNotExists(id:Long, serviceId:String):Long = {
-    from(AppDB.deezerAlbums)(da =>
-      where(da.id === id)
-        select da.id
+    from(AppDB.napsterAlbums)(na =>
+      where(na.id === id)
+        select na.id
     ).headOption match {
       case None => insertAlbum(id, serviceId)
       case _ => id
@@ -17,6 +17,6 @@ object DeezerAlbumFacade extends ServiceAlbumFacade {
   }
 
   override def insertAlbum(id: Long, serviceId: String): Long = {
-    AppDB.deezerAlbums.insert(DeezerAlbum(id, serviceId)).id
+    AppDB.napsterAlbums.insert(NapsterAlbum(id, serviceId)).id
   }
 }

@@ -1,6 +1,7 @@
 package models.service.api
 
-import models.database.facade.{ServiceArtistTrait, ServiceArtistAbsenceFacade}
+import models.database.facade.ServiceArtistAbsenceFacade
+import models.database.facade.service.ServiceArtistTrait
 import models.util.Logging
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WS, WSRequest}
@@ -14,8 +15,8 @@ trait ApiFacade {
   lazy val ich = this.getClass.toString
   val serviceArtistFacade:ServiceArtistTrait
   val serviceName:String
-  def authenticateRequest(ws:WSRequest, token:String):WSRequest
   def unAuthRequest(artist:String): WSRequest
+  def authenticateRequest(ws:WSRequest, token:String):WSRequest
   def artistInfoUrl(id:String):String
   def handleJsonIdSearchResponse(
                         json: JsValue,

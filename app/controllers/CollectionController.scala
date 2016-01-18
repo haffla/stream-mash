@@ -1,7 +1,7 @@
 package controllers
 
 import models.auth.{Helper, IdentifiedBySession}
-import models.service.analysis.{DeezerAnalysis, SpotifyAnalysis}
+import models.service.analysis.{NapsterAnalysis, DeezerAnalysis, SpotifyAnalysis}
 import play.api.libs.json.Json
 import play.api.mvc.Controller
 
@@ -22,6 +22,10 @@ class CollectionController extends Controller {
     for {
       deezerResult <- DeezerAnalysis(identifier).analyse()
       spotifyResult <- SpotifyAnalysis(identifier).analyse()
-    } yield Ok(Json.obj("successDeezer" -> deezerResult, "successSpotify" -> spotifyResult))
+      napsterResult <- NapsterAnalysis(identifier).analyse()
+    } yield Ok(Json.obj(
+                  "successDeezer" -> napsterResult,
+                  "successSpotify" -> spotifyResult,
+                  "successNapster" -> napsterResult))
   }
 }

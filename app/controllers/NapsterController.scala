@@ -1,10 +1,17 @@
 package controllers
 
 import models.auth.{Helper, IdentifiedBySession}
+import models.database.facade.TrackFacade
+import models.database.facade.service.{NapsterArtistFacade, SpotifyArtistFacade}
 import models.service.Constants
+import models.service.api.{NapsterApiFacade, SpotifyApiFacade}
 import models.service.oauth.NapsterService
 import models.util.TextWrangler
+import play.api.libs.json.Json
 import play.api.mvc.{Controller, Cookie}
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class NapsterController extends Controller {
 
@@ -31,5 +38,24 @@ class NapsterController extends Controller {
     else {
       Ok(Constants.stateMismatchError)
     }
+  }
+
+  def getArtistsForAnalysis = IdentifiedBySession.async { implicit request =>
+    val identifier = Helper.getUserIdentifier(request.session)
+    NapsterArtistFacade(identifier).getArtistsAndAlbumsForOverview.map { jsonResult =>
+      Ok(Json.obj("artists" -> jsonResult))
+    }
+  }
+
+  def getAlbumDetail = IdentifiedBySession.async { implicit request =>
+    val identifier = Helper.getUserIdentifier(request.session)
+    request.getQueryString("id").map { spId =>
+      val usersTracks = TrackFacade(identifier).getUsersTracks
+      NapsterApiFacade.getAlbumInfoForFrontend(spId,usersTracks).map { napsterResponse =>
+        Ok(napsterResponse)
+      }
+    }.getOrElse(
+      Future.successful(BadRequest("Missing parameter 'id', e.g. Spotify ID of the album"))
+    )
   }
 }

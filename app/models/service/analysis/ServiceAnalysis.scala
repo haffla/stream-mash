@@ -2,6 +2,7 @@ package models.service.analysis
 
 import models.database.alias.Artist
 import models.database.facade._
+import models.database.facade.service.{ServiceAlbumFacade, ServiceArtistTrait}
 import models.service.api.ApiFacade
 import models.service.util.ServiceAccessTokenHelper
 import models.util.Logging

@@ -2,7 +2,7 @@ package models
 
 import models.auth.MessageDigest
 import models.database.alias.AppDB
-import models.database.facade.Services
+import models.database.facade.api.Services
 import models.service.Constants
 import play.api.cache.Cache
 import play.api.libs.concurrent.Execution.Implicits.defaultContext

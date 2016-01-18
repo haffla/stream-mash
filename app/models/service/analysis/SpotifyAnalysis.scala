@@ -1,7 +1,7 @@
 package models.service.analysis
 
 import models.database.alias.Artist
-import models.database.facade.{SpotifyAlbumFacade, SpotifyArtistFacade}
+import models.database.facade.service.{SpotifyAlbumFacade, SpotifyArtistFacade}
 import models.service.api.SpotifyApiFacade
 import models.service.api.refresh.SpotifyRefresh
 import models.service.oauth.SpotifyService

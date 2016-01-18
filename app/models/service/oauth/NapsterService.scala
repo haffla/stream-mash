@@ -45,6 +45,9 @@ object NapsterService extends OAuthStreamingServiceAbstract with FavouriteMusicR
     val authorize = "https://api.rhapsody.com/oauth/authorize"
     val tracks = "https://api.rhapsody.com/v1/me/favorites"
     val token = "https://api.rhapsody.com/oauth/access_token"
+    val search = "http://api.rhapsody.com/v1/search"
+    val artists = "http://api.rhapsody.com/v1/artists"
+    val albums = "http://api.rhapsody.com/v1/albums"
 
     val data = Map(
       "redirect_uri" -> Seq(redirectUri),
@@ -57,7 +60,7 @@ object NapsterService extends OAuthStreamingServiceAbstract with FavouriteMusicR
 
   override def favouriteMusicRetrievalRequest(accessToken:String, page:String):Future[WSResponse] =
     WS.url(apiEndpoints.tracks)
-      .withQueryString("limit" -> "20", "offset" -> page)
+      .withQueryString("limit" -> "100", "offset" -> page)
       .withHeaders("Authorization" -> s"Bearer $accessToken").get()
 
   //TODO Review this

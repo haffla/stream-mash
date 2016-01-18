@@ -1,6 +1,6 @@
 package models.service.library
 
-import models.database.facade.{NapsterFacade, SpotifyFacade}
+import models.database.facade.api.NapsterFacade
 import models.service.Constants
 import models.service.library.util.JsonConversion
 import play.api.libs.json.JsValue

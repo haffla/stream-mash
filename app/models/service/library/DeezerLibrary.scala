@@ -1,6 +1,6 @@
 package models.service.library
 
-import models.database.facade.DeezerFacade
+import models.database.facade.api.DeezerFacade
 import models.service.Constants
 import models.service.library.util.JsonConversion
 import play.api.libs.json.JsValue

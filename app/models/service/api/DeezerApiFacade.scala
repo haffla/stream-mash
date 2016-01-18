@@ -2,7 +2,8 @@ package models.service.api
 
 import java.net.URLEncoder
 
-import models.database.facade.{ServiceArtistTrait, DeezerArtistFacade, DeezerFacade}
+import models.database.facade.api.DeezerFacade
+import models.database.facade.service.{DeezerArtistFacade, ServiceArtistTrait}
 import models.service.oauth.DeezerService.apiEndpoints
 import play.api.Play.current
 import play.api.libs.json.{Json, JsObject, JsValue}

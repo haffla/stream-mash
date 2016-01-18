@@ -1,11 +1,12 @@
-package models.database.facade
+package models.database.facade.service
 
 import models.database.alias._
+import models.database.facade.AlbumFacade
 import org.squeryl.PrimitiveTypeMode._
-import play.api.libs.json.{Json, JsValue}
+import play.api.libs.json.{JsValue, Json}
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 abstract class ServiceArtistFacade(identifier:Either[Int,String]) {
 
@@ -75,6 +76,7 @@ abstract class ServiceArtistFacade(identifier:Either[Int,String]) {
     val field = serviceName match {
       case "spotify" => elem.spotifyId
       case "deezer" => elem.deezerId
+      case "napster" => elem.napsterId
       case _ => throw new Exception("This service has not properly set up yet. Key not found.")
     }
     field.getOrElse("")

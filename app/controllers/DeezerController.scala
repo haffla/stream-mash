@@ -1,7 +1,8 @@
 package controllers
 
 import models.auth.{Helper, IdentifiedBySession}
-import models.database.facade.{TrackFacade, DeezerArtistFacade}
+import models.database.facade.TrackFacade
+import models.database.facade.service.DeezerArtistFacade
 import models.service.Constants
 import models.service.api.{SpotifyApiFacade, DeezerApiFacade}
 import models.service.oauth.DeezerService

@@ -2,6 +2,7 @@ React = require 'react'
 StreamingServiceBox = require './StreamingServiceBox'
 SpotifyHelper = require '../util/SpotifyHelper'
 DeezerHelper = require '../util/DeezerHelper'
+NapsterHelper = require '../util/NapsterHelper'
 
 Colors = require 'material-ui/lib/styles/colors'
 Tabs = require 'material-ui/lib/tabs/tabs'
@@ -13,7 +14,7 @@ AnalysisBox = React.createClass
 
   render: () ->
     <Tabs>
-      <Tab label="Spotify" style={backgroundColor: Colors.green700}>
+      <Tab label="Spotify">
         <div style=@tabStyle>
           <StreamingServiceBox
             name="Spotify"
@@ -24,7 +25,7 @@ AnalysisBox = React.createClass
             helper={SpotifyHelper} />
         </div>
       </Tab>
-      <Tab label="Deezer" style={backgroundColor: Colors.grey800}>
+      <Tab label="Deezer">
         <div style=@tabStyle>
           <StreamingServiceBox
             name="Deezer"
@@ -33,6 +34,17 @@ AnalysisBox = React.createClass
             artistDetailEndpoint="/deezer/artist-detail"
             albumDetailEndpoint="/deezer/album-detail"
             helper={DeezerHelper} />
+        </div>
+      </Tab>
+      <Tab label="Napster">
+        <div style=@tabStyle>
+          <StreamingServiceBox
+            name="Napster"
+            showPlayer={false}
+            artistEndpoint="/napster/artists"
+            artistDetailEndpoint="/napster/artist-detail"
+            albumDetailEndpoint="/napster/album-detail"
+            helper={NapsterHelper} />
         </div>
       </Tab>
     </Tabs>

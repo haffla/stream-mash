@@ -1,6 +1,7 @@
 package models.service.api
 
-import models.database.facade.{ServiceArtistTrait, SpotifyArtistFacade, SpotifyFacade}
+import models.database.facade.api.SpotifyFacade
+import models.database.facade.service.{ServiceArtistTrait, SpotifyArtistFacade}
 import models.service.oauth.SpotifyService.apiEndpoints
 import play.api.Play.current
 import play.api.libs.json.{JsValue, JsObject, Json}

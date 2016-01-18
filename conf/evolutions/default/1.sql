@@ -101,6 +101,15 @@ CREATE TABLE IF NOT EXISTS deezer_album(
     deezer_id VARCHAR(32)
 );
 
+CREATE TABLE IF NOT EXISTS napster_artist(
+    id_napster_artist INT REFERENCES artist(id_artist) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS napster_album(
+    id_napster_album INT REFERENCES album(id_album) ON DELETE CASCADE,
+    napster_id VARCHAR(40)
+);
+
 CREATE TABLE IF NOT EXISTS service_artist_absence(
     id_service_artist_absence SERIAL PRIMARY KEY,
     fk_artist INT NOT NULL REFERENCES artist(id_artist) ON DELETE CASCADE,
@@ -123,5 +132,7 @@ DROP TABLE IF EXISTS spotify_artist CASCADE;
 DROP TABLE IF EXISTS spotify_album CASCADE;
 DROP TABLE IF EXISTS deezer_artist CASCADE;
 DROP TABLE IF EXISTS deezer_album CASCADE;
+DROP TABLE IF EXISTS napster_artist CASCADE;
+DROP TABLE IF EXISTS napster_album CASCADE;
 DROP TABLE IF EXISTS service_artist_absence CASCADE;
 

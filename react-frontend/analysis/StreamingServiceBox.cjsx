@@ -56,7 +56,6 @@ StreamingServiceBox = React.createClass
         dataType: 'json'
         success: (data) =>
           img = @props.helper.getImage data
-          console.log img
           @state.selectedArtist.albums[idx].img = img
           @state.selectedArtist.albums[idx].tracks = data.tracks
           @setState selectedAlbum: @state.selectedArtist.albums[idx]

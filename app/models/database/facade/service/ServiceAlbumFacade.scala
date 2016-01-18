@@ -1,4 +1,4 @@
-package models.database.facade
+package models.database.facade.service
 
 import models.database.alias.{Album, AppDB}
 import org.squeryl.PrimitiveTypeMode._

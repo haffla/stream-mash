@@ -1,8 +1,9 @@
-package models.database.facade
+package models.database.facade.api
 
+import models.database.facade.Facade
+import play.api.Play.current
 import play.api.cache.Cache
 import scalikejdbc._
-import play.api.Play.current
 
 abstract class ServiceFacade extends Facade {
 
