@@ -2,9 +2,10 @@ package models.service.api
 
 import models.database.facade.ServiceArtistAbsenceFacade
 import models.database.facade.service.ServiceArtistTrait
+import models.service.oauth.DeezerService.apiEndpoints
 import models.util.Logging
 import play.api.libs.json.{JsValue, Json}
-import play.api.libs.ws.{WS, WSRequest}
+import play.api.libs.ws.{WSResponse, WS, WSRequest}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -23,6 +24,8 @@ trait ApiFacade {
                         artist:String,
                         identifier:Option[Either[Int,String]],
                         artistNotPresentCallback: (String, Option[Either[Int,String]]) => Option[(String, String)]): Option[(String, String)]
+
+  def getAlbumInfoForFrontend(id:String, usersTracks:List[String]):Future[JsValue]
 
   def artistNotPresentCallback(artist:String, identifier:Option[Either[Int,String]]):Option[(String,String)] = {
     identifier match {

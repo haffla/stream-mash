@@ -29,6 +29,12 @@ object DeezerApiFacade extends ApiFacade {
     WS.url(apiEndpoints.search + s"/artist?q=$a&output=json&strict=on")
   }
 
+  override def getAlbumInfoForFrontend(id:String, usersTracks:List[String]):Future[JsValue] = {
+    for {
+      albumDetailResponse <- WS.url(apiEndpoints.albums + s"/$id").get()
+    } yield handleAlbumInfoResponses(albumDetailResponse:WSResponse, usersTracks)
+  }
+
   override def handleJsonIdSearchResponse(
                                    json: JsValue,
                                    artist:String,
@@ -72,11 +78,5 @@ object DeezerApiFacade extends ApiFacade {
           "status" -> albumDetailResponse.status,
           "text" -> albumDetailResponse.statusText
         )
-  }
-
-  def getAlbumInfoForFrontend(id:String, usersTracks:List[String]):Future[JsValue] = {
-    for {
-      albumDetailResponse <- WS.url(apiEndpoints.albums + s"/$id").get()
-    } yield handleAlbumInfoResponses(albumDetailResponse:WSResponse, usersTracks)
   }
 }

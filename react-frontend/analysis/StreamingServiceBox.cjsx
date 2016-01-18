@@ -5,6 +5,9 @@ _ = require 'lodash'
 LeftView = require './LeftView'
 MidView = require './MidView'
 
+Avatar = require 'material-ui/lib/avatar'
+Colors = require 'material-ui/lib/styles/colors'
+FontIcon = require 'material-ui/lib/font-icon'
 List = require 'material-ui/lib/lists/list'
 ListItem = require 'material-ui/lib/lists/list-item'
 
@@ -86,7 +89,7 @@ StreamingServiceBox = React.createClass
             name={@props.name}
             artists={artists}
             nrArtists={@state.artists.length}
-            albumsTotal={Helper.calculateNrOfAlbums(@state.artists)}
+            nrAlbumsTotal={Helper.calculateNrOfAlbums(@state.artists)}
             nrAlbumsInUserCollection={Helper.calculateNrOfAlbumsInCollection(@state.artists)} />
 
          <MidView

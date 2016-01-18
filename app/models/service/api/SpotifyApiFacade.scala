@@ -25,7 +25,13 @@ object SpotifyApiFacade extends ApiFacade {
 
   def unAuthRequest(artist:String): WSRequest = WS.url(apiEndpoints.search).withQueryString("type" -> "artist", "q" -> artist)
 
-  private def handleAlbumInfoResponses(albumDetailResponse: WSResponse, usersTracks:List[String]):JsValue = {
+  override def getAlbumInfoForFrontend(id:String, usersTracks:List[String]):Future[JsValue] = {
+    for {
+      albumDetailResponse <- WS.url(apiEndpoints.albums + s"/$id").get()
+    } yield handleAlbumInfoResponse(albumDetailResponse:WSResponse, usersTracks)
+  }
+
+  private def handleAlbumInfoResponse(albumDetailResponse: WSResponse, usersTracks:List[String]):JsValue = {
     if(albumDetailResponse.status == 200) {
       val js = Json.parse(albumDetailResponse.body)
       val images = (js \ "images").as[JsValue]
@@ -51,12 +57,6 @@ object SpotifyApiFacade extends ApiFacade {
           "status" -> albumDetailResponse.status,
           "text" -> albumDetailResponse.statusText
         )
-  }
-
-  def getAlbumInfoForFrontend(id:String, usersTracks:List[String]):Future[JsValue] = {
-    for {
-      albumDetailResponse <- WS.url(apiEndpoints.albums + s"/$id").get()
-    } yield handleAlbumInfoResponses(albumDetailResponse:WSResponse, usersTracks)
   }
 
   override def handleJsonIdSearchResponse(

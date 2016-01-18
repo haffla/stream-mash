@@ -5,6 +5,7 @@ Paper = require 'material-ui/lib/paper'
 
 LeftView = React.createClass
   render: () ->
+    console.log @props
     <div style={width: '25%'}>
       <Paper style={width: '100%', marginBottom: 10, padding: 10} zDepth={0} children={
         <div>

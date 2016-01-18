@@ -14,7 +14,7 @@ import scala.concurrent.Future
 
 object NapsterApiFacade extends ApiFacade {
 
-  val apiKey = Play.current.configuration.getString(NapsterService.clientIdKey) match {
+  private val apiKey = Play.current.configuration.getString(NapsterService.clientIdKey) match {
     case Some(key) => key
     case None => throw new Exception("The Napster API only works authenticated")
   }
@@ -32,7 +32,16 @@ object NapsterApiFacade extends ApiFacade {
 
   def unAuthRequest(artist:String): WSRequest = WS.url(apiEndpoints.search + s"?q=$artist&type=artist")
 
-  private def handleAlbumInfoReponse(albumDetailResponse: WSResponse, albumImagesResponse: WSResponse, usersTracks:List[String]):JsValue = {
+  def getAlbumInfoForFrontend(id:String, usersTracks:List[String]):Future[JsValue] = {
+    for {
+      albumDetailResponse <- authenticateRequest(WS.url(apiEndpoints.albums + s"/$id"), apiKey).get()
+      albumImagesResponse <- authenticateRequest(WS.url(apiEndpoints.albums + s"/$id/images"), apiKey).get()
+    } yield handleAlbumInfoResponses(albumDetailResponse, albumImagesResponse, usersTracks)
+  }
+
+  private def handleAlbumInfoResponses(albumDetailResponse: WSResponse,
+                                       albumImagesResponse: WSResponse,
+                                       usersTracks:List[String]):JsValue = {
     if(albumDetailResponse.status == 200) {
       val jsFromAlbumResponse = Json.parse(albumDetailResponse.body)
       val images = albumImagesResponse.status match {
@@ -61,18 +70,11 @@ object NapsterApiFacade extends ApiFacade {
         )
   }
 
-  def getAlbumInfoForFrontend(id:String, usersTracks:List[String]):Future[JsValue] = {
-    for {
-      albumDetailResponse <- authenticateRequest(WS.url(apiEndpoints.albums + s"/$id"), apiKey).get()
-      albumImagesResponse <- authenticateRequest(WS.url(apiEndpoints.albums + s"/$id/images"), apiKey).get()
-    } yield handleAlbumInfoReponse(albumDetailResponse, albumImagesResponse, usersTracks)
-  }
-
   override def handleJsonIdSearchResponse(
-                                 json: JsValue,
-                                 artist:String,
-                                 identifier:Option[Either[Int,String]],
-                                 artistNotPresentCallback: (String, Option[Either[Int,String]]) => Option[(String, String)]): Option[(String, String)] = {
+                     json: JsValue,
+                     artist:String,
+                     identifier:Option[Either[Int,String]],
+                     artistNotPresentCallback: (String, Option[Either[Int,String]]) => Option[(String, String)]): Option[(String, String)] = {
     val artists = json.as[List[JsObject]]
     artists.headOption.map { head =>
       val id = (head \ "id").asOpt[String]
