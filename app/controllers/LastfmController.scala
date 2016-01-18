@@ -6,5 +6,9 @@ class LastfmController extends StreamingServiceController {
 
   override val redirectionService: OauthRouting = LastfmService
   override val serviceName: String = "lastfm"
-  override def requestUserData(code: String, identifier: Either[Int, String]): Unit = false
+  override val serviceSupportsCSRFProtection = false
+
+  override def requestUserData(code: String, identifier: Either[Int, String]): Unit = {
+    LastfmService(identifier).requestUserData(code)
+  }
 }
