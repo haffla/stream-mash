@@ -6,12 +6,12 @@ import models.database.facade.service.{ServiceAlbumFacade, ServiceArtistTrait}
 import models.service.api.ApiFacade
 import models.service.util.ServiceAccessTokenHelper
 import models.util.Logging
-import play.api.libs.json.{Json, JsValue}
+import play.api.Play.current
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WS, WSRequest}
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import play.api.Play.current
+import scala.concurrent.Future
 
 abstract class ServiceAnalysis(identifier:Either[Int,String], service:String) {
 
@@ -35,6 +35,7 @@ abstract class ServiceAnalysis(identifier:Either[Int,String], service:String) {
   }
 
   def analyse():Future[Boolean] = {
+    // TODO: Only get those with score greater than 0
     val artists = artistFacade.getUsersArtists
     for {
       accessToken <- testAndGetAccessToken()

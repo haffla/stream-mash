@@ -9,7 +9,7 @@ import play.api.{Play, PlayException}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-abstract class OAuthStreamingServiceAbstract {
+abstract class OAuthStreamingService {
 
   val clientIdKey:String
   val clientSecretKey:String
@@ -19,6 +19,7 @@ abstract class OAuthStreamingServiceAbstract {
   def confErrorTitle(s:String):String = {
     s"$ich $s was not found."
   }
+
   def confErrorDescription(s:String, key:String):String = {
     s"Please provide a valid $s in the configuration file. Example: $key=[$s goes here]"
   }

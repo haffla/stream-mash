@@ -3,47 +3,24 @@ package controllers
 import models.auth.{Helper, IdentifiedBySession}
 import models.database.facade.TrackFacade
 import models.database.facade.service.DeezerArtistFacade
-import models.service.Constants
-import models.service.api.{SpotifyApiFacade, DeezerApiFacade}
-import models.service.oauth.DeezerService
-import models.util.TextWrangler
-import play.api.libs.json.Json
-import play.api.mvc._
+import models.service.api.DeezerApiFacade
+import models.service.oauth.{DeezerService, OauthRouting}
+import play.api.libs.json.JsValue
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-class DeezerController extends Controller {
+class DeezerController extends StreamingServiceController with AnalysisController {
 
-  def login = IdentifiedBySession { implicit request =>
-    val state = TextWrangler.generateRandomString(16)
-    val withState = DeezerService.queryString + ("state" -> Seq(state))
-    Redirect(DeezerService.apiEndpoints.authorize, withState)
-      .withCookies(Cookie(DeezerService.cookieKey, state))
+  override val redirectionService: OauthRouting = DeezerService
+  override val serviceName: String = "deezer"
+
+  override def requestUserData(code: String, identifier: Either[Int, String]): Unit = {
+    DeezerService(identifier).requestUserData(code)
   }
 
-  def callback = IdentifiedBySession { implicit request =>
-    val identifier = Helper.getUserIdentifier(request.session)
-    val state = request.getQueryString("state")
-    request.getQueryString("code") match {
-      case Some(c) =>
-        val cookieState = request.cookies.get(DeezerService.cookieKey)
-        if(TextWrangler.validateState(cookieState, state)) {
-          DeezerService(identifier).requestUserData(c)
-          Redirect(routes.CollectionController.index("deezer"))
-        }
-        else Ok(Constants.stateMismatchError)
-      case _ =>
-        Redirect(routes.CollectionController.index())
-          .flashing("message" -> Constants.missingOAuthCodeError)
-    }
-  }
-
-  def getArtistsForAnalysis = IdentifiedBySession.async { implicit request =>
-    val identifier = Helper.getUserIdentifier(request.session)
-    DeezerArtistFacade(identifier).getArtistsAndAlbumsForOverview.map { jsonResult =>
-      Ok(Json.obj("artists" -> jsonResult))
-    }
+  override def artistsAndAlbumsForOverview(identifier: Either[Int, String]): Future[JsValue] = {
+    DeezerArtistFacade(identifier).getArtistsAndAlbumsForOverview
   }
 
   def getArtistDetail = IdentifiedBySession.async { implicit request =>

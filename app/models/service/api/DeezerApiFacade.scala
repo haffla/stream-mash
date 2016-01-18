@@ -6,11 +6,11 @@ import models.database.facade.api.DeezerFacade
 import models.database.facade.service.{DeezerArtistFacade, ServiceArtistTrait}
 import models.service.oauth.DeezerService.apiEndpoints
 import play.api.Play.current
-import play.api.libs.json.{Json, JsObject, JsValue}
-import play.api.libs.ws.{WSResponse, WS, WSRequest}
+import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.ws.{WS, WSRequest, WSResponse}
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 object DeezerApiFacade extends ApiFacade {
 

@@ -3,7 +3,7 @@ package controllers
 import java.io.File
 
 import models.User
-import models.auth.{IdentifiedBySession, Helper, MessageDigest}
+import models.auth.{Helper, IdentifiedBySession, MessageDigest}
 import models.service.library.ItunesLibrary
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._

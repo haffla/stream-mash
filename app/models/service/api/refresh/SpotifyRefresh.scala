@@ -1,7 +1,7 @@
 package models.service.api.refresh
 
 import models.auth.MessageDigest
-import models.service.oauth.OAuthStreamingServiceAbstract
+import models.service.oauth.OAuthStreamingService
 import models.service.util.ServiceAccessTokenHelper
 import play.api.libs.ws.WS
 import play.api.Play.current
@@ -9,7 +9,7 @@ import play.api.Play.current
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SpotifyRefresh(identifier:Either[Int,String]) extends OAuthStreamingServiceAbstract {
+class SpotifyRefresh(identifier:Either[Int,String]) extends OAuthStreamingService {
 
   val clientIdKey = "spotify.client.id"
   val clientSecretKey = "spotify.client.secret"

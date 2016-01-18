@@ -27,7 +27,7 @@ class NapsterService(identifier: Either[Int, String]) extends ApiDataRequest("na
   }
 }
 
-object NapsterService extends OAuthStreamingServiceAbstract with FavouriteMusicRetrieval with OauthRedirection {
+object NapsterService extends OAuthStreamingService with FavouriteMusicRetrieval with OauthRouting {
 
   def apply(identifier: Either[Int, String]) = new NapsterService(identifier)
   val clientIdKey = "napster.client.id"
@@ -68,6 +68,8 @@ object NapsterService extends OAuthStreamingServiceAbstract with FavouriteMusicR
     val list = json.as[List[JsValue]]
     (list.nonEmpty, list.length)
   }
+
+  override def authorizeEndpoint: String = apiEndpoints.authorize
 }
 
 

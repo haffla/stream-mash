@@ -30,7 +30,7 @@ class DeezerService(identifier:Either[Int,String]) extends ApiDataRequest("deeze
     } yield token
   }
 }
-object DeezerService extends OAuthStreamingServiceAbstract with FavouriteMusicRetrieval with OauthRedirection {
+object DeezerService extends OAuthStreamingService with FavouriteMusicRetrieval with OauthRouting {
 
   def apply(identifier:Either[Int,String]) = new DeezerService(identifier)
 
@@ -64,4 +64,6 @@ object DeezerService extends OAuthStreamingServiceAbstract with FavouriteMusicRe
     //TODO: Implement
     (false,0)
   }
+
+  override def authorizeEndpoint: String = apiEndpoints.authorize
 }

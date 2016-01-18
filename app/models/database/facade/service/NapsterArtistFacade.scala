@@ -13,13 +13,15 @@ class NapsterArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFa
     join(AppDB.albums,
          AppDB.artists,
          AppDB.napsterAlbums,
-         AppDB.napsterArtists)( (alb,art,npAlb,npArt) =>
-      where(art.id in usersArtists)
+         AppDB.napsterArtists,
+         AppDB.userArtistLikings.leftOuter)( (alb,art,npAlb,npArt,ual) =>
+      where(art.id in usersArtists and (ual.map(_.score).isNull or ual.map(_.score).gt(0)))
         select(alb, art, npAlb.napsterId)
         on(
         alb.artistId === art.id,
         alb.id === npAlb.id,
-        art.id === npArt.id
+        art.id === npArt.id,
+        art.id === ual.map(_.id)
         )
     ).toList
   }

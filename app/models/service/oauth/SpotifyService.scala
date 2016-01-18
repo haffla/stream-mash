@@ -27,19 +27,21 @@ class SpotifyService(identifier: Either[Int, String]) extends ApiDataRequest("sp
   }
 }
 
-object SpotifyService extends OAuthStreamingServiceAbstract with FavouriteMusicRetrieval with OauthRedirection {
+object SpotifyService extends OAuthStreamingService with FavouriteMusicRetrieval with OauthRouting {
 
   def apply(identifier: Either[Int, String]) = new SpotifyService(identifier)
-  val clientIdKey = "spotify.client.id"
-  val clientSecretKey = "spotify.client.secret"
-  val redirectUriPath = "/spotify/callback"
+  override val clientIdKey = "spotify.client.id"
+  override val clientSecretKey = "spotify.client.secret"
+  override val redirectUriPath = "/spotify/callback"
   val scope:Seq[String] = Seq(
     "user-read-private",
     "playlist-read-private",
     "user-follow-read",
     "user-library-read"
   )
-  val cookieKey = "spotify_auth_state"
+  override val cookieKey = "spotify_auth_state"
+
+  override def authorizeEndpoint: String = apiEndpoints.authorize
 
   val queryString:Map[String,Seq[String]] = Map(
     "response_type" -> Seq("code"),

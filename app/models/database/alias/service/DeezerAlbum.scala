@@ -3,4 +3,7 @@ package models.database.alias.service
 import org.squeryl.annotations._
 
 case class DeezerAlbum(@Column("id_deezer_album") id:Long,
-                       @Column("deezer_id") deezerId:String)
+                       @Column("deezer_id") deezerId:String) extends ServiceAlbum {
+  override def getId: Long = this.id
+  override def serviceId: String = this.deezerId
+}

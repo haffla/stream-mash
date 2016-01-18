@@ -26,7 +26,7 @@ class SoundcloudService(identifier: Either[Int, String]) extends ApiDataRequest(
   }
 }
 
-object SoundcloudService extends OAuthStreamingServiceAbstract with OauthRedirection {
+object SoundcloudService extends OAuthStreamingService with OauthRouting {
 
   def apply(identifier: Either[Int, String]) = new SoundcloudService(identifier)
 
@@ -42,6 +42,8 @@ object SoundcloudService extends OAuthStreamingServiceAbstract with OauthRedirec
     "redirect_uri" -> Seq(redirectUri),
     "scope" -> Seq("non-expiring")
   )
+
+  override def authorizeEndpoint: String = "https://api.soundcloud.com/connect"
 
   val client = Client(clientId, clientSecret, redirectUri)
 

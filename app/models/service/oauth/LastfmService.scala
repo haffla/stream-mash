@@ -45,7 +45,7 @@ class LastfmService(identifier: Either[Int, String]) extends ApiDataRequest  ("l
 
 }
 
-object LastfmService extends OAuthStreamingServiceAbstract with FavouriteMusicRetrieval with OauthRedirection {
+object LastfmService extends OAuthStreamingService with FavouriteMusicRetrieval with OauthRouting {
 
   def apply(identifier: Either[Int, String]) = new LastfmService(identifier)
 
@@ -55,7 +55,7 @@ object LastfmService extends OAuthStreamingServiceAbstract with FavouriteMusicRe
   val redirectUriPath = "/lastfm/callback"
   val cookieKey = "lastfm_auth_state"
 
-  val queryString:Map[String,Seq[String]] = Map(
+  override val queryString:Map[String,Seq[String]] = Map(
     "api_key" -> Seq(clientId),
     "cb" -> Seq(redirectUri)
   )
@@ -103,4 +103,6 @@ object LastfmService extends OAuthStreamingServiceAbstract with FavouriteMusicRe
     val total = (json \"toptracks" \ "@attr" \ "totalPages").as[String].toInt
     (page < total, page + 1)
   }
+
+  override def authorizeEndpoint: String = apiEndpoints.authorize
 }

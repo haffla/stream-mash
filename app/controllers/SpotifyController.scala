@@ -1,50 +1,26 @@
 package controllers
 
-import models.auth.{IdentifiedBySession, Helper}
+import models.auth.{Helper, IdentifiedBySession}
+import models.database.facade.TrackFacade
 import models.database.facade.service.SpotifyArtistFacade
-import models.database.facade.{TrackFacade, ArtistFacade}
-import models.service.Constants
 import models.service.api.SpotifyApiFacade
-import models.service.oauth.SpotifyService
-import models.util.TextWrangler
+import models.service.oauth.{OauthRouting, SpotifyService}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.libs.json.Json
-import play.api.mvc.{Cookie, Controller}
+import play.api.libs.json.JsValue
 
 import scala.concurrent.Future
 
-class SpotifyController extends Controller {
+class SpotifyController extends StreamingServiceController with AnalysisController {
 
-  def login = IdentifiedBySession { implicit request =>
-    val state = TextWrangler.generateRandomString(16)
-    val withState = SpotifyService.queryString + ("state" -> Seq(state))
-    Redirect(SpotifyService.apiEndpoints.authorize, withState)
-      .withCookies(Cookie(SpotifyService.cookieKey, state))
+  override val redirectionService: OauthRouting = SpotifyService
+  override val serviceName: String = "spotify"
+
+  override def requestUserData(code: String, identifier: Either[Int, String]): Unit = {
+    SpotifyService(identifier).requestUserData(code)
   }
 
-  def callback = IdentifiedBySession { implicit request =>
-    val identifier = Helper.getUserIdentifier(request.session)
-    val state = request.getQueryString("state")
-    val stateCookie = request.cookies.get(SpotifyService.cookieKey)
-    if(TextWrangler.validateState(stateCookie, state)) {
-      request.getQueryString("code") match {
-        case Some(code) =>
-          SpotifyService(identifier).requestUserData(code)
-          Redirect(routes.CollectionController.index("spotify"))
-        case None =>
-          Ok(Constants.missingOAuthCodeError)
-      }
-    }
-    else {
-      Ok(Constants.stateMismatchError)
-    }
-  }
-
-  def getArtistsForAnalysis = IdentifiedBySession.async { implicit request =>
-    val identifier = Helper.getUserIdentifier(request.session)
-    SpotifyArtistFacade(identifier).getArtistsAndAlbumsForOverview.map { jsonResult =>
-      Ok(Json.obj("artists" -> jsonResult))
-    }
+  override def artistsAndAlbumsForOverview(identifier: Either[Int, String]): Future[JsValue] = {
+    SpotifyArtistFacade(identifier).getArtistsAndAlbumsForOverview
   }
 
   def getArtistDetail = IdentifiedBySession.async { implicit request =>
