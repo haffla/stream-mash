@@ -22,7 +22,8 @@ class AuthenticationFlowTest extends PlaySpec with OneServerPerSuite with OneBro
                 pageTitle mustBe titleHome
             }
 
-            click on linkText(" Logout")
+            go to s"$home/logout"
+            
             eventually {
                 pageTitle mustBe "Login"
             }
