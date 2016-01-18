@@ -13,7 +13,9 @@ import play.api.libs.ws.{WS, WSRequest}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-abstract class ServiceAnalysis(identifier:Either[Int,String], service:String) {
+abstract class ServiceAnalysis(identifier:Either[Int,String],
+                               userFavouriteArtists: List[Artist],
+                               service:String) {
 
   lazy val ich = this.getClass.toString
   val serviceAccessTokenHelper = new ServiceAccessTokenHelper(service, identifier)
@@ -35,11 +37,9 @@ abstract class ServiceAnalysis(identifier:Either[Int,String], service:String) {
   }
 
   def analyse():Future[Boolean] = {
-    // TODO: Only get those with score greater than 0
-    val artists = artistFacade.getUsersArtists
     for {
       accessToken <- testAndGetAccessToken()
-      ids <- getIds(artists, accessToken)
+      ids <- getIds(userFavouriteArtists, accessToken)
       albums <- getArtistAlbumsFromService(ids, accessToken)
       res = processResponses(albums)
     } yield true

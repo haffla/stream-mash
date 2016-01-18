@@ -12,7 +12,9 @@ import play.api.libs.ws.{WS, WSRequest}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class NapsterAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(identifier, "napster") {
+class NapsterAnalysis(identifier:Either[Int,String],
+                      userFavouriteArtists: List[Artist])
+                      extends ServiceAnalysis(identifier, userFavouriteArtists, "napster") {
 
   override val searchEndpoint = NapsterService.apiEndpoints.artists
   override val serviceArtistFacade = NapsterArtistFacade
@@ -51,7 +53,8 @@ class NapsterAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
 }
 
 object NapsterAnalysis {
-  def apply(identifier:Either[Int,String]) = new NapsterAnalysis(identifier)
+  def apply(identifier:Either[Int,String], userFavouriteArtists: List[Artist])
+              = new NapsterAnalysis(identifier, userFavouriteArtists)
 }
 
 

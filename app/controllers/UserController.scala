@@ -84,7 +84,7 @@ class UserController extends Controller {
 
   def getArtistPic = IdentifiedBySession.async { implicit request =>
     request.getQueryString("artist").map { art =>
-      ArtistFacade.getArtistPic(art).map { img =>
+      ArtistFacade.artistPic(art).map { img =>
         Future.successful(Ok(Json.toJson(Map("img" -> img))))
       }.getOrElse {
         EchoNestApi.getArtistImage(art) map {

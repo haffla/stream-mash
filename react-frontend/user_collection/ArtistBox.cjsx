@@ -118,7 +118,7 @@ ArtistBox = React.createClass
       type: 'POST'
       dataType: 'json'
       success: (data) =>
-        if data.successDeezer and data.successSpotify and data.successNapster
+        if data.success
           @setState analysing: false, isAnalysed: true
       error: (jqXHR, textStatus, e) ->
         console.log(e)

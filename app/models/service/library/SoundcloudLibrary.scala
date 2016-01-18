@@ -33,7 +33,7 @@ class SoundcloudLibrary(identifier: Either[Int, String]) extends Library(identif
           val user = (entity \ "user").as[JsValue]
           val artist = (user \ "username").as[String]
           val title = (entity \ "title").as[String]
-          val artistFromDb = ArtistFacade.getArtistByName(artist)
+          val artistFromDb = ArtistFacade.artistByName(artist)
           artistFromDb match {
             case Some(art) =>
               SoundcloudFacade.saveArtistWithServiceId(art.name, id.toString)

@@ -12,7 +12,9 @@ import play.api.Play.current
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(identifier, "spotify") {
+class SpotifyAnalysis(identifier:Either[Int,String],
+                      userFavouriteArtists: List[Artist])
+                      extends ServiceAnalysis(identifier, userFavouriteArtists, "spotify") {
 
   override val searchEndpoint = SpotifyService.apiEndpoints.artists
   override val serviceArtistFacade = SpotifyArtistFacade
@@ -65,5 +67,6 @@ class SpotifyAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(ide
 }
 
 object SpotifyAnalysis {
-  def apply(identifier:Either[Int,String]) = new SpotifyAnalysis(identifier)
+  def apply(identifier:Either[Int,String], userFavouriteArtists: List[Artist])
+                = new SpotifyAnalysis(identifier, userFavouriteArtists)
 }

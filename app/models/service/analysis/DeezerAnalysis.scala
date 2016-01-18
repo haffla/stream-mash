@@ -12,7 +12,9 @@ import play.api.libs.ws.{WS, WSRequest}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DeezerAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(identifier, "deezer") {
+class DeezerAnalysis(identifier:Either[Int,String],
+                     userFavouriteArtists: List[Artist])
+                     extends ServiceAnalysis(identifier, userFavouriteArtists, "deezer") {
 
   override val searchEndpoint = DeezerService.apiEndpoints.artists
   override val serviceArtistFacade = DeezerArtistFacade
@@ -67,7 +69,8 @@ class DeezerAnalysis(identifier:Either[Int,String]) extends ServiceAnalysis(iden
 }
 
 object DeezerAnalysis {
-  def apply(identifier:Either[Int,String]) = new DeezerAnalysis(identifier)
+  def apply(identifier:Either[Int,String], userFavouriteArtists: List[Artist])
+              = new DeezerAnalysis(identifier, userFavouriteArtists)
 }
 
 

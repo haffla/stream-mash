@@ -27,7 +27,7 @@ class ArtistLikingFacade(identifier:Either[Int,String]) extends Facade {
   }
 
   def createNewArtistLiking(artist:String, score:Double) = {
-    ArtistFacade.getArtistByName(artist) match {
+    ArtistFacade.artistByName(artist) match {
       case Some(art) =>
         val ual = identifier match {
           case Left(id) => UserArtistLiking(artistId = art.id, userId = Some(id.toLong), score = score)
