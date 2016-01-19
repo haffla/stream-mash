@@ -2,7 +2,7 @@ package models.service.oauth
 
 import models.service.Constants
 import models.util.Logging
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
 import play.api.{Play, PlayException}
 

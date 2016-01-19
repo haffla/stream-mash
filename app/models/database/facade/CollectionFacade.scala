@@ -1,6 +1,7 @@
 package models.database.facade
 
 import models.database.alias.{Album,AppDB,Artist,Track,UserCollection}
+import org.squeryl.PrimitiveTypeMode._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -13,7 +14,12 @@ class CollectionFacade(identifier:Either[Int,String]) extends Facade {
 
   def userCollection:Future[List[(Album, Artist, Track, UserCollection)]] = {
     Future {
-      AppDB.getCollectionByUser(identifier)
+      transaction {
+        from(AppDB.collections, AppDB.tracks, AppDB.albums, AppDB.artists)((coll, tr, alb, art) =>
+          where(AppDB.userWhereClause(coll, identifier) and coll.trackId === tr.id and tr.albumId === alb.id and tr.artistId === art.id)
+            select (alb,art,tr,coll)
+        ).toList
+      }
     }
   }
 }

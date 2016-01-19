@@ -1,10 +1,8 @@
 package controllers
 
 import models.User
-import models.auth.{Authenticated, AdminAccess, IdentifiedBySession, Helper}
-import models.database.alias.AppDB
-import models.database.facade.{ArtistLikingFacade, ArtistFacade, CollectionFacade}
-import models.service.analysis.SpotifyAnalysis
+import models.auth.{AdminAccess, Authenticated, Helper, IdentifiedBySession}
+import models.database.facade.{ArtistFacade, ArtistLikingFacade, CollectionFacade}
 import models.service.api.discover.EchoNestApi
 import models.service.library.{AudioFileLibrary, Library}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -47,7 +45,6 @@ class UserController extends Controller {
 
   private def collectionFromDb(identifier: Either[Int, String]) = {
     val library = new Library(identifier)
-    AppDB.getCollectionByUser(identifier)
     CollectionFacade(identifier).userCollection map { collection =>
         if(collection.nonEmpty) Ok(library.prepareCollectionForFrontend(collection))
         else Ok(Json.toJson(Map("error" -> "You have no records stored in our database.")))

@@ -55,15 +55,6 @@ object AppDB extends Schema {
     saa.id is autoIncremented("service_artist_absence_id_service_artist_absence_seq")
   ))
 
-  def getCollectionByUser(identifier:Either[Int,String]):List[(Album, Artist, Track, UserCollection)] = {
-    transaction {
-      from(collections, tracks, albums, artists)((coll, tr, alb, art) =>
-        where(userWhereClause(coll, identifier) and coll.trackId === tr.id and tr.albumId === alb.id and tr.artistId === art.id)
-          select (alb,art,tr,coll)
-      ).toList
-    }
-  }
-
   def userWhereClause(userRelatedEntity:HasUserOrSession, id:Either[Int,String]):LogicalBoolean = {
     id match {
       case Left(i) => userRelatedEntity.getUserId === i

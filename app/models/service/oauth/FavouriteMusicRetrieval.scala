@@ -2,11 +2,11 @@ package models.service.oauth
 
 import models.service.Constants
 import models.util.Logging
-import play.api.libs.json.{Json, JsValue}
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSResponse
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait FavouriteMusicRetrieval {
 

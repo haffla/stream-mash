@@ -34,11 +34,11 @@ object DeezerService extends OAuthStreamingService with FavouriteMusicRetrieval 
 
   def apply(identifier:Either[Int,String]) = new DeezerService(identifier)
 
-  val clientIdKey = "deezer.app.id"
-  val clientSecretKey = "deezer.app.secret"
+  override val clientIdKey = "deezer.app.id"
+  override val clientSecretKey = "deezer.app.secret"
 
-  val redirectUriPath = "/deezer/callback"
-  val cookieKey = "deezer_auth_state"
+  override val redirectUriPath = "/deezer/callback"
+  override val cookieKey = "deezer_auth_state"
 
   override lazy val redirectUri = "http://haffla.de"
 
