@@ -26,7 +26,6 @@ abstract class ServiceArtistFacade(identifier:Either[Int,String]) {
     */
   def getUserRelatedServiceAlbums:List[(Album,Artist,String)] = {
     transaction {
-
       /** First get all related artist */
       val usersArtists =
         from(AppDB.artists, AppDB.collections, AppDB.tracks)((a,c,t) =>

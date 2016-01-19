@@ -69,11 +69,11 @@ class UserController extends Controller {
     }
   }
 
-  def handleScore = IdentifiedBySession { implicit request =>
+  def rating = IdentifiedBySession { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
     request.body.asJson.map { js =>
       val artist = (js \ "name").as[String]
-      val score = (js \ "score").as[Double]
+      val score = (js \ "rating").as[Double]
       ArtistLikingFacade(identifier).setScoreForArtist(artist, score)
       Ok(Json.toJson(Map("success" -> true)))
     }.getOrElse(BadRequest("No request parameters found"))
@@ -89,7 +89,6 @@ class UserController extends Controller {
           case _ => Ok(Json.toJson(Map("error" -> "No picture found for artist")))
         }
       }
-
     }.getOrElse(Future.successful(BadRequest("No parameter 'artist' found")))
   }
 }

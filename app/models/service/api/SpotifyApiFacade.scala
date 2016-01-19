@@ -65,10 +65,12 @@ object SpotifyApiFacade extends ApiFacade {
                                  identifier:Option[Either[Int,String]],
                                  artistNotPresentCallback: (String, Option[Either[Int,String]]) => Option[(String, String)]): Option[(String, String)] = {
     val artists = (json \ "artists" \ "items").as[List[JsObject]]
-    artists.headOption.map { head =>
-      val id = (head \ "id").asOpt[String]
+    artists.headOption.map { js =>
+      val id = (js \ "id").asOpt[String]
       id match {
         case Some(i) =>
+          // Spotify has good quality pics of artists so we safe them here.
+          SpotifyArtistFacade.saveInfoAboutArtist(js)
           SpotifyFacade.saveArtistWithServiceId(artist, i)
           Some((artist, i))
         case None => None

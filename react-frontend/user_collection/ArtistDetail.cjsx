@@ -15,7 +15,7 @@ ArtistDetail = React.createClass
 
   render: () ->
     avatar =
-      if _.has(@props.selectedArtist, 'img') then <Avatar src={@props.selectedArtist.img} />
+      if !_.isEmpty(@props.selectedArtist.img) then <Avatar src={@props.selectedArtist.img} />
       else
         initials = Helper.getInitials @props.selectedArtist.name
         <Avatar>{initials}</Avatar>
@@ -32,7 +32,7 @@ ArtistDetail = React.createClass
         }
         style={width: '33%'}>
         <ListItem primaryText={@props.selectedArtist.name} leftAvatar={avatar} />
-        <ListItem secondaryText="Score" rightAvatar={
+        <ListItem secondaryText="Rating" rightAvatar={
           <div>
             <Slider
               style={width: 100}
@@ -41,7 +41,7 @@ ArtistDetail = React.createClass
               onChange={@props.onArtistSlideChange.bind(null, @props.selectedArtist.idx)}
               max={3}
               step={1}
-              value={if _.has(@props.selectedArtist, 'score') then @props.selectedArtist.score else 1}/>
+              value={@props.selectedArtist.rating}/>
           </div>
         } />
       </List>

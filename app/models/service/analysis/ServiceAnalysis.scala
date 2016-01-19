@@ -43,7 +43,6 @@ abstract class ServiceAnalysis(identifier:Either[Int,String],
 
   def analyse():Future[Boolean] = {
     val artists = filterCachedArtists(usersFavouriteArtists)
-    println(artists)
     for {
       accessToken <- testAndGetAccessToken()
       ids <- getIds(artists, accessToken)

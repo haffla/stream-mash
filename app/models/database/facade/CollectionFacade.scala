@@ -1,6 +1,6 @@
 package models.database.facade
 
-import models.database.alias.{Album,AppDB,Artist,Track,UserCollection}
+import models.database.alias._
 import org.squeryl.PrimitiveTypeMode._
 
 import scala.concurrent.Future
@@ -12,13 +12,20 @@ object CollectionFacade {
 
 class CollectionFacade(identifier:Either[Int,String]) extends Facade {
 
-  def userCollection:Future[List[(Album, Artist, Track, UserCollection)]] = {
+  def userCollection:Future[List[(Album,Artist,Track,UserCollection,Option[UserArtistLiking])]] = {
     Future {
       transaction {
-        from(AppDB.collections, AppDB.tracks, AppDB.albums, AppDB.artists)((coll, tr, alb, art) =>
-          where(AppDB.userWhereClause(coll, identifier) and coll.trackId === tr.id and tr.albumId === alb.id and tr.artistId === art.id)
-            select (alb,art,tr,coll)
-        ).toList
+        join(AppDB.artists, AppDB.tracks, AppDB.albums, AppDB.collections, AppDB.userArtistLikings.leftOuter)(
+          (art,tr,alb,col,ual) =>
+            where(AppDB.userWhereClause(col,identifier) and (AppDB.doesNotExist(ual) or AppDB.existsAndBelongsToUser(ual,identifier)))
+            select (alb,art,tr,col,ual)
+            on(
+              tr.artistId === art.id,
+              tr.albumId === alb.id,
+              col.trackId === tr.id,
+              art.id === ual.map(_.artistId)
+              )
+          ).toList
       }
     }
   }

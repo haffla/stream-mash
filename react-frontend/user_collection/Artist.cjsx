@@ -17,7 +17,7 @@ Artist = React.createClass
             onChange={@props.onArtistSlideChange.bind(null, @props.idx)}
             max={3}
             step={1}
-            value={if _.has(@props.artist, 'score') then @props.artist.score else 1}/>
+            value={@props.artist.rating}/>
         </div>
       </div>
     </div>

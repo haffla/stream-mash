@@ -70,7 +70,7 @@ ArtistBox = React.createClass
     @setState {nrCols: value}
 
   handleArtistClick: (idx) ->
-    unless _.has(@state.data[idx], 'img')
+    if _.isEmpty(@state.data[idx].img)
       $.ajax '/artist/image',
         type: 'GET'
         data: {artist: @state.data[idx].name}
@@ -87,18 +87,21 @@ ArtistBox = React.createClass
       @setState selectedArtist: @state.data[idx]
 
   handleArtistSlide: (idx, evt, val) ->
-    @state.data[idx].score = val
+    clearTimeout(window.delayedAjaxCall)
+    @state.data[idx].rating = val
     @setState data: @state.data
     artistToChange = @state.data[idx]
-    $.ajax '/artist/score',
-      type: 'POST'
-      dataType: 'json'
-      contentType: 'application/json; charset=utf-8'
-      data: JSON.stringify artistToChange
-      success: (data) ->
-        console.log(data)
-      error: (jqXHR, textStatus, e) ->
-        console.log(e)
+    ajaxCall = () ->
+      $.ajax '/artist/rating',
+        type: 'POST'
+        dataType: 'json'
+        contentType: 'application/json; charset=utf-8'
+        data: JSON.stringify artistToChange
+        success: (data) ->
+          console.log(data)
+        error: (jqXHR, textStatus, e) ->
+          console.log(e)
+    window.delayedAjaxCall = setTimeout ajaxCall, 777
 
   closeDialog: () ->
     @setState {dialog: {open: false}}
