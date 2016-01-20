@@ -32,7 +32,7 @@ object NapsterArtistFacade extends ServiceArtistTrait {
 
   def apply(identifier: Either[Int,String]) = new NapsterArtistFacade(identifier)
 
-  override def insertIfNotExists(id:Long):Long = {
+  override protected def insertIfNotExists(id:Long):Long = {
     from(AppDB.napsterArtists)(sa =>
       where(sa.id === id)
         select sa.id
@@ -42,7 +42,7 @@ object NapsterArtistFacade extends ServiceArtistTrait {
     }
   }
 
-  override def insert(id: Long):Long = {
+  override protected def insert(id: Long):Long = {
     AppDB.napsterArtists.insert(NapsterArtist(id)).id
   }
 

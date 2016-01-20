@@ -37,7 +37,7 @@ object SpotifyArtistFacade extends ServiceArtistTrait {
 
   def apply(identifier: Either[Int,String]) = new SpotifyArtistFacade(identifier)
 
-  override def insertIfNotExists(id:Long):Long = {
+  override protected def insertIfNotExists(id:Long):Long = {
     from(AppDB.spotifyArtists)(sa =>
       where(sa.id === id)
         select sa.id
@@ -47,7 +47,7 @@ object SpotifyArtistFacade extends ServiceArtistTrait {
     }
   }
 
-  override def insert(id: Long):Long = {
+  override protected def insert(id: Long):Long = {
     AppDB.spotifyArtists.insert(SpotifyArtist(id)).id
   }
 

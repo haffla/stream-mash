@@ -1,7 +1,6 @@
 package models.service.analysis
 
 import models.database.alias.Artist
-import models.database.facade._
 import models.database.facade.service.{ServiceAlbumFacade, ServiceArtistTrait}
 import models.service.api.ApiFacade
 import models.service.util.ServiceAccessTokenHelper
@@ -20,13 +19,15 @@ abstract class ServiceAnalysis(identifier:Either[Int,String],
   lazy val ich = this.getClass.toString
   val serviceAccessTokenHelper = new ServiceAccessTokenHelper(service, identifier)
   val searchEndpoint:String
-  val albumFacade:AlbumFacade = new AlbumFacade(identifier)
-  val artistFacade:ArtistFacade = new ArtistFacade(identifier)
   val serviceArtistFacade:ServiceArtistTrait
   val serviceAlbumFacade:ServiceAlbumFacade
   val apiFacade:ApiFacade
 
   def testAndGetAccessToken():Future[Option[String]]
+
+  /**
+    * returns a Tuple with the album name and the service id of the album
+    */
   def handleJsonResponse(jsResp:JsValue):List[(String,String)]
   def getAuthenticatedRequest(url:String, accessToken:String):WSRequest
   def urlForRequest(artistId:String):String
@@ -41,17 +42,16 @@ abstract class ServiceAnalysis(identifier:Either[Int,String],
     usersFavouriteArtists.filter(a => !cachedArtist.contains(a.id))
   }
 
-  def analyse():Future[Boolean] = {
+  def analyse():Future[Map[String, List[(String, String, String)]]] = {
     val artists = filterCachedArtists(usersFavouriteArtists)
     for {
       accessToken <- testAndGetAccessToken()
-      ids <- getIds(artists, accessToken)
+      ids <- artistIds(artists, accessToken)
       albums <- getArtistAlbumsFromService(ids, accessToken)
-      res = processResponses(albums)
-    } yield true
+    } yield processResponses(albums)
   }
 
-  private def getIds(
+  private def artistIds(
               artists: List[models.database.alias.Artist],
               token:Option[String]):Future[List[Option[(String,String)]]] = {
     if(artists.nonEmpty) {
@@ -67,7 +67,7 @@ abstract class ServiceAnalysis(identifier:Either[Int,String],
     else Future.successful(Nil)
   }
 
-  def doRequest(url:String, token:Option[String], jsonResponses:List[JsValue]):Future[List[JsValue]] = {
+  def artistsAlbumsRequest(url:String, token:Option[String], jsonResponses:List[JsValue]):Future[List[JsValue]] = {
     val request = token match {
       case Some(tkn) => getAuthenticatedRequest(url, tkn)
       case _ => WS.url(url)
@@ -80,7 +80,7 @@ abstract class ServiceAnalysis(identifier:Either[Int,String],
       else {
         val js = Json.parse(response.body)
         getNextUrl(js) match {
-          case Some(nextUrl) => doRequest(nextUrl, token, js::jsonResponses)
+          case Some(nextUrl) => artistsAlbumsRequest(nextUrl, token, js::jsonResponses)
           case _ => Future.successful(js::jsonResponses)
         }
       }
@@ -96,37 +96,29 @@ abstract class ServiceAnalysis(identifier:Either[Int,String],
         val artistName = artist._1
         val artistId = artist._2
         val url = urlForRequest(artistId)
-        doRequest(url,accessToken,Nil) map(jsonResponses => (artistName, jsonResponses))
+        artistsAlbumsRequest(url,accessToken,Nil) map(jsonResponses => (artistName, jsonResponses))
       }
     }
   }
 
-  private def save(artistAlbumMap: Map[String,List[(String,String)]]) = {
-    artistAlbumMap.foreach { entity =>
-      val artist = entity._1
-      val albums = entity._2
-      val dbArtistId:Long = serviceArtistFacade.saveArtistWithName(artist)
-      albums.foreach { alb =>
-        val albumName = alb._1
-        val id = alb._2
-        serviceAlbumFacade.saveAlbumWithNameAndId(albumName, dbArtistId, id)
-      }
-    }
-  }
-
-  private def processResponses(jsSet: List[(String,List[JsValue])]):Map[String,List[(String,String)]] = {
-    val res = jsSet.foldLeft(Map[String,List[(String,String)]]()) { (prev, jsTuple) =>
+  private def processResponses(jsSet: List[(String,List[JsValue])]):Map[String,List[(String,String,String)]] = {
+    val res = jsSet.foldLeft(Map[String,List[(String,String,String)]]()) { (prev, jsTuple) =>
       prev ++ processSingleResponse(jsTuple)
     }
-    save(res)
     res
   }
 
-  private def processSingleResponse(artistJsTuple:(String,List[JsValue])):Map[String,List[(String,String)]] = {
+  /**
+    * Returns a map where the key is the artist name and the value a List of albums (name + id)
+    */
+  private def processSingleResponse(artistJsTuple:(String,List[JsValue])):Map[String,List[(String,String,String)]] = {
     val artist = artistJsTuple._1
     val jsResponseList = artistJsTuple._2
-    val albums:List[(String,String)] = jsResponseList.flatMap { jsResp =>
-      handleJsonResponse(jsResp)
+    val albums:List[(String,String,String)] = jsResponseList.flatMap { jsResp =>
+      handleJsonResponse(jsResp).map { tuple =>
+        val (albumName,albumServiceId) = tuple
+        (albumName,albumServiceId,service)
+      }
     }
     Map(artist -> albums)
   }

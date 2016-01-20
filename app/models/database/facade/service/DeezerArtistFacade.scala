@@ -32,7 +32,7 @@ object DeezerArtistFacade extends ServiceArtistTrait {
 
   def apply(identifier: Either[Int,String]) = new DeezerArtistFacade(identifier)
 
-  override def insertIfNotExists(id:Long):Long = {
+  override protected def insertIfNotExists(id:Long):Long = {
     from(AppDB.deezerArtists)(da =>
       where(da.id === id)
         select da.id
@@ -42,7 +42,7 @@ object DeezerArtistFacade extends ServiceArtistTrait {
     }
   }
 
-  override def insert(id: Long):Long = {
+  override protected def insert(id: Long):Long = {
     AppDB.deezerArtists.insert(DeezerArtist(id)).id
   }
 

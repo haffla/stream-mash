@@ -19,7 +19,7 @@ VALUES('jacke', 'a92f6bdb75789bccc118adfcf704029aa58063c604bab4fcdd9cd126ef9b69a
 
 CREATE TABLE IF NOT EXISTS artist(
     id_artist SERIAL PRIMARY KEY,
-    artist_name VARCHAR(255) NOT NULL,
+    artist_name VARCHAR(256) NOT NULL,
     spotify_id VARCHAR(32) DEFAULT NULL,
     napster_id VARCHAR(20) DEFAULT NULL,
     soundcloud_id VARCHAR(32) DEFAULT NULL,
