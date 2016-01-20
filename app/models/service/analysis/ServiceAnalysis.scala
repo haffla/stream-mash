@@ -54,17 +54,14 @@ abstract class ServiceAnalysis(identifier:Either[Int,String],
   private def artistIds(
               artists: List[models.database.alias.Artist],
               token:Option[String]):Future[List[Option[(String,String)]]] = {
-    if(artists.nonEmpty) {
-      Future.sequence {
-        artists.map { artist =>
-          getServiceFieldFromArtist(artist) match {
-            case Some(spoId) => Future.successful(Some(artist.name, spoId))
-            case None => apiFacade.getArtistId(artist.name, token, Some(identifier))
-          }
+    Future.sequence {
+      artists.map { artist =>
+        getServiceFieldFromArtist(artist) match {
+          case Some(spoId) => Future.successful(Some(artist.name, spoId))
+          case None => apiFacade.getArtistId(artist.name, token, Some(identifier))
         }
       }
     }
-    else Future.successful(Nil)
   }
 
   def artistsAlbumsRequest(url:String, token:Option[String], jsonResponses:List[JsValue]):Future[List[JsValue]] = {
