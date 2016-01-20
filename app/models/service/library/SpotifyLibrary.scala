@@ -15,11 +15,15 @@ class SpotifyLibrary(identifier: Either[Int, String]) extends Library(identifier
       apiHelper.setRetrievalProcessProgress(position.toDouble / totalLength)
       val trackEntity = (entity \ "track").as[JsValue]
       val album = (trackEntity \ "album" \ "name").as[String]
-      val artists = (trackEntity \ "artists").as[Seq[JsValue]]
-      val artist = (artists.head \ "name").as[String]
-      val id = (artists.head \ "id").as[String]
+      val artist = (trackEntity \ "artists").as[Seq[JsValue]].headOption match {
+        case Some(art) =>
+          val artist = (art \ "name").as[String]
+          val id = (art \ "id").as[String]
+          SpotifyFacade.saveArtistWithServiceId(artist,id)
+          artist
+        case None => Constants.mapKeyUnknownArtist
+      }
       val track = (trackEntity \ "name").as[String]
-      SpotifyFacade.saveArtistWithServiceId(artist, id)
       Map(
         Constants.mapKeyArtist -> artist,
         Constants.mapKeyAlbum -> album,
