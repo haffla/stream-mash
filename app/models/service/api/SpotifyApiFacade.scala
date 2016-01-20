@@ -1,5 +1,6 @@
 package models.service.api
 
+import models.database.alias.Artist
 import models.database.facade.api.SpotifyFacade
 import models.database.facade.service.{ServiceArtistTrait, SpotifyArtistFacade}
 import models.service.oauth.SpotifyService.apiEndpoints
@@ -61,9 +62,9 @@ object SpotifyApiFacade extends ApiFacade {
 
   override def handleJsonIdSearchResponse(
                                  json: JsValue,
-                                 artist:String,
+                                 artist:Artist,
                                  identifier:Option[Either[Int,String]],
-                                 artistNotPresentCallback: (String, Option[Either[Int,String]]) => Option[(String, String)]): Option[(String, String)] = {
+                                 artistNotPresentCallback: (String, Option[Either[Int,String]]) => Option[(Long, String)]): Option[(Long, String)] = {
     val artists = (json \ "artists" \ "items").as[List[JsObject]]
     artists.headOption.map { js =>
       val id = (js \ "id").asOpt[String]
@@ -71,10 +72,10 @@ object SpotifyApiFacade extends ApiFacade {
         case Some(i) =>
           // Spotify has good quality pics of artists so we safe them here.
           SpotifyArtistFacade.saveInfoAboutArtist(js)
-          SpotifyFacade.saveArtistWithServiceId(artist, i)
-          Some((artist, i))
+          SpotifyFacade.saveArtistWithServiceId(artist.name, i) // TODO pass id here
+          Some((artist.id, i))
         case None => None
       }
-    }.getOrElse(artistNotPresentCallback(artist, identifier))
+    }.getOrElse(artistNotPresentCallback(artist.name, identifier)) //TODO pass id here
   }
 }

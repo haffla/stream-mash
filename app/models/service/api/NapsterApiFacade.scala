@@ -1,5 +1,6 @@
 package models.service.api
 
+import models.database.alias.Artist
 import models.database.facade.api.NapsterFacade
 import models.database.facade.service.{NapsterArtistFacade, ServiceArtistTrait}
 import models.service.oauth.NapsterService
@@ -72,18 +73,18 @@ object NapsterApiFacade extends ApiFacade {
 
   override def handleJsonIdSearchResponse(
                      json: JsValue,
-                     artist:String,
+                     artist:Artist,
                      identifier:Option[Either[Int,String]],
-                     artistNotPresentCallback: (String, Option[Either[Int,String]]) => Option[(String, String)]): Option[(String, String)] = {
+                     artistNotPresentCallback: (String, Option[Either[Int,String]]) => Option[(Long, String)]): Option[(Long, String)] = {
     val artists = json.as[List[JsObject]]
     artists.headOption.map { head =>
       val id = (head \ "id").asOpt[String]
       id match {
         case Some(i) =>
-          NapsterFacade.saveArtistWithServiceId(artist, i)
-          Some((artist, i))
+          NapsterFacade.saveArtistWithServiceId(artist.name, i)
+          Some((artist.id, i))
         case None => None
       }
-    }.getOrElse(artistNotPresentCallback(artist, identifier))
+    }.getOrElse(artistNotPresentCallback(artist.name, identifier))
   }
 }

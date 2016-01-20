@@ -2,6 +2,7 @@ package models.service.api
 
 import java.net.URLEncoder
 
+import models.database.alias.Artist
 import models.database.facade.api.DeezerFacade
 import models.database.facade.service.{DeezerArtistFacade, ServiceArtistTrait}
 import models.service.oauth.DeezerService.apiEndpoints
@@ -37,19 +38,19 @@ object DeezerApiFacade extends ApiFacade {
 
   override def handleJsonIdSearchResponse(
                                    json: JsValue,
-                                   artist:String,
+                                   artist:Artist,
                                    identifier:Option[Either[Int,String]],
-                                   artistNotPresentCallback: (String, Option[Either[Int,String]]) => Option[(String, String)]): Option[(String, String)] = {
+                                   artistNotPresentCallback: (String, Option[Either[Int,String]]) => Option[(Long, String)]): Option[(Long, String)] = {
     val artists = (json \ "data").as[List[JsObject]]
     artists.headOption.map { head =>
       val id = (head \ "id").asOpt[Int]
       id match {
         case Some(i) =>
-          DeezerFacade.saveArtistWithServiceId(artist, i.toString)
-          Some((artist, i.toString))
+          DeezerFacade.saveArtistWithServiceId(artist.name, i.toString)
+          Some((artist.id, i.toString))
         case None => None
       }
-    }.getOrElse(artistNotPresentCallback(artist, identifier))
+    }.getOrElse(artistNotPresentCallback(artist.name, identifier))
   }
 
   private def handleAlbumInfoResponses(albumDetailResponse: WSResponse, usersTracks:List[String]):JsValue = {

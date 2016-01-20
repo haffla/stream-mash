@@ -21,8 +21,8 @@ class ServiceAnalyser(identifier: Either[Int,String]) {
       deezerResult <- deezerResultFuture
       napsterResult <- napsterResultFuture
     } yield {
-      val resultList:List[(String, List[(String, String, String)])] = List(spotifyResult, deezerResult, napsterResult).flatMap(_.toList)
-      val grouped:Map[String, List[(String, List[(String, String, String)])]] = resultList.groupBy { case(artist,albumList) => artist }
+      val resultList:List[(Long, List[(String, String, String)])] = List(spotifyResult, deezerResult, napsterResult).flatMap(_.toList)
+      val grouped:Map[Long, List[(Long, List[(String, String, String)])]] = resultList.groupBy { case(artist,albumList) => artist }
       persistData(grouped)
       true
     }
@@ -46,27 +46,23 @@ class ServiceAnalyser(identifier: Either[Int,String]) {
     }
   }
 
-  private def persistData(artistAlbumMap: Map[String, List[(String, List[(String, String, String)])]]) = {
+  private def persistData(artistAlbumMap: Map[Long, List[(Long, List[(String, String, String)])]]) = {
     artistAlbumMap.foreach { entity =>
-      val artistName:String = entity._1
-      val albums:List[(String, List[(String, String, String)])] = entity._2
-      ArtistFacade.artistByName(artistName) match {
-        case Some(artist) =>
-          val artistId:Long = artist.id
-          albums.foreach { alb =>
-            val listOfAlbums:List[(String,String,String)] = alb._2
-            val grouped = listOfAlbums.groupBy { case (art,id,service) => service}
-            grouped.foreach { case (service, albumTupleList) =>
-              val serviceArtistId:Long = serviceArtistFacade(service).saveArtist(artistId)
-              albumTupleList.foreach { albumTuple =>
-                val (albumName,albumId,_) = albumTuple
-                serviceAlbumFacade(service).saveAlbumWithNameAndId(albumName,serviceArtistId,albumId)
-              }
+      val artistDbId:Long = entity._1
+      val albums:List[(Long, List[(String, String, String)])] = entity._2
+      albums.foreach { alb =>
+        val listOfAlbums:List[(String,String,String)] = alb._2
+        val grouped = listOfAlbums.groupBy { case (art,id,service) => service}
+        grouped.keySet.foreach { service =>
+          val serviceArtistId:Long = serviceArtistFacade(service).saveArtist(artistDbId)
+          grouped.foreach { case (service, albumTupleList) =>
+            albumTupleList.foreach { albumTuple =>
+              val (albumName,albumId,_) = albumTuple
+              serviceAlbumFacade(service).saveAlbumWithNameAndId(albumName,serviceArtistId,albumId)
             }
           }
-        case None =>
+        }
       }
-
     }
   }
 }

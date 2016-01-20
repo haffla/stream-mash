@@ -1,15 +1,15 @@
 package models.service.api
 
+import models.database.alias.Artist
 import models.database.facade.ServiceArtistAbsenceFacade
 import models.database.facade.service.ServiceArtistTrait
-import models.service.oauth.DeezerService.apiEndpoints
 import models.util.Logging
-import play.api.libs.json.{JsValue, Json}
-import play.api.libs.ws.{WSResponse, WS, WSRequest}
-
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.Play.current
+import play.api.libs.json.{JsValue, Json}
+import play.api.libs.ws.{WS, WSRequest}
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait ApiFacade {
 
@@ -21,13 +21,13 @@ trait ApiFacade {
   def artistInfoUrl(id:String):String
   def handleJsonIdSearchResponse(
                         json: JsValue,
-                        artist:String,
+                        artist:Artist,
                         identifier:Option[Either[Int,String]],
-                        artistNotPresentCallback: (String, Option[Either[Int,String]]) => Option[(String, String)]): Option[(String, String)]
+                        artistNotPresentCallback: (String, Option[Either[Int,String]]) => Option[(Long, String)]): Option[(Long,String)]
 
   def getAlbumInfoForFrontend(id:String, usersTracks:List[String]):Future[JsValue]
 
-  def artistNotPresentCallback(artist:String, identifier:Option[Either[Int,String]]):Option[(String,String)] = {
+  def artistNotPresentCallback(artist:String, identifier:Option[Either[Int,String]]):Option[(Long,String)] = {
     identifier match {
       case Some(id) => ServiceArtistAbsenceFacade(id).save(artist, serviceName)
       case None =>
@@ -36,10 +36,10 @@ trait ApiFacade {
   }
 
   def getArtistId(
-      artist:String,
+      artist:Artist,
       token:Option[String] = None,
-      identifier:Option[Either[Int,String]] = None):Future[Option[(String,String)]] = {
-    val unAuthenticatedRequest = unAuthRequest(artist)
+      identifier:Option[Either[Int,String]] = None):Future[Option[(Long,String)]] = {
+    val unAuthenticatedRequest = unAuthRequest(artist.name)
     // In case a token is supplied as argument, authenticate the request with that token
     val request = token match {
       case Some(tkn) => authenticateRequest(unAuthenticatedRequest, tkn)
