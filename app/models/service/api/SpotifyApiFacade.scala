@@ -5,8 +5,8 @@ import models.database.facade.api.SpotifyFacade
 import models.database.facade.service.{ServiceArtistTrait, SpotifyArtistFacade}
 import models.service.oauth.SpotifyService.apiEndpoints
 import play.api.Play.current
-import play.api.libs.json.{JsValue, JsObject, Json}
-import play.api.libs.ws.{WSRequest, WSResponse, WS}
+import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.ws.{WS, WSRequest, WSResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -76,6 +76,6 @@ object SpotifyApiFacade extends ApiFacade {
           Some((artist.id, i))
         case None => None
       }
-    }.getOrElse(artistNotPresentCallback(artist.id, identifier)) //TODO pass id here
+    }.getOrElse(artistNotPresentCallback(artist.id, identifier))
   }
 }
