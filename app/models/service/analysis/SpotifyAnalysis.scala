@@ -22,10 +22,10 @@ class SpotifyAnalysis(identifier:Either[Int,String],
   override val apiFacade = SpotifyApiFacade
   val market = "DE"
   val limit = "50"
-  val album_types = "album,single"
+  val albumTypes = "album,single"
 
   def urlForRequest(artistId:String):String = searchEndpoint + "/" + artistId +
-                                              s"/albums?market=$market&limit=$limit&album_type=$album_types"
+                                              s"/albums?market=$market&limit=$limit&album_type=$albumTypes"
 
   override def handleJsonResponse(jsResp:JsValue):List[(String,String)] = {
     val items = (jsResp \ "items").as[List[JsValue]]
