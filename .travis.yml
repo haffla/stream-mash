@@ -4,6 +4,13 @@ scala:
 jdk:
    - oraclejdk8
 
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt/boot/
+
 before_script:
   - npm install
   - npm install -g gulp
@@ -11,6 +18,8 @@ before_script:
   - gulp uglify
 
 script:
-  - sbt -Dtest.config=test clean coverage test
+  - sbt ++$TRAVIS_SCALA_VERSION -J-XX:ReservedCodeCacheSize=256M -Dtest.config=test clean coverage test
   - sbt coverageReport
   - sbt codacyCoverage
+  - find $HOME/.sbt -name "*.lock" | xargs rm
+  - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
