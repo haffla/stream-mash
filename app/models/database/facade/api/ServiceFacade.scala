@@ -33,6 +33,10 @@ abstract class ServiceFacade extends Facade {
     sql.update().apply()
   }
 
+  def updateArtistsServiceId(artistId:Long, serviceId:String) = {
+    sql"update artist set $serviceFieldName=$serviceId where id_artist=$artistId".update().apply()
+  }
+
   private def createNewArtistWithId(artistName: String, serviceId: String, picUrl:Option[String]) = {
     val sql = picUrl match {
       case Some(url) => sql"insert into artist (artist_name, $serviceFieldName, pic_url) VALUES ($artistName, $serviceId, $picUrl)"

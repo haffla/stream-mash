@@ -40,17 +40,17 @@ object DeezerApiFacade extends ApiFacade {
                                    json: JsValue,
                                    artist:Artist,
                                    identifier:Option[Either[Int,String]],
-                                   artistNotPresentCallback: (String, Option[Either[Int,String]]) => Option[(Long, String)]): Option[(Long, String)] = {
+                                   artistNotPresentCallback: (Long, Option[Either[Int,String]]) => Option[(Long, String)]): Option[(Long, String)] = {
     val artists = (json \ "data").as[List[JsObject]]
     artists.headOption.map { head =>
       val id = (head \ "id").asOpt[Int]
       id match {
         case Some(i) =>
-          DeezerFacade.saveArtistWithServiceId(artist.name, i.toString)
+          DeezerFacade.updateArtistsServiceId(artist.id, i.toString)
           Some((artist.id, i.toString))
         case None => None
       }
-    }.getOrElse(artistNotPresentCallback(artist.name, identifier))
+    }.getOrElse(artistNotPresentCallback(artist.id, identifier))
   }
 
   private def handleAlbumInfoResponses(albumDetailResponse: WSResponse, usersTracks:List[String]):JsValue = {

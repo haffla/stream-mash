@@ -1,5 +1,7 @@
+import org.scalatest.Ignore
 import org.scalatestplus.play.{PlaySpec, OneServerPerSuite, OneBrowserPerSuite, HtmlUnitFactory}
 
+@Ignore
 class AuthenticationFlowTest extends PlaySpec with OneServerPerSuite with OneBrowserPerSuite with HtmlUnitFactory {
 
     val home = s"http://localhost:$port"

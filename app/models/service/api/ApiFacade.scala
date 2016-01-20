@@ -23,13 +23,13 @@ trait ApiFacade {
                         json: JsValue,
                         artist:Artist,
                         identifier:Option[Either[Int,String]],
-                        artistNotPresentCallback: (String, Option[Either[Int,String]]) => Option[(Long, String)]): Option[(Long,String)]
+                        artistNotPresentCallback: (Long, Option[Either[Int,String]]) => Option[(Long, String)]): Option[(Long,String)]
 
   def getAlbumInfoForFrontend(id:String, usersTracks:List[String]):Future[JsValue]
 
-  def artistNotPresentCallback(artist:String, identifier:Option[Either[Int,String]]):Option[(Long,String)] = {
+  def artistNotPresentCallback(artistId:Long, identifier:Option[Either[Int,String]]):Option[(Long,String)] = {
     identifier match {
-      case Some(id) => ServiceArtistAbsenceFacade(id).save(artist, serviceName)
+      case Some(id) => ServiceArtistAbsenceFacade(id).insertIfNotExists(artistId, serviceName)
       case None =>
     }
     None

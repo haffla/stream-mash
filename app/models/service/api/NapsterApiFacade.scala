@@ -75,16 +75,16 @@ object NapsterApiFacade extends ApiFacade {
                      json: JsValue,
                      artist:Artist,
                      identifier:Option[Either[Int,String]],
-                     artistNotPresentCallback: (String, Option[Either[Int,String]]) => Option[(Long, String)]): Option[(Long, String)] = {
+                     artistNotPresentCallback: (Long, Option[Either[Int,String]]) => Option[(Long, String)]): Option[(Long, String)] = {
     val artists = json.as[List[JsObject]]
     artists.headOption.map { head =>
       val id = (head \ "id").asOpt[String]
       id match {
         case Some(i) =>
-          NapsterFacade.saveArtistWithServiceId(artist.name, i)
+          NapsterFacade.updateArtistsServiceId(artist.id, i)
           Some((artist.id, i))
         case None => None
       }
-    }.getOrElse(artistNotPresentCallback(artist.name, identifier))
+    }.getOrElse(artistNotPresentCallback(artist.id, identifier))
   }
 }
