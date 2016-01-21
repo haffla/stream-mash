@@ -45,7 +45,8 @@ class UserController extends Controller {
 
   private def collectionFromDb(identifier: Either[Int, String]) = {
     val library = new Library(identifier)
-    CollectionFacade(identifier).userCollection map { collection =>
+    val facade = CollectionFacade(identifier)
+    facade.userCollection map { collection =>
         if(collection.nonEmpty) Ok(library.prepareCollectionForFrontend(collection))
         else Ok(Json.toJson(Map("error" -> "You have no records stored in our database.")))
     }

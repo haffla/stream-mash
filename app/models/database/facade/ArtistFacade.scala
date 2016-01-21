@@ -1,7 +1,9 @@
 package models.database.facade
 
 import models.database.alias.{AppDB, Artist}
+import org.squeryl.PrimitiveTypeMode
 import org.squeryl.PrimitiveTypeMode._
+import org.squeryl.dsl.GroupWithMeasures
 
 object ArtistFacade {
   def apply(identifier:Either[Int,String]) = new ArtistFacade(identifier)

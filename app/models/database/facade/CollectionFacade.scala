@@ -29,4 +29,14 @@ class CollectionFacade(identifier:Either[Int,String]) extends Facade {
       }
     }
   }
+
+  def weightedArtists() = {
+    transaction {
+      from(AppDB.artists, AppDB.tracks, AppDB.collections)((a,t,c) =>
+        where(a.id === t.artistId and t.id === c.trackId and AppDB.userWhereClause(c,identifier))
+          groupBy a.id
+          compute countDistinct(t.id)
+      ).toList
+    }
+  }
 }
