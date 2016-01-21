@@ -29,4 +29,10 @@ class Helper
     arr = (name.split(' ').map (s) -> s[0].toUpperCase())
     if arr.length > 2 then _.first(arr).concat(_.last(arr)) else arr.join('')
 
+  @getTrackCountProse: (trackCount) ->
+    track = " Track"
+    if trackCount > 1
+      track = track + "s"
+    trackCount + track + " in total" 
+
 module.exports = Helper

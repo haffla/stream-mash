@@ -31,7 +31,10 @@ ArtistDetail = React.createClass
           dataSource={@props.autoCompleteSource}/>
         }
         style={width: '33%'}>
-        <ListItem primaryText={@props.selectedArtist.name} leftAvatar={avatar} />
+        <ListItem
+          secondaryText={Helper.getTrackCountProse(@props.selectedArtist.trackCount)} 
+          primaryText={@props.selectedArtist.name}
+          leftAvatar={avatar} />
         <ListItem secondaryText="Rating" rightAvatar={
           <div>
             <Slider

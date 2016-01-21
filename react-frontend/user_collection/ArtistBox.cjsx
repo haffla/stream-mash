@@ -84,6 +84,7 @@ ArtistBox = React.createClass
           @state.data[idx].idx = idx
           @setState selectedArtist: @state.data[idx]
     else
+      @state.data[idx].idx = idx
       @setState selectedArtist: @state.data[idx]
 
   handleArtistSlide: (idx, evt, val) ->
@@ -165,7 +166,7 @@ ArtistBox = React.createClass
               autoCompleteSource={@state.data.map (artist) -> artist.name}
               onNewRequest={@handleNewRequest}
               onArtistSlideChange={@handleArtistSlide}
-              selectedArtist={@state.selectedArtist}/>
+              selectedArtist={@state.selectedArtist} />
           else
             <h4>Start importing music!</h4>
         }

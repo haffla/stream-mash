@@ -1,10 +1,9 @@
 package models.service.library
 
+import models.database.alias._
 import models.service.Constants
 import models.service.api.discover.RetrievalProcessMonitor
 import play.api.libs.json.{JsObject, JsValue, Json}
-import models.database.alias._
-
 import scalikejdbc._
 
 class Library(identifier: Either[Int, String], name:String = "", persist:Boolean = true) {
@@ -41,14 +40,13 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
   }
 
   /**
-   * Transforms the collection to a Json Array of Json Objects
+   * Transforms the collection coming from the database to a Json Array of Json Objects
    */
-  def prepareCollectionForFrontend(data:List[(Album,Artist,Track,UserCollection,Option[UserArtistLiking])]):JsValue = {
+  def prepareCollectionForFrontend(data:List[(Album,Artist,Track,UserCollection,Option[UserArtistLiking],Long)]):JsValue = {
     val converted = convert(data)
-    val jsObjects = converted.map { artistMap =>
-      val (artistName,artistPic,artistRating) = artistMap._1
-      val albums:Map[String,Set[(String,Int)]] = artistMap._2
-      val albumObjects = albums.map { album =>
+    val jsObjects = converted.map { case (artistData,albumData) =>
+      val (artistName,artistPic,artistRating,artistTrackCount) = artistData
+      val albumObjects = albumData.map { album =>
         val albumName:String = album._1
         val tracks:Set[JsObject] = album._2.map { tr =>
           Json.obj(
@@ -65,16 +63,18 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
         "name" -> artistName,
         "rating" -> artistRating,
         "img" -> artistPic,
-        "albums" -> albumObjects
+        "albums" -> albumObjects,
+        "trackCount" -> artistTrackCount
       )
     }
     Json.toJson(jsObjects)
   }
 
-  private def convert(data:List[(Album,Artist,Track,UserCollection,Option[UserArtistLiking])]):Map[(String,String,Double), Map[String,Set[(String,Int)]]] = {
-    data.foldLeft(Map[(String,String,Double), Map[String,Set[(String,Int)]]]()) { (prev, curr) =>
+  private def convert(data:List[(Album,Artist,Track,UserCollection,Option[UserArtistLiking],Long)]):Map[(String,String,Double,Long), Map[String,Set[(String,Int)]]] = {
+    data.foldLeft(Map[(String,String,Double,Long), Map[String,Set[(String,Int)]]]()) { (prev, curr) =>
       val artistName = curr._2.name
       val artistPic = curr._2.pic.getOrElse("")
+      val artistTrackCount = curr._6
       /**
         * If not rating is available it means the user has not rated the artist, we assume 1.0
         */
@@ -86,7 +86,7 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
        * The artist is now a 3-Tuple of Name:String,PictureUrl:String,Rating:Double
        * Use this as the map key
       */
-      val artist:(String,String,Double) = (artistName,artistPic,userArtistRating)
+      val artist:(String,String,Double,Long) = (artistName,artistPic,userArtistRating,artistTrackCount)
       val album = curr._1.name
       // Track is a tuple of the name + times played
       val track:(String,Int) = (curr._3.name, curr._4.played)

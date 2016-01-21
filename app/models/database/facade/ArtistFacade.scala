@@ -1,9 +1,7 @@
 package models.database.facade
 
 import models.database.alias.{AppDB, Artist}
-import org.squeryl.PrimitiveTypeMode
 import org.squeryl.PrimitiveTypeMode._
-import org.squeryl.dsl.GroupWithMeasures
 
 object ArtistFacade {
   def apply(identifier:Either[Int,String]) = new ArtistFacade(identifier)
@@ -31,16 +29,11 @@ object ArtistFacade {
 
 class ArtistFacade(identifier:Either[Int,String]) extends Facade {
 
-  def usersArtists:List[Artist] = {
-    transaction {
-      from(AppDB.collections, AppDB.tracks, AppDB.artists)((coll, tr, art) =>
-        where(AppDB.userWhereClause(coll,identifier) and coll.trackId === tr.id and tr.artistId === art.id)
-        select art
-      ).distinct.toList
-    }
-  }
-
-  def usersFavouriteArtists:List[Artist] = {
+  /**
+    * Get users favourite artists sorted by score in user_artist_liking table
+    * By default get top 50.
+    */
+  def usersFavouriteArtists(page: (Int,Int) = (0,50)):List[Artist] = {
     transaction {
       join(
         AppDB.artists,
@@ -49,12 +42,13 @@ class ArtistFacade(identifier:Either[Int,String]) extends Facade {
         AppDB.userArtistLikings.leftOuter)((a,tr,col,ual) =>
         where((ual.map(_.score).isNull or ual.map(_.score).gt(0)) and AppDB.userWhereClause(col,identifier))
           select a
+          orderBy ual.map(_.score).desc
           on(
           a.id === tr.artistId,
           col.trackId === tr.id,
           ual.map(_.artistId) === a.id
           )
-      ).toList
+      ).page(page._1,page._2).toList
     }
   }
 }
