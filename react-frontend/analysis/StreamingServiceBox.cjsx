@@ -7,6 +7,7 @@ MidView = require './MidView'
 
 Avatar = require 'material-ui/lib/avatar'
 Colors = require 'material-ui/lib/styles/colors'
+Dialog = require 'material-ui/lib/dialog'
 FontIcon = require 'material-ui/lib/font-icon'
 List = require 'material-ui/lib/lists/list'
 ListItem = require 'material-ui/lib/lists/list-item'
@@ -14,15 +15,23 @@ ListItem = require 'material-ui/lib/lists/list-item'
 StreamingServiceBox = React.createClass
 
   getInitialState: () ->
-    artists: [], selectedArtist: {albums: []}
+    artists: [], selectedArtist: {albums: []}, missingAlbumsDialogOpen: false
 
   componentDidMount: () ->
     $.ajax @props.artistEndpoint,
       type: 'GET'
       dataType: 'json'
-      success: (data) =>
-        unless _.isEmpty(data.artists)
-          @setState artists: data.artists, selectedArtist: data.artists[0]
+      success: (result) =>
+        console.log result
+        unless _.isEmpty(result.data.artists)
+          @setState {
+                      artists: result.data.artists
+                      selectedArtist: result.data.artists[0]
+                      nrArtists: result.data.stats.nrArtists
+                      nrAlbums: result.data.stats.nrAlbums
+                      nrUserAlbums: result.data.stats.nrUserAlbums
+                      albumsOnlyInUserCollection: result.data.stats.albumsOnlyInUserCollection
+                    }
         else
           @setState artists: [], selectedArtist: {albums: []}
       error: (jqXHR, textStatus, e) ->
@@ -60,6 +69,13 @@ StreamingServiceBox = React.createClass
     else
       @setState selectedAlbum: @state.selectedArtist.albums[idx]
 
+  closeMissingAlbumsDialog: () ->
+    @setState missingAlbumsDialogOpen: false
+
+  openMissingAlbumsDialog: () ->
+    open = @state.albumsOnlyInUserCollection.length > 0
+    @setState missingAlbumsDialogOpen: open
+
   render: () ->
     artists = @state.artists.map (artist, idx) =>
       initials = Helper.getInitials artist.name
@@ -77,6 +93,7 @@ StreamingServiceBox = React.createClass
       color = if isSelected then Colors.amber500 else 'white'
       <ListItem
         key={idx}
+        missingAlbumsDialogOpen={@state.missingAlbumsDialogOpen}
         style={backgroundColor: color}
         onTouchTap={@handleAlbumClick.bind(null, idx)}
         primaryText={album.name}
@@ -84,13 +101,32 @@ StreamingServiceBox = React.createClass
         />
 
     if artists.length > 0
+      missingAlbums = @state.albumsOnlyInUserCollection.map (alb,idx) ->
+        <tr key={idx}>
+          <td>{alb.album}</td><td>{alb.artist.name}</td>
+        </tr>
       <div style={display: 'flex', justifyContent: 'space-between'}>
+        <Dialog
+          title="Dialog With Actions"
+          modal={false}
+          open={@state.missingAlbumsDialogOpen}
+          onRequestClose={@closeMissingAlbumsDialog}>
+          <div>
+            <table className="table">
+              <tbody>
+                {missingAlbums}
+              </tbody>
+            </table>
+          </div>
+        </Dialog>
          <LeftView
             name={@props.name}
             artists={artists}
             nrArtists={@state.artists.length}
-            nrAlbumsTotal={Helper.calculateNrOfAlbums(@state.artists)}
-            nrAlbumsInUserCollection={Helper.calculateNrOfAlbumsInCollection(@state.artists)} />
+            nrAlbumsTotal={@state.nrAlbums}
+            openMissingAlbumsDialog={@openMissingAlbumsDialog}
+            nrAlbumsInUserCollection={@state.nrUserAlbums}
+            albumsOnlyInUserCollection={@state.albumsOnlyInUserCollection} />
 
          <MidView
           showPlayer={@props.showPlayer}

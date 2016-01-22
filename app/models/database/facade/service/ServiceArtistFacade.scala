@@ -1,7 +1,7 @@
 package models.database.facade.service
 
 import models.database.alias._
-import models.database.facade.AlbumFacade
+import models.database.facade.{ArtistFacade, AlbumFacade}
 import org.squeryl.PrimitiveTypeMode._
 import play.api.libs.json.{JsValue, Json}
 
@@ -12,11 +12,11 @@ abstract class ServiceArtistFacade(identifier:Either[Int,String]) {
 
   val serviceName:String
 
-  def joinWithArtistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)]
+  protected def joinWithArtistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)]
 
   def getArtistsAndAlbumsForOverview:Future[JsValue] = {
     for {
-      albumsInUserCollection <- Future { AlbumFacade(identifier).getUsersAlbums }
+      albumsInUserCollection <- Future { AlbumFacade(identifier).getUsersFavouriteAlbums }
       serviceAlbums <- Future { getUserRelatedServiceAlbums }
     } yield convertToJson(serviceAlbums,albumsInUserCollection)
   }
@@ -24,9 +24,9 @@ abstract class ServiceArtistFacade(identifier:Either[Int,String]) {
   /**
     * Get all service albums of those artists that were imported by the user
     */
-  def getUserRelatedServiceAlbums:List[(Album,Artist,String)] = {
+  private def getUserRelatedServiceAlbums:List[(Album,Artist,String)] = {
     transaction {
-      /** First get all related artist */
+      /** First get all related artists */
       val usersArtists =
         from(AppDB.artists, AppDB.collections, AppDB.tracks)((a,c,t) =>
           where(c.trackId === t.id and t.artistId === a.id and AppDB.userWhereClause(c,identifier))
@@ -36,19 +36,41 @@ abstract class ServiceArtistFacade(identifier:Either[Int,String]) {
     }
   }
 
-  def convertToJson(albums:List[(Album,Artist,String)], albumsInUserCollection:List[Long] = Nil):JsValue = {
-    val convertedToMap = albums.foldLeft(Map[Artist,Set[(String,String,Boolean)]]()) { (prev,curr) =>
+  private def convertToJson(albumCollection:List[(Album,Artist,String)], albumsInUserCollection:List[Album] = Nil):JsValue = {
+    val convertedToMap = albumCollection.foldLeft(Map[Artist,Set[(String,String,Boolean)]]()) { (prev, curr) =>
       val artist = curr._2
       val currentAlbum = curr._1.name
       val albumServiceId = curr._3
-      val userHasAlbumInCollection = albumsInUserCollection.contains(curr._1.id)
+      val userHasAlbumInCollection = albumsInUserCollection.contains(curr._1)
       val aggregatedAlbums = prev.getOrElse(artist, Set.empty) ++ Set((currentAlbum,albumServiceId,userHasAlbumInCollection))
       prev + (artist -> aggregatedAlbums)
     }
-    doJsonConversion(convertedToMap)
+    doJsonConversion(convertedToMap,albumCollection.length,
+                     albumsOnlyInUserCollection(albumCollection,albumsInUserCollection),
+                     albumsInUserCollection.length)
   }
 
-  private def doJsonConversion(artistAlbumMap: Map[Artist,Set[(String,String,Boolean)]]): JsValue = {
+  private def albumsOnlyInUserCollection(albums:List[(Album,Artist,String)], albumsInUserCollection:List[Album]):List[JsValue] = {
+    val serviceAlbums = albums.map(_._1)
+    albumsInUserCollection.filter(alb => !serviceAlbums.contains(alb)).map { alb =>
+      val art = ArtistFacade.artistById(alb.artistId)
+      //TODO get album id from other services
+      Json.obj(
+        "artist" -> Json.obj(
+          "name" -> art.name,
+          "spotifyId" -> Json.toJson(art.spotifyId.getOrElse("")),
+          "deezerId" -> Json.toJson(art.deezerId.getOrElse("")),
+          "napsterId" -> Json.toJson(art.napsterId.getOrElse(""))
+        ),
+        "album" -> alb.name
+      )
+    }
+  }
+
+  private def doJsonConversion(artistAlbumMap: Map[Artist,Set[(String,String,Boolean)]],
+                               nrAlbums:Int,
+                               albumsOnlyInUserCollection:List[JsValue],
+                               nrAlbumsInUserCollection:Int): JsValue = {
     val list = artistAlbumMap.map { elem =>
       val albums = elem._2.map { album =>
         Json.obj(
@@ -66,7 +88,15 @@ abstract class ServiceArtistFacade(identifier:Either[Int,String]) {
         "albums" -> albums
       )
     }
-    Json.toJson(list)
+    Json.obj(
+      "artists" -> Json.toJson(list),
+      "stats" -> Json.obj(
+        "nrAlbums" -> nrAlbums,
+        "nrArtists" -> artistAlbumMap.size,
+        "nrUserAlbums" -> nrAlbumsInUserCollection,
+        "albumsOnlyInUserCollection" -> albumsOnlyInUserCollection
+      )
+    )
   }
 
   private def getServiceField(elem:Artist):String = {

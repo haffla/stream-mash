@@ -10,7 +10,7 @@ class DeezerArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFac
 
   val serviceName = "deezer"
 
-  override def joinWithArtistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)] = {
+  override protected def joinWithArtistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)] = {
     join(AppDB.albums,
          AppDB.artists,
          AppDB.deezerAlbums,
@@ -22,7 +22,7 @@ class DeezerArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFac
         alb.artistId === art.id,
         alb.id === deeAlb.id,
         art.id === deeArt.id,
-        art.id === ual.map(_.id)
+        art.id === ual.map(_.artistId)
         )
     ).toList
   }

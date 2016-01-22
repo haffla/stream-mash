@@ -9,7 +9,7 @@ class NapsterArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFa
 
   val serviceName = "napster"
 
-  override def joinWithArtistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)] = {
+  override protected def joinWithArtistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)] = {
     join(AppDB.albums,
          AppDB.artists,
          AppDB.napsterAlbums,
@@ -21,7 +21,7 @@ class NapsterArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFa
         alb.artistId === art.id,
         alb.id === npAlb.id,
         art.id === npArt.id,
-        art.id === ual.map(_.id)
+        art.id === ual.map(_.artistId)
         )
     ).toList
   }

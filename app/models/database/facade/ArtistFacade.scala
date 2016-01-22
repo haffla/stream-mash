@@ -10,6 +10,10 @@ object ArtistFacade {
     transaction(AppDB.artists.where(a => a.name === artistName).headOption)
   }
 
+  def artistById(artistId:Long):Artist = {
+    transaction(AppDB.artists.where(a => a.id === artistId).single)
+  }
+
   def artistPic(artistName:String):Option[String] = {
     artistByName(artistName) match {
       case Some(art) => art.pic

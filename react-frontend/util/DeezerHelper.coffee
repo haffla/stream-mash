@@ -1,6 +1,6 @@
 _ = require 'lodash'
 
 class DeezerHelper
-  @getImage: (data) -> data.images.picture_big
+  @getImage: (data) -> data.picture_big
 
 module.exports = DeezerHelper

@@ -17,7 +17,7 @@ trait AnalysisController extends Controller {
   def getArtistsForAnalysis = IdentifiedBySession.async { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
     artistsAndAlbumsForOverview(identifier) map { jsonResult =>
-      Ok(Json.obj("artists" -> jsonResult))
+      Ok(Json.obj("data" -> jsonResult))
     }
   }
 

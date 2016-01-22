@@ -14,7 +14,7 @@ class SpotifyArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFa
     * Each streaming artist facade needs to implement this method. Join artists and albums
     * with the respective streaming service artists and albums.
     */
-  override def joinWithArtistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)] = {
+  override protected def joinWithArtistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)] = {
     join(AppDB.albums,
          AppDB.artists,
          AppDB.spotifyAlbums,
@@ -26,7 +26,7 @@ class SpotifyArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFa
         alb.artistId === art.id,
         alb.id === spAlb.id,
         art.id === spArt.id,
-        art.id === ual.map(_.id)
+        art.id === ual.map(_.artistId)
         )
     ).toList
   }

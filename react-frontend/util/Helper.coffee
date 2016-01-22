@@ -6,15 +6,6 @@ class Helper
       x + y.albums.length
     , 0
 
-  @calculateNrOfAlbumsInCollection: (data) ->
-    _.values(data).reduce (prev,curr) ->
-      inCollection = curr.albums.reduce (prevCount,currTrack) ->
-        c = if currTrack.inCollection then 1 else 0
-        prevCount + c
-      , 0
-      prev + inCollection
-    , 0
-
   @isMac: () ->
     if navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i) then true else false
 
@@ -33,6 +24,6 @@ class Helper
     track = " Track"
     if trackCount > 1
       track = track + "s"
-    trackCount + track + " in total" 
+    trackCount + track + " in total"
 
 module.exports = Helper
