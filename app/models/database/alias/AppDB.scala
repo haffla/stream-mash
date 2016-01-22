@@ -5,7 +5,7 @@ import org.squeryl.PrimitiveTypeMode._
 import org.squeryl.Schema
 import org.squeryl.dsl.ast.LogicalBoolean
 
-object AppDB extends Schema with Conditionals {
+object AppDB extends Schema {
   val users = table[User]("account")
   val collections = table[UserCollection]("user_collection")
   val artists = table[Artist]("artist")
@@ -54,4 +54,18 @@ object AppDB extends Schema with Conditionals {
     columns(saa.artistId, saa.userSession, saa.service) are unique,
     saa.id is autoIncremented("service_artist_absence_id_service_artist_absence_seq")
   ))
+
+  def userWhereClause(userRelatedEntity:HasUserOrSession, id:Either[Int,String]):LogicalBoolean = {
+    id match {
+      case Left(i) => userRelatedEntity.getUserId === i
+      case Right(userSession) => userRelatedEntity.getUserSession === Some(userSession)
+    }
+  }
+
+  def joinUserRelatedEntities(col: HasUserOrSession, ual: HasUserOrSession, identifier:Either[Int,String]): LogicalBoolean = {
+    identifier match {
+      case Left(_) => col.getUserId === ual.getUserId
+      case Right(_) => col.getUserSession === ual.getUserSession
+    }
+  }
 }

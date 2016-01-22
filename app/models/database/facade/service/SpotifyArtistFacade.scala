@@ -19,14 +19,14 @@ class SpotifyArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFa
          AppDB.artists,
          AppDB.spotifyAlbums,
          AppDB.spotifyArtists,
-         AppDB.userArtistLikings.leftOuter)( (alb,art,spAlb,spArt,ual) =>
-      where(art.id in usersArtists and (ual.map(_.score).isNull or ual.map(_.score).gt(0)))
+         AppDB.userArtistLikings)( (alb,art,spAlb,spArt,ual) =>
+      where(art.id in usersArtists and ual.score.gt(0) and AppDB.userWhereClause(ual,identifier))
         select(alb, art, spAlb.spotifyId)
         on(
         alb.artistId === art.id,
         alb.id === spAlb.id,
         art.id === spArt.id,
-        art.id === ual.map(_.artistId) and AppDB.outerJoinedEntityBelongsToUser(ual,identifier)
+        art.id === ual.artistId
         )
     ).toList
   }

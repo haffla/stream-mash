@@ -1,10 +1,10 @@
-import play.api.mvc.RequestHeader
-import play.api.mvc.Results._
 import org.squeryl.adapters.{H2Adapter, PostgreSqlAdapter}
 import org.squeryl.internals.DatabaseAdapter
 import org.squeryl.{Session, SessionFactory}
-
 import play.api.Application
+import play.api.mvc.RequestHeader
+import play.api.mvc.Results._
+
 import scala.concurrent.Future
 
 
@@ -31,17 +31,7 @@ object Global extends play.api.GlobalSettings {
           ), adapter)
       case _ => sys.error("Database user, url and password must be configured")
     }
-
   }
-
-  /*override def onError(request: RequestHeader, ex: Throwable) = {
-    val exceptionMessage = ex.getMessage
-    Future.successful(InternalServerError(views.html.error(
-      Map(
-        "exceptionMessage" -> exceptionMessage
-      )
-    )))
-  }*/
 
   override def onHandlerNotFound(request: RequestHeader) = {
     val path = request.path

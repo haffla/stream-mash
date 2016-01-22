@@ -4,6 +4,13 @@ import models.database.alias.{AppDB, Artist}
 import org.squeryl.PrimitiveTypeMode._
 
 object ArtistFacade {
+
+  def insert(name: String, artistLikingFacade: ArtistLikingFacade, score:Double = 1):Long = {
+    val artistDbId = AppDB.artists.insert(Artist(name)).id
+    artistLikingFacade.insert(artistDbId, score)
+    artistDbId
+  }
+
   def apply(identifier:Either[Int,String]) = new ArtistFacade(identifier)
 
   def artistByName(artistName:String):Option[Artist] = {
@@ -18,12 +25,6 @@ object ArtistFacade {
     artistByName(artistName) match {
       case Some(art) => art.pic
       case _ => None
-    }
-  }
-
-  def insert(artistName:String):Long = {
-    transaction {
-      AppDB.artists.insert(Artist(artistName)).id
     }
   }
 
@@ -49,14 +50,14 @@ class ArtistFacade(identifier:Either[Int,String]) extends Facade {
         AppDB.artists,
         AppDB.tracks,
         AppDB.collections,
-        AppDB.userArtistLikings.leftOuter)((a,tr,col,ual) =>
-        where((ual.map(_.score).isNull or ual.map(_.score).gt(0)) and AppDB.userWhereClause(col,identifier))
+        AppDB.userArtistLikings)((a,tr,col,ual) =>
+        where(ual.score.gt(0) and AppDB.userWhereClause(ual,identifier) and AppDB.userWhereClause(col,identifier))
           select a
-          orderBy ual.map(_.score).desc
+          orderBy ual.score.desc
           on(
           a.id === tr.artistId,
           col.trackId === tr.id,
-          ual.map(_.artistId) === a.id and AppDB.joinedAndOuterJoinedEntitiesHaveMatchingUserRelation(col,ual,identifier)
+          ual.artistId === a.id
           )
       ).page(page._1,page._2).toList
     }

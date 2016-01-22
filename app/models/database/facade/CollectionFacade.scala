@@ -14,7 +14,7 @@ object CollectionFacade {
 
 class CollectionFacade(identifier:Either[Int,String]) extends Facade {
 
-  def userCollection:Future[List[(Album,Artist,Track,UserCollection,Option[UserArtistLiking],Long)]] = {
+  def userCollection:Future[List[(Album,Artist,Track,UserCollection,UserArtistLiking,Long)]] = {
     Future {
       transaction {
         val weighted = weightedArtists()
@@ -24,20 +24,18 @@ class CollectionFacade(identifier:Either[Int,String]) extends Facade {
         val artistTrackCountMap:Map[Long,Long] = weighted.foldLeft(Map[Long,Long]()) { (prev,curr) =>
           prev + (curr.key -> curr.measures)
         }
-        join(AppDB.artists, AppDB.tracks, AppDB.albums, AppDB.collections, AppDB.userArtistLikings.leftOuter)(
+        join(AppDB.artists, AppDB.tracks, AppDB.albums, AppDB.collections, AppDB.userArtistLikings)(
           (art,tr,alb,col,ual) =>
             where(
-              AppDB.userWhereClause(col,identifier) and
-              (AppDB.doesNotExist(ual) or
-               AppDB.existsAndBelongsToUser(ual,identifier)
-              ) and art.id.in(weightedArtistIds)
+              AppDB.userWhereClause(col,identifier)
+              and art.id.in(weightedArtistIds)
             )
-            select (alb,art,tr,col,ual,artistTrackCountMap.getOrElse(art.id, 0L))
+            select (alb,art,tr,col,ual,artistTrackCountMap.getOrElse(art.id, 1L))
             on(
               tr.artistId === art.id,
               tr.albumId === alb.id,
               col.trackId === tr.id,
-              art.id === ual.map(_.artistId) and AppDB.joinedAndOuterJoinedEntitiesHaveMatchingUserRelation(col,ual,identifier) //TODO needs to work with sessions too
+              art.id === ual.artistId and AppDB.joinUserRelatedEntities(col,ual,identifier)
               )
           ).toList
       }

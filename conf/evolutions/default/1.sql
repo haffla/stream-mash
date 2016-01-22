@@ -83,6 +83,10 @@ CREATE TABLE IF NOT EXISTS user_artist_liking(
     UNIQUE (user_session, fk_artist)
 );
 
+INSERT INTO user_artist_liking(fk_user, fk_artist, score) VALUES (1, 1, 2);
+INSERT INTO user_artist_liking(fk_user, fk_artist, score) VALUES (1, 2, 2);
+INSERT INTO user_artist_liking(fk_user, fk_artist, score) VALUES (1, 3, 2);
+
 CREATE TABLE IF NOT EXISTS spotify_artist(
     id_spotify_artist INT REFERENCES artist(id_artist) ON DELETE CASCADE
 );

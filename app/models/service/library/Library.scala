@@ -1,6 +1,7 @@
 package models.service.library
 
 import models.database.alias._
+import models.database.facade.{ArtistLikingFacade, ArtistFacade}
 import models.service.Constants
 import models.service.api.discover.RetrievalProcessMonitor
 import play.api.libs.json.{JsObject, JsValue, Json}
@@ -11,6 +12,7 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
   implicit val session = AutoSession
 
   val apiHelper = new RetrievalProcessMonitor(name, identifier)
+  val artistLikingFacade = ArtistLikingFacade(identifier)
 
   /**
    * Cleans the data by transforming the Seq[Map[String,String]]
@@ -42,7 +44,7 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
   /**
    * Transforms the collection coming from the database to a Json Array of Json Objects
    */
-  def prepareCollectionForFrontend(data:List[(Album,Artist,Track,UserCollection,Option[UserArtistLiking],Long)]):JsValue = {
+  def prepareCollectionForFrontend(data:List[(Album,Artist,Track,UserCollection,UserArtistLiking,Long)]):JsValue = {
     val converted = convert(data)
     val jsObjects = converted.map { case (artistData,albumData) =>
       val (artistName,artistPic,artistRating,artistTrackCount) = artistData
@@ -70,7 +72,7 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
     Json.toJson(jsObjects)
   }
 
-  private def convert(data:List[(Album,Artist,Track,UserCollection,Option[UserArtistLiking],Long)]):Map[(String,String,Double,Long), Map[String,Set[(String,Int)]]] = {
+  private def convert(data:List[(Album,Artist,Track,UserCollection,UserArtistLiking,Long)]):Map[(String,String,Double,Long), Map[String,Set[(String,Int)]]] = {
     data.foldLeft(Map[(String,String,Double,Long), Map[String,Set[(String,Int)]]]()) { (prev, curr) =>
       val artistName = curr._2.name
       val artistPic = curr._2.pic.getOrElse("")
@@ -78,10 +80,7 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
       /**
         * If not rating is available it means the user has not rated the artist, we assume 1.0
         */
-      val userArtistRating = curr._5 match {
-        case Some(ual) => ual.score
-        case _ => 1.0
-      }
+      val userArtistRating = curr._5.score
       /*
        * The artist is now a 3-Tuple of Name:String,PictureUrl:String,Rating:Double
        * Use this as the map key
@@ -113,8 +112,11 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
       apiHelper.setRetrievalProcessProgress(0.66 + position / totalLength / 3)
       position = position + 1.0
       val existingArtistId:Long = sql"select id_artist from artist where artist_name = $artist".map(rs => rs.long("id_artist")).single().apply() match {
-        case Some(rowId) => rowId
-        case None => sql"insert into artist (artist_name) values ($artist)".updateAndReturnGeneratedKey().apply()
+        case Some(rowId) =>
+          artistLikingFacade.insertIfNotExists(rowId)
+          rowId
+        case None =>
+          ArtistFacade.insert(artist, artistLikingFacade)
       }
 
       for((album,tracks) <- albums) {
