@@ -21,6 +21,12 @@ object ArtistFacade {
     }
   }
 
+  def insert(artistName:String):Long = {
+    transaction {
+      AppDB.artists.insert(Artist(artistName)).id
+    }
+  }
+
   def setArtistPic(artistName:String, pic:String) = {
     transaction {
       update(AppDB.artists)(a =>
