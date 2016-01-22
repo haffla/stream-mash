@@ -1,5 +1,5 @@
 package models.database.alias
 
-trait OuterJoinableArtistRelatedEntity {
+trait OuterJoinedArtistRelatedEntity {
   def getArtistId:Long
 }

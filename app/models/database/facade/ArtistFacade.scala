@@ -50,7 +50,7 @@ class ArtistFacade(identifier:Either[Int,String]) extends Facade {
           on(
           a.id === tr.artistId,
           col.trackId === tr.id,
-          ual.map(_.artistId) === a.id
+          ual.map(_.artistId) === a.id and AppDB.joinedAndOuterJoinedEntitiesHaveMatchingUserRelation(col,ual,identifier)
           )
       ).page(page._1,page._2).toList
     }

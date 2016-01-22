@@ -26,7 +26,7 @@ class SpotifyArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFa
         alb.artistId === art.id,
         alb.id === spAlb.id,
         art.id === spArt.id,
-        art.id === ual.map(_.artistId)
+        art.id === ual.map(_.artistId) and AppDB.outerJoinedEntityBelongsToUser(ual,identifier)
         )
     ).toList
   }

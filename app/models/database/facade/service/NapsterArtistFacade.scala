@@ -21,7 +21,7 @@ class NapsterArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFa
         alb.artistId === art.id,
         alb.id === npAlb.id,
         art.id === npArt.id,
-        art.id === ual.map(_.artistId)
+        art.id === ual.map(_.artistId) and AppDB.outerJoinedEntityBelongsToUser(ual,identifier)
         )
     ).toList
   }

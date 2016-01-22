@@ -22,7 +22,7 @@ class DeezerArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFac
         alb.artistId === art.id,
         alb.id === deeAlb.id,
         art.id === deeArt.id,
-        art.id === ual.map(_.artistId)
+        art.id === ual.map(_.artistId) and AppDB.outerJoinedEntityBelongsToUser(ual,identifier)
         )
     ).toList
   }

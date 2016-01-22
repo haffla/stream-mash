@@ -8,14 +8,6 @@ object AlbumFacade {
 }
 
 class AlbumFacade(identifier:Either[Int,String]) extends Facade {
-  def getUsersAlbums:List[Album] = {
-    transaction {
-      from(AppDB.albums, AppDB.collections, AppDB.tracks)((alb,coll,tr) =>
-        where(tr.id === coll.trackId and tr.albumId === alb.id and AppDB.userWhereClause(coll,identifier))
-          select alb
-      ).distinct.toList
-    }
-  }
 
   def getUsersFavouriteAlbums:List[Album] = {
     transaction {
@@ -29,7 +21,7 @@ class AlbumFacade(identifier:Either[Int,String]) extends Facade {
           on(
           alb.id === tr.albumId,
           col.trackId === tr.id,
-          ual.map(_.artistId) === alb.artistId
+          ual.map(_.artistId) === alb.artistId and AppDB.joinedAndOuterJoinedEntitiesHaveMatchingUserRelation(col,ual,identifier)
           )
       ).toList
     }

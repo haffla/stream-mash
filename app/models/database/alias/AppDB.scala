@@ -5,7 +5,7 @@ import org.squeryl.PrimitiveTypeMode._
 import org.squeryl.Schema
 import org.squeryl.dsl.ast.LogicalBoolean
 
-object AppDB extends Schema {
+object AppDB extends Schema with Conditionals {
   val users = table[User]("account")
   val collections = table[UserCollection]("user_collection")
   val artists = table[Artist]("artist")
@@ -54,35 +54,4 @@ object AppDB extends Schema {
     columns(saa.artistId, saa.userSession, saa.service) are unique,
     saa.id is autoIncremented("service_artist_absence_id_service_artist_absence_seq")
   ))
-
-  def userWhereClause(userRelatedEntity:HasUserOrSession, id:Either[Int,String]):LogicalBoolean = {
-    id match {
-      case Left(i) => userRelatedEntity.getUserId === i
-      case Right(userSession) => userRelatedEntity.getUserSession === Some(userSession)
-    }
-  }
-
-  /**
-    * If the entity exists then either userIds or userSessions must equal
-    */
-  def existsAndBelongsToUser(outerJoinableEntity: Option[HasUserOrSession], identifier: Either[Int, String]): LogicalBoolean = {
-    outerJoinableEntity match {
-      case Some(entity) =>
-        identifier match {
-          case Left(id) => entity.getUserId === id
-          case Right(session) => entity.getUserSession === Some(session)
-        }
-      case _ => 1 === 0
-    }
-  }
-
-  /**
-    * Return true if it does not exist
-    */
-  def doesNotExist(outerJoinableEntity: Option[OuterJoinableArtistRelatedEntity]): LogicalBoolean = {
-    outerJoinableEntity match {
-      case Some(entity) => entity.getArtistId.isNull
-      case _ => 1 === 1
-    }
-  }
 }

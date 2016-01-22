@@ -37,7 +37,7 @@ class CollectionFacade(identifier:Either[Int,String]) extends Facade {
               tr.artistId === art.id,
               tr.albumId === alb.id,
               col.trackId === tr.id,
-              art.id === ual.map(_.artistId)
+              art.id === ual.map(_.artistId) and AppDB.joinedAndOuterJoinedEntitiesHaveMatchingUserRelation(col,ual,identifier) //TODO needs to work with sessions too
               )
           ).toList
       }
