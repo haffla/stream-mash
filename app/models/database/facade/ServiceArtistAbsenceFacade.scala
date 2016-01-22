@@ -30,14 +30,23 @@ class ServiceArtistAbsenceFacade(identifier:Either[Int,String]) extends Facade {
   }
 
   def insertIfNotExists(id:Long, service:String) = {
-    from(AppDB.serviceArtistAbsence)(saa =>
-      where(saa.id === id and AppDB.userWhereClause(saa, identifier) and saa.service === service)
-      select saa.id
-    ).headOption match {
-      case None =>
-        val absence = artistAbsenceByIdentifier(id, service)
-        AppDB.serviceArtistAbsence.insert(absence)
-      case _ =>
+    transaction {
+      from(AppDB.artists)(a =>
+        where(a.id === id)
+        select a.id
+      ).headOption match {
+        case Some(_) =>
+          from(AppDB.serviceArtistAbsence)(saa =>
+            where(saa.id === id and AppDB.userWhereClause(saa, identifier) and saa.service === service)
+              select saa.id
+          ).headOption match {
+            case None =>
+              val absence = artistAbsenceByIdentifier(id, service)
+              AppDB.serviceArtistAbsence.insert(absence)
+            case _ =>
+          }
+        case _ =>
+      }
     }
   }
 }
