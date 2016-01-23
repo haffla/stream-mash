@@ -1,4 +1,2 @@
 $ ->
-  $('.form-prevent-default').on('submit', (event) ->
-    event.preventDefault()
-  )
+  console.log "Hello Coffee!"

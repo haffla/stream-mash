@@ -13,17 +13,21 @@ ArtistList = React.createClass
     overflowY: 'auto'
   }
 
+  handle: (evt) ->
+    console.log(evt)
+
   render: () ->
     artists = @props.data.map (artist, idx) =>
       <Artist
         key={idx}
+        onHover={@handle}
         artist={artist}
         nrCols={@props.nrCols}
         onArtistClick={@props.onArtistClick}
         onArtistSlideChange={@props.onArtistSlideChange}
         idx={idx} />
 
-    <div className="artistList" style={@style}>
+    <div style={@style}>
         {artists}
     </div>
 
