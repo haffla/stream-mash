@@ -5,7 +5,7 @@ import org.squeryl.PrimitiveTypeMode._
 import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.test.WithApplication
 
-class ServiceApiTest extends UnitSpec with ScalaFutures {
+class ServiceApiTest extends UnitSpec {
 
   implicit val defaultPatience = PatienceConfig(timeout = Span(8, Seconds), interval = Span(500, Millis))
 

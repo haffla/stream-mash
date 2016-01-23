@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS account(
     name VARCHAR(64) NOT NULL UNIQUE,
     password VARCHAR(64) NOT NULL,
     itunes_file_hash VARCHAR(32) DEFAULT NULL,
-    spotify_token VARCHAR(255) DEFAULT NULL,
+    spotify_token VARCHAR(256) DEFAULT NULL,
     spotify_token_refresh VARCHAR(256) DEFAULT NULL,
     napster_token VARCHAR(64) DEFAULT NULL,
     napster_token_refresh VARCHAR(64) DEFAULT NULL,

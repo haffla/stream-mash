@@ -42,7 +42,7 @@ class AlbumFacade(identifier:Either[Int,String]) extends Facade {
           col.trackId === tr.id,
           ual.artistId === alb.artistId
           )
-      ).toList
+      ).distinct.toList
     }
   }
 }

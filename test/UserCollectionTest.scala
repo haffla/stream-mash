@@ -5,7 +5,7 @@ import models.service.library._
 import org.scalatest.time.{Millis, Seconds, Span}
 import org.squeryl.PrimitiveTypeMode._
 import play.api.libs.json.JsValue
-import play.api.test.{WithServer, WithApplication}
+import play.api.test.WithServer
 
 class UserCollectionTest extends UnitSpec {
 
@@ -33,6 +33,8 @@ class UserCollectionTest extends UnitSpec {
 
         val converted: List[JsValue] = forFrontEnd.as[List[JsValue]]
         val artists = converted map (x => (x \ "name").as[String])
+        val ratings = converted map (x => (x \ "rating").as[Int])
+        val trackCounts = converted map (x => (x \ "trackCount").as[Int])
         val albumObjects = converted map (x => (x \ "albums").as[List[JsValue]])
 
         val albums = albumObjects flatMap { albumObj =>
@@ -49,6 +51,8 @@ class UserCollectionTest extends UnitSpec {
           }
         }
 
+        ratings should equal(List(1,1,1))
+        trackCounts should equal(List(2,2,2))
         tracks.toSet should equal(Set("With a Little Help from My Friends", "Getting Better", "Etre", "Colomb", "Useless Information", "Limelight"))
         artists.toSet should equal(Set("The Beatles", "Apparat", "Extrawelt"))
         albums.toSet should equal(Set("Sgt. Pepper’s Lonely Hearts Club Band", "Dark Side Of The Moon", "Walls"))

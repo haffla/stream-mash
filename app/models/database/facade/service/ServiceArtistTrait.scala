@@ -9,6 +9,6 @@ trait ServiceArtistTrait {
   protected def insert(id:Long):Long
   def saveInfoAboutArtist(js:JsValue):Unit
   def allArtistIds:List[Long]
-  def saveArtist(id:Long):Long = transaction(insertIfNotExists(id))
+  def saveArtist(id:Long):Long = inTransaction(insertIfNotExists(id))
 
 }

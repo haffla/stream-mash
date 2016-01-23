@@ -9,7 +9,7 @@ trait ServiceAlbumFacade {
   def insertAlbum(id:Long, serviceId:String):Long
 
   def saveAlbumWithNameAndId(albumName:String, artistId:Long, serviceId:String):Long = {
-    transaction {
+    inTransaction {
       from(AppDB.albums)(a =>
         where(a.name === albumName and a.artistId === artistId)
           select a.id

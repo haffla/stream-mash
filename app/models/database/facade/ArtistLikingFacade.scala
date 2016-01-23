@@ -19,14 +19,14 @@ class ArtistLikingFacade(identifier:Either[Int,String]) extends Facade {
     }
   }
 
-  def getEntityIdByArtist(artist:String):Option[Long] = {
+  private def getEntityIdByArtist(artist:String):Option[Long] = {
     from(AppDB.userArtistLikings, AppDB.artists)((ual, a) =>
       where(a.name === artist and AppDB.userWhereClause(ual,identifier) and a.id === ual.artistId)
         select ual.id
     ).headOption
   }
 
-  def createNewArtistLiking(artist:String, score:Double) = {
+  private def createNewArtistLiking(artist:String, score:Double) = {
     ArtistFacade.artistByName(artist) match {
       case Some(art) =>
         val ual = identifier match {
