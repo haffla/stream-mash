@@ -7,6 +7,9 @@ import models.service.api.discover.RetrievalProcessMonitor
 import play.api.libs.json.{JsObject, JsValue, Json}
 import scalikejdbc._
 
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 class Library(identifier: Either[Int, String], name:String = "", persist:Boolean = true) {
 
   implicit val session = AutoSession
@@ -96,7 +99,7 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
     }
   }
 
-  def persist(library: Map[String, Map[String,Set[String]]]):Unit = {
+  def persist(library: Map[String, Map[String,Set[String]]]):Future[Unit] = Future {
     val totalLength = library.size
     var position = 1.0
 

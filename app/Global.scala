@@ -26,9 +26,7 @@ object Global extends play.api.GlobalSettings {
       app.configuration.getString("db.default.url")) match {
 
       case (Some(password), Some(username), Some(url)) =>
-        Session.create(
-          java.sql.DriverManager.getConnection(url, username, password
-          ), adapter)
+        Session.create(java.sql.DriverManager.getConnection(url, username, password), adapter)
       case _ => sys.error("Database user, url and password must be configured")
     }
   }

@@ -21,12 +21,10 @@ class ServiceApiTest extends UnitSpec {
   }
 
   "The Spotify API" should "should return None for a senseless search" in new WithApplication {
-    using(squerylSession) {
       val apiRequest = SpotifyApiFacade.getArtistId(artist = Artist("Abracadabra Hero"), token = None, identifier = Some(Left(1)))
       whenReady(apiRequest) {
         res => res should be(None)
       }
-    }
   }
 
   "The Deezer API" should "get a correct result for an artist search" in new WithApplication {
