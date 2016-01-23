@@ -13,7 +13,7 @@ object Helper {
             /** It is actually impossible that we get here as the user
               * session is set in models.auth.IdentifiedBySession
               */
-            throw new Exception("")
+            throw new Exception("No session found!")
         }
     }
   }

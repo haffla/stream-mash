@@ -1,6 +1,8 @@
 package models.service
 
 object Constants {
+  val sessionTamperingMessage = "The session has been tampered with."
+
   val userSessionKey = "user_session_key"
   val fileHashCacheKeyPrefix = "it-file-hash|"
 

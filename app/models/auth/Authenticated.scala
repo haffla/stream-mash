@@ -1,6 +1,8 @@
 package models.auth
 
 import controllers.routes
+import models.auth.form.AuthHandling
+import models.service.Constants
 import play.api.mvc.{Result, Controller, Request, ActionBuilder, WrappedRequest}
 import play.cache.Cache
 
@@ -15,7 +17,7 @@ object AdminAccess extends AuthenticatedAction {
   def userNameAllowed(username:String) = admins.contains(username)
 }
 
-trait AuthenticatedAction extends ActionBuilder[Request] with Controller {
+trait AuthenticatedAction extends ActionBuilder[Request] with AuthHandling {
 
   def userNameAllowed(username:String):Boolean
   val login = routes.AuthController.login().toString
@@ -29,7 +31,7 @@ trait AuthenticatedAction extends ActionBuilder[Request] with Controller {
         if(secretFromCache == secretFromSession)
           block(new AuthenticatedRequest(request))
         else
-          redirectTo(login, request, "The session has been tampered with.")
+          redirectTo(login, request, Constants.sessionTamperingMessage)
       }
       else {
         redirectTo(index, request, "This location can only be accessed by admins.")
@@ -37,13 +39,6 @@ trait AuthenticatedAction extends ActionBuilder[Request] with Controller {
     } getOrElse {
       redirectTo(login, request, "Please login first.")
     }
-  }
-
-  def redirectTo[A](page: String, request:Request[A], message:String) = {
-    Future.successful(
-      Redirect(page).flashing("message" -> message)
-        .withSession(request.session + ("intended_location" -> request.path))
-    )
   }
 
   class AuthenticatedRequest[A](request: Request[A]) extends WrappedRequest[A](request)

@@ -6,7 +6,7 @@ import org.squeryl.PrimitiveTypeMode._
 import play.api.libs.json.JsValue
 import play.api.test.WithApplication
 
-class AbTest extends UnitSpec {
+class ServiceFacadeTest extends UnitSpec {
 
   implicit val defaultPatience = PatienceConfig(timeout = Span(8, Seconds), interval = Span(500, Millis))
 
@@ -15,21 +15,41 @@ class AbTest extends UnitSpec {
   val alf = ArtistLikingFacade(id)
   val collectionFacade = CollectionFacade(id)
 
-  "Do something" should "adasd" in new WithApplication {
-    using(squerylSession) {
-      val namaste = ArtistFacade.insert("Namaste", alf)
-      val hola = ArtistFacade.insert("Hola", alf)
-      val champ = ArtistFacade.insert("Champ", alf)
-      val hakuna = ArtistFacade.insert("Hakunamatata", alf)
-      val held = ArtistFacade.insert("Held", alf)
+  val namasteArtist = "Namaste"
+  val holaArtist = "Hola"
+  val champArtist = "Champ"
+  val hakuArtist = "Hakunamatata"
+  val heldArtist = "Held"
 
-      val namasteAlbOne = AlbumFacade.insert("Namamu1", namaste)
-      val namasteAlbTwo = AlbumFacade.insert("Namamu2", namaste)
-      val holaAlb = AlbumFacade.insert("Hick Hock", hola)
-      val champAlb = AlbumFacade.insert("Champions of Titikaka", champ)
-      val champAlbTwo = AlbumFacade.insert("Champions of Titikaka Two", champ)
-      val hakunaAlb = AlbumFacade.insert("Balu", hakuna)
-      val heldAlb = AlbumFacade.insert("Hero", held)
+  val namaAlbOne = "Namamu1"
+  val namaAlbTwo = "Namamu2"
+  val hickAlbum = "Hick Hock"
+  val champAlbumOne = "Champions of Titikaka"
+  val champAlbumTwo = "Champions of Titikaka Two"
+  val baluAlb = "Balu"
+  val heroAlb = "Hero"
+
+  val keyStats = "stats"
+  val keyArtists = "artists"
+  val keyNrUserAlb = "nrUserAlbums"
+  val keyNrAlbs = "nrAlbums"
+  val keyNrArts = "nrArtists"
+
+  "The Service Facades" should "should return expected data" in new WithApplication {
+    using(squerylSession) {
+      val namaste = ArtistFacade.insert(namasteArtist, alf)
+      val hola = ArtistFacade.insert(holaArtist, alf)
+      val champ = ArtistFacade.insert(champArtist, alf)
+      val hakuna = ArtistFacade.insert(hakuArtist, alf)
+      val held = ArtistFacade.insert(heldArtist, alf)
+
+      val namasteAlbOne = AlbumFacade.insert(namaAlbOne, namaste)
+      val namasteAlbTwo = AlbumFacade.insert(namaAlbTwo, namaste)
+      val holaAlb = AlbumFacade.insert(hickAlbum, hola)
+      val champAlb = AlbumFacade.insert(champAlbumOne, champ)
+      val champAlbTwo = AlbumFacade.insert(champAlbumTwo, champ)
+      val hakunaAlb = AlbumFacade.insert(baluAlb, hakuna)
+      val heldAlb = AlbumFacade.insert(heroAlb, held)
 
       val namaTrackOne = TrackFacade.insert("N1 Track", namaste, namasteAlbOne)
       val namaTrackTwo = TrackFacade.insert("N2 Track", namaste, namasteAlbTwo)
@@ -48,9 +68,9 @@ class AbTest extends UnitSpec {
         collectionFacade.insert(tr)
       }
 
-      alf.setScoreForArtist("Namaste", 0)
-      alf.setScoreForArtist("Held", 0)
-      alf.setScoreForArtist("Hakunamatata", 3)
+      alf.setScoreForArtist(namasteArtist, 0)
+      alf.setScoreForArtist(heldArtist, 0)
+      alf.setScoreForArtist(hakuArtist, 3)
 
       List(namaste, hola, champ, hakuna, held).foreach { art =>
         SpotifyArtistFacade.saveArtist(art)
@@ -59,12 +79,12 @@ class AbTest extends UnitSpec {
       }
 
       List(
-        ("Namamu1", namaste),
-        ("Namamu2", namaste),
-        ("Hick Hock", hola),
-        ("Champions of Titikaka", champ),
-        ("Balu", hakuna),
-        ("Hero", held)
+        (namaAlbOne, namaste),
+        (namaAlbTwo, namaste),
+        (hickAlbum, hola),
+        (champAlbumOne, champ),
+        (baluAlb, hakuna),
+        (heroAlb, held)
       ).foreach { alb =>
         SpotifyAlbumFacade.saveAlbumWithNameAndId(alb._1, alb._2, TextWrangler.generateRandomString(10))
         DeezerAlbumFacade.saveAlbumWithNameAndId(alb._1, alb._2, TextWrangler.generateRandomString(10))
@@ -75,27 +95,27 @@ class AbTest extends UnitSpec {
       val deezerResult = DeezerArtistFacade(id).getArtistsAndAlbumsForOverview
       val napsterResult = NapsterArtistFacade(id).getArtistsAndAlbumsForOverview
       whenReady(spotifyResult) { spRes =>
-        val artists = (spRes \ "artists").as[List[JsValue]]
-        val stats = (spRes \ "stats").as[JsValue]
-        (stats \ "nrUserAlbums").as[Int] should be(4)
-        (stats \ "nrAlbums").as[Int] should be(3)
-        (stats \ "nrArtists").as[Int] should be(3)
+        val artists = (spRes \ keyArtists).as[List[JsValue]]
+        val stats = (spRes \ keyStats).as[JsValue]
+        (stats \ keyNrUserAlb).as[Int] should be(4)
+        (stats \ keyNrAlbs).as[Int] should be(3)
+        (stats \ keyNrArts).as[Int] should be(3)
         artists.length should be(3)
       }
       whenReady(deezerResult) { deeRes =>
-        val artists = (deeRes \ "artists").as[List[JsValue]]
-        val stats = (deeRes \ "stats").as[JsValue]
-        (stats \ "nrUserAlbums").as[Int] should be(4)
-        (stats \ "nrAlbums").as[Int] should be(3)
-        (stats \ "nrArtists").as[Int] should be(3)
+        val artists = (deeRes \ keyArtists).as[List[JsValue]]
+        val stats = (deeRes \ keyStats).as[JsValue]
+        (stats \ keyNrUserAlb).as[Int] should be(4)
+        (stats \ keyNrAlbs).as[Int] should be(3)
+        (stats \ keyNrArts).as[Int] should be(3)
         artists.length should be(3)
       }
       whenReady(napsterResult) { napsRes =>
-        val artists = (napsRes \ "artists").as[List[JsValue]]
-        val stats = (napsRes \ "stats").as[JsValue]
-        (stats \ "nrUserAlbums").as[Int] should be(4)
-        (stats \ "nrAlbums").as[Int] should be(3)
-        (stats \ "nrArtists").as[Int] should be(3)
+        val artists = (napsRes \ keyArtists).as[List[JsValue]]
+        val stats = (napsRes \ keyStats).as[JsValue]
+        (stats \ keyNrUserAlb).as[Int] should be(4)
+        (stats \ keyNrAlbs).as[Int] should be(3)
+        (stats \ keyNrArts).as[Int] should be(3)
         artists.length should be(3)
       }
 

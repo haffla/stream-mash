@@ -3,7 +3,7 @@ package controllers
 import models.auth.{Helper, IdentifiedBySession}
 import models.service.api.{SpotifyApiFacade, ApiFacade}
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.Controller
+import play.api.mvc.{Action, Controller}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
