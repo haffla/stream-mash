@@ -1,7 +1,7 @@
 package models.service.library
 
 import models.database.alias._
-import models.database.facade.{ArtistLikingFacade, ArtistFacade}
+import models.database.facade._
 import models.service.Constants
 import models.service.api.discover.RetrievalProcessMonitor
 import play.api.libs.json.{JsObject, JsValue, Json}
@@ -97,44 +97,20 @@ class Library(identifier: Either[Int, String], name:String = "", persist:Boolean
   }
 
   def persist(library: Map[String, Map[String,Set[String]]]):Unit = {
-    val fkUserField:SQLSyntax = identifier match {
-      case Left(_) => sqls"fk_user"
-      case Right(_) => sqls"user_session"
-    }
-    val userId = identifier match {
-      case Left(id) => id
-      case Right(sessionKey) => sessionKey
-    }
     val totalLength = library.size
     var position = 1.0
 
     for((artist,albums) <- library) {
       apiHelper.setRetrievalProcessProgress(0.66 + position / totalLength / 3)
       position = position + 1.0
-      val existingArtistId:Long = sql"select id_artist from artist where artist_name = $artist".map(rs => rs.long("id_artist")).single().apply() match {
-        case Some(rowId) =>
-          artistLikingFacade.insertIfNotExists(rowId)
-          rowId
-        case None =>
-          ArtistFacade.insert(artist, artistLikingFacade)
-      }
+      val existingArtistId:Long = ArtistFacade.saveByName(artist, artistLikingFacade)
 
       for((album,tracks) <- albums) {
-        val existingAlbumId:Long = sql"select id_album from album where album_name = $album and fk_artist = $existingArtistId".map(rs => rs.long("id_album")).single().apply() match {
-          case Some(rowId) => rowId
-          case None => sql"insert into album (album_name, fk_artist) values ($album, $existingArtistId)".updateAndReturnGeneratedKey().apply()
-        }
+        val existingAlbumId:Long = AlbumFacade.saveByNameAndArtistId(album, existingArtistId)
 
         for(track <- tracks) {
-          val trackId:Long = sql"select id_track from track where track_name = $track and fk_artist = $existingArtistId and fk_album = $existingAlbumId".map(rs => rs.long("id_track")).single().apply() match {
-            case None => sql"insert into track (track_name, fk_artist, fk_album) values ($track, $existingArtistId, $existingAlbumId)".updateAndReturnGeneratedKey().apply()
-            case Some(rowId) => rowId
-          }
-
-          sql"select id_collection from user_collection where $fkUserField = $userId and fk_track = $trackId".map(rs => rs.long("id_collection")).single().apply() match {
-            case None => sql"insert into user_collection (fk_track, $fkUserField) values ($trackId, $userId)".update().apply()
-            case Some(_) =>
-          }
+          val trackId:Long = TrackFacade.saveTrack(track, existingArtistId, existingAlbumId)
+          CollectionFacade(identifier).save(trackId)
         }
       }
     }

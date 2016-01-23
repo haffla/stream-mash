@@ -3,10 +3,10 @@ package models.database.alias
 import org.squeryl.KeyedEntity
 import org.squeryl.annotations._
 
-case class UserCollection(@Column("fk_user") userId:Option[Long],
+case class UserCollection(@Column("fk_user") userId:Option[Long] = None,
                           @Column("fk_track") trackId:Long,
-                          @Column("user_session") userSession:Option[String],
-                          @Column("times_played") played:Int) extends KeyedEntity[Long] with HasUserOrSession {
+                          @Column("user_session") userSession:Option[String] = None,
+                          @Column("times_played") played:Int = 1) extends KeyedEntity[Long] with HasUserOrSession {
 
   @Column("id_collection") val id: Long = 0
   override def getUserId:Option[Long] = this.userId

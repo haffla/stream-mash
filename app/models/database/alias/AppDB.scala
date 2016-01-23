@@ -28,7 +28,8 @@ object AppDB extends Schema {
 
   on(collections)(c => declare(
     columns(c.userId, c.trackId) are unique,
-    columns(c.userSession, c.trackId) are unique
+    columns(c.userSession, c.trackId) are unique,
+    c.id is autoIncremented("user_collection_id_collection_seq")
   ))
 
   on(users)(u => declare(
@@ -46,7 +47,8 @@ object AppDB extends Schema {
   ))
 
   on(tracks)(t => declare(
-    columns(t.name, t.artistId, t.albumId) are unique
+    columns(t.name, t.artistId, t.albumId) are unique,
+    t.id is autoIncremented("track_id_track_seq")
   ))
 
   on(serviceArtistAbsence)(saa => declare(

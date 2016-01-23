@@ -14,6 +14,30 @@ object CollectionFacade {
 
 class CollectionFacade(identifier:Either[Int,String]) extends Facade {
 
+  def save(trackId: Long, timePlayed:Int = 1) = {
+    inTransaction {
+      byId(trackId) match {
+        case Some(_) =>
+        case None => insert(trackId)
+      }
+    }
+  }
+
+  def insert(trackId: Long) = {
+    val collection = identifier match {
+      case Left(userId) => UserCollection(trackId = trackId, userId = Some(userId))
+      case Right(userSession) => UserCollection(trackId = trackId, userSession = Some(userSession))
+    }
+    AppDB.collections.insert(collection)
+  }
+
+  def byId(trackId:Long):Option[UserCollection] = {
+    from(AppDB.collections)(c =>
+      where(c.trackId === trackId and AppDB.userWhereClause(c,identifier))
+        select c
+    ).headOption
+  }
+
   def userCollection:Future[List[(Album,Artist,Track,UserCollection,UserArtistLiking,Long)]] = {
     Future {
       transaction {

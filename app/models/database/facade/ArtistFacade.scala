@@ -4,6 +4,17 @@ import models.database.alias.{AppDB, Artist}
 import org.squeryl.PrimitiveTypeMode._
 
 object ArtistFacade {
+  def saveByName(artist: String, artistLikingFacade: ArtistLikingFacade, score:Double = 1):Long = {
+    inTransaction {
+      byName(artist) match {
+        case Some(art) =>
+          artistLikingFacade.insertIfNotExists(art.id, score)
+          art.id
+        case _ => insert(artist, artistLikingFacade, score)
+      }
+    }
+  }
+
 
   def insert(name: String, artistLikingFacade: ArtistLikingFacade, score:Double = 1):Long = {
     val artistDbId = AppDB.artists.insert(Artist(name)).id
@@ -11,10 +22,14 @@ object ArtistFacade {
     artistDbId
   }
 
+  private def byName(artist:String) = {
+    AppDB.artists.where(a => a.name === artist).headOption
+  }
+
   def apply(identifier:Either[Int,String]) = new ArtistFacade(identifier)
 
   def artistByName(artistName:String):Option[Artist] = {
-    transaction(AppDB.artists.where(a => a.name === artistName).headOption)
+    transaction(byName(artistName))
   }
 
   def artistById(artistId:Long):Artist = {

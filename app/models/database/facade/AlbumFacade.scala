@@ -4,6 +4,25 @@ import models.database.alias.{Album, AppDB}
 import org.squeryl.PrimitiveTypeMode._
 
 object AlbumFacade {
+  def saveByNameAndArtistId(album: String, artistId: Long) = {
+    inTransaction {
+      byNameAndArtistId(album, artistId) match {
+        case Some(alb) => alb.id
+        case _ => insert(album, artistId)
+      }
+    }
+  }
+
+  def insert(album:String, artistId:Long): Long = {
+    AppDB.albums.insert(Album(album, artistId)).id
+  }
+
+  def byNameAndArtistId(name:String, artistId:Long) = {
+    from(AppDB.albums)(a => where(a.name === name and a.artistId === artistId)
+      select a
+    ).headOption
+  }
+
   def apply(identifier:Either[Int,String]) = new AlbumFacade(identifier)
 }
 

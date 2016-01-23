@@ -6,7 +6,7 @@ import org.squeryl.PrimitiveTypeMode._
 class ArtistLikingFacade(identifier:Either[Int,String]) extends Facade {
 
   def setScoreForArtist(artist:String, score:Double) = {
-    transaction {
+    inTransaction {
       getEntityIdByArtist(artist) match {
         case Some(id) =>
           update(AppDB.userArtistLikings)(ual =>
@@ -38,27 +38,21 @@ class ArtistLikingFacade(identifier:Either[Int,String]) extends Facade {
     }
   }
 
-  private def doInsert(idArtist:Long, score:Double) = {
+  def insert(idArtist:Long, score:Double) = {
     val ual = identifier match {
-      case Left(id) => UserArtistLiking(artistId = idArtist, userId = Some(id.toLong), score = score)
+      case Left(id) => UserArtistLiking(artistId = idArtist, userId = Some(id), score = score)
       case Right(userSession) => UserArtistLiking(artistId = idArtist, userSession = Some(userSession), score = score)
     }
     AppDB.userArtistLikings.insert(ual)
   }
 
-  def insert(idArtist:Long, score:Double = 1) = {
-    transaction(doInsert(idArtist, score))
-  }
-
   def insertIfNotExists(idArtist:Long, score:Double = 1) = {
-    transaction {
-      from(AppDB.userArtistLikings)(ual =>
-        where(ual.id === idArtist and AppDB.userWhereClause(ual, identifier))
-          select ual.id
-      ).headOption match {
-        case None => doInsert(idArtist, score)
-        case _ =>
-      }
+    from(AppDB.userArtistLikings)(ual =>
+      where(ual.artistId === idArtist and AppDB.userWhereClause(ual, identifier))
+        select ual.id
+    ).headOption match {
+      case None => insert(idArtist, score)
+      case _ =>
     }
   }
 }
