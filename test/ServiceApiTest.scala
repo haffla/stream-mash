@@ -30,7 +30,7 @@ class ServiceApiTest extends UnitSpec with ScalaFutures {
   }
 
   "The Deezer API" should "get a correct result for an artist search" in new WithApplication {
-    val apiRequest = DeezerApiFacade.getArtistId(artist, Some("frOgmv9CV656a2b9ed3228fpqDO0HkH56a2b9ed322c8NqcuqO8"))
+    val apiRequest = DeezerApiFacade.getArtistId(artist)
     whenReady(apiRequest) {
       case Some(art) => art._2 should equal("294359")
       case _ => fail(failureMsg + " from Deezer")
