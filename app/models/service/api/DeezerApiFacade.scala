@@ -5,6 +5,7 @@ import java.net.URLEncoder
 import models.database.alias.Artist
 import models.database.facade.api.DeezerFacade
 import models.database.facade.service.{DeezerArtistFacade, ServiceArtistTrait}
+import models.service.Constants
 import models.service.oauth.DeezerService.apiEndpoints
 import play.api.Play.current
 import play.api.libs.json.{JsObject, JsValue, Json}
@@ -15,7 +16,7 @@ import scala.concurrent.Future
 
 object DeezerApiFacade extends ApiFacade {
 
-  override val serviceName = "deezer"
+  override val serviceName = Constants.serviceDeezer
   override val serviceArtistFacade: ServiceArtistTrait = DeezerArtistFacade
   override def artistInfoUrl(id: String): String = {
     apiEndpoints.artists + "/" + id

@@ -3,6 +3,7 @@ package controllers
 import models.User
 import models.auth.{AdminAccess, Authenticated, Helper, IdentifiedBySession}
 import models.database.facade.{ArtistFacade, ArtistLikingFacade, CollectionFacade}
+import models.service.Constants
 import models.service.api.discover.EchoNestApi
 import models.service.library.{AudioFileLibrary, Library}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -25,7 +26,7 @@ class UserController extends Controller {
   }
 
   def deleteMyCollections() = Authenticated { implicit request =>
-    request.session.get("user_id") map { userId =>
+    request.session.get(Constants.userId) map { userId =>
       deleteCollection(userId.toInt)
     } getOrElse Ok(Json.toJson(Map("success" -> false)))
   }

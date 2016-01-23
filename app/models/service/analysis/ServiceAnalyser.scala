@@ -2,6 +2,7 @@ package models.service.analysis
 
 import models.database.facade.ArtistFacade
 import models.database.facade.service._
+import models.service.Constants
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -35,18 +36,18 @@ class ServiceAnalyser(identifier: Either[Int,String]) {
 
   private def serviceArtistFacade(service:String):ServiceArtistTrait = {
     service match {
-      case "spotify" => SpotifyArtistFacade
-      case "deezer" => DeezerArtistFacade
-      case "napster" => NapsterArtistFacade
+      case Constants.serviceSpotify => SpotifyArtistFacade
+      case Constants.serviceDeezer => DeezerArtistFacade
+      case Constants.serviceNapster => NapsterArtistFacade
       case _ => throw new Exception("Unknown service " + service)
     }
   }
 
   private def serviceAlbumFacade(service:String):ServiceAlbumFacade = {
     service match {
-      case "spotify" => SpotifyAlbumFacade
-      case "deezer" => DeezerAlbumFacade
-      case "napster" => NapsterAlbumFacade
+      case Constants.serviceSpotify => SpotifyAlbumFacade
+      case Constants.serviceDeezer => DeezerAlbumFacade
+      case Constants.serviceNapster => NapsterAlbumFacade
       case _ => throw new Exception("Unknown service " + service)
     }
   }

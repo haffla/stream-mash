@@ -2,6 +2,7 @@ package models.database.facade.service
 
 import models.database.alias._
 import models.database.facade.{ArtistFacade, AlbumFacade}
+import models.service.Constants
 import org.squeryl.PrimitiveTypeMode._
 import play.api.libs.json.{JsValue, Json}
 
@@ -89,21 +90,21 @@ abstract class ServiceArtistFacade(identifier:Either[Int,String]) {
       )
     }
     Json.obj(
-      "artists" -> Json.toJson(list),
-      "stats" -> Json.obj(
-        "nrAlbums" -> nrAlbums,
-        "nrArtists" -> artistAlbumMap.size,
-        "nrUserAlbums" -> nrAlbumsInUserCollection,
-        "albumsOnlyInUserCollection" -> albumsOnlyInUserCollection
+      Constants.jsonKeyArtists -> Json.toJson(list),
+      Constants.jsonKeyStats -> Json.obj(
+        Constants.jsonKeyNrAlbs -> nrAlbums,
+        Constants.jsonKeyNrArts -> artistAlbumMap.size,
+        Constants.jsonKeyNrUserAlbs -> nrAlbumsInUserCollection,
+        Constants.jsonKeyAlbumsOnlyInUserCollection -> albumsOnlyInUserCollection
       )
     )
   }
 
   private def getServiceField(elem:Artist):String = {
     val field = serviceName match {
-      case "spotify" => elem.spotifyId
-      case "deezer" => elem.deezerId
-      case "napster" => elem.napsterId
+      case Constants.serviceSpotify => elem.spotifyId
+      case Constants.serviceDeezer => elem.deezerId
+      case Constants.serviceNapster => elem.napsterId
       case _ => throw new Exception("This service has not properly set up yet. Key not found.")
     }
     field.getOrElse("")

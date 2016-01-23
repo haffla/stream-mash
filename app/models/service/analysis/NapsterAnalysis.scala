@@ -2,6 +2,7 @@ package models.service.analysis
 
 import models.database.alias.Artist
 import models.database.facade.service.{NapsterArtistFacade, NapsterAlbumFacade}
+import models.service.Constants
 import models.service.api.NapsterApiFacade
 import models.service.oauth.NapsterService
 import play.api.Play
@@ -14,7 +15,7 @@ import scala.concurrent.Future
 
 class NapsterAnalysis(identifier:Either[Int,String],
                       usersFavouriteArtists: List[Artist])
-                      extends ServiceAnalysis(identifier, usersFavouriteArtists, "napster") {
+                      extends ServiceAnalysis(identifier, usersFavouriteArtists, Constants.serviceNapster) {
 
   override val searchEndpoint = NapsterService.apiEndpoints.artists
   override val serviceArtistFacade = NapsterArtistFacade

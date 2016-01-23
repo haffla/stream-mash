@@ -2,12 +2,13 @@ package models.database.facade.service
 
 import models.database.alias._
 import models.database.alias.service.NapsterArtist
+import models.service.Constants
 import org.squeryl.PrimitiveTypeMode._
 import play.api.libs.json.JsValue
 
 class NapsterArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFacade(identifier) {
 
-  val serviceName = "napster"
+  val serviceName = Constants.serviceNapster
 
   override protected def joinWithArtistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)] = {
     join(AppDB.albums,

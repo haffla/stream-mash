@@ -14,10 +14,10 @@ import models.service.oauth.LastfmService._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class LastfmService(identifier: Either[Int, String]) extends ApiDataRequest  ("lastfm", identifier) {
+class LastfmService(identifier: Either[Int, String]) extends ApiDataRequest  (Constants.serviceLastFm, identifier) {
 
   val library = new LastfmLibrary(identifier)
-  override val serviceAccessTokenHelper = new ServiceAccessTokenHelper("lastfm", identifier)
+  override val serviceAccessTokenHelper = new ServiceAccessTokenHelper(Constants.serviceLastFm, identifier)
 
   def generateApiSig(code: String) = {
     MessageDigest.md5("api_key" + clientId + "method" + apiEndpoints.authMethod + "token" + code + clientSecret)

@@ -4,7 +4,7 @@ import models.service.Constants
 
 object Helper {
   def getUserIdentifier(session: play.api.mvc.Session):Either[Int,String] = {
-    session.get("user_id") match {
+    session.get(Constants.userId) match {
       case Some(userId) => Left(userId.toInt)
       case None =>
         session.get(Constants.userSessionKey) match {

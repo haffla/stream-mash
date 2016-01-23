@@ -3,12 +3,13 @@ package models.database.facade.service
 import models.database.alias._
 import models.database.alias.service.DeezerArtist
 import models.database.facade.ArtistFacade
+import models.service.Constants
 import org.squeryl.PrimitiveTypeMode._
 import play.api.libs.json.JsValue
 
 class DeezerArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFacade(identifier) {
 
-  val serviceName = "deezer"
+  val serviceName = Constants.serviceDeezer
 
   override protected def joinWithArtistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)] = {
     join(AppDB.albums,

@@ -1,9 +1,19 @@
 package models.service
 
 object Constants {
+  val serviceLastFm = "lastfm"
+  val serviceSoundcloud = "soundcloud"
+  val serviceNapster = "napster"
+  val serviceDeezer = "deezer"
+  val serviceSpotify = "spotify"
+  val intendedLocation = "intended_location"
+
   val sessionTamperingMessage = "The session has been tampered with."
 
   val userSessionKey = "user_session_key"
+  val userId = "user_id"
+  val username = "username"
+  val authSecret = "auth_secret"
   val fileHashCacheKeyPrefix = "it-file-hash|"
 
   val accessTokenRetrievalError = "The access token could not be retrieved"
@@ -23,4 +33,10 @@ object Constants {
 
   val jsonKeyAccessToken = "access_token"
   val jsonKeyRefreshToken = "refresh_token"
+  val jsonKeyAlbumsOnlyInUserCollection = "albumsOnlyInUserCollection"
+  val jsonKeyArtists = "artists"
+  val jsonKeyStats = "stats"
+  val jsonKeyNrUserAlbs = "nrUserAlbums"
+  val jsonKeyNrAlbs = "nrAlbums"
+  val jsonKeyNrArts = "nrArtists"
 }

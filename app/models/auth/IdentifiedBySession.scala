@@ -11,15 +11,15 @@ import scala.concurrent.Future
 
 object IdentifiedBySession extends ActionBuilder[Request] with AuthHandling {
   override def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[Result]) = {
-    val userId = request.session.get("user_id")
-    val userName = request.session.get("username")
+    val userId = request.session.get(Constants.userId)
+    val userName = request.session.get(Constants.username)
     (userId, userName) match {
       case (Some(uId), Some(uName)) =>
         val secretFromCache = Cache.get(s"user.$uName")
-        val secretFromSession = request.session.get("auth-secret").getOrElse("no-session-key")
+        val secretFromSession = request.session.get(Constants.authSecret).getOrElse("no-session-key")
         if(secretFromCache == secretFromSession) sessionIdentified(request, block)
         else
-          redirectTo(routes.Application.index().toString, request, "The session has been tampered with.")
+          redirectTo(routes.Application.index().toString, request, Constants.sessionTamperingMessage)
 
       case _ => sessionIdentified(request, block)
     }

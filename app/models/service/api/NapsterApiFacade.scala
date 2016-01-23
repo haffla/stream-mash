@@ -3,6 +3,7 @@ package models.service.api
 import models.database.alias.Artist
 import models.database.facade.api.NapsterFacade
 import models.database.facade.service.{NapsterArtistFacade, ServiceArtistTrait}
+import models.service.Constants
 import models.service.oauth.NapsterService
 import models.service.oauth.NapsterService.apiEndpoints
 import play.api.Play
@@ -20,7 +21,7 @@ object NapsterApiFacade extends ApiFacade {
     case None => throw new Exception("The Napster API only works authenticated")
   }
 
-  override val serviceName = "napster"
+  override val serviceName = Constants.serviceNapster
   override val serviceArtistFacade:ServiceArtistTrait = NapsterArtistFacade
 
   override def artistInfoUrl(id: String): String = {

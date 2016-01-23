@@ -3,6 +3,7 @@ package models.service.api
 import models.database.alias.Artist
 import models.database.facade.api.SpotifyFacade
 import models.database.facade.service.{ServiceArtistTrait, SpotifyArtistFacade}
+import models.service.Constants
 import models.service.oauth.SpotifyService.apiEndpoints
 import play.api.Play.current
 import play.api.libs.json.{JsObject, JsValue, Json}
@@ -13,7 +14,7 @@ import scala.concurrent.Future
 
 object SpotifyApiFacade extends ApiFacade {
 
-  override val serviceName = "spotify"
+  override val serviceName = Constants.serviceSpotify
   override val serviceArtistFacade:ServiceArtistTrait = SpotifyArtistFacade
 
   override def artistInfoUrl(id: String): String = {

@@ -1,7 +1,8 @@
 package models.service.api.refresh
 
 import models.auth.MessageDigest
-import models.service.oauth.OAuthStreamingService
+import models.service.Constants
+import models.service.oauth.{SpotifyService, OAuthStreamingService}
 import models.service.util.ServiceAccessTokenHelper
 import play.api.libs.ws.WS
 import play.api.Play.current
@@ -11,15 +12,15 @@ import scala.concurrent.Future
 
 class SpotifyRefresh(identifier:Either[Int,String]) extends OAuthStreamingService {
 
-  val clientIdKey = "spotify.client.id"
-  val clientSecretKey = "spotify.client.secret"
+  val clientIdKey = SpotifyService.clientIdKey
+  val clientSecretKey = SpotifyService.clientSecretKey
 
-  val serviceAccessTokenHelper = new ServiceAccessTokenHelper("spotify", identifier)
+  val serviceAccessTokenHelper = new ServiceAccessTokenHelper(Constants.serviceSpotify, identifier)
 
   private def getRequest(token:String) = {
-    val data = Map("grant_type" -> Seq("refresh_token"), "refresh_token" -> Seq(token))
+    val data = Map("grant_type" -> Seq(Constants.jsonKeyRefreshToken), Constants.jsonKeyRefreshToken -> Seq(token))
     val baseEncodedCredentials = MessageDigest.encodeBase64(clientId + ":" + clientSecret)
-    WS.url("https://accounts.spotify.com/api/token")
+    WS.url(SpotifyService.apiEndpoints.token)
       .withHeaders("Authorization" -> s"Basic $baseEncodedCredentials").post(data)
   }
 

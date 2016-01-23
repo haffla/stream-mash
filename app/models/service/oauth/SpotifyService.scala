@@ -1,5 +1,6 @@
 package models.service.oauth
 
+import models.service.Constants
 import models.service.library.SpotifyLibrary
 import models.service.oauth.SpotifyService._
 import models.service.util.ServiceAccessTokenHelper
@@ -10,10 +11,10 @@ import play.api.libs.ws.{WS, WSResponse}
 
 import scala.concurrent.Future
 
-class SpotifyService(identifier: Either[Int, String]) extends ApiDataRequest("spotify", identifier) {
+class SpotifyService(identifier: Either[Int, String]) extends ApiDataRequest(Constants.serviceSpotify, identifier) {
 
   val library = new SpotifyLibrary(identifier)
-  override val serviceAccessTokenHelper = new ServiceAccessTokenHelper("spotify", identifier)
+  override val serviceAccessTokenHelper = new ServiceAccessTokenHelper(Constants.serviceSpotify, identifier)
 
   override def doDataRequest(code:String):Future[(Option[String],Option[String])] = {
     val data = apiEndpoints.data + ("code" -> Seq(code))

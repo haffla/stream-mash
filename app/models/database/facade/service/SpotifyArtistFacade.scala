@@ -3,12 +3,13 @@ package models.database.facade.service
 import models.database.alias._
 import models.database.alias.service.SpotifyArtist
 import models.database.facade.ArtistFacade
+import models.service.Constants
 import org.squeryl.PrimitiveTypeMode._
 import play.api.libs.json.JsValue
 
 class SpotifyArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFacade(identifier) {
 
-  val serviceName = "spotify"
+  val serviceName = Constants.serviceSpotify
 
   /**
     * Each streaming artist facade needs to implement this method. Join artists and albums

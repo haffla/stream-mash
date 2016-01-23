@@ -2,6 +2,7 @@ package models.service.analysis
 
 import models.database.alias.Artist
 import models.database.facade.service.{DeezerAlbumFacade, DeezerArtistFacade}
+import models.service.Constants
 import models.service.api.DeezerApiFacade
 import models.service.oauth.DeezerService
 import models.util.Logging
@@ -14,7 +15,7 @@ import scala.concurrent.Future
 
 class DeezerAnalysis(identifier:Either[Int,String],
                      usersFavouriteArtists: List[Artist])
-                     extends ServiceAnalysis(identifier, usersFavouriteArtists, "deezer") {
+                     extends ServiceAnalysis(identifier, usersFavouriteArtists, Constants.serviceDeezer) {
 
   override val searchEndpoint = DeezerService.apiEndpoints.artists
   override val serviceArtistFacade = DeezerArtistFacade

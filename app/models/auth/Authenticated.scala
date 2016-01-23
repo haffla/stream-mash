@@ -3,7 +3,7 @@ package models.auth
 import controllers.routes
 import models.auth.form.AuthHandling
 import models.service.Constants
-import play.api.mvc.{Result, Controller, Request, ActionBuilder, WrappedRequest}
+import play.api.mvc.{ActionBuilder, Request, Result, WrappedRequest}
 import play.cache.Cache
 
 import scala.concurrent.Future
@@ -24,10 +24,10 @@ trait AuthenticatedAction extends ActionBuilder[Request] with AuthHandling {
   val index = routes.Application.index().toString
 
   def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[Result]) = {
-    request.session.get("username").map { username =>
+    request.session.get(Constants.username).map { username =>
       if(userNameAllowed(username)) {
         val secretFromCache = Cache.get(s"user.$username")
-        val secretFromSession = request.session.get("auth-secret").getOrElse("no-session-key")
+        val secretFromSession = request.session.get(Constants.authSecret).getOrElse("no-session-key")
         if(secretFromCache == secretFromSession)
           block(new AuthenticatedRequest(request))
         else

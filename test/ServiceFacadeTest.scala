@@ -1,5 +1,6 @@
 import models.database.facade._
 import models.database.facade.service._
+import models.service.Constants
 import models.util.TextWrangler
 import org.scalatest.time.{Millis, Seconds, Span}
 import org.squeryl.PrimitiveTypeMode._
@@ -28,12 +29,6 @@ class ServiceFacadeTest extends UnitSpec {
   val champAlbumTwo = "Champions of Titikaka Two"
   val baluAlb = "Balu"
   val heroAlb = "Hero"
-
-  val keyStats = "stats"
-  val keyArtists = "artists"
-  val keyNrUserAlb = "nrUserAlbums"
-  val keyNrAlbs = "nrAlbums"
-  val keyNrArts = "nrArtists"
 
   "The Service Facades" should "should return expected data" in new WithApplication {
     using(squerylSession) {
@@ -95,27 +90,27 @@ class ServiceFacadeTest extends UnitSpec {
       val deezerResult = DeezerArtistFacade(id).getArtistsAndAlbumsForOverview
       val napsterResult = NapsterArtistFacade(id).getArtistsAndAlbumsForOverview
       whenReady(spotifyResult) { spRes =>
-        val artists = (spRes \ keyArtists).as[List[JsValue]]
-        val stats = (spRes \ keyStats).as[JsValue]
-        (stats \ keyNrUserAlb).as[Int] should be(4)
-        (stats \ keyNrAlbs).as[Int] should be(3)
-        (stats \ keyNrArts).as[Int] should be(3)
+        val artists = (spRes \ Constants.jsonKeyArtists).as[List[JsValue]]
+        val stats = (spRes \ Constants.jsonKeyStats).as[JsValue]
+        (stats \ Constants.jsonKeyNrUserAlbs).as[Int] should be(4)
+        (stats \ Constants.jsonKeyNrAlbs).as[Int] should be(3)
+        (stats \ Constants.jsonKeyNrArts).as[Int] should be(3)
         artists.length should be(3)
       }
       whenReady(deezerResult) { deeRes =>
-        val artists = (deeRes \ keyArtists).as[List[JsValue]]
-        val stats = (deeRes \ keyStats).as[JsValue]
-        (stats \ keyNrUserAlb).as[Int] should be(4)
-        (stats \ keyNrAlbs).as[Int] should be(3)
-        (stats \ keyNrArts).as[Int] should be(3)
+        val artists = (deeRes \ Constants.jsonKeyArtists).as[List[JsValue]]
+        val stats = (deeRes \ Constants.jsonKeyStats).as[JsValue]
+        (stats \ Constants.jsonKeyNrUserAlbs).as[Int] should be(4)
+        (stats \ Constants.jsonKeyNrAlbs).as[Int] should be(3)
+        (stats \ Constants.jsonKeyNrArts).as[Int] should be(3)
         artists.length should be(3)
       }
       whenReady(napsterResult) { napsRes =>
-        val artists = (napsRes \ keyArtists).as[List[JsValue]]
-        val stats = (napsRes \ keyStats).as[JsValue]
-        (stats \ keyNrUserAlb).as[Int] should be(4)
-        (stats \ keyNrAlbs).as[Int] should be(3)
-        (stats \ keyNrArts).as[Int] should be(3)
+        val artists = (napsRes \ Constants.jsonKeyArtists).as[List[JsValue]]
+        val stats = (napsRes \ Constants.jsonKeyStats).as[JsValue]
+        (stats \ Constants.jsonKeyNrUserAlbs).as[Int] should be(4)
+        (stats \ Constants.jsonKeyNrAlbs).as[Int] should be(3)
+        (stats \ Constants.jsonKeyNrArts).as[Int] should be(3)
         artists.length should be(3)
       }
 

@@ -1,5 +1,6 @@
 package models.service.oauth
 
+import models.service.Constants
 import models.service.library.NapsterLibrary
 import models.service.oauth.NapsterService._
 import models.service.util.ServiceAccessTokenHelper
@@ -10,10 +11,10 @@ import play.api.libs.ws.{WS, WSResponse}
 
 import scala.concurrent.Future
 
-class NapsterService(identifier: Either[Int, String]) extends ApiDataRequest("napster", identifier) {
+class NapsterService(identifier: Either[Int, String]) extends ApiDataRequest(Constants.serviceNapster, identifier) {
 
   val library = new NapsterLibrary(identifier)
-  override val serviceAccessTokenHelper = new ServiceAccessTokenHelper("napster", identifier)
+  override val serviceAccessTokenHelper = new ServiceAccessTokenHelper(Constants.serviceNapster, identifier)
 
   override def doDataRequest(code:String):Future[(Option[String],Option[String])] = {
     val data = apiEndpoints.data + ("code" -> Seq(code))

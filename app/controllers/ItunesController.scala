@@ -4,6 +4,7 @@ import java.io.File
 
 import models.User
 import models.auth.{Helper, IdentifiedBySession, MessageDigest}
+import models.service.Constants
 import models.service.library.ItunesLibrary
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
@@ -17,7 +18,7 @@ class ItunesController extends Controller {
     request.body.file("file").map { file =>
       val identifier = Helper.getUserIdentifier(request.session)
       val filename = file.filename
-      val username = request.session.get("username")
+      val username = request.session.get(Constants.username)
         .getOrElse("user-" + System.currentTimeMillis)
       val xmlPath = s"/tmp/$filename$username"
       file.ref.moveTo(new File(xmlPath))

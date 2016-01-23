@@ -3,6 +3,7 @@ package controllers
 import models.auth.{Helper, IdentifiedBySession}
 import models.database.facade.TrackFacade
 import models.database.facade.service.DeezerArtistFacade
+import models.service.Constants
 import models.service.api.{ApiFacade, DeezerApiFacade}
 import models.service.oauth.{DeezerService, OauthRouting}
 import play.api.libs.json.JsValue
@@ -13,7 +14,7 @@ import scala.concurrent.Future
 class DeezerController extends StreamingServiceController with AnalysisController with AlbumInfoController {
 
   override val redirectionService: OauthRouting = DeezerService
-  override val serviceName: String = "deezer"
+  override val serviceName: String = Constants.serviceDeezer
   override val apiFacade: ApiFacade = DeezerApiFacade
 
   override def requestUserData(code: String, identifier: Either[Int, String]): Unit = {

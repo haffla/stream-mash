@@ -5,7 +5,7 @@ import models.service.Constants
 import models.service.library.util.JsonConversion
 import play.api.libs.json.JsValue
 
-class NapsterLibrary(identifier: Either[Int, String]) extends Library(identifier, "spotify") with JsonConversion {
+class NapsterLibrary(identifier: Either[Int, String]) extends Library(identifier, Constants.serviceNapster) with JsonConversion {
 
   def doJsonConversion(js: JsValue): Seq[Map[String, String]] = {
     val items = js.as[Seq[JsValue]]

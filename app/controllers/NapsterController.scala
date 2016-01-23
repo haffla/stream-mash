@@ -3,6 +3,7 @@ package controllers
 import models.auth.{Helper, IdentifiedBySession}
 import models.database.facade.TrackFacade
 import models.database.facade.service.NapsterArtistFacade
+import models.service.Constants
 import models.service.api.{ApiFacade, NapsterApiFacade}
 import models.service.oauth.{NapsterService, OauthRouting}
 import play.api.libs.json.JsValue
@@ -14,7 +15,7 @@ class NapsterController extends StreamingServiceController with AnalysisControll
 
   override val redirectionService: OauthRouting = NapsterService
   override val apiFacade: ApiFacade = NapsterApiFacade
-  override val serviceName: String = "napster"
+  override val serviceName: String = Constants.serviceNapster
 
   override def requestUserData(code: String, identifier: Either[Int, String]): Unit = {
     NapsterService(identifier).requestUserData(code)

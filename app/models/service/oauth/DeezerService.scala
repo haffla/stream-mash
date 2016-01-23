@@ -1,5 +1,6 @@
 package models.service.oauth
 
+import models.service.Constants
 import models.service.library.DeezerLibrary
 import models.service.oauth.DeezerService._
 import models.service.util.ServiceAccessTokenHelper
@@ -10,9 +11,9 @@ import play.api.libs.ws.{WS, WSResponse}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DeezerService(identifier:Either[Int,String]) extends ApiDataRequest("deezer", identifier) {
+class DeezerService(identifier:Either[Int,String]) extends ApiDataRequest(Constants.serviceDeezer, identifier) {
 
-  override val serviceAccessTokenHelper: ServiceAccessTokenHelper = new ServiceAccessTokenHelper("deezer", identifier)
+  override val serviceAccessTokenHelper: ServiceAccessTokenHelper = new ServiceAccessTokenHelper(Constants.serviceDeezer, identifier)
   val library = new DeezerLibrary(identifier)
 
   override def doDataRequest(code: String): Future[(Option[String],Option[String])] = {

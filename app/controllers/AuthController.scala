@@ -33,7 +33,7 @@ class AuthController extends Controller with models.auth.form.Forms {
               }
               val hash = authenticateUser(user.name, user.password)
               Redirect(routes.Application.index()).flashing("message" -> "Welcome")
-                .withSession("username" -> user.name, "auth-secret" -> hash, "user_id" -> incrementId.toString)
+                .withSession(Constants.username -> user.name, Constants.authSecret -> hash, Constants.userId -> incrementId.toString)
             }
           }
         }
@@ -65,10 +65,10 @@ class AuthController extends Controller with models.auth.form.Forms {
               case None => //NADA
             }
             val newSession = request.session +
-               ("username" -> userData.name) +
-               ("auth-secret" -> result._2)  +
-               ("user_id" -> result._3.toString)
-            Redirect(request.session.get("intended_location").getOrElse("/")).withSession(newSession)
+               (Constants.username -> userData.name) +
+               (Constants.authSecret -> result._2)  +
+               (Constants.userId -> result._3.toString)
+            Redirect(request.session.get(Constants.intendedLocation).getOrElse("/")).withSession(newSession)
           case None =>
             Redirect(routes.AuthController.login()).flashing("message" -> "Username or password wrong")
         }
@@ -77,7 +77,7 @@ class AuthController extends Controller with models.auth.form.Forms {
   }
 
   def logout = Action { implicit request =>
-    val username = request.session.get("username")
+    val username = request.session.get(Constants.username)
     Cache.remove(s"user.$username")
     Redirect(routes.AuthController.login())
       .withNewSession
