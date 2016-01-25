@@ -1,5 +1,5 @@
 POST          /fileupload                   controllers.UserController.handleAudioFiles
-GET           /artist/image                 controllers.UserController.getArtistPic
+GET           /artist/image                 controllers.UserController.artistPic
 POST          /artist/rating                controllers.UserController.rating
 
 GET           /                             controllers.Application.index
@@ -32,6 +32,7 @@ GET           /soundcloud/login             controllers.SoundcloudController.log
 GET           /collection                   controllers.CollectionController.index(service:String ?= "")
 GET           /overview                     controllers.CollectionController.overview
 POST          /user/analysis                controllers.CollectionController.analysis
+GET           /user/visualize               controllers.CollectionController.visualize
 
 ### iTunes
 POST          /itunes                       controllers.ItunesController.fileUpload

@@ -1,7 +1,7 @@
 package models.database.facade.api
 
 import models.database.facade.Facade
-import models.service.Constants
+import models.util.Constants
 import play.api.Play.current
 import play.api.cache.Cache
 import scalikejdbc._

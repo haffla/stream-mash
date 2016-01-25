@@ -5,7 +5,8 @@ var reactFrontend = 'react-frontend';
 module.exports = {
     entry: {
       artistbox: ['./' + reactFrontend + '/artistbox'],
-      analysis: ['./' + reactFrontend + '/analysis']
+      analysis: ['./' + reactFrontend + '/analysis'],
+      visualize: ['./' + reactFrontend + '/visualize'],
     },
     output: {
         path: path.join(__dirname, reactFrontend, 'dist'),

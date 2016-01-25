@@ -1,4 +1,4 @@
-package models.service
+package models.util
 
 object Constants {
   val serviceLastFm = "lastfm"

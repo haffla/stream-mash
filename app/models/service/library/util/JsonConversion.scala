@@ -1,6 +1,6 @@
 package models.service.library.util
 
-import models.service.Constants
+import models.util.Constants
 import play.api.libs.json.JsValue
 
 trait JsonConversion {

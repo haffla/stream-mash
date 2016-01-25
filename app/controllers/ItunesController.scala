@@ -4,8 +4,8 @@ import java.io.File
 
 import models.User
 import models.auth.{Helper, IdentifiedBySession, MessageDigest}
-import models.service.Constants
 import models.service.library.ItunesLibrary
+import models.util.Constants
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
 import play.api.mvc.Controller

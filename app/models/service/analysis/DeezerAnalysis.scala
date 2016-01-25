@@ -2,10 +2,9 @@ package models.service.analysis
 
 import models.database.alias.Artist
 import models.database.facade.service.{DeezerAlbumFacade, DeezerArtistFacade}
-import models.service.Constants
 import models.service.api.DeezerApiFacade
 import models.service.oauth.DeezerService
-import models.util.Logging
+import models.util.{Constants, Logging}
 import play.api.Play.current
 import play.api.libs.json.JsValue
 import play.api.libs.ws.{WS, WSRequest}

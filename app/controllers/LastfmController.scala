@@ -1,7 +1,7 @@
 package controllers
 
-import models.service.Constants
 import models.service.oauth.{LastfmService, OauthRouting}
+import models.util.Constants
 
 class LastfmController extends StreamingServiceController {
 

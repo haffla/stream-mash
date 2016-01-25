@@ -1,7 +1,6 @@
 import models.database.facade._
 import models.database.facade.service._
-import models.service.Constants
-import models.util.TextWrangler
+import models.util.{Constants, TextWrangler}
 import org.scalatest.time.{Millis, Seconds, Span}
 import org.squeryl.PrimitiveTypeMode._
 import play.api.libs.json.JsValue

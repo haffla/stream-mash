@@ -3,8 +3,8 @@ package models.service.api
 import models.database.alias.Artist
 import models.database.facade.api.SpotifyFacade
 import models.database.facade.service.{ServiceArtistTrait, SpotifyArtistFacade}
-import models.service.Constants
 import models.service.oauth.SpotifyService.apiEndpoints
+import models.util.Constants
 import play.api.Play.current
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.{WS, WSRequest, WSResponse}

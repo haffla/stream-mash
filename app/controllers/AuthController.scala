@@ -1,8 +1,8 @@
 package controllers
 
 import models.auth.MessageDigest
-import models.service.Constants
 import models.User
+import models.util.Constants
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc.{Action, Controller}
 import play.cache.Cache

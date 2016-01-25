@@ -1,9 +1,9 @@
 package models.service.oauth
 
-import models.service.Constants
 import models.service.library.DeezerLibrary
 import models.service.oauth.DeezerService._
 import models.service.util.ServiceAccessTokenHelper
+import models.util.Constants
 import play.api.Play.current
 import play.api.libs.json.JsValue
 import play.api.libs.ws.{WS, WSResponse}

@@ -1,7 +1,6 @@
 package models.service.oauth
 
-import models.service.Constants
-import models.util.Logging
+import models.util.{Constants, Logging}
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSResponse
 
@@ -21,6 +20,7 @@ trait FavouriteMusicRetrieval {
    * This method must decide whether another request must be started in case the service has a maximum
    * of entities it returns. In case of true it must provide the next value (e.g. offset or page) for the
    * next request
+ *
    * @param json The JSON returned from the previous request
    * @return Tuple2[Boolean, Int)
    */

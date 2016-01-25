@@ -1,0 +1,14 @@
+@()(implicit flash: Flash, session: Session, request: RequestHeader)
+
+@import play.api.Play.current
+
+@main("Visualization", wide = true) {
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <div id="content"></div>
+
+  @if(play.api.Play.isDev) {
+    <script type='text/javascript' src='http://localhost:3000/visualize.js'></script>
+  } else {
+    <script type='text/javascript' src='@routes.Assets.versioned("javascripts/visualize.min.js")'></script>
+  }
+}

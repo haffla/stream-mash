@@ -15,6 +15,11 @@ module.exports = {
       'webpack-dev-server/client?' + publicPath,
       'webpack/hot/only-dev-server',
       './react-frontend/analysis'
+    ],
+    visualize: [
+      'webpack-dev-server/client?' + publicPath,
+      'webpack/hot/only-dev-server',
+      './react-frontend/visualize'
     ]
   },
   output: {

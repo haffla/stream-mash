@@ -1,6 +1,6 @@
 
 import controllers.{DeezerController, SpotifyController}
-import models.service.Constants
+import models.util.Constants
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.libs.json.JsValue
 import play.api.mvc.Results

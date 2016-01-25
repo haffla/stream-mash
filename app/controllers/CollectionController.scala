@@ -6,6 +6,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Controller
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class CollectionController extends Controller {
 
@@ -17,10 +18,19 @@ class CollectionController extends Controller {
     Ok(views.html.collection.overview())
   }
 
+  def visualize() = IdentifiedBySession { implicit request =>
+    Ok(views.html.collection.visualize())
+  }
+
   def analysis = IdentifiedBySession.async { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
     for {
       result <- ServiceAnalyser(identifier).analyse()
     } yield Ok(Json.obj("success" -> result))
+  }
+
+  def visualizationData = IdentifiedBySession.async { implicit request =>
+    val identifier = Helper.getUserIdentifier(request.session)
+    Future.successful(Ok(""))
   }
 }

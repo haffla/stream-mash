@@ -2,7 +2,7 @@ package models.service.analysis
 
 import models.database.facade.ArtistFacade
 import models.database.facade.service._
-import models.service.Constants
+import models.util.Constants
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

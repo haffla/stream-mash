@@ -1,10 +1,10 @@
 package models.service.oauth
 
 import com.github.haffla.soundcloud.Client
-import models.service.Constants
 import models.service.library.SoundcloudLibrary
 import models.service.oauth.SoundcloudService._
 import models.service.util.ServiceAccessTokenHelper
+import models.util.Constants
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.{JsValue, Json}
 

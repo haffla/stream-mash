@@ -2,8 +2,8 @@ package models.service.library
 
 import models.database.alias._
 import models.database.facade._
-import models.service.Constants
 import models.service.api.discover.RetrievalProcessMonitor
+import models.util.Constants
 import play.api.libs.json.{JsObject, JsValue, Json}
 import scalikejdbc._
 

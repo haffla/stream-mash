@@ -2,8 +2,8 @@ package models.service.library
 
 import models.database.facade.ArtistFacade
 import models.database.facade.api.SoundcloudFacade
-import models.service.Constants
 import models.service.api.discover.MusicBrainzApi
+import models.util.Constants
 import play.api.libs.json.JsValue
 
 import scala.concurrent.ExecutionContext.Implicits.global

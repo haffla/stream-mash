@@ -1,9 +1,9 @@
 package models.service.api.refresh
 
 import models.auth.MessageDigest
-import models.service.Constants
 import models.service.oauth.{SpotifyService, OAuthStreamingService}
 import models.service.util.ServiceAccessTokenHelper
+import models.util.Constants
 import play.api.libs.ws.WS
 import play.api.Play.current
 

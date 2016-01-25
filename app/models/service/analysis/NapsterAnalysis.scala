@@ -2,9 +2,9 @@ package models.service.analysis
 
 import models.database.alias.Artist
 import models.database.facade.service.{NapsterArtistFacade, NapsterAlbumFacade}
-import models.service.Constants
 import models.service.api.NapsterApiFacade
 import models.service.oauth.NapsterService
+import models.util.Constants
 import play.api.Play
 import play.api.Play.current
 import play.api.libs.json.JsValue

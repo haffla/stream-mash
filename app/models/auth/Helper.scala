@@ -1,6 +1,6 @@
 package models.auth
 
-import models.service.Constants
+import models.util.Constants
 
 object Helper {
   def getUserIdentifier(session: play.api.mvc.Session):Either[Int,String] = {

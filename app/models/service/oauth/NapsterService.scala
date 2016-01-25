@@ -1,9 +1,9 @@
 package models.service.oauth
 
-import models.service.Constants
 import models.service.library.NapsterLibrary
 import models.service.oauth.NapsterService._
 import models.service.util.ServiceAccessTokenHelper
+import models.util.Constants
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.JsValue

@@ -1,7 +1,6 @@
 package models.service.oauth
 
-import models.service.Constants
-import models.util.Logging
+import models.util.{Constants, Logging}
 import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
 import play.api.{Play, PlayException}

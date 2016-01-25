@@ -3,9 +3,9 @@ package models.service.api
 import models.database.alias.Artist
 import models.database.facade.api.NapsterFacade
 import models.database.facade.service.{NapsterArtistFacade, ServiceArtistTrait}
-import models.service.Constants
 import models.service.oauth.NapsterService
 import models.service.oauth.NapsterService.apiEndpoints
+import models.util.Constants
 import play.api.Play
 import play.api.Play.current
 import play.api.libs.json.{JsObject, JsValue, Json}

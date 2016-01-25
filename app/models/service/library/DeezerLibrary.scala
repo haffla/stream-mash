@@ -1,8 +1,8 @@
 package models.service.library
 
 import models.database.facade.api.DeezerFacade
-import models.service.Constants
 import models.service.library.util.JsonConversion
+import models.util.Constants
 import play.api.libs.json.JsValue
 
 class DeezerLibrary(identifier: Either[Int, String]) extends Library(identifier, Constants.serviceDeezer) with JsonConversion {

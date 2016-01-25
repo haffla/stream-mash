@@ -1,8 +1,8 @@
 package models.service.library
 
 import models.database.facade.api.NapsterFacade
-import models.service.Constants
 import models.service.library.util.JsonConversion
+import models.util.Constants
 import play.api.libs.json.JsValue
 
 class NapsterLibrary(identifier: Either[Int, String]) extends Library(identifier, Constants.serviceNapster) with JsonConversion {

@@ -2,10 +2,10 @@ package models.service.analysis
 
 import models.database.alias.Artist
 import models.database.facade.service.{SpotifyAlbumFacade, SpotifyArtistFacade}
-import models.service.Constants
 import models.service.api.SpotifyApiFacade
 import models.service.api.refresh.SpotifyRefresh
 import models.service.oauth.SpotifyService
+import models.util.Constants
 import play.api.libs.json.JsValue
 import play.api.libs.ws.{WSRequest, WS}
 import play.api.Play.current

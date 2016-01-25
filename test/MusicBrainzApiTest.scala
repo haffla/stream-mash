@@ -1,5 +1,5 @@
-import models.service.Constants
 import models.service.api.discover.MusicBrainzApi
+import models.util.Constants
 import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.test.WithApplication
 

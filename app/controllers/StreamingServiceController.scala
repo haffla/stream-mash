@@ -1,9 +1,8 @@
 package controllers
 
 import models.auth.{Helper, IdentifiedBySession}
-import models.service.Constants
 import models.service.oauth.OauthRouting
-import models.util.TextWrangler
+import models.util.{Constants, TextWrangler}
 import play.api.mvc.{Controller, Cookie}
 
 abstract class StreamingServiceController extends Controller {

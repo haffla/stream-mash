@@ -1,11 +1,10 @@
 package models.service.oauth
 
 import models.auth.MessageDigest
-import models.service.Constants
 import models.service.library.LastfmLibrary
 import models.service.oauth.LastfmService.apiEndpoints
 import models.service.util.ServiceAccessTokenHelper
-import models.util.Logging
+import models.util.{Constants, Logging}
 import play.api.Play.current
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WS, WSResponse}

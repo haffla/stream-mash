@@ -1,7 +1,7 @@
 package controllers
 
-import models.service.Constants
 import models.service.oauth.{OauthRouting, SoundcloudService}
+import models.util.Constants
 
 class SoundcloudController extends StreamingServiceController {
 

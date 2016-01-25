@@ -3,9 +3,9 @@ package controllers
 import models.User
 import models.auth.{AdminAccess, Authenticated, Helper, IdentifiedBySession}
 import models.database.facade.{ArtistFacade, ArtistLikingFacade, CollectionFacade}
-import models.service.Constants
 import models.service.api.discover.EchoNestApi
 import models.service.library.{AudioFileLibrary, Library}
+import models.util.Constants
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
 import play.api.mvc.Controller
@@ -81,7 +81,7 @@ class UserController extends Controller {
     }.getOrElse(BadRequest("No request parameters found"))
   }
 
-  def getArtistPic = IdentifiedBySession.async { implicit request =>
+  def artistPic = IdentifiedBySession.async { implicit request =>
     request.getQueryString("artist").map { art =>
       ArtistFacade.artistPic(art).map { img =>
         Future.successful(Ok(Json.toJson(Map("img" -> img))))

@@ -5,8 +5,8 @@ import java.net.URLEncoder
 import models.database.alias.Artist
 import models.database.facade.api.DeezerFacade
 import models.database.facade.service.{DeezerArtistFacade, ServiceArtistTrait}
-import models.service.Constants
 import models.service.oauth.DeezerService.apiEndpoints
+import models.util.Constants
 import play.api.Play.current
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.{WS, WSRequest, WSResponse}
