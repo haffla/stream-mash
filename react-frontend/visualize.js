@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import ChartsBox from './visualize/ChartsBox.cjsx';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import Visualization from  './visualize/Charts';
 
 injectTapEventPlugin();
 
-ReactDOM.render(<Visualization />, document.getElementById('content'));
+ReactDOM.render(<ChartsBox />, document.getElementById('content'));

@@ -18,9 +18,9 @@ object IdentifiedBySession extends ActionBuilder[Request] with AuthHandling {
           case Some(uName) =>
             if(isValidSession(uName, request.session)) sessionIdentified(request, block)
             else
-              redirectTo(routes.Application.index().toString, request, Constants.sessionTamperingMessage)
+              redirectTo(routes.Application.index().toString, request, Constants.sessionTamperingMessage, clean = true)
           case _ =>
-            redirectTo(routes.Application.index().toString, request, Constants.sessionTamperingMessage)
+            redirectTo(routes.Application.index().toString, request, Constants.sessionTamperingMessage, clean = true)
         }
       case _ => sessionIdentified(request, block)
     }

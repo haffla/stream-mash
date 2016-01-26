@@ -4,13 +4,14 @@ import models.database.alias._
 import models.database.alias.service.NapsterArtist
 import models.util.Constants
 import org.squeryl.PrimitiveTypeMode._
+import org.squeryl.dsl.GroupWithMeasures
 import play.api.libs.json.JsValue
 
 class NapsterArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFacade(identifier) {
 
   val serviceName = Constants.serviceNapster
 
-  override protected def joinWithArtistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)] = {
+  override def artistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)] = {
     join(AppDB.albums,
          AppDB.artists,
          AppDB.napsterAlbums,
@@ -55,6 +56,14 @@ object NapsterArtistFacade extends ServiceArtistTrait {
     transaction {
       from(AppDB.napsterArtists)(da => select(da.id)).toList
     }
+  }
+
+  override def artistsAlbumCount(artistId:List[Long]):List[GroupWithMeasures[Long,Long]] = {
+    from(AppDB.napsterArtists, AppDB.napsterAlbums, AppDB.albums)((napsArt,napsAlb,alb) =>
+      where(napsArt.id in artistId and alb.id === napsAlb.id and alb.artistId === napsArt.id)
+        groupBy napsArt.id
+        compute countDistinct(alb.id)
+    ).toList
   }
 }
 

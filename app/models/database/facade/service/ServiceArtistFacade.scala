@@ -13,7 +13,7 @@ abstract class ServiceArtistFacade(identifier:Either[Int,String]) {
 
   val serviceName:String
 
-  protected def joinWithArtistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)]
+  def artistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)]
 
   def getArtistsAndAlbumsForOverview:Future[JsValue] = {
     for {
@@ -27,13 +27,8 @@ abstract class ServiceArtistFacade(identifier:Either[Int,String]) {
     */
   private def getUserRelatedServiceAlbums:List[(Album,Artist,String)] = {
     transaction {
-      /** First get all related artists */
-      val usersArtists =
-        from(AppDB.artists, AppDB.collections, AppDB.tracks)((a,c,t) =>
-          where(c.trackId === t.id and t.artistId === a.id and AppDB.userWhereClause(c,identifier))
-            select a.id
-        )
-      joinWithArtistsAndAlbums(usersArtists.toList)
+      val usersArtists = ArtistFacade(identifier).usersFavouriteArtists().map(_._1.id)
+      artistsAndAlbums(usersArtists)
     }
   }
 

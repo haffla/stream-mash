@@ -5,6 +5,7 @@ import models.database.alias.service.SpotifyArtist
 import models.database.facade.ArtistFacade
 import models.util.Constants
 import org.squeryl.PrimitiveTypeMode._
+import org.squeryl.dsl.GroupWithMeasures
 import play.api.libs.json.JsValue
 
 class SpotifyArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFacade(identifier) {
@@ -15,7 +16,7 @@ class SpotifyArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFa
     * Each streaming artist facade needs to implement this method. Join artists and albums
     * with the respective streaming service artists and albums.
     */
-  override protected def joinWithArtistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)] = {
+  override def artistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)] = {
     join(AppDB.albums,
          AppDB.artists,
          AppDB.spotifyAlbums,
@@ -71,8 +72,16 @@ object SpotifyArtistFacade extends ServiceArtistTrait {
   }
 
   override def allArtistIds: List[Long] = {
-    transaction {
+    inTransaction {
       from(AppDB.spotifyArtists)(da => select(da.id)).toList
     }
+  }
+
+  override def artistsAlbumCount(artistId:List[Long]):List[GroupWithMeasures[Long,Long]] = {
+    from(AppDB.albums, AppDB.spotifyArtists, AppDB.spotifyAlbums)((alb,spArt,spAlb) =>
+      where(spArt.id in artistId and alb.id === spAlb.id and alb.artistId === spArt.id)
+        groupBy spArt.id
+        compute countDistinct(alb.id)
+      ).toList
   }
 }

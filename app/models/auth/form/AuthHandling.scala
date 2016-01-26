@@ -8,11 +8,14 @@ import scala.concurrent.Future
 
 
 trait AuthHandling extends Controller {
-  def redirectTo[A](page: String, request:Request[A], message:String) = {
-    Future.successful(
-      Redirect(page).flashing("message" -> message)
-        .withSession(request.session + ("intended_location" -> request.path))
-    )
+  def redirectTo[A](page: String, request:Request[A], message:String, clean:Boolean = false) = {
+    val r = Redirect(page).flashing("message" -> message)
+    val redirect =
+      if (clean)
+        r.withNewSession
+      else
+        r.withSession(request.session + (Constants.intendedLocation -> request.path))
+    Future.successful(redirect)
   }
 
   def isValidSession(username:String, session:Session): Boolean = {

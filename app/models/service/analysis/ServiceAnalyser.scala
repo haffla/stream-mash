@@ -13,7 +13,7 @@ class ServiceAnalyser(identifier: Either[Int,String]) {
   val napsterArtistFacade = NapsterArtistFacade(identifier)
 
   def analyse() = {
-    val artists = ArtistFacade(identifier).usersFavouriteArtists()
+    val artists = ArtistFacade(identifier).usersFavouriteArtists().map(_._1)
     val spotifyResultFuture = SpotifyAnalysis(identifier, artists).analyse()
     val deezerResultFuture = DeezerAnalysis(identifier, artists).analyse()
     val napsterResultFuture = NapsterAnalysis(identifier, artists).analyse()

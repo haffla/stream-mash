@@ -1,15 +1,14 @@
 package models.database.facade
 
 import models.database.alias._
-import org.squeryl.PrimitiveTypeMode
+import models.util.GroupMeasureConversion
 import org.squeryl.PrimitiveTypeMode._
-import org.squeryl.dsl.GroupWithMeasures
 
 object CollectionFacade {
   def apply(identifier:Either[Int,String]) = new CollectionFacade(identifier)
 }
 
-class CollectionFacade(identifier:Either[Int,String]) extends Facade {
+class CollectionFacade(identifier:Either[Int,String]) extends Facade with GroupMeasureConversion {
 
   def save(trackId: Long, timePlayed:Int = 1) = {
     inTransaction {
@@ -37,13 +36,11 @@ class CollectionFacade(identifier:Either[Int,String]) extends Facade {
 
   def userCollection:List[(Album,Artist,Track,UserCollection,UserArtistLiking,Long)] = {
     transaction {
-      val weighted = weightedArtists()
+      val weighted = ArtistFacade(identifier).mostListenedToArtists()
       // Use this list to filter in the where clause
       val weightedArtistIds:List[Long] = weighted.map(_.key)
       // This map is used then in the select statement
-      val artistTrackCountMap:Map[Long,Long] = weighted.foldLeft(Map[Long,Long]()) { (prev,curr) =>
-        prev + (curr.key -> curr.measures)
-      }
+      val artistTrackCountMap:Map[Long,Long] = toMap(weighted)
       join(AppDB.artists, AppDB.tracks, AppDB.albums, AppDB.collections, AppDB.userArtistLikings)(
         (art,tr,alb,col,ual) =>
           where(
@@ -59,13 +56,5 @@ class CollectionFacade(identifier:Either[Int,String]) extends Facade {
             )
         ).toList
     }
-  }
-
-  def weightedArtists():List[GroupWithMeasures[Long, Long]] = {
-    from(AppDB.artists, AppDB.tracks, AppDB.collections)((a,t,c) =>
-      where(a.id === t.artistId and t.id === c.trackId and AppDB.userWhereClause(c,identifier))
-        groupBy a.id
-        compute countDistinct(t.id)
-    ).toList.sortBy(_.measures)(Ordering[PrimitiveTypeMode.LongType].reverse)
   }
 }

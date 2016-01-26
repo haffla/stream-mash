@@ -1,7 +1,10 @@
 package models.database.facade
 
 import models.database.alias.{AppDB, Artist}
+import models.util.GroupMeasureConversion
+import org.squeryl.PrimitiveTypeMode
 import org.squeryl.PrimitiveTypeMode._
+import org.squeryl.dsl.GroupWithMeasures
 
 object ArtistFacade {
   def saveByName(artist: String, artistLikingFacade: ArtistLikingFacade, score:Double = 1):Long = {
@@ -14,7 +17,6 @@ object ArtistFacade {
       }
     }
   }
-
 
   def insert(name: String, artistLikingFacade: ArtistLikingFacade, score:Double = 1):Long = {
     val artistDbId = AppDB.artists.insert(Artist(name)).id
@@ -53,28 +55,56 @@ object ArtistFacade {
   }
 }
 
-class ArtistFacade(identifier:Either[Int,String]) extends Facade {
+class ArtistFacade(identifier:Either[Int,String]) extends Facade with GroupMeasureConversion {
 
   /**
     * Get users favourite artists sorted by score in user_artist_liking table
     * By default get top 50.
     */
-  def usersFavouriteArtists(page: (Int,Int) = (0,50)):List[Artist] = {
-    transaction {
+  def usersFavouriteArtists(page: (Int,Int) = (0,50)):List[(Artist,Double)] = {
+    inTransaction {
       join(
         AppDB.artists,
         AppDB.tracks,
         AppDB.collections,
         AppDB.userArtistLikings)((a,tr,col,ual) =>
         where(ual.score.gt(0) and AppDB.userWhereClause(ual,identifier) and AppDB.userWhereClause(col,identifier))
-          select a
+          select(a,ual.score)
+          orderBy ual.score.desc
+          on(
+            a.id === tr.artistId,
+            col.trackId === tr.id,
+            ual.artistId === a.id
+          )
+      ).page(page._1,page._2).distinct.toList
+    }
+  }
+
+  def usersFavouriteArtistsWithTrackCountAndScore(page: (Int,Int) = (0,50)):List[(Artist,Long,Double)] = {
+    inTransaction {
+      val mlta = toMap(mostListenedToArtists())
+      join(
+        AppDB.artists,
+        AppDB.tracks,
+        AppDB.collections,
+        AppDB.userArtistLikings)((a,tr,col,ual) =>
+        where(ual.score.gt(0) and AppDB.userWhereClause(ual,identifier) and AppDB.userWhereClause(col,identifier))
+          select(a,mlta.getOrElse(a.id, 1L),ual.score)
           orderBy ual.score.desc
           on(
           a.id === tr.artistId,
           col.trackId === tr.id,
           ual.artistId === a.id
           )
-      ).page(page._1,page._2).toList
+      ).page(page._1,page._2).distinct.toList
     }
+  }
+
+  def mostListenedToArtists():List[GroupWithMeasures[Long, Long]] = {
+    from(AppDB.artists, AppDB.tracks, AppDB.collections)((a,t,c) =>
+      where(a.id === t.artistId and t.id === c.trackId and AppDB.userWhereClause(c,identifier))
+        groupBy a.id
+        compute countDistinct(t.id)
+    ).toList.sortBy(_.measures)(Ordering[PrimitiveTypeMode.LongType].reverse)
   }
 }

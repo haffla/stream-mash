@@ -2,6 +2,7 @@ package controllers
 
 import models.auth.{Helper, IdentifiedBySession}
 import models.service.analysis.ServiceAnalyser
+import models.service.visualization.ServiceData
 import play.api.libs.json.Json
 import play.api.mvc.Controller
 
@@ -31,6 +32,8 @@ class CollectionController extends Controller {
 
   def visualizationData = IdentifiedBySession.async { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
-    Future.successful(Ok(""))
+    new ServiceData(identifier).retrieve().map { res =>
+      Ok(res)
+    }
   }
 }

@@ -5,13 +5,14 @@ import models.database.alias.service.DeezerArtist
 import models.database.facade.ArtistFacade
 import models.util.Constants
 import org.squeryl.PrimitiveTypeMode._
+import org.squeryl.dsl.GroupWithMeasures
 import play.api.libs.json.JsValue
 
 class DeezerArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFacade(identifier) {
 
   val serviceName = Constants.serviceDeezer
 
-  override protected def joinWithArtistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)] = {
+  override def artistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)] = {
     join(AppDB.albums,
          AppDB.artists,
          AppDB.deezerAlbums,
@@ -62,6 +63,14 @@ object DeezerArtistFacade extends ServiceArtistTrait {
     transaction {
       from(AppDB.deezerArtists)(da => select(da.id)).toList
     }
+  }
+
+  override def artistsAlbumCount(artistId:List[Long]):List[GroupWithMeasures[Long,Long]] = {
+    from(AppDB.deezerArtists, AppDB.deezerAlbums, AppDB.albums)((deArt,deAlb,alb) =>
+      where(deArt.id in artistId and alb.id === deAlb.id and alb.artistId === deArt.id)
+        groupBy deArt.id
+        compute countDistinct(alb.id)
+    ).toList
   }
 }
 

@@ -47,7 +47,7 @@ abstract class ServiceAnalysis(identifier:Either[Int,String],
     for {
       accessToken <- testAndGetAccessToken()
       ids <- artistIds(artists, accessToken)
-      albums <- getArtistAlbumsFromService(ids, accessToken)
+      albums <- artistAlbumsFromService(ids, accessToken)
     } yield processResponses(albums)
   }
 
@@ -84,7 +84,7 @@ abstract class ServiceAnalysis(identifier:Either[Int,String],
     }
   }
 
-  private def getArtistAlbumsFromService(
+  private def artistAlbumsFromService(
                                   ids: List[Option[(Long,String)]],
                                   accessToken:Option[String]):Future[List[(Long,List[JsValue])]] = {
     val searchList:List[(Long,String)] = ids.filter(_.isDefined).map(_.get)
