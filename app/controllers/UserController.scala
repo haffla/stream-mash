@@ -20,9 +20,12 @@ class UserController extends Controller {
     users.map(res => Ok(views.html.users.list(res.toList)))
   }
 
-  def userCollectionFromDb = IdentifiedBySession.async { implicit request =>
+  def userCollectionFromDb = IdentifiedBySession { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
-    collectionFromDb(identifier)
+    val library = new Library(identifier)
+    val collection = CollectionFacade(identifier).userCollection
+    if(collection.nonEmpty) Ok(library.prepareCollectionForFrontend(collection))
+    else Ok(Json.toJson(Map("error" -> "You have no records stored in our database.")))
   }
 
   def deleteMyCollections() = Authenticated { implicit request =>
@@ -41,15 +44,6 @@ class UserController extends Controller {
     } match {
       case Success(_) => Ok(Json.toJson(Map("success" -> true)))
       case Failure(e) => Ok(Json.toJson(Map("success" -> false)))
-    }
-  }
-
-  private def collectionFromDb(identifier: Either[Int, String]) = {
-    val library = new Library(identifier)
-    val facade = CollectionFacade(identifier)
-    facade.userCollection map { collection =>
-        if(collection.nonEmpty) Ok(library.prepareCollectionForFrontend(collection))
-        else Ok(Json.toJson(Map("error" -> "You have no records stored in our database.")))
     }
   }
 
