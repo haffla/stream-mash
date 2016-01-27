@@ -1,3 +1,5 @@
+_ = require 'lodash'
+
 d3 = require 'd3'
 Colors = require 'material-ui/lib/styles/colors'
 Helper = require '../../util/Helper'
@@ -15,6 +17,19 @@ class BubbleChart
     @initNodes()
     @setupVisualization()
 
+  decideWhichColor: (d) =>
+    id = d.id
+    inSpotify = _.has(@data.spotify, id)
+    inDeezer = _.has(@data.deezer, id)
+    inNapster = _.has(@data.napster, id)
+    all = [inSpotify, inDeezer, inNapster]
+    remaining = all.filter (bool) -> bool
+    if remaining.length > 2 then Colors.green300
+    else if remaining.length > 1 then Colors.yellow300
+    else if remaining.length > 0 then Colors.pink300
+    else Colors.red300
+
+
   charge: (d) ->
     -Math.pow(d.radius, 2) / 6
 
@@ -25,13 +40,14 @@ class BubbleChart
 
     @elements = @svg.selectAll('g').data(@nodes).enter()
       .append('g')
+      .attr('class', 'artist-bubble')
       .on('click', @handleBubbleClick)
 
     @elements.append('circle')
       .attr('r', (d) -> d.radius)
-      .attr('fill', 'white')
+      .attr('fill', @decideWhichColor)
       .attr('stroke-width', 1)
-      .attr('stroke', 'black')
+      .attr('stroke', Colors.grey500)
 
     @elements.append('text')
       .attr('text-anchor', 'middle')
@@ -39,10 +55,13 @@ class BubbleChart
 	    .text((d) -> Helper.getInitials(d.name))
 
   initNodes: () ->
+    scale = d3.scale.linear()
+      .domain([0, d3.max(@data.user, (a) -> a.trackCount * a.score)])
+      .range([0, 100])
     @nodes = @data.user.map (a) ->
       {
         id: a.id
-        radius: 20 + a.trackCount * a.score * 6
+        radius: 20 + scale(a.trackCount * a.score) #20 + a.trackCount * a.score * 6
         trackCount: a.trackCount
         score: a.score
         name: a.name

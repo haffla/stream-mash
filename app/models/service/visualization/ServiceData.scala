@@ -17,26 +17,28 @@ class ServiceData(identifier:Either[Int,String]) extends GroupMeasureConversion 
     val artistIds = usersArtists.map(_._1.id)
     val spoArtists = Future {
       val res = SpotifyArtistFacade.countArtistsAlbums(artistIds)
-      artistAlbumCountsToJson(res)
+      toMap(res)
     }
     val deeArtists = Future {
       val res = DeezerArtistFacade.countArtistsAlbums(artistIds)
-      artistAlbumCountsToJson(res)
+      toMap(res)
     }
     val napsArtists = Future {
       val res = NapsterArtistFacade.countArtistsAlbums(artistIds)
-      artistAlbumCountsToJson(res)
+      toMap(res)
     }
     for {
       sp <- spoArtists
       dee <- deeArtists
       naps <- napsArtists
     } yield {
+      val totals = mergeMaps(List(sp,dee,naps))
       Json.obj(
         "user" -> artistsToJson(usersArtists),
-        Constants.serviceSpotify -> sp,
-        Constants.serviceDeezer -> dee,
-        Constants.serviceNapster -> naps
+        Constants.serviceSpotify -> toJson(sp),
+        Constants.serviceDeezer -> toJson(dee),
+        Constants.serviceNapster -> toJson(naps),
+        "total" -> toJson(totals)
       )
     }
   }

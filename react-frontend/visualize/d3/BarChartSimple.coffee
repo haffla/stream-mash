@@ -3,12 +3,16 @@ Colors = require 'material-ui/lib/styles/colors'
 Helper = require '../../util/Helper'
 
 class BarChartSimple
-  constructor: (data) ->
-    @data = data
-
+  constructor: () ->
     @width = $('#charts-box-left').width()
     @height = $('#charts-box-left').height()
     @barHeight = 20
+
+  serviceColor: (d) ->
+    if typeof d is 'undefined' then Colors.red400
+    else 'white'
+
+  services: ["Spotify", "Deezer", "Napster"]
 
   makeBarChart: (data) ->
 
@@ -21,22 +25,14 @@ class BarChartSimple
         else
           x(d) + adjustment
 
-    serviceColor = (d) ->
-      if typeof d is 'undefined' then 'red'
-      else 'white'
-
-    id = data.id
-    services = ["Spotify", "Deezer", "Napster"]
-    arr = [@data.spotify[id], @data.deezer[id], @data.napster[id]]
-
     d3.select('.chart').selectAll('g').remove()
 
-    x = d3.scale.linear().domain([0, d3.max(arr)]).range([0, @width])
+    x = d3.scale.linear().domain([0, d3.max(data)]).range([0, @width])
     chart = d3.select('.chart')
       .attr('width', @width)
-      .attr('height', @barHeight * arr.length)
+      .attr('height', @barHeight * data.length)
 
-    bar = chart.selectAll('g').data(arr)
+    bar = chart.selectAll('g').data(data)
       .enter().append('g')
         .attr('transform', (d,i) => 'translate(0,' + i * @barHeight + ')')
 
@@ -57,9 +53,9 @@ class BarChartSimple
       .attr('x', 5)
       .attr('y', @barHeight / 2)
       .attr('dy', '.35em')
-      .attr('fill', serviceColor)
+      .attr('fill', @serviceColor)
       .attr('text-anchor', 'start')
-      .text((d,i) -> services[i])
+      .text((d,i) => @services[i])
 
 
 module.exports = BarChartSimple

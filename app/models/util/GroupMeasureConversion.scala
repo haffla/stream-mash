@@ -17,4 +17,10 @@ trait GroupMeasureConversion {
     }
     Json.toJson(stringMap)
   }
+
+  def mergeMaps(listOfMaps:List[Map[Long,Long]]):Map[Long,Long] = {
+    (Map[Long,Long]() /: (for (m <- listOfMaps; kv <- m) yield kv)) { (a, kv) =>
+      a + ( if(a.contains(kv._1)) kv._1 -> (a(kv._1) + kv._2) else kv)
+    }
+  }
 }
