@@ -6,7 +6,7 @@ class BubbleChart
   constructor: (data, handleBubbleClick) ->
     @data = data
     @handleBubbleClick = handleBubbleClick
-    
+
     @width = $('#charts-box-left').width()
     @height = $('#charts-box-left').height()
     @center = {x: @width / 2, y: @height / 2}
@@ -54,7 +54,7 @@ class BubbleChart
       d.y = d.y + (@center.y - d.y) * (@damper + 0.02) * alpha
 
   start: () ->
-    @force = d3.layout.force()
+    d3.layout.force()
       .size([@width, @height])
       .gravity(-0.01)
       .nodes(@nodes)
@@ -63,8 +63,7 @@ class BubbleChart
       .on 'tick', (e) =>
         @elements.each(@move_towards_center(e.alpha))
           .attr('transform', (d) -> 'translate('+d.x+','+d.y+')')
-
-    @force.start()
+      .start()
 
 
 
