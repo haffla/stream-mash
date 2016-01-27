@@ -38,7 +38,7 @@ class BarChart
 
     bar.append('rect')
       .attr('y', (d) -> y(d.trackCount))
-      .attr('height', (d) => height - y(d.trackCount))
+      .attr('height', (d) -> height - y(d.trackCount))
       .attr('width', x.rangeBand())
       .attr('fill', 'steelblue')
       .attr('class', (d) -> 'artist artist' + d.id)
