@@ -6,7 +6,6 @@ import play.cache.Cache
 
 import scala.concurrent.Future
 
-
 trait AuthHandling extends Controller {
   def redirectTo[A](page: String, request:Request[A], message:String, clean:Boolean = false) = {
     val r = Redirect(page).flashing("message" -> message)

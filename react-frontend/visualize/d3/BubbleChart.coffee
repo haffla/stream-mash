@@ -3,27 +3,29 @@ Colors = require 'material-ui/lib/styles/colors'
 Helper = require '../../util/Helper'
 
 class BubbleChart
-  constructor: (data) ->
+  constructor: (data, handleBubbleClick) ->
     @data = data
-    @nodes = []
-    @elements = null
-    @svg = null
-    @width = 600
-    @height = 600
+    @handleBubbleClick = handleBubbleClick
+    
+    @width = $('#charts-box-left').width()
+    @height = $('#charts-box-left').height()
     @center = {x: @width / 2, y: @height / 2}
     @damper = 0.1
 
+    @initNodes()
+    @setupVisualization()
+
   charge: (d) ->
-    -Math.pow(d.radius, 2) / 8
+    -Math.pow(d.radius, 2) / 6
 
   setupVisualization: () ->
-    @svg = d3.select('#charts-box').append('svg')
+    @svg = d3.select('.bubbles')
         .attr('width', @width)
         .attr('height', @height)
 
     @elements = @svg.selectAll('g').data(@nodes).enter()
       .append('g')
-      .on('mouseover', (d) -> console.log(d))
+      .on('click', @handleBubbleClick)
 
     @elements.append('circle')
       .attr('r', (d) -> d.radius)
@@ -37,7 +39,7 @@ class BubbleChart
 	    .text((d) -> Helper.getInitials(d.name))
 
   initNodes: () ->
-    @nodes = @data.map (a) ->
+    @nodes = @data.user.map (a) ->
       {
         id: a.id
         radius: 20 + a.trackCount * a.score * 6
@@ -52,10 +54,6 @@ class BubbleChart
       d.y = d.y + (@center.y - d.y) * (@damper + 0.02) * alpha
 
   start: () ->
-    d3.select('#charts-box').select('svg').remove()
-    @nodes = []
-    @initNodes()
-    @setupVisualization()
     @force = d3.layout.force()
       .size([@width, @height])
       .gravity(-0.01)
