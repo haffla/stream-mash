@@ -1,13 +1,7 @@
 package models.service.library
 
-import java.io.File
-
-import models.auth.Helper
 import models.util.Constants
-import org.jaudiotagger.audio.AudioFileIO
-import org.jaudiotagger.tag.FieldKey
-import play.api.libs.Files
-import play.api.mvc.MultipartFormData
+import play.api.libs.json.JsValue
 
 object AudioFileLibrary {
   def apply(identifier: Either[Int, String]) = new AudioFileLibrary(identifier)
@@ -15,28 +9,21 @@ object AudioFileLibrary {
 
 class AudioFileLibrary(identifier: Either[Int, String]) extends Library(identifier, "audio") {
 
-  val audioPath = "/tmp/audiofiles/"
-  new File(audioPath).mkdir()
-
-  def handleFiles(files:Seq[MultipartFormData.FilePart[Files.TemporaryFile]]):Seq[Map[String,String]] = {
-    val userId = Helper.userIdentifierToString(identifier)
-    val userpath = audioPath + userId
-    new File(userpath).mkdir()
-    files map { file =>
-      val filename = file.filename
-      val filepath = userpath + "/" + filename
-      file.ref.moveTo(new File(filepath))
-      val audiofile = AudioFileIO.read(new File(filepath))
-      val tag = audiofile.getTag
+  def handleFiles(files:JsValue):Seq[Map[String,String]] = {
+    val jsList = files.as[List[JsValue]]
+    jsList map { file =>
+      val artist = (file \ "artist").as[String]
+      val album = (file \ "album").as[String]
+      val track = (file \ "title").as[String]
       Map(
-        Constants.mapKeyArtist -> tag.getFirst(FieldKey.ARTIST),
-        Constants.mapKeyAlbum -> tag.getFirst(FieldKey.ALBUM),
-        Constants.mapKeyTrack -> tag.getFirst(FieldKey.TRACK)
+        Constants.mapKeyArtist -> artist,
+        Constants.mapKeyAlbum -> album,
+        Constants.mapKeyTrack -> track
       )
     }
   }
 
-  def process(files:Seq[MultipartFormData.FilePart[Files.TemporaryFile]]):Unit = {
+  def process(files:JsValue):Unit = {
     convertSeqToMap(handleFiles(files))
     apiHelper.setRetrievalProcessDone()
   }

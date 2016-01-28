@@ -22,7 +22,7 @@ ItunesUpload = React.createClass
     unless window.File && window.FileList && window.FileReader
       return window.alert "Your browser does not support the File API"
     file = event.dataTransfer.files[0]
-    unless file.type is 'text/xml' && file.name.match(/^iTunes (Music )?Library/)
+    if file.type is 'text/xml' && file.name.match(/^iTunes (Music )?Library/)
       formData = new FormData()
       formData.append 'file', file
       $('#dropzone').addClass('dropped')
@@ -35,7 +35,7 @@ ItunesUpload = React.createClass
         $('#dropzone').removeClass('dropped hover')
         @props.ws.send('itunes')
 
-      @uploader.upload formData, successCallback, successNoErrorCallback
+      @uploader.upload formData, false, successCallback, successNoErrorCallback
     else
       $('#dropzone').removeClass('hover')
       window.alert "Nono! Only iTunes Library XML files are allowed."

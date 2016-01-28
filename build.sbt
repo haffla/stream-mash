@@ -30,8 +30,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "font-awesome" % "4.4.0",
   play.sbt.Play.autoImport.cache,
   "com.github.haffla" %% "soundcloud-scala" % "0.1-SNAPSHOT",
-  "org.seleniumhq.selenium" % "selenium-java" % "2.48.2" % "test",
-  "net.jthink" % "jaudiotagger" % "2.2.3"
+  "org.seleniumhq.selenium" % "selenium-java" % "2.48.2" % "test"
 )
 
 val alternateTestOptions = "-Dconfig.file=conf/" + Option(System.getProperty("test.config")).getOrElse("application") + ".conf"
@@ -40,7 +39,6 @@ javaOptions in Test += alternateTestOptions
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-resolvers += "jaudiotagger-repository" at "https://dl.bintray.com/ijabz/maven"
 
 routesGenerator := InjectedRoutesGenerator
 

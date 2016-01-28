@@ -47,22 +47,14 @@ class UserController extends Controller {
     }
   }
 
-  def handleAudioFiles = IdentifiedBySession(parse.multipartFormData) { implicit request =>
+  def handleAudioFileUpload = IdentifiedBySession { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
-    val files = request.body.files
-    val allFilesAreAudioFiles = files.forall { file =>
-      file.contentType match {
-        case Some(t) => t.matches("audio(.*)")
-        case None => false
-      }
-    }
-    if(allFilesAreAudioFiles) {
-      AudioFileLibrary(identifier).process(request.body.files)
+    request.body.asJson.map { js =>
+      AudioFileLibrary(identifier).process(js)
       Ok(Json.obj("redirect" -> routes.CollectionController.index("audio").toString))
-    }
-    else {
-      Ok(Json.obj("error" -> "One or more files are not audio files. Only audio files are accepted. Aborting."))
-    }
+    }.getOrElse(
+      Ok(Json.obj("error" -> true, "reason" -> "No Json found!"))
+    )
   }
 
   def rating = IdentifiedBySession { implicit request =>

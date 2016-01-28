@@ -5,6 +5,9 @@ publicPath = 'http://localhost:3000/';
 
 module.exports = {
   devtool: 'eval',
+  node: {
+    fs: 'empty'
+  },
   entry: {
     artistbox: [
       'webpack-dev-server/client?' + publicPath,

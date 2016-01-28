@@ -3,18 +3,19 @@ class Uploader
   constructor: (@url) ->
 
   upload: (
-    formData
+    data
+    contentType
     successCallback = () ->
     successNoErrorCallback = () ->
     ) ->
     $.ajax
       url: @url
       type: 'POST'
-      data: formData
+      data: data
       dataType: 'json'
-      cache: false
-      contentType: false
-      processData: false
+      cache: if contentType is false then false else true 
+      contentType: contentType
+      processData: if contentType is false then false else true
       xhr: () ->
         xhr = new window.XMLHttpRequest()
         xhr.upload.addEventListener 'progress' , (evt) ->

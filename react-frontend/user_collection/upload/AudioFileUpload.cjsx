@@ -1,7 +1,9 @@
+_ = require 'lodash'
+jsmediatags = require 'jsmediatags'
+
 React = require 'react'
 Helper = require '../../util/Helper'
 Uploader = require '../../util/Uploader'
-
 
 AudioFileUpload = React.createClass
 
@@ -13,21 +15,38 @@ AudioFileUpload = React.createClass
   drop: (event) ->
     Helper.preventDef(event)
     files = event.target.files || event.dataTransfer.files
-    formData = new FormData()
-    for file in files
-      formData.append 'files[]', file, file.name
-    @uploader.upload formData
+    @readFiles(files).then (data) =>
+      @uploader.upload(JSON.stringify(data), 'application/json')
 
   dragEnter: (event) ->
     Helper.preventDef(event)
+
+  readFiles: (files) ->
+    promises = (idx for idx in [0...files.length]).map (i) =>
+      @readFile(files[i])
+    Promise.all(promises)
+
+  readFile: (file) ->
+    new Promise (resolve) ->
+      jsmediatags.read(file, {
+        onSuccess: (tag) ->
+          resolve {
+            artist: tag.tags.artist,
+            album: tag.tags.album,
+            title: tag.tags.title
+          }
+        onError: (error) ->
+          console.log(error)
+        }, false)
 
   dragLeave: (event) ->
     Helper.preventDef(event)
 
   render: () ->
     styles = {
-      width: 200
-      height: 200
+      width: '100%'
+      height: 220
+      border: '1px dashed #777'
     }
     <div id="audio-drop">
         <div style={styles} onDragOver={Helper.preventDef} onDrop={@drop} onDragEnter={@dragEnter} onDragLeave={@dragLeave}
