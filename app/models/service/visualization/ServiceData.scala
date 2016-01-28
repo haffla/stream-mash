@@ -2,7 +2,7 @@ package models.service.visualization
 
 import models.database.alias.Artist
 import models.database.facade.ArtistFacade
-import models.database.facade.service.{DeezerArtistFacade, NapsterArtistFacade, SpotifyArtistFacade}
+import models.database.facade.service._
 import models.util.{GroupMeasureConversion, Constants}
 import org.squeryl.dsl.GroupWithMeasures
 import play.api.libs.json.{JsValue, Json}
@@ -31,6 +31,7 @@ class ServiceData(identifier:Either[Int,String]) extends GroupMeasureConversion 
       sp <- spoArtists
       dee <- deeArtists
       naps <- napsArtists
+      missingCounts <- Future(missingAlbumCounts)
     } yield {
       val totals = mergeMaps(List(sp,dee,naps))
       Json.obj(
@@ -38,7 +39,8 @@ class ServiceData(identifier:Either[Int,String]) extends GroupMeasureConversion 
         Constants.serviceSpotify -> toJson(sp),
         Constants.serviceDeezer -> toJson(dee),
         Constants.serviceNapster -> toJson(naps),
-        "total" -> toJson(totals)
+        "total" -> toJson(totals),
+        "missing" -> missingCounts
       )
     }
   }
@@ -57,5 +59,16 @@ class ServiceData(identifier:Either[Int,String]) extends GroupMeasureConversion 
 
   def artistAlbumCountsToJson(counts:List[GroupWithMeasures[Long,Long]]):JsValue = {
     toJson(toMap(counts))
+  }
+
+  def missingAlbumCounts:JsValue = {
+    val missingAlbumsOnSpotify = new SpotifyAlbumFacade(identifier).countMissingUserAlbums
+    val missingAlbumsOnNapster = new NapsterAlbumFacade(identifier).countMissingUserAlbums
+    val missingAlbumsOnDeezer = new DeezerAlbumFacade(identifier).countMissingUserAlbums
+    Json.obj(
+      Constants.serviceSpotify -> missingAlbumsOnSpotify,
+      Constants.serviceDeezer -> missingAlbumsOnDeezer,
+      Constants.serviceNapster -> missingAlbumsOnNapster
+    )
   }
 }

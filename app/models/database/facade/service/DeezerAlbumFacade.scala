@@ -20,3 +20,20 @@ object DeezerAlbumFacade extends ServiceAlbumFacade {
     AppDB.deezerAlbums.insert(DeezerAlbum(id, serviceId)).id
   }
 }
+
+class DeezerAlbumFacade(identifier:Either[Int,String]) {
+
+  def countMissingUserAlbums:Long = {
+    inTransaction {
+      join(AppDB.albums, AppDB.tracks, AppDB.collections, AppDB.deezerAlbums.leftOuter)((alb,tr,col,spAlb) =>
+        where(AppDB.userWhereClause(col, identifier) and spAlb.map(_.id).isNull)
+          compute count(alb.id)
+          on(
+          tr.albumId === alb.id,
+          col.trackId === tr.id,
+          spAlb.map(_.id) === alb.id
+          )
+      ).toLong
+    }
+  }
+}
