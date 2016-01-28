@@ -1,6 +1,6 @@
 package models.service.library
 
-import models.util.Constants
+import models.util.{TextWrangler, Constants}
 import play.api.libs.json.JsValue
 
 object AudioJsonImporter {
@@ -11,14 +11,17 @@ class AudioJsonImporter(identifier: Either[Int, String]) extends Importer(identi
 
   def handleFiles(files:JsValue):Seq[Map[String,String]] = {
     val jsList = files.as[List[JsValue]]
-    jsList.map { file =>
+    val totalLength = jsList.length
+    jsList.zipWithIndex.map { case (file,i) =>
+      val position = i + 1
+      apiHelper.setRetrievalProcessProgress(position.toDouble / totalLength)
       val artist = (file \ "artist").asOpt[String]
       val album = (file \ "album").asOpt[String]
       val track = (file \ "title").asOpt[String]
       (artist,album,track) match {
         case (Some(art),Some(alb),Some(tr)) =>
           Map(
-            Constants.mapKeyArtist -> art,
+            Constants.mapKeyArtist -> TextWrangler.cleanupString(art),
             Constants.mapKeyAlbum -> alb,
             Constants.mapKeyTrack -> tr
           )
@@ -28,6 +31,7 @@ class AudioJsonImporter(identifier: Either[Int, String]) extends Importer(identi
   }
 
   def process(files:JsValue):Unit = {
+    apiHelper.setRetrievalProcessPending()
     convertSeqToMap(handleFiles(files))
     apiHelper.setRetrievalProcessDone()
   }

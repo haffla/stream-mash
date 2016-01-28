@@ -13,7 +13,7 @@ class Uploader
       type: 'POST'
       data: data
       dataType: 'json'
-      cache: if contentType is false then false else true 
+      cache: if contentType is false then false else true
       contentType: contentType
       processData: if contentType is false then false else true
       xhr: () ->
@@ -30,8 +30,6 @@ class Uploader
           alert data.error
         else
           successNoErrorCallback()
-          if data.redirect
-            window.location.href = data.redirect
       error: (jqXHR, status, error) ->
         console.log('Error: '  + error + '\n' + 'Status: ' + status)
 

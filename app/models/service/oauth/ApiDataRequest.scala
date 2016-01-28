@@ -13,7 +13,6 @@ abstract class ApiDataRequest(name:String, identifier:Either[Int,String]) {
   def requestUserData(code:String):Unit = {
     apiHelper.setRetrievalProcessPending()
     doDataRequest(code) map { tokens =>
-      apiHelper.setRetrievalProcessDone()
       val (accessToken, refreshToken) = tokens
       accessToken match {
         case Some(tkn) => serviceAccessTokenHelper.setAccessToken(tkn, refreshToken)

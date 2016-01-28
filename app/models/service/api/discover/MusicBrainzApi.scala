@@ -1,5 +1,6 @@
 package models.service.api.discover
 
+import models.util.TextWrangler
 import play.api.libs.ws.WS
 import play.api.Play.current
 
@@ -20,8 +21,8 @@ object MusicBrainzApi {
    * Only return pairs with a certain similarity score
    */
   def findAlbumOfTrack(titleSearch:String, artistSearch:String, minScore:Int = 80):Future[Seq[Map[String,String]]] = synchronized {
-    val t = removeSpecialCharsAndWhiteSpace(titleSearch)
-    val a = removeSpecialCharsAndWhiteSpace(artistSearch)
+    val t = TextWrangler.cleanupString(titleSearch)
+    val a = TextWrangler.cleanupString(artistSearch)
     val query = s""""$t" AND artist:$a&limit=$limit"""
     val url = root + "recording/?query=" + query
     WS.url(url).get() map { response =>
@@ -52,7 +53,7 @@ object MusicBrainzApi {
    * Look for the artist on MusicBrainz and return the standard name if found
    */
   def isKnownArtist(artistSearch:String):Future[Option[String]] = {
-    val a = removeSpecialCharsAndWhiteSpace(artistSearch)
+    val a = TextWrangler.cleanupString(artistSearch)
     val query = s""""$a"&limit=1"""
     val url = root + "artist/?query=" + query
     WS.url(url).get() map { response =>
@@ -73,8 +74,4 @@ object MusicBrainzApi {
 
     }
   }
-
-
-
-  def removeSpecialCharsAndWhiteSpace(s:String):String = s.replaceAll("[^\\p{L}0-9_\\- ]", "").replaceAll(" +", " ")
 }

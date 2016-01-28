@@ -2,19 +2,24 @@ package models.util
 
 import play.api.mvc.Cookie
 
+import scala.util.Random
+
 object TextWrangler {
 
-  val possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-
   def generateRandomString(length:Int):String = {
-    def buildString(s:String):String = {
-      if(s.length >= length) s
-      else {
-        val rand = Math.random * (possible.length - 1)
-        buildString(s + possible.charAt(rand.toInt))
-      }
-    }
-    buildString("")
+    Random.alphanumeric.take(length).mkString
+  }
+
+  def removeBrackets(s:String):String = {
+    s.replaceAll("([\\(\\[].*[\\)\\]])", "")
+  }
+
+  def removeSpecialCharsAndWhiteSpace(s:String):String = {
+    s.replaceAll("[^\\p{L}0-9_\\- ]", "").replaceAll(" +", " ").trim
+  }
+
+  def cleanupString(s:String):String = {
+    removeSpecialCharsAndWhiteSpace(removeBrackets(s))
   }
 
   /**

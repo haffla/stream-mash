@@ -28,10 +28,7 @@ trait ApiFacade {
   def getAlbumInfoForFrontend(id:String, usersTracks:List[String]):Future[JsValue]
 
   def artistNotPresentCallback(artistId:Long, identifier:Option[Either[Int,String]]):Option[(Long,String)] = {
-    identifier match {
-      case Some(id) => ServiceArtistAbsenceFacade(id).insertIfNotExists(artistId, serviceName)
-      case None =>
-    }
+    ServiceArtistAbsenceFacade.insertIfNotExists(artistId, serviceName)
     None
   }
 

@@ -6,7 +6,7 @@ import models.service.api.DeezerApiFacade
 import models.service.oauth.DeezerService
 import models.util.{Constants, Logging}
 import play.api.Play.current
-import play.api.libs.json.JsValue
+import play.api.libs.json.{Json, JsValue}
 import play.api.libs.ws.{WS, WSRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -54,7 +54,13 @@ class DeezerAnalysis(identifier:Either[Int,String],
               Future.successful(None)
             }
             else {
-              Future.successful(Some(accessTkn))
+              val js = Json.parse(response.body)
+              (js \ "error").asOpt[JsValue] match {
+                case Some(_) =>
+                  Future.successful(None)
+                case _ =>
+                  Future.successful(Some(accessTkn))
+              }
             }
         }
       case None =>

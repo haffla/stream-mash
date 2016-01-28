@@ -117,5 +117,6 @@ class Importer(identifier: Either[Int, String], name:String = "", persist:Boolea
         }
       }
     }
+    apiHelper.setRetrievalProcessDone()
   }
 }

@@ -52,8 +52,7 @@ object AppDB extends Schema {
   ))
 
   on(serviceArtistAbsence)(saa => declare(
-    columns(saa.artistId, saa.userId, saa.service) are unique,
-    columns(saa.artistId, saa.userSession, saa.service) are unique,
+    columns(saa.artistId, saa.service) are unique,
     saa.id is autoIncremented("service_artist_absence_id_service_artist_absence_seq")
   ))
 

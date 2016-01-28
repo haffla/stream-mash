@@ -1,56 +1,27 @@
 package models.database.facade
 
-import models.database.alias.{ServiceArtistAbsence, Artist, AppDB}
+import models.database.alias.{AppDB, ServiceArtistAbsence}
 import org.squeryl.PrimitiveTypeMode._
 
-class ServiceArtistAbsenceFacade(identifier:Either[Int,String]) extends Facade {
-  def save(artistName:String, service:String) = {
-    transaction {
-      getByArtistAndService(artistName, service) match {
-        case Some(art) =>
-          val absence = artistAbsenceByIdentifier(art.id, service)
-          AppDB.serviceArtistAbsence.insert(absence)
-        case _ =>
-      }
-    }
-  }
-
-  def getByArtistAndService(name:String, service:String):Option[Artist] = {
-    from(AppDB.serviceArtistAbsence, AppDB.artists)((saa, a) =>
-      where(a.name === name and a.id === saa.artistId and saa.service === service and AppDB.userWhereClause(saa, identifier))
-        select a
-    ).headOption
-  }
-
-  private def artistAbsenceByIdentifier(id:Long, service:String) = {
-    identifier match {
-      case Left(userId) => ServiceArtistAbsence(userId = Some(userId), artistId = id, service = service)
-      case Right(userSession) => ServiceArtistAbsence(userSession = Some(userSession), artistId = id, service = service)
-    }
-  }
+object ServiceArtistAbsenceFacade extends Facade {
 
   def insertIfNotExists(id:Long, service:String) = {
-    transaction {
+    inTransaction {
       from(AppDB.artists)(a =>
         where(a.id === id)
         select a.id
       ).headOption match {
         case Some(_) =>
           from(AppDB.serviceArtistAbsence)(saa =>
-            where(saa.id === id and AppDB.userWhereClause(saa, identifier) and saa.service === service)
+            where(saa.id === id and saa.service === service)
               select saa.id
           ).headOption match {
             case None =>
-              val absence = artistAbsenceByIdentifier(id, service)
-              AppDB.serviceArtistAbsence.insert(absence)
+              AppDB.serviceArtistAbsence.insert(ServiceArtistAbsence(artistId = id, service = service))
             case _ =>
           }
         case _ =>
       }
     }
   }
-}
-
-object ServiceArtistAbsenceFacade {
-  def apply(identifier:Either[Int,String]) = new ServiceArtistAbsenceFacade(identifier)
 }

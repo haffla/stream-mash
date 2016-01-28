@@ -117,11 +117,8 @@ CREATE TABLE IF NOT EXISTS napster_album(
 CREATE TABLE IF NOT EXISTS service_artist_absence(
     id_service_artist_absence SERIAL PRIMARY KEY,
     fk_artist INT NOT NULL REFERENCES artist(id_artist) ON DELETE CASCADE,
-    fk_user INT DEFAULT NULL REFERENCES account(id_user),
-    user_session VARCHAR(32) DEFAULT NULL,
     service VARCHAR(32) NOT NULL,
-    UNIQUE (fk_artist, fk_user, service),
-    UNIQUE (fk_artist, user_session, service)
+    UNIQUE (fk_artist, service)
 );
 
 # --- !Downs

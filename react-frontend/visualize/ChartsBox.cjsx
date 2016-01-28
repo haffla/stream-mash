@@ -15,6 +15,7 @@ ChartsBox = React.createClass
   serviceChart: null
 
   handleBubbleClick: (d) ->
+    console.log(d)
     id = d.id
     $('.artist').attr('fill', 'steelblue')
     $('.artist' + id).attr('fill', Colors.red400)

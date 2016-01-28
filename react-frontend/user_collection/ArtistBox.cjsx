@@ -46,8 +46,8 @@ ArtistBox = React.createClass
 
   loadFromDb: (event) ->
     callback = (data) =>
+      console.log(data)
       if !data.error
-        console.log(data)
         unless _.has(@state, 'selectedArtist')
           selectedArtist = data[0]
           selectedArtist.idx = 0
