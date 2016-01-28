@@ -1,4 +1,4 @@
-POST          /fileupload                   controllers.UserController.handleAudioFileUpload
+POST          /fileupload                   controllers.UserController.handleAudioJson
 GET           /artist/image                 controllers.UserController.artistPic
 POST          /artist/rating                controllers.UserController.rating
 

@@ -4,7 +4,7 @@ import models.User
 import models.auth.{AdminAccess, Authenticated, Helper, IdentifiedBySession}
 import models.database.facade.{ArtistFacade, ArtistLikingFacade, CollectionFacade}
 import models.service.api.discover.EchoNestApi
-import models.service.library.{AudioFileLibrary, Library}
+import models.service.library.{AudioJsonImporter, Library}
 import models.util.Constants
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
@@ -47,10 +47,10 @@ class UserController extends Controller {
     }
   }
 
-  def handleAudioFileUpload = IdentifiedBySession { implicit request =>
+  def handleAudioJson = IdentifiedBySession { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
     request.body.asJson.map { js =>
-      AudioFileLibrary(identifier).process(js)
+      AudioJsonImporter(identifier).process(js)
       Ok(Json.obj("redirect" -> routes.CollectionController.index("audio").toString))
     }.getOrElse(
       Ok(Json.obj("error" -> true, "reason" -> "No Json found!"))

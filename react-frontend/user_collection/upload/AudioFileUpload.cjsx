@@ -14,16 +14,27 @@ AudioFileUpload = React.createClass
 
   drop: (event) ->
     Helper.preventDef(event)
-    files = event.target.files || event.dataTransfer.files
-    @readFiles(files).then (data) =>
-      @uploader.upload(JSON.stringify(data), 'application/json')
+    unless typeof Promise is not 'undefined'
+      files = event.target.files || event.dataTransfer.files
+      @readFiles(files).then (data) =>
+        filtered = data.filter @filterData
+        @uploader.upload(JSON.stringify(filtered), 'application/json')
+    else
+      alert 'Sorry. Your browser does not support Javascript Promises which come into play when we read your files.'
+
+  filterData: (obj) ->
+    !(_.isUndefined(obj.artist) or _.isUndefined(obj.title) or _.isUndefined(obj.album))
 
   dragEnter: (event) ->
     Helper.preventDef(event)
 
   readFiles: (files) ->
     promises = (idx for idx in [0...files.length]).map (i) =>
-      @readFile(files[i])
+      file = files[i]
+      if file.type.match(/audio\/*/)
+        @readFile(files[i])
+      else
+        {}
     Promise.all(promises)
 
   readFile: (file) ->
@@ -32,7 +43,7 @@ AudioFileUpload = React.createClass
         onSuccess: (tag) ->
           resolve {
             artist: tag.tags.artist,
-            album: tag.tags.album,
+            album: tag.tags.album || 'UNKNOWNALBUM',
             title: tag.tags.title
           }
         onError: (error) ->
