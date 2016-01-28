@@ -59,10 +59,15 @@ ChartsBox = React.createClass
     <div>
       <div style={display: 'flex', justifyContent: 'space-between'}>
         <div id='charts-box-left' style={@boxStyle}>
-          <svg className='bubbles'></svg>
+          <svg className='bubble-chart'></svg>
         </div>
         <div id='charts-box-right' style={@boxStyle}>
-          <svg className='chart-two'></svg>
+          <div id='simple-chartbox' style={width: '100%', height: '15%', paddingLeft: 20, paddingRight: 20}>
+            <svg className='simple-chart'></svg>
+          </div>
+          <div id='trackcount-chartbox' style={width: '100%', height: '85%'}>
+            <svg className='trackcount-chart'></svg>
+          </div>
         </div>
       </div>
 
@@ -77,7 +82,7 @@ ChartsBox = React.createClass
           <svg id='service-chart'></svg>
         </div>
         <div style={_.merge(@boxStyle, {padding: 10})}>
-          <svg className='chart'></svg>
+
         </div>
       </div>
     </div>

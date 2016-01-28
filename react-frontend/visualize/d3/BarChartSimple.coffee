@@ -4,8 +4,8 @@ Helper = require '../../util/Helper'
 
 class BarChartSimple
   constructor: () ->
-    @width = $('#charts-box-left').width()
-    @height = $('#charts-box-left').height()
+    @width = $('#simple-chartbox').width()
+    @height = $('#simple-chartbox').height()
     @barHeight = 20
 
   serviceColor: (d) ->
@@ -25,10 +25,10 @@ class BarChartSimple
         else
           x(d) + adjustment
 
-    d3.select('.chart').selectAll('g').remove()
+    d3.select('.simple-chart').selectAll('g').remove()
 
     x = d3.scale.linear().domain([0, d3.max(data)]).range([0, @width])
-    chart = d3.select('.chart')
+    chart = d3.select('.simple-chart')
       .attr('width', @width)
       .attr('height', @barHeight * data.length)
 

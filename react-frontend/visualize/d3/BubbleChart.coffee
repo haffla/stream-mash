@@ -34,7 +34,7 @@ class BubbleChart
     -Math.pow(d.radius, 2) / 6
 
   setupVisualization: () ->
-    @svg = d3.select('.bubbles')
+    @svg = d3.select('.bubble-chart')
         .attr('width', @width)
         .attr('height', @height)
 

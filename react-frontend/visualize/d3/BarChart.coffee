@@ -5,8 +5,8 @@ Helper = require '../../util/Helper'
 class BarChart
   constructor: (data) ->
     @data = data
-    @width = $('#charts-box-right').width()
-    @height = $('#charts-box-right').height()
+    @width = $('#trackcount-chartbox').width()
+    @height = $('#trackcount-chartbox').height()
 
   start: () ->
     margin = {top: 20, right: 30, bottom: 50, left: 40}
@@ -25,7 +25,7 @@ class BarChart
       .domain([0, d3.max(@data, (d) -> d.trackCount)])
       .range([height, 0])
 
-    chart = d3.select('.chart-two')
+    chart = d3.select('.trackcount-chart')
         .attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom)
       .append('g')
