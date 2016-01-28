@@ -5,7 +5,7 @@ import models.service.library.util.JsonConversion
 import models.util.Constants
 import play.api.libs.json.JsValue
 
-class LastfmLibrary(identifier: Either[Int, String]) extends Library(identifier, Constants.serviceLastFm) with JsonConversion {
+class LastfmImporter(identifier: Either[Int, String]) extends Importer(identifier, Constants.serviceLastFm) with JsonConversion {
 
   def doJsonConversion(js: JsValue): Seq[Map[String, String]] = {
     (js \ "toptracks" \ "track").asOpt[Seq[JsValue]] map { items =>

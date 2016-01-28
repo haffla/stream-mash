@@ -21,7 +21,7 @@ class UserCollectionTest extends UnitSpec {
       "Extrawelt" -> Map("Dark Side Of The Moon" -> Set("Etre", "Colomb")),
       "Apparat" -> Map("Walls" -> Set("Useless Information", "Limelight"))
     )
-    val library = new Library(identifier)
+    val library = new Importer(identifier)
     library.persist(collection).onComplete {
       case Success(_) =>
         val col = CollectionFacade(identifier).userCollection

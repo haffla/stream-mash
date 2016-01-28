@@ -7,7 +7,7 @@ object AudioJsonImporter {
   def apply(identifier: Either[Int, String]) = new AudioJsonImporter(identifier)
 }
 
-class AudioJsonImporter(identifier: Either[Int, String]) extends Library(identifier, "audio") {
+class AudioJsonImporter(identifier: Either[Int, String]) extends Importer(identifier, "audio") {
 
   def handleFiles(files:JsValue):Seq[Map[String,String]] = {
     val jsList = files.as[List[JsValue]]

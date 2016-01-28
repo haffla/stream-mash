@@ -1,6 +1,6 @@
 package models.service.oauth
 
-import models.service.library.NapsterLibrary
+import models.service.library.NapsterImporter
 import models.service.oauth.NapsterService._
 import models.service.util.ServiceAccessTokenHelper
 import models.util.Constants
@@ -13,7 +13,7 @@ import scala.concurrent.Future
 
 class NapsterService(identifier: Either[Int, String]) extends ApiDataRequest(Constants.serviceNapster, identifier) {
 
-  val library = new NapsterLibrary(identifier)
+  val library = new NapsterImporter(identifier)
   override val serviceAccessTokenHelper = new ServiceAccessTokenHelper(Constants.serviceNapster, identifier)
 
   override def doDataRequest(code:String):Future[(Option[String],Option[String])] = {

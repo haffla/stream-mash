@@ -10,7 +10,7 @@ import scalikejdbc._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class Library(identifier: Either[Int, String], name:String = "", persist:Boolean = true) {
+class Importer(identifier: Either[Int, String], name:String = "", persist:Boolean = true) {
 
   implicit val session = AutoSession
 

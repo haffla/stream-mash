@@ -4,7 +4,7 @@ import models.User
 import models.auth.{AdminAccess, Authenticated, Helper, IdentifiedBySession}
 import models.database.facade.{ArtistFacade, ArtistLikingFacade, CollectionFacade}
 import models.service.api.discover.EchoNestApi
-import models.service.library.{AudioJsonImporter, Library}
+import models.service.library.{AudioJsonImporter, Importer}
 import models.util.Constants
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
@@ -22,7 +22,7 @@ class UserController extends Controller {
 
   def userCollectionFromDb = IdentifiedBySession { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
-    val library = new Library(identifier)
+    val library = new Importer(identifier)
     val collection = CollectionFacade(identifier).userCollection
     if(collection.nonEmpty) Ok(library.prepareCollectionForFrontend(collection))
     else Ok(Json.toJson(Map("error" -> "You have no records stored in our database.")))

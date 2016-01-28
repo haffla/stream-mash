@@ -9,7 +9,7 @@ import play.api.libs.json.JsValue
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SoundcloudLibrary(identifier: Either[Int, String]) extends Library(identifier, "soundcloud") {
+class SoundcloudImporter(identifier: Either[Int, String]) extends Importer(identifier, "soundcloud") {
 
   def convertJsonToSeq(json: Option[JsValue]):Future[Seq[Map[String,String]]] = {
     json match {

@@ -5,7 +5,7 @@ import models.service.library.util.JsonConversion
 import models.util.Constants
 import play.api.libs.json.JsValue
 
-class DeezerLibrary(identifier: Either[Int, String]) extends Library(identifier, Constants.serviceDeezer) with JsonConversion {
+class DeezerImporter(identifier: Either[Int, String]) extends Importer(identifier, Constants.serviceDeezer) with JsonConversion {
 
   def doJsonConversion(js: JsValue): Seq[Map[String, String]] = {
     val data = (js \ "data").as[Seq[JsValue]]

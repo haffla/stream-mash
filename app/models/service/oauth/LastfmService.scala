@@ -1,7 +1,7 @@
 package models.service.oauth
 
 import models.auth.MessageDigest
-import models.service.library.LastfmLibrary
+import models.service.library.LastfmImporter
 import models.service.oauth.LastfmService.apiEndpoints
 import models.service.util.ServiceAccessTokenHelper
 import models.util.{Constants, Logging}
@@ -15,7 +15,7 @@ import scala.concurrent.Future
 
 class LastfmService(identifier: Either[Int, String]) extends ApiDataRequest  (Constants.serviceLastFm, identifier) {
 
-  val library = new LastfmLibrary(identifier)
+  val library = new LastfmImporter(identifier)
   override val serviceAccessTokenHelper = new ServiceAccessTokenHelper(Constants.serviceLastFm, identifier)
 
   def generateApiSig(code: String) = {

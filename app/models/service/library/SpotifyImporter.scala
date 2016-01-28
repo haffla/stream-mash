@@ -5,7 +5,7 @@ import models.service.library.util.JsonConversion
 import models.util.Constants
 import play.api.libs.json.JsValue
 
-class SpotifyLibrary(identifier: Either[Int, String]) extends Library(identifier, Constants.serviceSpotify) with JsonConversion {
+class SpotifyImporter(identifier: Either[Int, String]) extends Importer(identifier, Constants.serviceSpotify) with JsonConversion {
 
   def doJsonConversion(js: JsValue): Seq[Map[String, String]] = {
     val items = (js \ "items").as[Seq[JsValue]]

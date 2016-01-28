@@ -1,6 +1,6 @@
 package models.service.oauth
 
-import models.service.library.DeezerLibrary
+import models.service.library.DeezerImporter
 import models.service.oauth.DeezerService._
 import models.service.util.ServiceAccessTokenHelper
 import models.util.Constants
@@ -14,7 +14,7 @@ import scala.concurrent.Future
 class DeezerService(identifier:Either[Int,String]) extends ApiDataRequest(Constants.serviceDeezer, identifier) {
 
   override val serviceAccessTokenHelper: ServiceAccessTokenHelper = new ServiceAccessTokenHelper(Constants.serviceDeezer, identifier)
-  val library = new DeezerLibrary(identifier)
+  val library = new DeezerImporter(identifier)
 
   override def doDataRequest(code: String): Future[(Option[String],Option[String])] = {
     val futureResponse: Future[WSResponse] = WS.url(apiEndpoints.token).withQueryString(

@@ -7,8 +7,8 @@ import scala.concurrent.Future
 import scala.xml.Node
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ItunesLibrary(identifier: Either[Int, String], xmlPath:String = "", persist:Boolean = true)
-                                    extends Library(identifier, "itunes", persist) {
+class ItunesImporter(identifier: Either[Int, String], xmlPath:String = "", persist:Boolean = true)
+                                    extends Importer(identifier, "itunes", persist) {
 
   val labelDict = "dict"
   val labelKey  = "key"
