@@ -1,6 +1,7 @@
 node_modules
-public/bower_components
-public/javascripts
+public/javascripts/analysis*
+public/javascripts/artistbox*
+public/javascripts/visualize*
 logs
 target
 /.idea

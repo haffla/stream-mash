@@ -1,5 +1,4 @@
 _ = require 'lodash'
-jsmediatags = require 'jsmediatags'
 
 React = require 'react'
 Helper = require '../../util/Helper'
@@ -47,7 +46,7 @@ AudioFileUpload = React.createClass
 
   readFile: (file) ->
     new Promise (resolve) ->
-      jsmediatags.read(file, {
+      window.jsmediatags.read(file, {
         onSuccess: (tag) ->
           resolve {
             artist: tag.tags.artist,

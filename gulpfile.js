@@ -19,6 +19,7 @@ var JS_FOLDER = 'public/javascripts';
 var DIST = 'react-frontend/dist';
 var scripts = [
     './' + DIST + '/artistbox.js',
+    './' + DIST + '/visualize.js',
     './' + DIST + '/analysis.js'
 ];
 
