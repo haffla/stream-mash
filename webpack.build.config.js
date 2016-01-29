@@ -3,6 +3,9 @@ var path = require('path');
 var reactFrontend = 'react-frontend';
 
 module.exports = {
+    node: {
+      fs: 'empty'
+    },
     entry: {
       artistbox: ['./' + reactFrontend + '/artistbox'],
       analysis: ['./' + reactFrontend + '/analysis'],
