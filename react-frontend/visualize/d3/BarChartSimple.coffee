@@ -3,10 +3,11 @@ Colors = require 'material-ui/lib/styles/colors'
 Helper = require '../../util/Helper'
 
 class BarChartSimple
-  constructor: () ->
-    @width = $('#simple-chartbox').width()
-    @height = $('#simple-chartbox').height()
+  constructor: (container, svgContainer) ->
+    @width = $(container).width()
+    @height = $(container).height()
     @barHeight = 20
+    @chart = d3.select(svgContainer)
 
   serviceColor: (d) ->
     if typeof d is 'undefined' then Colors.red400
@@ -25,10 +26,10 @@ class BarChartSimple
         else
           x(d) + adjustment
 
-    d3.select('.simple-chart').selectAll('g').remove()
-
+    @chart.selectAll('g').remove()
     x = d3.scale.linear().domain([0, d3.max(data)]).range([0, @width])
-    chart = d3.select('.simple-chart')
+
+    chart = @chart
       .attr('width', @width)
       .attr('height', @barHeight * data.length)
 

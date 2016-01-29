@@ -30,11 +30,15 @@ ChartsBox = React.createClass
         @setState data: data
         bubble = new BubbleChart(@state.data, @handleBubbleClick)
         bar = new BarChart(@state.data.user)
-        @barChartSimple = new BarChartSimple()
+        @barChartSimple = new BarChartSimple '#simple-chartbox', '.simple-chart'
         @serviceChart = new ServiceChart({
           artists: @state.data.user
           totals: @state.data.total
           })
+        missingAlbumChart = new BarChartSimple '#missing-album-chartbox', '.missing-albumchart'
+        missingAlbumChart.makeBarChart(
+          [@state.data.missing.spotify, @state.data.missing.deezer, @state.data.missing.napster]
+          )
         bar.start()
         bubble.start()
         @serviceChart.start()
@@ -62,7 +66,7 @@ ChartsBox = React.createClass
           <svg className='bubble-chart'></svg>
         </div>
         <div id='charts-box-right' style={@boxStyle}>
-          <div id='simple-chartbox' style={width: '100%', height: '15%', paddingLeft: 20, paddingRight: 20}>
+          <div id='simple-chartbox' style={width: '100%', height: '15%', padding: '10px 20px'}>
             <svg className='simple-chart'></svg>
           </div>
           <div id='trackcount-chartbox' style={width: '100%', height: '85%'}>
@@ -81,8 +85,13 @@ ChartsBox = React.createClass
           </div>
           <svg id='service-chart'></svg>
         </div>
-        <div style={_.merge(@boxStyle, {padding: 10})}>
+        <div style={@boxStyle}>
+          <div id='missing-album-chartbox' style={width: '100%', height: '15%', padding: '10px 20px'}>
+            <svg className='missing-albumchart'></svg>
+          </div>
+          <div style={width: '100%', height: '85%'}>
 
+          </div>
         </div>
       </div>
     </div>
