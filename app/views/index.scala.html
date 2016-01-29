@@ -1,6 +1,57 @@
 @()(implicit flash: Flash, session: Session)
 
 @main("str::compare") {
-    <h5>Welcome</h5>
-    <p>This is a work in progress..</p>
+    <div id="start-page" class="container-fluid">
+        <div class="centered">
+            <h3>Hello!</h3>
+        </div>
+        <div class="centered">
+            <p>Stream Compare is a little application that wants to help you decide which music
+                streaming service suits best your musical taste.</p>
+            <hr>
+            <h4>There are basically three steps involved</h4>
+        </div>
+        <div class="flex around">
+            <div>
+                <h5>You tell me what you like by importing music from:</h5>
+                <ul>
+                    <li>A music streaming service. Currently supported:</li>
+                    <ul>
+                        <li>Spotify</li>
+                        <li>Deezer</li>
+                        <li>Napster</li>
+                        <li class="deprecated">Rdio</li>
+                        <li>LastFm</li>
+                        <li>Soundcloud</li>
+                        <li>to be extended...</li>
+                    </ul>
+                    <li>An iTunes Library XML file</li>
+                    <li>Audio files from your computer (no upload required)</li>
+                </ul>
+            </div>
+            <div>
+                <h5>Inspect your imported collection</h5>
+                <ul>
+                    <li>Attach importance to certain artists</li>
+                    <li>Mark certain artists to be ignored</li>
+                    <li>Then trigger the analysis</li>
+                </ul>
+            </div>
+            <div>
+                <h5>View the results of the analysis</h5>
+                <ul>
+                    <li>The following services are analysed</li>
+                    <ul>
+                        <li>Spotify</li>
+                        <li>Deezer</li>
+                        <li>Napster</li>
+                    </ul>
+                    <li>See what of your music they offer</li>
+                    <li>You might discover new releases</li>
+                    <li>See at a glance how they compare</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
 }
