@@ -61,7 +61,7 @@ class ArtistFacade(identifier:Either[Int,String]) extends Facade with GroupMeasu
     * Get users favourite artists sorted by score in user_artist_liking table
     * By default get top 50.
     */
-  def usersFavouriteArtists(page: (Int,Int) = (0,50)):List[(Artist,Double)] = {
+  def usersFavouriteArtists(page: (Int,Int) = (0,25)):List[(Artist,Double)] = {
     inTransaction {
       join(
         AppDB.artists,
@@ -76,11 +76,11 @@ class ArtistFacade(identifier:Either[Int,String]) extends Facade with GroupMeasu
             col.trackId === tr.id,
             ual.artistId === a.id
           )
-      ).page(page._1,page._2).distinct.toList
+      ).distinct.page(page._1,page._2).toList
     }
   }
 
-  def usersFavouriteArtistsWithTrackCountAndScore(page: (Int,Int) = (0,50)):List[(Artist,Long,Double)] = {
+  def usersFavouriteArtistsWithTrackCountAndScore(page: (Int,Int) = (0,25)):List[(Artist,Long,Double)] = {
     inTransaction {
       val mlta = toMap(mostListenedToArtists())
       join(
@@ -96,7 +96,7 @@ class ArtistFacade(identifier:Either[Int,String]) extends Facade with GroupMeasu
           col.trackId === tr.id,
           ual.artistId === a.id
           )
-      ).page(page._1,page._2).distinct.toList
+      ).distinct.page(page._1,page._2).toList
     }
   }
 

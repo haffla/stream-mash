@@ -40,7 +40,7 @@ class BarChart
       .attr('y', (d) -> y(d.trackCount))
       .attr('height', (d) -> height - y(d.trackCount))
       .attr('width', x.rangeBand())
-      .attr('fill', 'steelblue')
+      .attr('fill', Colors.amber700)
       .attr('class', (d) -> 'artist artist' + d.id)
 
     bar.append('text')

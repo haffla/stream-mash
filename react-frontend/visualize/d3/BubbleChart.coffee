@@ -31,9 +31,10 @@ class BubbleChart
 
 
   charge: (d) ->
-    -Math.pow(d.radius, 2) / 6
+    -Math.pow(d.radius, 2) / 8
 
   setupVisualization: () ->
+
     @svg = d3.select('.bubble-chart')
         .attr('width', @width)
         .attr('height', @height)
@@ -57,7 +58,7 @@ class BubbleChart
   initNodes: () ->
     scale = d3.scale.linear()
       .domain([0, d3.max(@data.user, (a) -> a.trackCount * a.score)])
-      .range([0, 100])
+      .range([0, 70])
     @nodes = @data.user.map (a) ->
       {
         id: a.id

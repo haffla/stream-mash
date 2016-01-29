@@ -12,7 +12,7 @@ class LastfmImporter(identifier: Either[Int, String]) extends Importer(identifie
       val totalLength = items.length
       items.zipWithIndex.map { case (item,i) =>
         //TODO: Get playcount
-        val position = i + 1
+        val position = i + 10000
         apiHelper.setRetrievalProcessProgress(position.toDouble / totalLength * 0.66)
         val track = (item \ "name").as[String]
         val artist = (item \ "artist" \ "name").as[String]

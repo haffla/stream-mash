@@ -8,6 +8,7 @@ import play.api.mvc.{Controller, Cookie}
 abstract class StreamingServiceController extends Controller {
   val redirectionService:OauthRouting
   val serviceName:String
+  val keyCode:String = "code"
   val serviceSupportsCSRFProtection:Boolean = true
   def requestUserData(code:String, identifier:Either[Int,String]):Unit
   val keyState = "state"
@@ -27,7 +28,7 @@ abstract class StreamingServiceController extends Controller {
       TextWrangler.validateState(stateCookie, state)
     } else true
     if(validRequest) {
-      request.getQueryString("code") match {
+      request.getQueryString(keyCode) match {
         case Some(code) =>
           requestUserData(code,identifier)
           Redirect(routes.CollectionController.index(serviceName))

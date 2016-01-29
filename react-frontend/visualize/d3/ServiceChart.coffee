@@ -1,6 +1,8 @@
 _ = require 'lodash'
 d3 = require 'd3'
 
+Colors = require 'material-ui/lib/styles/colors'
+
 class ServiceChart
   constructor: (data) ->
     @artists = data.artists
@@ -55,7 +57,7 @@ class ServiceChart
       .attr('y', (d) -> y(d.total))
       .attr('height', (d) => height - y(d.total))
       .attr('width', x.rangeBand())
-      .attr('fill', 'steelblue')
+      .attr('fill', Colors.amber700)
       .attr('class', (d) -> 'artist artist' + d.id)
 
     bar.append('text')

@@ -27,7 +27,7 @@ class NapsterAlbumFacade(identifier:Either[Int,String]) {
     inTransaction {
       join(AppDB.albums, AppDB.tracks, AppDB.collections, AppDB.napsterAlbums.leftOuter)((alb,tr,col,napsAlb) =>
         where(AppDB.userWhereClause(col, identifier) and napsAlb.map(_.id).isNull)
-          compute count(alb.id)
+          compute countDistinct(alb.id)
           on(
           tr.albumId === alb.id,
           col.trackId === tr.id,

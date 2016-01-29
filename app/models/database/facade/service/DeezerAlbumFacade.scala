@@ -27,7 +27,7 @@ class DeezerAlbumFacade(identifier:Either[Int,String]) {
     inTransaction {
       join(AppDB.albums, AppDB.tracks, AppDB.collections, AppDB.deezerAlbums.leftOuter)((alb,tr,col,spAlb) =>
         where(AppDB.userWhereClause(col, identifier) and spAlb.map(_.id).isNull)
-          compute count(alb.id)
+          compute countDistinct(alb.id)
           on(
           tr.albumId === alb.id,
           col.trackId === tr.id,

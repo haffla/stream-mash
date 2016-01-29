@@ -40,7 +40,7 @@ class BarChartSimple
     bar.append('rect')
       .attr('width', failSafe)
       .attr('height', @barHeight - 1)
-      .attr('fill', 'steelblue')
+      .attr('fill', Colors.cyan700)
 
     bar.append('text')
       .attr('x', (d) -> failSafe(d, -5))

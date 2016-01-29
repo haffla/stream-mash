@@ -107,11 +107,11 @@ StreamingServiceBox = React.createClass
         </tr>
       <div style={display: 'flex', justifyContent: 'space-between'}>
         <Dialog
-          title="Dialog With Actions"
+          title="Missing Albums"
           modal={false}
           open={@state.missingAlbumsDialogOpen}
           onRequestClose={@closeMissingAlbumsDialog}>
-          <div>
+          <div style={overflowY: 'auto', maxHeight: 500}>
             <table className="table">
               <tbody>
                 {missingAlbums}
