@@ -72,7 +72,13 @@ abstract class ServiceAnalysis(identifier:Either[Int,String],
     request.get().flatMap { response =>
       if(response.status != 200) {
         Logging.debug(ich, response.body.toString + "\n" + response.status + "\n")
-        Future.successful(jsonResponses)
+        if(response.status == 429) { // too many requests
+          response.header("Retry-After").map { seconds =>
+            Thread.sleep(seconds.toInt * 1000)
+            artistsAlbumsRequest(url, token, jsonResponses)
+          }.getOrElse(Future.successful(jsonResponses))
+        }
+        else Future.successful(jsonResponses)
       }
       else {
         val js = Json.parse(response.body)

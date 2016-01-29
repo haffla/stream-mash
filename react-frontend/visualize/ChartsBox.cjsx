@@ -18,6 +18,12 @@ ChartsBox = React.createClass
   getInitialState: () ->
     data: {user: {}}, selectedArtist: {}
 
+  nrTotalTracks: () ->
+    if !_.isEmpty(@state.data.user)
+      @state.data.user.reduce (x,y) ->
+          x + y.trackCount
+        , 0
+
   handleBubbleClick: (d) ->
     @setState selectedArtist: d
     id = d.id
@@ -97,7 +103,7 @@ ChartsBox = React.createClass
               displayNote = if displayChart is 'block' then 'none' else 'block'
               <div style={display: 'relative'}>
                 <div style={display: displayChart}>
-                  <span style={boxDescriptionStyle}>{"Number of tracks in your collection per artist"}</span>
+                  <span style={boxDescriptionStyle}>{"Number of albums by the selected artist"}</span>
                   <svg className='simple-chart'></svg>
                 </div>
                 <span style={display: displayNote, left: 10, top: 10, position: 'absolute', color: Colors.yellow800}>{"Select an artist to display this chart"}</span>
@@ -123,13 +129,7 @@ ChartsBox = React.createClass
           <span style={boxDescriptionStyle}>{"Number of albums per service and artist: " + @state.totalAlbumCount}</span>
         </div>
         <div style={@boxStyle}>
-          {
-            if !_.isEmpty(@state.data.user)
-              nrTotalTracks = @state.data.user.reduce (x,y) ->
-                  x + y.trackCount
-                , 0
-          }
-          <span style={boxDescriptionStyle}>{"Number of tracks in your collection per artist: " + nrTotalTracks || 0}</span>
+          <span style={boxDescriptionStyle}>{"Number of tracks in your collection per artist: " + @nrTotalTracks() || 0}</span>
           <div id='trackcount-chartbox' style={width: '100%', height: '100%', marginTop: 27}>
             <svg className='trackcount-chart'></svg>
           </div>

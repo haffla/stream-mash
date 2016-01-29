@@ -61,7 +61,7 @@ class AuthController extends Controller with models.auth.form.Forms {
           case Some(result) =>
             request.session.get(Constants.userSessionKey) match {
               case Some(sessionKey) =>
-                //TODO User.transferData(result._3, sessionKey)
+                User.transferData(result._3, sessionKey)
               case None => //NADA
             }
             val newSession = request.session +

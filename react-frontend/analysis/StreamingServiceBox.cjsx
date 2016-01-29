@@ -9,13 +9,14 @@ Avatar = require 'material-ui/lib/avatar'
 Colors = require 'material-ui/lib/styles/colors'
 Dialog = require 'material-ui/lib/dialog'
 FontIcon = require 'material-ui/lib/font-icon'
+LinearProgress = require 'material-ui/lib/linear-progress'
 List = require 'material-ui/lib/lists/list'
 ListItem = require 'material-ui/lib/lists/list-item'
 
 StreamingServiceBox = React.createClass
 
   getInitialState: () ->
-    artists: [], selectedArtist: {albums: []}, missingAlbumsDialogOpen: false
+    artists: [], selectedArtist: {albums: []}, missingAlbumsDialogOpen: false, loaded: false
 
   componentDidMount: () ->
     $.ajax @props.artistEndpoint,
@@ -31,9 +32,10 @@ StreamingServiceBox = React.createClass
                       nrAlbums: result.data.stats.nrAlbums
                       nrUserAlbums: result.data.stats.nrUserAlbums
                       albumsOnlyInUserCollection: result.data.stats.albumsOnlyInUserCollection
+                      loaded: true
                     }
         else
-          @setState artists: [], selectedArtist: {albums: []}
+          @setState artists: [], selectedArtist: {albums: []}, loaded: true
       error: (jqXHR, textStatus, e) ->
         console.log(e)
 
@@ -143,7 +145,12 @@ StreamingServiceBox = React.createClass
          </div>
       </div>
     else
-      <p>Nothing here yet.</p>
+      if @state.loaded
+        <div className="centered">
+          <h4>Nothing here yet. You need to import music and trigger the analysis <a href="/collection">here</a></h4>
+        </div>
+      else
+        <LinearProgress mode="indeterminate"/>
 
 
 module.exports = StreamingServiceBox
