@@ -90,7 +90,7 @@ ChartsBox = React.createClass
       when 'napster' then @state.data.napster
       else @state.data.total
     @setState totalAlbumCount: Helper.calculateNrOfServiceAlbums data
-    @serviceChart.redraw data
+    @serviceChart.redraw data, @state.selectedArtist.id
   render: () ->
     boxDescriptionStyle = {padding: 8, color: Colors.grey500, position: 'absolute', right: 0, top: 0}
 
@@ -108,7 +108,7 @@ ChartsBox = React.createClass
                 displayNote = if displayChart is 'block' then 'none' else 'block'
                 <div style={display: 'relative'}>
                   <div style={display: displayChart}>
-                    <span style={boxDescriptionStyle}>{"Number of albums by the selected artist"}</span>
+                    <span style={boxDescriptionStyle}>Number of albums by <b>{@state.selectedArtist.name}</b></span>
                     <svg className='simple-chart'></svg>
                   </div>
                   <span style={display: displayNote, left: 10, top: 10, position: 'absolute', color: Colors.yellow800}>{"Select an artist to display this chart"}</span>

@@ -13,12 +13,12 @@ class ServiceChart
   setTotals: (totals) ->
     @totals = totals
 
-  redraw: (totals) ->
+  redraw: (totals, selectedArtistId) ->
     @setTotals totals
     d3.select('#service-chart').selectAll('g').remove()
-    @start()
+    @start(selectedArtistId)
 
-  start: () ->
+  start: (selectedArtistId) ->
     margin = {top: 20, right: 30, bottom: 50, left: 40}
     width = @width - margin.left - margin.right
     height = @height - margin.top - margin.bottom
@@ -57,7 +57,7 @@ class ServiceChart
       .attr('y', (d) -> y(d.total))
       .attr('height', (d) => height - y(d.total))
       .attr('width', x.rangeBand())
-      .attr('fill', Colors.amber700)
+      .attr('fill', (d) -> if d.id is selectedArtistId then Colors.purple700 else Colors.amber700)
       .attr('class', (d) -> 'artist artist' + d.id)
 
     bar.append('text')

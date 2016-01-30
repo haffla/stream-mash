@@ -54,8 +54,6 @@ object SpotifyArtistFacade extends ServiceArtistTrait {
       case Some(artist) =>
         if (!artist.isAnalysed)
           setArtistAnalysed(artist.id)
-        else
-          println(artist)
         artist.id
       case _ => insert(id)
 

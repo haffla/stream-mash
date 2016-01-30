@@ -44,7 +44,6 @@ abstract class ServiceAnalysis(identifier:Either[Int,String],
 
   def analyse():Future[Map[Long, List[(String, String, String)]]] = {
     val artists = filterAlreadyAnalysedArtists(usersFavouriteArtists)
-    println(artists)
     for {
       accessToken <- testAndGetAccessToken()
       ids <- artistIds(artists, accessToken)

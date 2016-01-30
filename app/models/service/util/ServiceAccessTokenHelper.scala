@@ -43,10 +43,7 @@ class ServiceAccessTokenHelper(service:String, identifier:Either[Int,String]) {
   }
 
   def getAnyAccessToken:Option[String] = {
-    println("trying to get any access token")
-    val x = User.getAnyAccessToken(service)
-    println(x)
-    x
+    User.getAnyAccessToken(service)
   }
 
 }

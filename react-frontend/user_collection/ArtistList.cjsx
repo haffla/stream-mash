@@ -9,7 +9,7 @@ ArtistList = React.createClass
     flexWrap: 'wrap'
     justifyContent: 'space-between'
     alignItems: 'flex-start'
-    height: 400
+    maxHeight: 600
     overflowY: 'auto'
   }
 
