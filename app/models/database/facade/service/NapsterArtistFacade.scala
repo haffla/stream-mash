@@ -34,27 +34,37 @@ object NapsterArtistFacade extends ServiceArtistTrait {
 
   def apply(identifier: Either[Int,String]) = new NapsterArtistFacade(identifier)
 
-  override protected def insertIfNotExists(id:Long):Long = {
+  override protected def setArtistAnalysed(id: Long) = {
+    AppDB.napsterArtists.insert(NapsterArtist(id, isAnalysed = true))
+  }
+
+  override protected def insertOrUpdate(id:Long):Long = {
     from(AppDB.napsterArtists)(sa =>
       where(sa.id === id)
-        select sa.id
+        select sa
     ).headOption match {
       case None => insert(id)
-      case _ => id
+      case Some(napsArt) =>
+        if(!napsArt.isAnalysed)
+          setArtistAnalysed(napsArt.id)
+        napsArt.id
     }
   }
 
   override protected def insert(id: Long):Long = {
-    AppDB.napsterArtists.insert(NapsterArtist(id)).id
+    AppDB.napsterArtists.insert(NapsterArtist(id, isAnalysed = true)).id
   }
 
   override def saveInfoAboutArtist(js: JsValue): Unit = {
     //TODO do something here
   }
 
-  override def allArtistIds: List[Long] = {
+  override def nonAnalysedArtistIds: List[Long] = {
     transaction {
-      from(AppDB.napsterArtists)(da => select(da.id)).toList
+      from(AppDB.napsterArtists)(napsArt =>
+        where(napsArt.isAnalysed === false)
+        select napsArt.id
+      ).toList
     }
   }
 

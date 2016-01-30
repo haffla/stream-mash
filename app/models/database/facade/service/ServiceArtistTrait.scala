@@ -6,11 +6,12 @@ import play.api.libs.json.JsValue
 
 trait ServiceArtistTrait {
 
-  protected def insertIfNotExists(id:Long):Long
+  protected def insertOrUpdate(id:Long):Long
   protected def insert(id:Long):Long
+  protected def setArtistAnalysed(id: Long)
   def saveInfoAboutArtist(js:JsValue):Unit
-  def allArtistIds:List[Long]
-  def saveArtist(id:Long):Long = inTransaction(insertIfNotExists(id))
+  def nonAnalysedArtistIds:List[Long]
+  def saveArtist(id:Long):Long = inTransaction(insertOrUpdate(id))
   def artistsAlbumCount(artistId:List[Long]):List[GroupWithMeasures[Long,Long]]
 
   def countArtistsAlbums(artistId:List[Long]) = {

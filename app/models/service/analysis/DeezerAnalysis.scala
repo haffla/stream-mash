@@ -21,9 +21,9 @@ class DeezerAnalysis(identifier:Either[Int,String],
   override val serviceAlbumFacade = DeezerAlbumFacade
   override val apiFacade = DeezerApiFacade
 
-  def urlForRequest(artistId:String):String = searchEndpoint + "/" + artistId + "/albums?output=json"
+  protected def urlForRequest(artistId:String):String = searchEndpoint + "/" + artistId + "/albums?output=json"
 
-  override def handleJsonResponse(jsResp:JsValue):List[(String,String)] = {
+  protected override def handleJsonResponse(jsResp:JsValue):List[(String,String)] = {
     val items = (jsResp \ "data").as[List[JsValue]]
     items.map {
       item =>
@@ -33,9 +33,9 @@ class DeezerAnalysis(identifier:Either[Int,String],
     }
   }
 
-  override def getServiceFieldFromArtist(artist: Artist): Option[String] = artist.deezerId
+  protected override def getServiceFieldFromArtist(artist: Artist): Option[String] = artist.deezerId
 
-  override def getAuthenticatedRequest(url:String, accessToken:String):WSRequest = {
+  protected override def getAuthenticatedRequest(url:String, accessToken:String):WSRequest = {
     WS.url(url).withQueryString("access_token" -> accessToken)
   }
 
@@ -43,7 +43,7 @@ class DeezerAnalysis(identifier:Either[Int,String],
     * Before we get started, test the access token with some random request
     * If we get a 401 we need to refresh the token
     */
-  override def testAndGetAccessToken():Future[Option[String]] = {
+  protected override def testAndGetAccessToken():Future[Option[String]] = {
     serviceAccessTokenHelper.getAccessToken match {
       case Some(accessTkn) =>
         val url = urlForRequest("27")

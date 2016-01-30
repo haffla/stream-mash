@@ -16,29 +16,29 @@ abstract class ServiceAnalysis(identifier:Either[Int,String],
                                usersFavouriteArtists: List[Artist],
                                service:String) {
 
-  lazy val ich = this.getClass.toString
-  val serviceAccessTokenHelper = new ServiceAccessTokenHelper(service, identifier)
+  lazy protected val ich = this.getClass.toString
+  protected val serviceAccessTokenHelper = new ServiceAccessTokenHelper(service, identifier)
   val searchEndpoint:String
   val serviceArtistFacade:ServiceArtistTrait
   val serviceAlbumFacade:ServiceAlbumFacade
   val apiFacade:ApiFacade
 
-  def testAndGetAccessToken():Future[Option[String]]
+  protected def testAndGetAccessToken():Future[Option[String]]
 
   /**
     * returns a Tuple with the album name and the service id of the album
     */
-  def handleJsonResponse(jsResp:JsValue):List[(String,String)]
-  def getAuthenticatedRequest(url:String, accessToken:String):WSRequest
-  def urlForRequest(artistId:String):String
-  def getServiceFieldFromArtist(artist:Artist):Option[String]
+  protected def handleJsonResponse(jsResp:JsValue):List[(String,String)]
+  protected def getAuthenticatedRequest(url:String, accessToken:String):WSRequest
+  protected def urlForRequest(artistId:String):String
+  protected def getServiceFieldFromArtist(artist:Artist):Option[String]
 
-  def getNextUrl(js:JsValue):Option[String] = {
+  protected def getNextUrl(js:JsValue):Option[String] = {
     (js \ "next").asOpt[String]
   }
 
-  def filterCachedArtists(usersFavouriteArtists: List[Artist]) = {
-    val cachedArtist = serviceArtistFacade.allArtistIds
+  private def filterCachedArtists(usersFavouriteArtists: List[Artist]): List[Artist] = {
+    val cachedArtist = serviceArtistFacade.nonAnalysedArtistIds
     usersFavouriteArtists.filter(a => !cachedArtist.contains(a.id))
   }
 
@@ -64,7 +64,7 @@ abstract class ServiceAnalysis(identifier:Either[Int,String],
     }
   }
 
-  def artistsAlbumsRequest(url:String, token:Option[String], jsonResponses:List[JsValue]):Future[List[JsValue]] = {
+  private def artistsAlbumsRequest(url:String, token:Option[String], jsonResponses:List[JsValue]):Future[List[JsValue]] = {
     val request = token match {
       case Some(tkn) => getAuthenticatedRequest(url, tkn)
       case _ => WS.url(url)
@@ -99,7 +99,7 @@ abstract class ServiceAnalysis(identifier:Either[Int,String],
         val artistDbId = artist._1
         val artistServiceId = artist._2
         val url = urlForRequest(artistServiceId)
-        artistsAlbumsRequest(url,accessToken,Nil) map(jsonResponses => (artistDbId, jsonResponses))
+        artistsAlbumsRequest(url, accessToken, Nil) map(jsonResponses => (artistDbId, jsonResponses))
       }
     }
   }

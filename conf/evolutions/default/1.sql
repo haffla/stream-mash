@@ -88,7 +88,8 @@ INSERT INTO user_artist_liking(fk_user, fk_artist, score) VALUES (1, 2, 2);
 INSERT INTO user_artist_liking(fk_user, fk_artist, score) VALUES (1, 3, 2);
 
 CREATE TABLE IF NOT EXISTS spotify_artist(
-    id_spotify_artist INT REFERENCES artist(id_artist) ON DELETE CASCADE
+    id_spotify_artist INT REFERENCES artist(id_artist) ON DELETE CASCADE,
+    is_analysed BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS spotify_album(
@@ -97,7 +98,8 @@ CREATE TABLE IF NOT EXISTS spotify_album(
 );
 
 CREATE TABLE IF NOT EXISTS deezer_artist(
-    id_deezer_artist INT REFERENCES artist(id_artist) ON DELETE CASCADE
+    id_deezer_artist INT REFERENCES artist(id_artist) ON DELETE CASCADE,
+    is_analysed BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS deezer_album(
@@ -106,7 +108,8 @@ CREATE TABLE IF NOT EXISTS deezer_album(
 );
 
 CREATE TABLE IF NOT EXISTS napster_artist(
-    id_napster_artist INT REFERENCES artist(id_artist) ON DELETE CASCADE
+    id_napster_artist INT REFERENCES artist(id_artist) ON DELETE CASCADE,
+    is_analysed BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS napster_album(

@@ -25,10 +25,10 @@ class SpotifyAnalysis(identifier:Either[Int,String],
   val limit = "50"
   val albumTypes = "album,single"
 
-  def urlForRequest(artistId:String):String = searchEndpoint + "/" + artistId +
+  protected def urlForRequest(artistId:String):String = searchEndpoint + "/" + artistId +
                                               s"/albums?market=$market&limit=$limit&album_type=$albumTypes"
 
-  override def handleJsonResponse(jsResp:JsValue):List[(String,String)] = {
+  protected override def handleJsonResponse(jsResp:JsValue):List[(String,String)] = {
     val items = (jsResp \ "items").as[List[JsValue]]
     items.map {
       item =>
@@ -38,9 +38,9 @@ class SpotifyAnalysis(identifier:Either[Int,String],
     }
   }
 
-  override def getServiceFieldFromArtist(artist: Artist): Option[String] = artist.spotifyId
+  protected override def getServiceFieldFromArtist(artist: Artist): Option[String] = artist.spotifyId
 
-  override def getAuthenticatedRequest(url:String, accessToken:String):WSRequest = {
+  protected override def getAuthenticatedRequest(url:String, accessToken:String):WSRequest = {
     WS.url(url).withHeaders("Authorization" -> s"Bearer $accessToken")
   }
 
@@ -48,7 +48,7 @@ class SpotifyAnalysis(identifier:Either[Int,String],
     * Before we get started, test the access token with some random request
     * If we get a 401 we need to refresh the token
     */
-  override def testAndGetAccessToken():Future[Option[String]] = {
+  protected override def testAndGetAccessToken():Future[Option[String]] = {
     serviceAccessTokenHelper.getAccessToken match {
       case Some(accessTkn) =>
         val url = searchEndpoint + s"/0OdUWJ0sBjDrqHygGUXeCF/albums?market=$market&limit=1"

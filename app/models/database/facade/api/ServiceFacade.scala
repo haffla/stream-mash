@@ -9,29 +9,42 @@ import scalikejdbc._
 abstract class ServiceFacade extends Facade {
 
   val serviceFieldName:SQLSyntax
+  val serviceArtistTable:Option[(SQLSyntax,SQLSyntax)] = None
 
   def saveArtistWithServiceId(artistName: String, serviceId: String, picUrl:Option[String] = None):Unit = {
     val cacheKey = s"$artistName|$serviceId|UPDATED"
     Cache.get(cacheKey) match {
       case Some(_) =>
       case None =>
-        sql"select artist_name, $serviceFieldName from artist where artist_name=$artistName".map(
-          rs => (rs.string("artist_name"), rs.string(serviceFieldName.value))
+        sql"select id_artist, $serviceFieldName from artist where artist_name=$artistName".map(
+          rs => (rs.long("id_artist"), rs.string(serviceFieldName.value))
         ).single().apply() match {
-          case Some((artName, i)) =>
-            if(i != serviceId) updateServiceId(artistName, serviceId, picUrl)
+          case Some((artistId, i)) =>
+            if(i != serviceId) updateServiceId(artistId, serviceId, picUrl)
           case None => createNewArtistWithId(artistName, serviceId, picUrl)
         }
         Cache.set(cacheKey, true)
     }
   }
 
-  private def updateServiceId(artistName: String, serviceId: String, picUrl:Option[String]):Unit = {
+  private def updateServiceId(artistId: Long, serviceId: String, picUrl:Option[String]):Unit = {
     val sql = picUrl match {
-      case Some(url) => sql"update artist set $serviceFieldName=$serviceId, pic_url=$url where artist_name=$artistName"
-      case _ => sql"update artist set $serviceFieldName=$serviceId where artist_name=$artistName"
+      case Some(url) => sql"update artist set $serviceFieldName=$serviceId, pic_url=$url where id_artist=$artistId"
+      case _ => sql"update artist set $serviceFieldName=$serviceId where id_artist=$artistId"
     }
     sql.update().apply()
+    serviceArtistTable match {
+      case Some(t) =>
+        val table = t._1
+        val field = t._2
+        sql"select $field from $table where $field=$artistId".map(
+          rs => rs.long(field.value)).single().apply()
+        match {
+          case None => insertNewServiceArtist(table, field, artistId)
+          case _ =>
+        }
+      case _ =>
+    }
   }
 
   def updateArtistsServiceId(artistId:Long, serviceId:String) = {
@@ -39,17 +52,28 @@ abstract class ServiceFacade extends Facade {
   }
 
   private def createNewArtistWithId(artistName: String, serviceId: String, picUrl:Option[String]) = {
-    val sql = picUrl match {
+    val artistTableSql = picUrl match {
       case Some(url) => sql"insert into artist (artist_name, $serviceFieldName, pic_url) VALUES ($artistName, $serviceId, $picUrl)"
       case _ => sql"insert into artist (artist_name, $serviceFieldName) VALUES ($artistName, $serviceId)"
     }
-    sql.update().apply()
+    val artistDbId = artistTableSql.updateAndReturnGeneratedKey().apply()
+    serviceArtistTable match {
+      case Some(t) =>
+        val table = t._1
+        val field = t._2
+        insertNewServiceArtist(table, field, artistDbId)
+      case _ =>
+    }
+  }
+
+  private def insertNewServiceArtist(table:SQLSyntax, field:SQLSyntax, artistDbId:Long) = {
+    sql"insert into $table ($field, is_analysed) VALUES ($artistDbId, FALSE)".update().apply()
   }
 }
 
 object Services {
 
-  def getRefreshFieldForService(service:String) = {
+  def refreshTokenFieldForService(service:String) = {
     service match {
       case Constants.serviceSpotify => sqls"spotify_token_refresh"
       case Constants.serviceNapster => sqls"napster_token_refresh"
@@ -57,7 +81,7 @@ object Services {
     }
   }
 
-  def getFieldForService(service:String) = {
+  def tokenFieldForService(service:String) = {
     service match {
       case Constants.serviceSpotify => sqls"spotify_token"
       case Constants.serviceDeezer => sqls"deezer_token"

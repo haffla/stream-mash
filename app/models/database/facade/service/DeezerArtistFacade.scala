@@ -34,18 +34,25 @@ object DeezerArtistFacade extends ServiceArtistTrait {
 
   def apply(identifier: Either[Int,String]) = new DeezerArtistFacade(identifier)
 
-  override protected def insertIfNotExists(id:Long):Long = {
+  override protected def setArtistAnalysed(id: Long) = {
+    AppDB.deezerArtists.insert(DeezerArtist(id, isAnalysed = true))
+  }
+
+  override protected def insertOrUpdate(id:Long):Long = {
     from(AppDB.deezerArtists)(da =>
       where(da.id === id)
-        select da.id
+        select da
     ).headOption match {
       case None => insert(id)
-      case _ => id
+      case Some(deArt) =>
+        if (!deArt.isAnalysed)
+          setArtistAnalysed(deArt.id)
+        deArt.id
     }
   }
 
   override protected def insert(id: Long):Long = {
-    AppDB.deezerArtists.insert(DeezerArtist(id)).id
+    AppDB.deezerArtists.insert(DeezerArtist(id, isAnalysed = true)).id
   }
 
   /**
@@ -59,9 +66,12 @@ object DeezerArtistFacade extends ServiceArtistTrait {
     }
   }
 
-  override def allArtistIds: List[Long] = {
+  override def nonAnalysedArtistIds: List[Long] = {
     transaction {
-      from(AppDB.deezerArtists)(da => select(da.id)).toList
+      from(AppDB.deezerArtists)(da =>
+        where(da.isAnalysed === false)
+        select da.id
+      ).toList
     }
   }
 

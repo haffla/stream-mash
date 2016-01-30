@@ -39,13 +39,20 @@ object SpotifyArtistFacade extends ServiceArtistTrait {
 
   def apply(identifier: Either[Int,String]) = new SpotifyArtistFacade(identifier)
 
-  override protected def insertIfNotExists(id:Long):Long = {
+  override protected def setArtistAnalysed(id: Long) = {
+    AppDB.spotifyArtists.insert(SpotifyArtist(id, isAnalysed = true))
+  }
+
+  override protected def insertOrUpdate(id:Long):Long = {
     from(AppDB.spotifyArtists)(sa =>
       where(sa.id === id)
-        select sa.id
+        select sa
     ).headOption match {
       case None => insert(id)
-      case _ => id
+      case Some(artist) =>
+        if (!artist.isAnalysed)
+          setArtistAnalysed(artist.id)
+        artist.id
     }
   }
 
@@ -71,9 +78,12 @@ object SpotifyArtistFacade extends ServiceArtistTrait {
     }
   }
 
-  override def allArtistIds: List[Long] = {
+  override def nonAnalysedArtistIds: List[Long] = {
     inTransaction {
-      from(AppDB.spotifyArtists)(da => select(da.id)).toList
+      from(AppDB.spotifyArtists)(spArt =>
+        where(spArt.isAnalysed === false)
+        select spArt.id
+      ).toList
     }
   }
 

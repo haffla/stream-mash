@@ -22,9 +22,9 @@ class NapsterAnalysis(identifier:Either[Int,String],
   override val serviceAlbumFacade = NapsterAlbumFacade
   override val apiFacade = NapsterApiFacade
 
-  def urlForRequest(artistId:String):String = searchEndpoint + "/" + artistId + "/albums?limit=200"
+  protected def urlForRequest(artistId:String):String = searchEndpoint + "/" + artistId + "/albums?limit=200"
 
-  override def handleJsonResponse(jsResp:JsValue):List[(String,String)] = {
+  protected override def handleJsonResponse(jsResp:JsValue):List[(String,String)] = {
     val items = jsResp.as[List[JsValue]]
     val raw = items.map {
       item =>
@@ -40,13 +40,13 @@ class NapsterAnalysis(identifier:Either[Int,String],
     raw.filter(_._1.nonEmpty)
   }
 
-  override def getServiceFieldFromArtist(artist: Artist): Option[String] = artist.napsterId
+  protected override def getServiceFieldFromArtist(artist: Artist): Option[String] = artist.napsterId
 
-  override def getAuthenticatedRequest(url:String, accessToken:String):WSRequest = {
+  protected override def getAuthenticatedRequest(url:String, accessToken:String):WSRequest = {
     WS.url(url).withQueryString("apikey" -> accessToken)
   }
 
-  override def testAndGetAccessToken():Future[Option[String]] = {
+  protected override def testAndGetAccessToken():Future[Option[String]] = {
     Future {
       Play.current.configuration.getString(NapsterService.clientIdKey)
     }
