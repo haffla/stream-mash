@@ -42,7 +42,9 @@ object DeezerApiFacade extends ApiFacade {
                                    artist:Artist,
                                    identifier:Option[Either[Int,String]],
                                    artistNotPresentCallback: (Long, Option[Either[Int,String]]) => Option[(Long, String)]): Option[(Long, String)] = {
-    val artists = (json \ "data").as[List[JsObject]]
+    val artists = (json \ "data").as[List[JsObject]].filter {
+      item => (item \ "name").as[String] == artist.name
+    }
     artists.headOption.map { head =>
       val id = (head \ "id").asOpt[Int]
       id match {

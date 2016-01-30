@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS artist(
 INSERT INTO artist(artist_name) VALUES ('Nicolas Jaar');
 INSERT INTO artist(artist_name) VALUES ('Four Tet');
 INSERT INTO artist(artist_name) VALUES ('Radiohead');
+INSERT INTO artist(artist_name) VALUES ('Jamie xx');
 
 CREATE TABLE IF NOT EXISTS album(
     id_album SERIAL PRIMARY KEY,
@@ -45,6 +46,7 @@ CREATE TABLE IF NOT EXISTS album(
 INSERT INTO album(album_name, fk_artist) VALUES ('Space Is Only Noise', 1);
 INSERT INTO album(album_name, fk_artist) VALUES ('Beautiful Rewind', 2);
 INSERT INTO album(album_name, fk_artist) VALUES ('The King of Limbs', 3);
+INSERT INTO album(album_name, fk_artist) VALUES ('Bla', 4);
 
 CREATE TABLE IF NOT EXISTS track(
     id_track SERIAL PRIMARY KEY,
@@ -58,6 +60,7 @@ CREATE TABLE IF NOT EXISTS track(
 INSERT INTO track(track_name, fk_artist, fk_album) VALUES ('Colomb', 1, 1);
 INSERT INTO track(track_name, fk_artist, fk_album) VALUES ('Gong', 2, 2);
 INSERT INTO track(track_name, fk_artist, fk_album) VALUES ('Bloom', 3, 3);
+INSERT INTO track(track_name, fk_artist, fk_album) VALUES ('Bloom', 4, 4);
 
 CREATE TABLE IF NOT EXISTS user_collection(
     id_collection SERIAL PRIMARY KEY,
@@ -72,6 +75,7 @@ CREATE TABLE IF NOT EXISTS user_collection(
 INSERT INTO user_collection(fk_user, fk_track, times_played) VALUES (1, 1, 25);
 INSERT INTO user_collection(fk_user, fk_track, times_played) VALUES (1, 2, 77);
 INSERT INTO user_collection(fk_user, fk_track, times_played) VALUES (1, 3, 46);
+INSERT INTO user_collection(fk_user, fk_track, times_played) VALUES (1, 4, 33);
 
 CREATE TABLE IF NOT EXISTS user_artist_liking(
     id_user_artist_liking SERIAL PRIMARY KEY,
@@ -86,41 +90,36 @@ CREATE TABLE IF NOT EXISTS user_artist_liking(
 INSERT INTO user_artist_liking(fk_user, fk_artist, score) VALUES (1, 1, 2);
 INSERT INTO user_artist_liking(fk_user, fk_artist, score) VALUES (1, 2, 2);
 INSERT INTO user_artist_liking(fk_user, fk_artist, score) VALUES (1, 3, 2);
+INSERT INTO user_artist_liking(fk_user, fk_artist, score) VALUES (1, 4, 2);
 
 CREATE TABLE IF NOT EXISTS spotify_artist(
-    id_spotify_artist INT REFERENCES artist(id_artist) ON DELETE CASCADE,
-    is_analysed BOOLEAN DEFAULT FALSE,
-    UNIQUE (id_spotify_artist)
+    id_spotify_artist INT REFERENCES artist(id_artist) ON DELETE CASCADE PRIMARY KEY,
+    is_analysed BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS spotify_album(
-    id_spotify_album INT REFERENCES album(id_album) ON DELETE CASCADE,
-    spotify_id VARCHAR(32),
-    UNIQUE (id_spotify_album)
+    id_spotify_album INT REFERENCES album(id_album) ON DELETE CASCADE PRIMARY KEY,
+    spotify_id VARCHAR(32)
 );
 
 CREATE TABLE IF NOT EXISTS deezer_artist(
-    id_deezer_artist INT REFERENCES artist(id_artist) ON DELETE CASCADE,
-    is_analysed BOOLEAN DEFAULT FALSE,
-    UNIQUE (id_deezer_artist)
+    id_deezer_artist INT REFERENCES artist(id_artist) ON DELETE CASCADE PRIMARY KEY,
+    is_analysed BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS deezer_album(
-    id_deezer_album INT REFERENCES album(id_album) ON DELETE CASCADE,
-    deezer_id VARCHAR(32),
-    UNIQUE (id_deezer_album)
+    id_deezer_album INT REFERENCES album(id_album) ON DELETE CASCADE PRIMARY KEY,
+    deezer_id VARCHAR(32)
 );
 
 CREATE TABLE IF NOT EXISTS napster_artist(
-    id_napster_artist INT REFERENCES artist(id_artist) ON DELETE CASCADE,
-    is_analysed BOOLEAN DEFAULT FALSE,
-    UNIQUE (id_napster_artist)
+    id_napster_artist INT REFERENCES artist(id_artist) ON DELETE CASCADE PRIMARY KEY,
+    is_analysed BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS napster_album(
-    id_napster_album INT REFERENCES album(id_album) ON DELETE CASCADE,
-    napster_id VARCHAR(40),
-    UNIQUE (id_napster_album)
+    id_napster_album INT REFERENCES album(id_album) ON DELETE CASCADE PRIMARY KEY,
+    napster_id VARCHAR(40)
 );
 
 CREATE TABLE IF NOT EXISTS service_artist_absence(

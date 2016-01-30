@@ -56,30 +56,6 @@ object AppDB extends Schema {
     saa.id is autoIncremented("service_artist_absence_id_service_artist_absence_seq")
   ))
 
-  on(spotifyArtists)(sa => declare(
-    sa.id is unique
-  ))
-
-  on(deezerArtists)(da => declare(
-    da.id is unique
-  ))
-
-  on(napsterArtists)(na => declare(
-    na.id is unique
-  ))
-
-  on(spotifyAlbums)(sa => declare(
-    sa.id is unique
-  ))
-
-  on(deezerAlbums)(da => declare(
-    da.id is unique
-  ))
-
-  on(napsterAlbums)(na => declare(
-    na.id is unique
-  ))
-
   def userWhereClause(userRelatedEntity:HasUserOrSession, id:Either[Int,String]):LogicalBoolean = {
     id match {
       case Left(i) => userRelatedEntity.getUserId === i
