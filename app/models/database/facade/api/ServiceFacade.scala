@@ -20,14 +20,14 @@ abstract class ServiceFacade extends Facade {
           rs => (rs.long("id_artist"), rs.string(serviceFieldName.value))
         ).single().apply() match {
           case Some((artistId, i)) =>
-            if(i != serviceId) updateServiceId(artistId, serviceId, picUrl)
+            if(i != serviceId) updateServiceIdAndServiceArtist(artistId, serviceId, picUrl)
           case None => createNewArtistWithId(artistName, serviceId, picUrl)
         }
         Cache.set(cacheKey, true)
     }
   }
 
-  private def updateServiceId(artistId: Long, serviceId: String, picUrl:Option[String]):Unit = {
+  private def updateServiceIdAndServiceArtist(artistId: Long, serviceId: String, picUrl:Option[String]):Unit = {
     val sql = picUrl match {
       case Some(url) => sql"update artist set $serviceFieldName=$serviceId, pic_url=$url where id_artist=$artistId"
       case _ => sql"update artist set $serviceFieldName=$serviceId where id_artist=$artistId"

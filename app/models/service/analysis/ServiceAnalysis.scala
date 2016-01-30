@@ -37,13 +37,14 @@ abstract class ServiceAnalysis(identifier:Either[Int,String],
     (js \ "next").asOpt[String]
   }
 
-  private def filterCachedArtists(usersFavouriteArtists: List[Artist]): List[Artist] = {
-    val cachedArtist = serviceArtistFacade.nonAnalysedArtistIds
-    usersFavouriteArtists.filter(a => !cachedArtist.contains(a.id))
+  private def filterAlreadyAnalysedArtists(usersFavouriteArtists: List[Artist]): List[Artist] = {
+    val cachedArtist = serviceArtistFacade.analysedArtistIds(usersFavouriteArtists.map(_.id))
+    usersFavouriteArtists.filterNot(a => cachedArtist.contains(a.id))
   }
 
   def analyse():Future[Map[Long, List[(String, String, String)]]] = {
-    val artists = filterCachedArtists(usersFavouriteArtists)
+    val artists = filterAlreadyAnalysedArtists(usersFavouriteArtists)
+    println(artists)
     for {
       accessToken <- testAndGetAccessToken()
       ids <- artistIds(artists, accessToken)

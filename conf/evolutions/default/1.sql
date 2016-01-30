@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS account(
     name VARCHAR(64) NOT NULL UNIQUE,
     password VARCHAR(64) NOT NULL,
     itunes_file_hash VARCHAR(32) DEFAULT NULL,
-    spotify_token VARCHAR(256) DEFAULT NULL,
+    spotify_token VARCHAR(255) DEFAULT NULL,
     spotify_token_refresh VARCHAR(256) DEFAULT NULL,
     napster_token VARCHAR(64) DEFAULT NULL,
     napster_token_refresh VARCHAR(64) DEFAULT NULL,
@@ -89,32 +89,38 @@ INSERT INTO user_artist_liking(fk_user, fk_artist, score) VALUES (1, 3, 2);
 
 CREATE TABLE IF NOT EXISTS spotify_artist(
     id_spotify_artist INT REFERENCES artist(id_artist) ON DELETE CASCADE,
-    is_analysed BOOLEAN DEFAULT FALSE
+    is_analysed BOOLEAN DEFAULT FALSE,
+    UNIQUE (id_spotify_artist)
 );
 
 CREATE TABLE IF NOT EXISTS spotify_album(
     id_spotify_album INT REFERENCES album(id_album) ON DELETE CASCADE,
-    spotify_id VARCHAR(32)
+    spotify_id VARCHAR(32),
+    UNIQUE (id_spotify_album)
 );
 
 CREATE TABLE IF NOT EXISTS deezer_artist(
     id_deezer_artist INT REFERENCES artist(id_artist) ON DELETE CASCADE,
-    is_analysed BOOLEAN DEFAULT FALSE
+    is_analysed BOOLEAN DEFAULT FALSE,
+    UNIQUE (id_deezer_artist)
 );
 
 CREATE TABLE IF NOT EXISTS deezer_album(
     id_deezer_album INT REFERENCES album(id_album) ON DELETE CASCADE,
-    deezer_id VARCHAR(32)
+    deezer_id VARCHAR(32),
+    UNIQUE (id_deezer_album)
 );
 
 CREATE TABLE IF NOT EXISTS napster_artist(
     id_napster_artist INT REFERENCES artist(id_artist) ON DELETE CASCADE,
-    is_analysed BOOLEAN DEFAULT FALSE
+    is_analysed BOOLEAN DEFAULT FALSE,
+    UNIQUE (id_napster_artist)
 );
 
 CREATE TABLE IF NOT EXISTS napster_album(
     id_napster_album INT REFERENCES album(id_album) ON DELETE CASCADE,
-    napster_id VARCHAR(40)
+    napster_id VARCHAR(40),
+    UNIQUE (id_napster_album)
 );
 
 CREATE TABLE IF NOT EXISTS service_artist_absence(

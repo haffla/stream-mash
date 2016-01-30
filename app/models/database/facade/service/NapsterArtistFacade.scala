@@ -35,7 +35,10 @@ object NapsterArtistFacade extends ServiceArtistTrait {
   def apply(identifier: Either[Int,String]) = new NapsterArtistFacade(identifier)
 
   override protected def setArtistAnalysed(id: Long) = {
-    AppDB.napsterArtists.insert(NapsterArtist(id, isAnalysed = true))
+    update(AppDB.napsterArtists)(na =>
+      where(na.id === id)
+      set(na.isAnalysed := true)
+    )
   }
 
   override protected def insertOrUpdate(id:Long):Long = {
@@ -59,10 +62,10 @@ object NapsterArtistFacade extends ServiceArtistTrait {
     //TODO do something here
   }
 
-  override def nonAnalysedArtistIds: List[Long] = {
+  override def analysedArtistIds(artistIds: List[Long]): List[Long] = {
     transaction {
       from(AppDB.napsterArtists)(napsArt =>
-        where(napsArt.isAnalysed === false)
+        where(napsArt.isAnalysed === true and napsArt.id.in(artistIds))
         select napsArt.id
       ).toList
     }
