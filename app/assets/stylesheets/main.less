@@ -7,10 +7,37 @@ body {
 }
 
 #start-page {
+  li {
+    list-style: none;
+  }
   div {
     padding: 10px;
   }
+
+  .steps {
+    div {
+      text-align: center;
+      line-height: 23px;
+    }
+  }
 }
+
+.navbar-default {
+  background-color: @grey-800;
+}
+
+
+.about-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  .about {
+    display: inline-block;
+  }
+}
+
 
 .flex {
   display: flex;
@@ -48,12 +75,10 @@ hr {
   height: 1px;
 }
 
-.navbar-default {
-  background-color: #079493;
-}
 
-@link-color: #444444;
-@hover-link-color: #333333;
+
+@link-color: @green-500;
+@hover-link-color: @white;
 
 .navbar-default .navbar-brand {
   color: @link-color;

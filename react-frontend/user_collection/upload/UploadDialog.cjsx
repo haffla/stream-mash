@@ -1,7 +1,7 @@
 React = require 'react'
 ItunesUpload = require './ItunesUpload'
 AudioFileUpload = require './AudioFileUpload'
-Dialog = require 'material-ui/lib/dialog';
+Dialog = require 'material-ui/lib/dialog'
 FlatButton = require 'material-ui/lib/flat-button'
 Uploader = require '../../util/Uploader'
 

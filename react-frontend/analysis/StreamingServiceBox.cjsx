@@ -12,6 +12,7 @@ FontIcon = require 'material-ui/lib/font-icon'
 LinearProgress = require 'material-ui/lib/linear-progress'
 List = require 'material-ui/lib/lists/list'
 ListItem = require 'material-ui/lib/lists/list-item'
+RaisedButton = require 'material-ui/lib/raised-button'
 
 StreamingServiceBox = React.createClass
 
@@ -147,7 +148,8 @@ StreamingServiceBox = React.createClass
     else
       if @state.loaded
         <div className="centered">
-          <h4>Nothing here yet. You need to import music and trigger the analysis <a href="/collection">here</a></h4>
+          <h4>Nothing here yet. You need to import music and trigger the analysis</h4>
+          <RaisedButton onTouchTap={() -> window.location.href='/collection'} label="Go to Import" primary={true} />
         </div>
       else
         <LinearProgress mode="indeterminate"/>

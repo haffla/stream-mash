@@ -63,12 +63,20 @@ AudioFileUpload = React.createClass
   render: () ->
     styles = {
       width: '100%'
+      display: 'flex'
+      justifyContent: 'center'
+      paddingTop: 80
       height: 220
-      border: '1px dashed #777'
+      border: '5px dashed #777'
+      borderRadius: 10
     }
     <div id="audio-drop">
         <div style={styles} onDragOver={Helper.preventDef} onDrop={@drop} onDragEnter={@dragEnter} onDragLeave={@dragLeave}
-          title="Drop your iTunes Library file here"></div>
+          title="Drop your Audio Files here">
+          <div>
+            <h3>Drop your Audio Files here!</h3>
+          </div>
+        </div>
     </div>
 
 module.exports = AudioFileUpload

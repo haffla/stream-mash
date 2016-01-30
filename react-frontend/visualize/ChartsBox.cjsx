@@ -1,14 +1,17 @@
 _ = require 'lodash'
 Helper = require '../util/Helper'
-
 React = require 'react'
+
+BarChartSimple = require './d3/BarChartSimple'
 BubbleChart = require './d3/BubbleChart'
-Colors = require 'material-ui/lib/styles/colors'
 BarChart = require './d3/BarChart'
 ServiceChart = require './d3/ServiceChart'
-BarChartSimple = require './d3/BarChartSimple'
 
+Colors = require 'material-ui/lib/styles/colors'
+Dialog = require 'material-ui/lib/dialog'
 FlatButton = require 'material-ui/lib/flat-button'
+RaisedButton = require 'material-ui/lib/raised-button'
+LinearProgress = require 'material-ui/lib/linear-progress'
 
 ChartsBox = React.createClass
 
@@ -16,7 +19,7 @@ ChartsBox = React.createClass
   serviceChart: null
 
   getInitialState: () ->
-    data: {user: {}}, selectedArtist: {}
+    data: {user: {}}, selectedArtist: {}, loaded: false
 
   nrTotalTracks: () ->
     if !_.isEmpty(@state.data.user)
@@ -37,7 +40,7 @@ ChartsBox = React.createClass
       dataType: 'json',
       success: (data) =>
         console.log(data)
-        @setState data: data, totalAlbumCount: Helper.calculateNrOfServiceAlbums(data.total)
+        @setState data: data, totalAlbumCount: Helper.calculateNrOfServiceAlbums(data.total), loaded: true
         bubble = new BubbleChart(@state.data, @handleBubbleClick)
         bar = new BarChart(@state.data.user)
         @barChartSimple = new BarChartSimple '#simple-chartbox', '.simple-chart'
@@ -90,52 +93,63 @@ ChartsBox = React.createClass
     @serviceChart.redraw data
   render: () ->
     boxDescriptionStyle = {padding: 8, color: Colors.grey500, position: 'absolute', right: 0, top: 0}
-    <div>
-      <div style={display: 'flex', justifyContent: 'space-between'}>
-        <div id='charts-box-left' style={@boxStyle}>
-          <span style={boxDescriptionStyle}>{"Your top #{this.state.data.user.length} artists"}</span>
-          <svg className='bubble-chart'></svg>
-        </div>
-        <div id='charts-box-right' style={@dividedBoxStyle}>
-          <div id='simple-chartbox' style={@innerBoxStyle}>
-            {
-              displayChart = if _.isEmpty(@state.selectedArtist) then 'none' else 'block'
-              displayNote = if displayChart is 'block' then 'none' else 'block'
-              <div style={display: 'relative'}>
-                <div style={display: displayChart}>
-                  <span style={boxDescriptionStyle}>{"Number of albums by the selected artist"}</span>
-                  <svg className='simple-chart'></svg>
-                </div>
-                <span style={display: displayNote, left: 10, top: 10, position: 'absolute', color: Colors.yellow800}>{"Select an artist to display this chart"}</span>
-              </div>
-            }
-          </div>
-          <div id='missing-album-chartbox' style={@innerBoxStyle}>
-            <span style={boxDescriptionStyle}>{"Number of missing albums per service"}</span>
-            <svg className='missing-albumchart'></svg>
-          </div>
-        </div>
-      </div>
 
-      <div style={display: 'flex', justifyContent: 'space-between', marginTop: 20}>
-        <div style={@boxStyle}>
-          <div style={height: 20}>
-            <FlatButton backgroundColor={Colors.grey300} onClick={@handleServiceButtonClick.bind(null, 'all')} label='All' />
-            <FlatButton backgroundColor={Colors.grey300} onClick={@handleServiceButtonClick.bind(null, 'spotify')} label='Spotify' secondary={true} />
-            <FlatButton backgroundColor={Colors.grey300} onClick={@handleServiceButtonClick.bind(null, 'deezer')} label='Deezer' secondary={true} />
-            <FlatButton backgroundColor={Colors.grey300} onClick={@handleServiceButtonClick.bind(null, 'napster')} label='Napster' secondary={true} />
+    if !_.isEmpty(@state.data.total)
+      <div>
+        <div style={display: 'flex', justifyContent: 'space-between'}>
+          <div id='charts-box-left' style={@boxStyle}>
+            <span style={boxDescriptionStyle}>{"Your top #{this.state.data.user.length} artists"}</span>
+            <svg className='bubble-chart'></svg>
           </div>
-          <svg id='service-chart'></svg>
-          <span style={boxDescriptionStyle}>{"Number of albums per service and artist: " + @state.totalAlbumCount}</span>
+          <div id='charts-box-right' style={@dividedBoxStyle}>
+            <div id='simple-chartbox' style={@innerBoxStyle}>
+              {
+                displayChart = if _.isEmpty(@state.selectedArtist) then 'none' else 'block'
+                displayNote = if displayChart is 'block' then 'none' else 'block'
+                <div style={display: 'relative'}>
+                  <div style={display: displayChart}>
+                    <span style={boxDescriptionStyle}>{"Number of albums by the selected artist"}</span>
+                    <svg className='simple-chart'></svg>
+                  </div>
+                  <span style={display: displayNote, left: 10, top: 10, position: 'absolute', color: Colors.yellow800}>{"Select an artist to display this chart"}</span>
+                </div>
+              }
+            </div>
+            <div id='missing-album-chartbox' style={@innerBoxStyle}>
+              <span style={boxDescriptionStyle}>{"Number of missing albums per service"}</span>
+              <svg className='missing-albumchart'></svg>
+            </div>
+          </div>
         </div>
-        <div style={@boxStyle}>
-          <span style={boxDescriptionStyle}>{"Number of tracks in your collection per artist: " + @nrTotalTracks() || 0}</span>
-          <div id='trackcount-chartbox' style={width: '100%', height: '100%', marginTop: 27}>
-            <svg className='trackcount-chart'></svg>
+
+        <div style={display: 'flex', justifyContent: 'space-between', marginTop: 20}>
+          <div style={@boxStyle}>
+            <div style={height: 20}>
+              <FlatButton backgroundColor={Colors.grey300} onClick={@handleServiceButtonClick.bind(null, 'all')} label='All' />
+              <FlatButton backgroundColor={Colors.grey300} onClick={@handleServiceButtonClick.bind(null, 'spotify')} label='Spotify' secondary={true} />
+              <FlatButton backgroundColor={Colors.grey300} onClick={@handleServiceButtonClick.bind(null, 'deezer')} label='Deezer' secondary={true} />
+              <FlatButton backgroundColor={Colors.grey300} onClick={@handleServiceButtonClick.bind(null, 'napster')} label='Napster' secondary={true} />
+            </div>
+            <svg id='service-chart'></svg>
+            <span style={boxDescriptionStyle}>{"Number of albums per service and artist: " + @state.totalAlbumCount}</span>
+          </div>
+          <div style={@boxStyle}>
+            <span style={boxDescriptionStyle}>{"Number of tracks in your collection per artist: " + @nrTotalTracks() || 0}</span>
+            <div id='trackcount-chartbox' style={width: '100%', height: '100%', marginTop: 27}>
+              <svg className='trackcount-chart'></svg>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    else
+      if @state.loaded
+        <div className="centered">
+          <h4>No data ergo no visuals. Import music first and trigger analysis.</h4>
+          <RaisedButton onTouchTap={() -> window.location.href='/collection'} label="Go to Import" primary={true} />
+        </div>
+      else
+        <LinearProgress mode="indeterminate"/>
+
 
 
 module.exports = ChartsBox

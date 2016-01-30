@@ -11,10 +11,11 @@ Tab = require 'material-ui/lib/tabs/tab'
 AnalysisBox = React.createClass
 
   tabStyle: {width: '90%', maxWidth: 1700, margin: 'auto', marginTop: 16}
+  tabButtonStyle: {backgroundColor: Colors.grey800, color: Colors.green500}
 
   render: () ->
     <Tabs>
-      <Tab label="Spotify">
+      <Tab label="Spotify" style=@tabButtonStyle>
         <div style=@tabStyle>
           <StreamingServiceBox
             name="Spotify"
@@ -25,7 +26,7 @@ AnalysisBox = React.createClass
             helper={SpotifyHelper} />
         </div>
       </Tab>
-      <Tab label="Deezer">
+      <Tab label="Deezer" style=@tabButtonStyle>
         <div style=@tabStyle>
           <StreamingServiceBox
             name="Deezer"
@@ -36,7 +37,7 @@ AnalysisBox = React.createClass
             helper={DeezerHelper} />
         </div>
       </Tab>
-      <Tab label="Napster">
+      <Tab label="Napster" style=@tabButtonStyle>
         <div style=@tabStyle>
           <StreamingServiceBox
             name="Napster"
