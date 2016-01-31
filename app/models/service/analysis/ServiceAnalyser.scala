@@ -23,8 +23,12 @@ class ServiceAnalyser(identifier: Either[Int,String]) {
       deezerResult <- deezerResultFuture
       napsterResult <- napsterResultFuture
       mergedMap:Map[Long, List[(String, String, String)]] = mergeMaps(List(spotifyResult, deezerResult, napsterResult))((l1,l2) => l1 ++ l2)
+      now = System.currentTimeMillis()
       p <- persistData(mergedMap)
-    } yield p.head
+    } yield {
+      println("Took", (System.currentTimeMillis() - now) / 1000, "seconds")
+      p.head
+    }
   }
 
   private def mergeMaps[A,B](mapList: List[Map[B, List[A]]])(listOperation: (List[A], List[A]) => List[A]): Map[B, List[A]] = {
