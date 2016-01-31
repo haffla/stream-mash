@@ -4,6 +4,7 @@ UploadDialog = require './upload/UploadDialog'
 ControlBar = require './ControlBar'
 ArtistDetail = require './ArtistDetail'
 ArtistList = require './ArtistList'
+AnalysisDoneDialog = require './AnalysisDoneDialog'
 _ = require 'lodash'
 
 Badge = require 'material-ui/lib/badge'
@@ -19,7 +20,7 @@ String::startsWith ?= (s) -> @slice(0, s.length) == s
 
 ArtistBox = React.createClass
   getInitialState: () ->
-    data: [], progress: 0, nrCols: 3, dialog: {open: false, type: "itunes"}, analysing: false, isAnalysed: false
+    data: [], progress: 0, nrCols: 3, dialog: {open: false, type: "itunes"}, analysing: false, isAnalysed: false, analysisDoneDialogOpen: false, analysisSuccess: false
 
   componentDidMount: () ->
 
@@ -122,10 +123,12 @@ ArtistBox = React.createClass
       type: 'POST'
       dataType: 'json'
       success: (data) =>
-        if data.success
-          @setState analysing: false, isAnalysed: true
+        @setState analysing: false, isAnalysed: data.success, analysisDoneDialogOpen: true, analysisSuccess: data.success
       error: (jqXHR, textStatus, e) ->
         console.log(e)
+
+  handleAnalysisDoneClose: () ->
+    @setState analysisDoneDialogOpen: false
 
   render: () ->
     <div style={width: '80%', margin: 'auto'}>
@@ -185,6 +188,8 @@ ArtistBox = React.createClass
         </div>
 
         <UploadDialog ws={ws} open={@state.dialog.open} type={@state.dialog.type} handleClose={@closeDialog} />
+
+        <AnalysisDoneDialog open={@state.analysisDoneDialogOpen} handleClose={@handleAnalysisDoneClose} success={@state.analysisSuccess}/>
     </div>
 
 module.exports = ArtistBox

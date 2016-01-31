@@ -25,8 +25,8 @@ class CollectionController extends Controller {
   def analysis = IdentifiedBySession.async { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
     for {
-      result <- ServiceAnalyser(identifier).analyse()
-    } yield Ok(Json.obj("success" -> result))
+      success <- ServiceAnalyser(identifier).analyse()
+    } yield Ok(Json.obj("success" -> success))
   }
 
   def visualizationData = IdentifiedBySession.async { implicit request =>

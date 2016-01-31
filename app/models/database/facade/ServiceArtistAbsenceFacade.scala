@@ -13,7 +13,7 @@ object ServiceArtistAbsenceFacade extends Facade {
       ).headOption match {
         case Some(_) =>
           from(AppDB.serviceArtistAbsence)(saa =>
-            where(saa.id === id and saa.service === service)
+            where(saa.artistId === id and saa.service === service)
               select saa.id
           ).headOption match {
             case None =>

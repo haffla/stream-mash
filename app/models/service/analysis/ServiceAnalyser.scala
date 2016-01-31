@@ -14,7 +14,6 @@ class ServiceAnalyser(identifier: Either[Int,String]) {
   val napsterArtistFacade = NapsterArtistFacade(identifier)
 
   def analyse():Future[Boolean] = {
-    val beginning = System.currentTimeMillis()
     val artists = ArtistFacade(identifier).usersFavouriteArtists().map(_._1)
     val spotifyResultFuture = SpotifyAnalysis(identifier, artists).analyse()
     val deezerResultFuture = DeezerAnalysis(identifier, artists).analyse()
@@ -26,12 +25,7 @@ class ServiceAnalyser(identifier: Either[Int,String]) {
       mergedMap:Map[Long, List[(String, String, String)]] = mergeMaps(List(spotifyResult, deezerResult, napsterResult))((l1,l2) => l1 ++ l2)
       now = System.currentTimeMillis()
       p <- persistData(mergedMap)
-    } yield {
-      val end = System.currentTimeMillis()
-      println("Database action took", (end - now) / 1000, "seconds")
-      println("Whole analysis took", (end - beginning) / 1000, "seconds")
-      p.head
-    }
+    } yield p.forall(_ == true)
   }
 
   private def mergeMaps[A,B](mapList: List[Map[B, List[A]]])(listOperation: (List[A], List[A]) => List[A]): Map[B, List[A]] = {
@@ -70,7 +64,6 @@ class ServiceAnalyser(identifier: Either[Int,String]) {
   private def persistItem(artistItem: (Long, List[(String, String, String)])):Future[Boolean] = {
     Future {
       val (artistDbId, albumList) = artistItem
-      println(Thread.currentThread().getName)
       val groupedByService:Map[String, List[(String, String, String)]] = albumList.groupBy { case (_,_,service) => service}
       groupedByService.foreach { case (service, grpAlbList) =>
         val serviceArtistId:Long = serviceArtistFacade(service).saveArtist(artistDbId)

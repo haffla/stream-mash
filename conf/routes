@@ -32,7 +32,7 @@ GET           /soundcloud/login             controllers.SoundcloudController.log
 GET           /collection                   controllers.CollectionController.index(service:String ?= "")
 GET           /overview                     controllers.CollectionController.overview
 POST          /user/analysis                controllers.CollectionController.analysis
-GET           /user/visualize               controllers.CollectionController.visualize
+GET           /visualize                    controllers.CollectionController.visualize
 GET           /vidata                       controllers.CollectionController.visualizationData
 
 ### iTunes
