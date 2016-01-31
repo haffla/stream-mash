@@ -5,6 +5,7 @@ import models.database.facade.service._
 import models.util.Constants
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class ServiceAnalyser(identifier: Either[Int,String]) {
 
@@ -12,7 +13,7 @@ class ServiceAnalyser(identifier: Either[Int,String]) {
   val deezerArtistFacade = DeezerArtistFacade(identifier)
   val napsterArtistFacade = NapsterArtistFacade(identifier)
 
-  def analyse() = {
+  def analyse():Future[Boolean] = {
     val artists = ArtistFacade(identifier).usersFavouriteArtists().map(_._1)
     val spotifyResultFuture = SpotifyAnalysis(identifier, artists).analyse()
     val deezerResultFuture = DeezerAnalysis(identifier, artists).analyse()
@@ -21,11 +22,9 @@ class ServiceAnalyser(identifier: Either[Int,String]) {
       spotifyResult <- spotifyResultFuture
       deezerResult <- deezerResultFuture
       napsterResult <- napsterResultFuture
-    } yield {
-      val mergedMap:Map[Long, List[(String, String, String)]] = mergeMaps(List(spotifyResult, deezerResult, napsterResult))((l1,l2) => l1 ++ l2)
-      persistData(mergedMap)
-      true
-    }
+      mergedMap:Map[Long, List[(String, String, String)]] = mergeMaps(List(spotifyResult, deezerResult, napsterResult))((l1,l2) => l1 ++ l2)
+      p <- persistData(mergedMap)
+    } yield p.head
   }
 
   private def mergeMaps[A,B](mapList: List[Map[B, List[A]]])(listOperation: (List[A], List[A]) => List[A]): Map[B, List[A]] = {
@@ -52,15 +51,31 @@ class ServiceAnalyser(identifier: Either[Int,String]) {
     }
   }
 
-  private def persistData(artistAlbumMap: Map[Long, List[(String, String, String)]]) = {
-    artistAlbumMap.foreach { case (artistDbId, albumList) =>
-      val groupedByService:Map[String, List[(String, String, String)]] = albumList.groupBy { case (_,_,service) => service}
-      groupedByService.foreach { case (service, grpAlbList) =>
-        val serviceArtistId:Long = serviceArtistFacade(service).saveArtist(artistDbId)
+  private def persistData(artistAlbumMap: Map[Long, List[(String, String, String)]]):Future[List[Boolean]] = {
+    val av = Runtime.getRuntime.availableProcessors()
+    val splitted = artistAlbumMap.grouped(artistAlbumMap.size / av).toList
+    Future.sequence {
+      splitted.map { grp =>
+        doPersisting(grp)
+      }
+    }
+  }
+
+  private def doPersisting(artistAlbumMap: Map[Long, List[(String, String, String)]]):Future[Boolean] = {
+    Future {
+      artistAlbumMap.foreach { case (artistDbId, albumList) =>
+        println(Thread.currentThread().getName)
+        val groupedByService:Map[String, List[(String, String, String)]] = albumList.groupBy { case (_,_,service) => service}
+        groupedByService.foreach { case (service, grpAlbList) =>
+          val serviceArtistId:Long = serviceArtistFacade(service).saveArtist(artistDbId)
           grpAlbList.foreach { case (albumName,albumServiceId,_) =>
             serviceAlbumFacade(service).saveAlbumWithNameAndId(albumName, serviceArtistId, albumServiceId)
           }
+        }
       }
+      true
+    }.recover {
+      case e: Exception => false
     }
   }
 }
