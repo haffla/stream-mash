@@ -25,13 +25,14 @@ class DeezerService(identifier:Either[Int,String]) extends ApiDataRequest(Consta
 
     for {
       token <- getAccessToken(futureResponse)
-      response <- requestUsersTracks(token._1)
-      seq = library.convertJsonToSeq(response)
+      response <- requestPlaylists(token._1)
+      top <- requestUsersTracks(token._1)
+      seq = library.convertJsonToSeq(response ++ top)
       res = library.convertSeqToMap(seq)
     } yield token
   }
 }
-object DeezerService extends OAuthStreamingService with FavouriteMusicRetrieval with OauthRouting {
+object DeezerService extends OAuthStreamingService with PlayListRetrieval with FavouriteMusicRetrieval with OauthRouting {
 
   def apply(identifier:Either[Int,String]) = new DeezerService(identifier)
 
@@ -50,19 +51,42 @@ object DeezerService extends OAuthStreamingService with FavouriteMusicRetrieval 
   )
 
   object apiEndpoints {
+    val root = "http://api.deezer.com/"
     val token = "https://connect.deezer.com/oauth/access_token.php"
     val authorize = "https://connect.deezer.com/oauth/auth.php"
-    val tracks = "http://api.deezer.com/user/me/tracks"
-    val albums = "http://api.deezer.com/album"
-    val artists = "http://api.deezer.com/artist"
-    val search = "http://api.deezer.com/search"
+    val tracks = root + "user/me/tracks"
+    val albums = root + "album"
+    val artists = root + "artist"
+    val search = root + "search"
+    val playlists = root + "user/me/playlists"
+  }
+
+  override def trackListLinks(js:JsValue):List[String] = {
+    val list = (js \ "data").as[List[JsValue]]
+    list.map { item =>
+      (item \ "tracklist").as[String]
+    }
+  }
+
+  override def getNextPage(trackJs: JsValue):(Boolean,String) = {
+    (trackJs \ "next").asOpt[String] match {
+      case Some(url) => (true, url)
+      case _ => (false, "")
+    }
   }
 
   override def favouriteMusicRetrievalRequest(accessToken: String, page:String): Future[WSResponse] =
-    WS.url(apiEndpoints.tracks).withQueryString("access_token" -> accessToken).get()
+    getRequest(accessToken, apiEndpoints.tracks)
+
+  override protected def playlistRequest(accessToken: String): Future[WSResponse] = {
+    getRequest(accessToken, apiEndpoints.playlists)
+  }
+
+  private def getRequest(accessToken: String, url:String) = {
+    WS.url(url).withQueryString("access_token" -> accessToken).get()
+  }
 
   override def getPageInformation(js:JsValue):(Boolean,Int) = {
-    //TODO: Implement
     (false,0)
   }
 
