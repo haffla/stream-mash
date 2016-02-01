@@ -5,7 +5,7 @@ class AuthenticationFlowTest extends PlaySpec with OneServerPerSuite with OneBro
     val home = s"http://localhost:$port"
     val user = "testuser"
     val password = "password"
-    val titleHome = "Melody Mess - Index"
+    val titleHome = "str::compare"
 
     "Registering, Logging in and out" must {
         "work" in {
