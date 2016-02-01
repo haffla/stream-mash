@@ -42,7 +42,6 @@ class ItunesImporter(identifier: Either[Int, String], xmlPath:String = "", persi
       val lib:Seq[Map[String,String]] = parseXml
       val seq = convertSeqToMap(lib, informationToExtract.head, informationToExtract(1), informationToExtract(2))
       cleanUp()
-      apiHelper.setRetrievalProcessDone()
       seq
     }
   }

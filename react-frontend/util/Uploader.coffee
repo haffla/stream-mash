@@ -6,7 +6,6 @@ class Uploader
     data
     contentType
     successCallback = () ->
-    successNoErrorCallback = () ->
     ) ->
     $.ajax
       url: @url
@@ -25,11 +24,10 @@ class Uploader
         , false
         xhr
       success: (data) ->
-        successCallback()
         if data.error
           alert data.error
         else
-          successNoErrorCallback()
+          successCallback()
       error: (jqXHR, status, error) ->
         console.log('Error: '  + error + '\n' + 'Status: ' + status)
 

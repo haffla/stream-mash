@@ -27,15 +27,12 @@ ItunesUpload = React.createClass
       formData.append 'file', file
       $('#dropzone').addClass('dropped')
 
-      successCallback = () ->
-        $('#fileuploadmodal').modal 'hide'
-        window.itunes.openmodal = 'no'
-
-      successNoErrorCallback = () =>
+      successCallback = () =>
         $('#dropzone').removeClass('dropped hover')
         @props.ws.send('itunes')
+        @props.handleClose()
 
-      @uploader.upload formData, false, successCallback, successNoErrorCallback
+      @uploader.upload formData, false, successCallback
     else
       $('#dropzone').removeClass('hover')
       window.alert "Nono! Only iTunes Library XML files are allowed."

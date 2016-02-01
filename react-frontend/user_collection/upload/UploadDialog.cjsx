@@ -68,9 +68,9 @@ UploadDialog = React.createClass
         open={@props.open}>
         {
           if @props.type is 'itunes'
-            <ItunesUpload ws={@props.ws} />
+            <ItunesUpload handleClose={@props.handleClose} ws={@props.ws} />
           else if @props.type is 'audio'
-            <AudioFileUpload ws={@props.ws} />
+            <AudioFileUpload handleClose={@props.handleClose} ws={@props.ws} />
         }
       </Dialog>
     </div>

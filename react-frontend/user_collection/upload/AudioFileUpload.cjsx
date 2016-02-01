@@ -18,13 +18,13 @@ AudioFileUpload = React.createClass
       @readFiles(files).then (data) =>
         filtered = data.filter @filterData
         if filtered.length > 0
-          successNoErrorCallback = () =>
+          successCallback = () =>
             @props.ws.send('audio')
+            @props.handleClose()
           @uploader.upload(
-            JSON.stringify(filtered)
-            'application/json'
-            () ->
-            successNoErrorCallback
+              JSON.stringify(filtered)
+              'application/json'
+              successCallback
             )
     else
       alert 'Sorry. Your browser does not support Javascript Promises which come into play when we read your files.'

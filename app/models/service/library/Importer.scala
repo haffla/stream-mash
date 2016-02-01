@@ -7,8 +7,8 @@ import models.util.Constants
 import play.api.libs.json.{JsObject, JsValue, Json}
 import scalikejdbc._
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class Importer(identifier: Either[Int, String], name:String = "", persist:Boolean = true) {
 
