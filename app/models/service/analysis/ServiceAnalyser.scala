@@ -14,7 +14,8 @@ class ServiceAnalyser(identifier: Either[Int,String]) {
   val napsterArtistFacade = NapsterArtistFacade(identifier)
 
   def analyse():Future[Boolean] = {
-    val artists = ArtistFacade(identifier).usersFavouriteArtists().map(_._1)
+    val favouriteArtistsIds = ArtistFacade(identifier).mostListenedToArtists().take(Constants.maxArtistCountToAnalyse).map(_.key)
+    val artists = ArtistFacade(identifier).usersFavouriteArtists(favouriteArtistsIds).map(_._1)
     val spotifyResultFuture = SpotifyAnalysis(identifier, artists).analyse()
     val deezerResultFuture = DeezerAnalysis(identifier, artists).analyse()
     val napsterResultFuture = NapsterAnalysis(identifier, artists).analyse()

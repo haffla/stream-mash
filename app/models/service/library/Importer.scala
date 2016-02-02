@@ -27,7 +27,6 @@ class Importer(identifier: Either[Int, String], name:String = "", persist:Boolea
                       keyArtist:String = Constants.mapKeyArtist,
                       keyAlbum:String = Constants.mapKeyAlbum,
                       keyTrack:String = Constants.mapKeyTrack):Map[String, Map[String,Set[String]]] = {
-
     val grpByArtist:Map[String, Seq[Map[String, String]]] = data.groupBy(item => item(keyArtist))
     val result = grpByArtist.foldLeft(Map[String, Map[String,Set[String]]]()) { (prev, curr) =>
       val artist = curr._1

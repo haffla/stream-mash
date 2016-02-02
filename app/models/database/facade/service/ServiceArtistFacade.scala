@@ -16,18 +16,19 @@ abstract class ServiceArtistFacade(identifier:Either[Int,String]) {
   def artistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)]
 
   def getArtistsAndAlbumsForOverview:Future[JsValue] = {
+    val favouriteArtistsIds = ArtistFacade(identifier).mostListenedToArtists().take(Constants.maxArtistCountToAnalyse).map(_.key)
     for {
-      albumsInUserCollection <- Future { AlbumFacade(identifier).getUsersFavouriteAlbums }
-      serviceAlbums <- Future { getUserRelatedServiceAlbums }
+      albumsInUserCollection <- Future { AlbumFacade(identifier).getUsersFavouriteAlbums(favouriteArtistsIds) }
+      serviceAlbums <- Future { getUserRelatedServiceAlbums(favouriteArtistsIds) }
     } yield convertToJson(serviceAlbums,albumsInUserCollection)
   }
 
   /**
     * Get all service albums of those artists that were imported by the user
     */
-  private def getUserRelatedServiceAlbums:List[(Album,Artist,String)] = {
+  private def getUserRelatedServiceAlbums(mostListenedToArtists:List[Long]):List[(Album,Artist,String)] = {
     transaction {
-      val usersArtists = ArtistFacade(identifier).usersFavouriteArtists().map(_._1.id)
+      val usersArtists = ArtistFacade(identifier).usersFavouriteArtists(mostListenedToArtists).map(_._1.id)
       artistsAndAlbums(usersArtists)
     }
   }

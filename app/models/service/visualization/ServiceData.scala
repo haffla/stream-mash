@@ -31,7 +31,7 @@ class ServiceData(identifier:Either[Int,String]) extends GroupMeasureConversion 
       sp <- spoArtists
       dee <- deeArtists
       naps <- napsArtists
-      missingCounts <- Future(missingAlbumCounts)
+      missingCounts <- Future(missingAlbumCounts(artistIds))
     } yield {
       val totals = mergeMaps(List(sp,dee,naps))
       Json.obj(
@@ -61,10 +61,10 @@ class ServiceData(identifier:Either[Int,String]) extends GroupMeasureConversion 
     toJson(toMap(counts))
   }
 
-  def missingAlbumCounts:JsValue = {
-    val missingAlbumsOnSpotify = new SpotifyAlbumFacade(identifier).countMissingUserAlbums
-    val missingAlbumsOnNapster = new NapsterAlbumFacade(identifier).countMissingUserAlbums
-    val missingAlbumsOnDeezer = new DeezerAlbumFacade(identifier).countMissingUserAlbums
+  def missingAlbumCounts(artistIds:List[Long]):JsValue = {
+    val missingAlbumsOnSpotify = new SpotifyAlbumFacade(identifier).countMissingUserAlbums(artistIds)
+    val missingAlbumsOnNapster = new NapsterAlbumFacade(identifier).countMissingUserAlbums(artistIds)
+    val missingAlbumsOnDeezer = new DeezerAlbumFacade(identifier).countMissingUserAlbums(artistIds)
     Json.obj(
       Constants.serviceSpotify -> missingAlbumsOnSpotify,
       Constants.serviceDeezer -> missingAlbumsOnDeezer,

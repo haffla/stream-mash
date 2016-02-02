@@ -18,8 +18,11 @@ class SpotifyImporter(identifier: Either[Int, String]) extends Importer(identifi
       val artist = (trackEntity \ "artists").as[Seq[JsValue]].headOption match {
         case Some(art) =>
           val artist = (art \ "name").as[String]
-          val id = (art \ "id").as[String]
-          SpotifyFacade.saveArtistWithServiceId(artist,id)
+          val id = (art \ "id").asOpt[String] match {
+            case Some(artistId) =>
+              SpotifyFacade.saveArtistWithServiceId(artist,artistId)
+            case _ =>
+          }
           artist
         case None => Constants.mapKeyUnknownArtist
       }
