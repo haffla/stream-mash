@@ -103,13 +103,11 @@ class ArtistFacade(identifier:Either[Int,String]) extends Facade with GroupMeasu
 
   def mostListenedToArtists():List[GroupWithMeasures[Long, Long]] = {
     inTransaction {
-      val x = from(AppDB.artists, AppDB.tracks, AppDB.collections)((a,t,c) =>
+      from(AppDB.artists, AppDB.tracks, AppDB.collections)((a,t,c) =>
         where(a.id === t.artistId and t.id === c.trackId and AppDB.userWhereClause(c,identifier))
           groupBy a.id
           compute countDistinct(t.id)
       ).toList.sortBy(_.measures)(Ordering[PrimitiveTypeMode.LongType].reverse)
-      println(x.take(10).map(_.key))
-      x
     }
   }
 }
