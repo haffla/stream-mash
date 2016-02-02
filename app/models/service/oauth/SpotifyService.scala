@@ -1,6 +1,6 @@
 package models.service.oauth
 
-import models.service.library.SpotifyImporter
+import models.service.importer.SpotifyImporter
 import models.service.oauth.SpotifyService._
 import models.service.util.ServiceAccessTokenHelper
 import models.util.Constants
@@ -13,7 +13,7 @@ import scala.concurrent.Future
 
 class SpotifyService(identifier: Either[Int, String]) extends ApiDataRequest(Constants.serviceSpotify, identifier) {
 
-  val library = new SpotifyImporter(identifier)
+  val importer = new SpotifyImporter(identifier)
   override val serviceAccessTokenHelper = new ServiceAccessTokenHelper(Constants.serviceSpotify, identifier)
 
   override def doDataRequest(code:String):Future[(Option[String],Option[String])] = {
@@ -23,8 +23,8 @@ class SpotifyService(identifier: Either[Int, String]) extends ApiDataRequest(Con
       token <- getAccessToken(futureResponse)
       userTracks <- requestUsersTracks(token._1)
       playlistTracks <- requestPlaylists(token._1)
-      seq = library.convertJsonToSeq(userTracks ++ playlistTracks)
-      result = library.convertSeqToMap(seq)
+      seq = importer.convertJsonToSeq(userTracks ++ playlistTracks)
+      result = importer.convertSeqToMap(seq)
     } yield token
   }
 }

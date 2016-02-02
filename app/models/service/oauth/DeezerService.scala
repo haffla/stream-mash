@@ -1,12 +1,12 @@
 package models.service.oauth
 
-import models.service.library.DeezerImporter
+import models.service.importer.DeezerImporter
 import models.service.oauth.DeezerService._
 import models.service.util.ServiceAccessTokenHelper
 import models.util.Constants
 import play.api.Play.current
 import play.api.libs.json.JsValue
-import play.api.libs.ws.{WSRequest, WS, WSResponse}
+import play.api.libs.ws.{WS, WSRequest, WSResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -14,7 +14,7 @@ import scala.concurrent.Future
 class DeezerService(identifier:Either[Int,String]) extends ApiDataRequest(Constants.serviceDeezer, identifier) {
 
   override val serviceAccessTokenHelper: ServiceAccessTokenHelper = new ServiceAccessTokenHelper(Constants.serviceDeezer, identifier)
-  val library = new DeezerImporter(identifier)
+  val importer = new DeezerImporter(identifier)
 
   override def doDataRequest(code: String): Future[(Option[String],Option[String])] = {
     val futureResponse: Future[WSResponse] = WS.url(apiEndpoints.token).withQueryString(
@@ -26,8 +26,8 @@ class DeezerService(identifier:Either[Int,String]) extends ApiDataRequest(Consta
     for {
       token <- getAccessToken(futureResponse)
       playListTracks <- requestPlaylists(token._1)
-      seq = library.convertJsonToSeq(playListTracks)
-      res = library.convertSeqToMap(seq)
+      seq = importer.convertJsonToSeq(playListTracks)
+      res = importer.convertSeqToMap(seq)
     } yield token
   }
 }

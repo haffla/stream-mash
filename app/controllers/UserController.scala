@@ -4,7 +4,7 @@ import models.User
 import models.auth.{AdminAccess, Authenticated, Helper, IdentifiedBySession}
 import models.database.facade.{ArtistFacade, ArtistLikingFacade, CollectionFacade}
 import models.service.api.discover.EchoNestApi
-import models.service.library.{AudioJsonImporter, Importer}
+import models.service.importer.{AudioJsonImporter, Importer}
 import models.util.Constants
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json

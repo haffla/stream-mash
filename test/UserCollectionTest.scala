@@ -1,7 +1,7 @@
 
 import models.User
 import models.database.facade.CollectionFacade
-import models.service.library._
+import models.service.importer._
 import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.libs.json.JsValue
 import play.api.test.WithApplication
