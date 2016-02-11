@@ -1,21 +1,20 @@
 package models.service.oauth
 
 import models.auth.MessageDigest
-import models.service.library.LastfmImporter
-import models.service.oauth.LastfmService.apiEndpoints
+import models.service.importer.LastfmImporter
+import models.service.oauth.LastfmService.{apiEndpoints, _}
 import models.service.util.ServiceAccessTokenHelper
 import models.util.{Constants, Logging}
 import play.api.Play.current
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WS, WSResponse}
-import models.service.oauth.LastfmService._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class LastfmService(identifier: Either[Int, String]) extends ApiDataRequest  (Constants.serviceLastFm, identifier) {
 
-  val library = new LastfmImporter(identifier)
+  val importer = new LastfmImporter(identifier)
   override val serviceAccessTokenHelper = new ServiceAccessTokenHelper(Constants.serviceLastFm, identifier)
 
   def generateApiSig(code: String) = {
@@ -35,11 +34,9 @@ class LastfmService(identifier: Either[Int, String]) extends ApiDataRequest  (Co
         case None => (None,None)
       }
       response <- requestUsersTracks(username)
-      seq = library.convertJsonToSeq(response)
-      res = library.convertSeqToMap(seq)
-    } yield {
-      (token,None)
-    }
+      seq = importer.convertJsonToSeq(response)
+      res = importer.convertSeqToMap(seq)
+    } yield (token,None)
   }
 
 }

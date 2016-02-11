@@ -1,4 +1,4 @@
-package models.service.library
+package models.service.importer
 
 import models.database.facade.ArtistFacade
 import models.database.facade.api.SoundcloudFacade

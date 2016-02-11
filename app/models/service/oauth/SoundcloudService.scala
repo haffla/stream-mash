@@ -1,7 +1,7 @@
 package models.service.oauth
 
 import com.github.haffla.soundcloud.Client
-import models.service.library.SoundcloudImporter
+import models.service.importer.SoundcloudImporter
 import models.service.oauth.SoundcloudService._
 import models.service.util.ServiceAccessTokenHelper
 import models.util.Constants
@@ -12,7 +12,7 @@ import scala.concurrent.Future
 
 class SoundcloudService(identifier: Either[Int, String]) extends ApiDataRequest("soundcloud", identifier) {
 
-  val library = new SoundcloudImporter(identifier)
+  val importer = new SoundcloudImporter(identifier)
   val serviceAccessTokenHelper = new ServiceAccessTokenHelper("soundcloud", identifier)
 
   override def doDataRequest(code:String):Future[(Option[String],Option[String])] = {
@@ -20,8 +20,8 @@ class SoundcloudService(identifier: Either[Int, String]) extends ApiDataRequest(
       authCredentials <- client.exchange_token(code)
       userId <- getUserId(authCredentials)
       response <- requestUsersTracks(userId)
-      seq <- library.convertJsonToSeq(response)
-      result = library.convertSeqToMap(seq)
+      seq <- importer.convertJsonToSeq(response)
+      result = importer.convertSeqToMap(seq)
     } yield ((Json.parse(authCredentials) \ "access_token").asOpt[String],None)
   }
 }

@@ -1,18 +1,19 @@
 package models.service.oauth
 
 import models.util.Constants
-import play.api.libs.json.{Json, JsValue}
-import play.api.libs.ws.{WS, WSResponse}
-
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.Play.current
+import play.api.libs.json.{JsValue, Json}
+import play.api.libs.ws.{WS, WSRequest, WSResponse}
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait PlayListRetrieval {
 
   protected def playlistRequest(accessToken:String):Future[WSResponse]
   protected def trackListLinks(js:JsValue):List[String]
   protected def getNextPage(trackJs: JsValue):(Boolean,String)
+  protected def authenticateTrackRetrievalRequest(wsRequest: WSRequest, accessToken:String):WSRequest
 
   private def retrievePlaylists(accessToken: String):Future[List[List[JsValue]]] = {
     playlistRequest(accessToken) flatMap { resp =>
@@ -26,12 +27,15 @@ trait PlayListRetrieval {
     }
   }
 
+  protected def extractTracksFromJs(trackJs: JsValue) = trackJs
+
   private def retrieveTracks(accessToken: String, link:String, responses: List[JsValue]): Future[List[JsValue]] = {
-    WS.url(link).get() flatMap { trackResponse =>
+    authenticateTrackRetrievalRequest(WS.url(link), accessToken).get() flatMap { trackResponse =>
       val trackJs = Json.parse(trackResponse.body)
       val (tobeContinued, next) = getNextPage(trackJs)
-      if(tobeContinued) retrieveTracks(accessToken, next, trackJs :: responses)
-      else Future.successful(responses)
+      val js = extractTracksFromJs(trackJs)
+      if(tobeContinued) retrieveTracks(accessToken, next, js :: responses)
+      else Future.successful(js :: responses)
     }
   }
 

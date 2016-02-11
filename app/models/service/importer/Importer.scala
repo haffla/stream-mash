@@ -1,4 +1,4 @@
-package models.service.library
+package models.service.importer
 
 import models.database.alias._
 import models.database.facade._
@@ -7,15 +7,17 @@ import models.util.Constants
 import play.api.libs.json.{JsObject, JsValue, Json}
 import scalikejdbc._
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import models.util.ThreadPools.importExecutionContext
 import scala.concurrent.Future
+import scala.util.{Failure, Success}
 
-class Importer(identifier: Either[Int, String], name:String = "", persist:Boolean = true) {
+class Importer(identifier: Either[Int, String], name:String = "baseimporter", persist:Boolean = true) {
 
   implicit val session = AutoSession
 
   val apiHelper = new RetrievalProcessMonitor(name, identifier)
   val artistLikingFacade = ArtistLikingFacade(identifier)
+  val collectionFacade = CollectionFacade(identifier)
 
   /**
    * Cleans the data by transforming the Seq[Map[String,String]]
@@ -27,7 +29,6 @@ class Importer(identifier: Either[Int, String], name:String = "", persist:Boolea
                       keyArtist:String = Constants.mapKeyArtist,
                       keyAlbum:String = Constants.mapKeyAlbum,
                       keyTrack:String = Constants.mapKeyTrack):Map[String, Map[String,Set[String]]] = {
-
     val grpByArtist:Map[String, Seq[Map[String, String]]] = data.groupBy(item => item(keyArtist))
     val result = grpByArtist.foldLeft(Map[String, Map[String,Set[String]]]()) { (prev, curr) =>
       val artist = curr._1
@@ -40,7 +41,13 @@ class Importer(identifier: Either[Int, String], name:String = "", persist:Boolea
       }
       prev + (artist -> albumsWithTracks)
     }
-    if(persist) persist(result)
+    if(persist) {
+      persist(result).onComplete {
+        case Success(a) =>
+          apiHelper.setRetrievalProcessDone()
+        case Failure(_) => apiHelper.setRetrievalProcessDone()
+      }
+    }
     result
   }
 
@@ -99,24 +106,32 @@ class Importer(identifier: Either[Int, String], name:String = "", persist:Boolea
     }
   }
 
-  def persist(library: Map[String, Map[String,Set[String]]]):Future[Unit] = Future {
+  def persistItem(artists: (String, Map[String, Set[String]])):Future[Boolean] = Future {
+    val (artist,albums) = artists
+    val existingArtistId:Long = ArtistFacade.saveByName(artist, artistLikingFacade)
+    for((album,tracks) <- albums) {
+      val existingAlbumId:Long = AlbumFacade.saveByNameAndArtistId(album, existingArtistId)
+
+      for(track <- tracks) {
+        val trackId:Long = TrackFacade.saveTrack(track, existingArtistId, existingAlbumId)
+        collectionFacade.save(trackId)
+      }
+    }
+    true
+  }
+
+  def persist(library: Map[String, Map[String,Set[String]]]):Future[List[Boolean]] = {
     val totalLength = library.size
+    val mapList = library.toList
     var position = 1.0
-
-    for((artist,albums) <- library) {
-      apiHelper.setRetrievalProcessProgress(0.66 + position / totalLength / 3)
-      position = position + 1.0
-      val existingArtistId:Long = ArtistFacade.saveByName(artist, artistLikingFacade)
-
-      for((album,tracks) <- albums) {
-        val existingAlbumId:Long = AlbumFacade.saveByNameAndArtistId(album, existingArtistId)
-
-        for(track <- tracks) {
-          val trackId:Long = TrackFacade.saveTrack(track, existingArtistId, existingAlbumId)
-          CollectionFacade(identifier).save(trackId)
+    Future.sequence {
+      mapList.map { case grp =>
+        apiHelper.setRetrievalProcessProgress(0.66 + position / totalLength / 3)
+        position += 1.0
+        persistItem(grp).recover {
+          case e:Exception => false
         }
       }
     }
-    apiHelper.setRetrievalProcessDone()
   }
 }

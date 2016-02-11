@@ -1,4 +1,4 @@
-import models.service.library.ItunesImporter
+import models.service.importer.ItunesImporter
 import play.Play
 import play.api.test.WithApplication
 

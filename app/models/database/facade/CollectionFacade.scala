@@ -34,6 +34,7 @@ class CollectionFacade(identifier:Either[Int,String]) extends Facade with GroupM
     ).headOption
   }
 
+  //TODO maybe apply limit by taking only some from weighted
   def userCollection:List[(Album,Artist,Track,UserCollection,UserArtistLiking,Long)] = {
     transaction {
       val weighted = ArtistFacade(identifier).mostListenedToArtists()
