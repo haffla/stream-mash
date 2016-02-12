@@ -7,7 +7,6 @@ import models.util.ThreadPools.importExecutionContext
 import scalikejdbc._
 
 import scala.concurrent.Future
-import scala.util.{Failure, Success}
 
 class Importer(identifier: Either[Int, String], name:String = "baseimporter", persist:Boolean = true) {
 
@@ -41,20 +40,17 @@ class Importer(identifier: Either[Int, String], name:String = "baseimporter", pe
     }
     if(persist) {
       persist(result).onComplete {
-        case Success(a) =>
-          apiHelper.setRetrievalProcessDone()
-        case Failure(_) => apiHelper.setRetrievalProcessDone()
+        case _ => apiHelper.setRetrievalProcessDone()
       }
     }
     result
   }
 
-  def persistItem(artists: (String, Map[String, Set[String]])):Future[Boolean] = Future {
-    val (artist,albums) = artists
+  def persistItem(artistTuple: (String, Map[String, Set[String]])):Future[Boolean] = Future {
+    val (artist,albums) = artistTuple
     val existingArtistId:Long = ArtistFacade.saveByName(artist, artistLikingFacade)
     for((album,tracks) <- albums) {
       val existingAlbumId:Long = AlbumFacade.saveByNameAndArtistId(album, existingArtistId)
-
       for(track <- tracks) {
         val trackId:Long = TrackFacade.saveTrack(track, existingArtistId, existingAlbumId)
         collectionFacade.save(trackId)
@@ -63,9 +59,9 @@ class Importer(identifier: Either[Int, String], name:String = "baseimporter", pe
     true
   }
 
-  def persist(library: Map[String, Map[String,Set[String]]]):Future[List[Boolean]] = {
-    val totalLength = library.size
-    val mapList = library.toList
+  def persist(collection: Map[String, Map[String,Set[String]]]):Future[List[Boolean]] = {
+    val totalLength = collection.size
+    val mapList = collection.toList
     var position = 1.0
     Future.sequence {
       mapList.map { case grp =>
