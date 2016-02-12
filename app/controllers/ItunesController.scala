@@ -29,7 +29,7 @@ class ItunesController extends Controller {
         bool => if (!bool) {
           //user has submitted the exact same file. load from db.
           userModel.saveItunesFileHash(fileHash)
-          new ItunesImporter(identifier, xmlPath).saveCollection()
+          new ItunesImporter(identifier).processAndSave(xmlPath)
         }
       }
 
