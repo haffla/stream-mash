@@ -4,6 +4,7 @@ import models.User
 import models.auth.{Authenticated, AdminAccess, Helper, IdentifiedBySession}
 import models.database.facade.CollectionFacade
 import models.service.analysis.ServiceAnalyser
+import models.service.exporter.Exporter
 import models.service.importer.Importer
 import models.service.visualization.ServiceData
 import models.util.Constants
@@ -43,9 +44,8 @@ class CollectionController extends Controller {
 
   def userCollectionFromDb = IdentifiedBySession { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
-    val library = new Importer(identifier)
     val collection = CollectionFacade(identifier).userCollection
-    if(collection.nonEmpty) Ok(library.prepareCollectionForFrontend(collection))
+    if(collection.nonEmpty) Ok(Exporter.prepareCollectionForFrontend(collection))
     else Ok(Json.toJson(Map("error" -> "You have no records stored in our database.")))
   }
 
