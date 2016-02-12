@@ -1,4 +1,6 @@
 React = require 'react'
+
+TagReader = require '../../util/TagReader'
 ItunesUpload = require './ItunesUpload'
 AudioFileUpload = require './AudioFileUpload'
 Dialog = require 'material-ui/lib/dialog'
@@ -24,16 +26,24 @@ UploadDialog = React.createClass
     fileInput = $('#normalFileDialog')
     files = fileInput[0].files
     unless _.isEmpty(files)
-      formData = new FormData()
       route = if @props.type is 'itunes' then '/itunes' else '/fileupload'
+      uploader = new Uploader(route)
       if @props.type is 'itunes'
+        formData = new FormData()
         formData.append('file', files[0])
-        uploader = new Uploader('/itunes')
+        uploader.upload formData
       else
-        uploader = new Uploader('/fileupload')
-        for file in files
-          formData.append 'files[]', file, file.name
-      uploader.upload formData
+        TagReader.readFiles(files).then (data) =>
+          filtered = data.filter TagReader.filterData
+          if filtered.length > 0
+            successCallback = () =>
+              @props.ws.send('audio')
+              @props.handleClose()
+            uploader.upload(
+                JSON.stringify(filtered)
+                'application/json'
+                successCallback
+              )
       @setState uploadButtonDisabled: true
     else
       @setState uploadButtonDisabled: true

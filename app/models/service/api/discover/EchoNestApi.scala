@@ -24,14 +24,10 @@ object EchoNestApi {
     WS.url(url).get().map { res =>
       val json = Json.parse(res.body)
       val images = (json \ "response" \ "images").as[List[JsValue]]
-      val filteredBySize = images.filter {image =>
-        val imageIsSmall = (image \ "width").asOpt[Int] match {
-          case Some(w) => w < 750
-          case _ => false
-        }
-        imageIsSmall && !(image \ "url").as[String].contains("userserve-ak.last.fm")
+      val filteredByUrl = images.filter {image =>
+        !(image \ "url").as[String].contains("userserve-ak.last.fm")
       }
-      val sortedBySize = filteredBySize.sortBy(image => (image \ "width").as[Int])
+      val sortedBySize = filteredByUrl.sortBy(image => (image \ "width").as[Int])
       val urls = sortedBySize map (img => (img \ "url").as[String])
       urls.headOption match {
         case Some(pic) =>

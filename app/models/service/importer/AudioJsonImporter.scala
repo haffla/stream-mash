@@ -33,6 +33,5 @@ class AudioJsonImporter(identifier: Either[Int, String]) extends Importer(identi
   def process(files:JsValue):Unit = {
     apiHelper.setRetrievalProcessPending()
     convertSeqToMap(handleFiles(files))
-    apiHelper.setRetrievalProcessDone()
   }
 }
