@@ -1,19 +1,19 @@
 package models.service.oauth
 
-import models.service.library.NapsterImporter
+import models.service.importer.NapsterImporter
 import models.service.oauth.NapsterService._
 import models.service.util.ServiceAccessTokenHelper
 import models.util.Constants
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.JsValue
-import play.api.libs.ws.{WS, WSResponse}
+import play.api.libs.ws.{WSRequest, WS, WSResponse}
 
 import scala.concurrent.Future
 
 class NapsterService(identifier: Either[Int, String]) extends ApiDataRequest(Constants.serviceNapster, identifier) {
 
-  val library = new NapsterImporter(identifier)
+  val importer = new NapsterImporter(identifier)
   override val serviceAccessTokenHelper = new ServiceAccessTokenHelper(Constants.serviceNapster, identifier)
 
   override def doDataRequest(code:String):Future[(Option[String],Option[String])] = {
@@ -21,14 +21,15 @@ class NapsterService(identifier: Either[Int, String]) extends ApiDataRequest(Con
     val futureResponse: Future[WSResponse] = WS.url(apiEndpoints.token).post(data)
     for {
       token <- getAccessToken(futureResponse)
-      response <- requestUsersTracks(token._1, 0)
-      seq = library.convertJsonToSeq(response)
-      result = library.convertSeqToMap(seq)
+      favouriteTracks <- requestUsersTracks(token._1, 0)
+      playlistTracks <- requestPlaylists(token._1)
+      seq = importer.convertJsonToSeq(favouriteTracks ++ playlistTracks)
+      result = importer.convertSeqToMap(seq)
     } yield token
   }
 }
 
-object NapsterService extends OAuthStreamingService with FavouriteMusicRetrieval with OauthRouting {
+object NapsterService extends OAuthStreamingService with FavouriteMusicRetrieval with PlayListRetrieval with OauthRouting {
 
   def apply(identifier: Either[Int, String]) = new NapsterService(identifier)
   val clientIdKey = "napster.client.id"
@@ -43,12 +44,14 @@ object NapsterService extends OAuthStreamingService with FavouriteMusicRetrieval
   )
 
   object apiEndpoints {
-    val authorize = "https://api.rhapsody.com/oauth/authorize"
-    val tracks = "https://api.rhapsody.com/v1/me/favorites"
-    val token = "https://api.rhapsody.com/oauth/access_token"
-    val search = "http://api.rhapsody.com/v1/search"
-    val artists = "http://api.rhapsody.com/v1/artists"
-    val albums = "http://api.rhapsody.com/v1/albums"
+    val root = "https://api.rhapsody.com/"
+    val authorize = root + "oauth/authorize"
+    val tracks = root + "v1/me/favorites"
+    val token = root + "oauth/access_token"
+    val search = root + "v1/search"
+    val artists = root + "v1/artists"
+    val albums = root + "v1/albums"
+    val playlists = root + "v1/me/playlists"
 
     val data = Map(
       "redirect_uri" -> Seq(redirectUri),
@@ -59,18 +62,44 @@ object NapsterService extends OAuthStreamingService with FavouriteMusicRetrieval
     )
   }
 
+  override protected def extractTracksFromJs(trackJs: JsValue) = {
+    (trackJs \ "tracks").as[JsValue]
+  }
+
   override def favouriteMusicRetrievalRequest(accessToken:String, page:String):Future[WSResponse] =
     WS.url(apiEndpoints.tracks)
       .withQueryString("limit" -> "100", "offset" -> page)
       .withHeaders("Authorization" -> s"Bearer $accessToken").get()
 
   //TODO Review this
-  override def getPageInformation(json: JsValue): (Boolean, Int) = {
+  override def getPageInformation(json: JsValue):(Boolean, Int) = {
     val list = json.as[List[JsValue]]
-    (list.nonEmpty, list.length)
+    (list.nonEmpty, 100)
   }
 
   override def authorizeEndpoint: String = apiEndpoints.authorize
+
+  override protected def playlistRequest(accessToken: String): Future[WSResponse] = {
+    WS.url(apiEndpoints.playlists)
+      .withQueryString("limit" -> Constants.maxPlaylistCountToImport)
+      .withHeaders("Authorization" -> s"Bearer $accessToken").get()
+  }
+
+  override protected def getNextPage(trackJs: JsValue): (Boolean, String) = {
+    (false, "")
+  }
+
+  override protected def trackListLinks(js: JsValue): List[String] = {
+    val list = js.as[List[JsValue]]
+    list.map { item =>
+      val id = (item \ "id").as[String]
+      apiEndpoints.playlists + s"/$id"
+    }
+  }
+
+  override protected def authenticateTrackRetrievalRequest(wsRequest: WSRequest, accessToken: String): WSRequest = {
+    wsRequest.withHeaders("Authorization" -> s"Bearer $accessToken")
+  }
 }
 
 

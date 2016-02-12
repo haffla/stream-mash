@@ -1,6 +1,8 @@
 package models.util
 
 object Constants {
+  val maxArtistCountToAnalyse = 30
+  val maxPlaylistCountToImport = "5"
   val serviceLastFm = "lastfm"
   val serviceSoundcloud = "soundcloud"
   val serviceNapster = "napster"

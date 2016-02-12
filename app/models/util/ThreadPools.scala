@@ -7,4 +7,5 @@ import scala.concurrent.ExecutionContext
 
 object ThreadPools {
   implicit val analysisExecutionContext: ExecutionContext = Akka.system.dispatchers.lookup("akka.actor.analysis")
+  implicit val importExecutionContext: ExecutionContext = Akka.system.dispatchers.lookup("akka.actor.import")
 }

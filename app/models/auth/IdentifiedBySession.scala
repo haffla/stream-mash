@@ -33,7 +33,7 @@ object IdentifiedBySession extends ActionBuilder[Request] with AuthHandling {
         Future.successful(
           Redirect(request.path)
             .withSession(
-              request.session + (Constants.userSessionKey -> TextWrangler.generateRandomString(32))
+              request.session + (Constants.userSessionKey -> TextWrangler.generateRandomString(32)) + (Constants.intendedLocation -> request.path)
             )
         )
     }

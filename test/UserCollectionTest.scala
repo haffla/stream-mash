@@ -1,7 +1,8 @@
 
 import models.User
 import models.database.facade.CollectionFacade
-import models.service.library._
+import models.service.exporter.Exporter
+import models.service.importer._
 import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.libs.json.JsValue
 import play.api.test.WithApplication
@@ -25,7 +26,7 @@ class UserCollectionTest extends UnitSpec {
     library.persist(collection).onComplete {
       case Success(_) =>
         val col = CollectionFacade(identifier).userCollection
-        val forFrontEnd = library.prepareCollectionForFrontend(col)
+        val forFrontEnd = Exporter.prepareCollectionForFrontend(col)
 
         val converted: List[JsValue] = forFrontEnd.as[List[JsValue]]
         val artists = converted map (x => (x \ "name").as[String])

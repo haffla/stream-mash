@@ -1,4 +1,4 @@
-package models.service.library
+package models.service.importer
 
 import models.util.{TextWrangler, Constants}
 import play.api.libs.json.JsValue

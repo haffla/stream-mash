@@ -1,6 +1,4 @@
-POST          /fileupload                   controllers.UserController.handleAudioJson
-GET           /artist/image                 controllers.UserController.artistPic
-POST          /artist/rating                controllers.UserController.rating
+POST          /fileupload                   controllers.AudioJsonController.handleAudioJson
 
 GET           /                             controllers.Application.index
 GET           /privacy                      controllers.Application.privacy
@@ -34,6 +32,8 @@ GET           /overview                     controllers.CollectionController.ove
 POST          /user/analysis                controllers.CollectionController.analysis
 GET           /visualize                    controllers.CollectionController.visualize
 GET           /vidata                       controllers.CollectionController.visualizationData
+GET            /collection/fromdb            controllers.CollectionController.userCollectionFromDb
+DELETE         /collection/delete/:id        controllers.CollectionController.deleteCollectionByUser(id:Long)
 
 ### iTunes
 POST          /itunes                       controllers.ItunesController.fileUpload
@@ -49,10 +49,11 @@ GET           /deezer/album-detail          controllers.DeezerController.getAlbu
 GET           /lastfm/login                 controllers.LastfmController.login
 GET           /lastfm/callback              controllers.LastfmController.callback
 
+GET           /artist/image                 controllers.ArtistController.artistPic
+POST          /artist/rating                controllers.ArtistController.rating
+
 ### User management
 GET            /users                        controllers.UserController.list
-GET            /collection/fromdb            controllers.UserController.userCollectionFromDb
-DELETE         /collection/delete/:id        controllers.UserController.deleteCollectionByUser(id:Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                 controllers.Assets.versioned(path="/public", file: Asset)

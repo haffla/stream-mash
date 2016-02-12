@@ -4,7 +4,7 @@ import java.io.File
 
 import models.User
 import models.auth.{Helper, IdentifiedBySession, MessageDigest}
-import models.service.library.ItunesImporter
+import models.service.importer.ItunesImporter
 import models.util.Constants
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
@@ -29,7 +29,7 @@ class ItunesController extends Controller {
         bool => if (!bool) {
           //user has submitted the exact same file. load from db.
           userModel.saveItunesFileHash(fileHash)
-          new ItunesImporter(identifier, xmlPath).saveCollection()
+          new ItunesImporter(identifier).processAndSave(xmlPath)
         }
       }
 

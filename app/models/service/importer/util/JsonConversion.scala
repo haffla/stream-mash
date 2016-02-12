@@ -1,4 +1,4 @@
-package models.service.library.util
+package models.service.importer.util
 
 import models.util.Constants
 import play.api.libs.json.JsValue

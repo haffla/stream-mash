@@ -1,12 +1,18 @@
 package controllers
 
-import models.auth.{Helper, IdentifiedBySession}
+import models.User
+import models.auth.{Authenticated, AdminAccess, Helper, IdentifiedBySession}
+import models.database.facade.CollectionFacade
 import models.service.analysis.ServiceAnalyser
+import models.service.exporter.Exporter
+import models.service.importer.Importer
 import models.service.visualization.ServiceData
+import models.util.Constants
 import play.api.libs.json.Json
 import play.api.mvc.Controller
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Failure, Success, Try}
 
 class CollectionController extends Controller {
 
@@ -33,6 +39,32 @@ class CollectionController extends Controller {
     val identifier = Helper.getUserIdentifier(request.session)
     new ServiceData(identifier).retrieve().map { res =>
       Ok(res)
+    }
+  }
+
+  def userCollectionFromDb = IdentifiedBySession { implicit request =>
+    val identifier = Helper.getUserIdentifier(request.session)
+    val collection = CollectionFacade(identifier).userCollection
+    if(collection.nonEmpty) Ok(Exporter.prepareCollectionForFrontend(collection))
+    else Ok(Json.toJson(Map("error" -> "You have no records stored in our database.")))
+  }
+
+  def deleteMyCollections() = Authenticated { implicit request =>
+    request.session.get(Constants.userId) map { userId =>
+      deleteCollection(userId.toInt)
+    } getOrElse Ok(Json.toJson(Map("success" -> false)))
+  }
+
+  def deleteCollectionByUser(userId:Long) = AdminAccess { implicit request =>
+    deleteCollection(userId.toInt)
+  }
+
+  private def deleteCollection(userId:Int) = {
+    Try {
+      User(Left(userId)).deleteUsersCollection()
+    } match {
+      case Success(_) => Ok(Json.toJson(Map("success" -> true)))
+      case Failure(e) => Ok(Json.toJson(Map("success" -> false)))
     }
   }
 }

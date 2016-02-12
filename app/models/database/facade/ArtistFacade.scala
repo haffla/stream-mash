@@ -1,7 +1,7 @@
 package models.database.facade
 
 import models.database.alias.{AppDB, Artist}
-import models.util.GroupMeasureConversion
+import models.util.{Constants, GroupMeasureConversion}
 import org.squeryl.PrimitiveTypeMode
 import org.squeryl.PrimitiveTypeMode._
 import org.squeryl.dsl.GroupWithMeasures
@@ -61,14 +61,14 @@ class ArtistFacade(identifier:Either[Int,String]) extends Facade with GroupMeasu
     * Get users favourite artists sorted by score in user_artist_liking table
     * By default get top 50.
     */
-  def usersFavouriteArtists(page:(Int,Int) = (0,50)):List[(Artist,Double)] = {
+  def usersFavouriteArtists(mostListenedToArtists: List[Long]):List[(Artist,Double)] = {
     inTransaction {
       join(
         AppDB.artists,
         AppDB.tracks,
         AppDB.collections,
         AppDB.userArtistLikings)((a,tr,col,ual) =>
-        where(ual.score.gt(0) and AppDB.userWhereClause(ual,identifier) and AppDB.userWhereClause(col,identifier))
+        where(ual.score.gt(0) and a.id.in(mostListenedToArtists) and AppDB.userWhereClause(ual,identifier) and AppDB.userWhereClause(col,identifier))
           select(a,ual.score)
           orderBy ual.score.desc
           on(
@@ -76,19 +76,20 @@ class ArtistFacade(identifier:Either[Int,String]) extends Facade with GroupMeasu
             col.trackId === tr.id,
             ual.artistId === a.id
           )
-      ).distinct.page(page._1,page._2).toList
+      ).distinct.toList
     }
   }
 
-  def usersFavouriteArtistsWithTrackCountAndScore(page:(Int,Int) = (0,25)):List[(Artist,Long,Double)] = {
+  def usersFavouriteArtistsWithTrackCountAndScore():List[(Artist,Long,Double)] = {
     inTransaction {
-      val mlta = toMap(mostListenedToArtists())
+      val mlta = toMap(mostListenedToArtists().take(Constants.maxArtistCountToAnalyse))
+      val mltaIds = mlta.keys
       join(
         AppDB.artists,
         AppDB.tracks,
         AppDB.collections,
         AppDB.userArtistLikings)((a,tr,col,ual) =>
-        where(ual.score.gt(0) and AppDB.userWhereClause(ual,identifier) and AppDB.userWhereClause(col,identifier))
+        where(ual.score.gt(0) and a.id.in(mltaIds) and AppDB.userWhereClause(ual,identifier) and AppDB.userWhereClause(col,identifier))
           select(a,mlta.getOrElse(a.id, 1L),ual.score)
           orderBy ual.score.desc
           on(
@@ -96,15 +97,17 @@ class ArtistFacade(identifier:Either[Int,String]) extends Facade with GroupMeasu
           col.trackId === tr.id,
           ual.artistId === a.id
           )
-      ).distinct.page(page._1,page._2).toList
+      ).distinct.toList
     }
   }
 
   def mostListenedToArtists():List[GroupWithMeasures[Long, Long]] = {
-    from(AppDB.artists, AppDB.tracks, AppDB.collections)((a,t,c) =>
-      where(a.id === t.artistId and t.id === c.trackId and AppDB.userWhereClause(c,identifier))
-        groupBy a.id
-        compute countDistinct(t.id)
-    ).toList.sortBy(_.measures)(Ordering[PrimitiveTypeMode.LongType].reverse)
+    inTransaction {
+      from(AppDB.artists, AppDB.tracks, AppDB.collections)((a,t,c) =>
+        where(a.id === t.artistId and t.id === c.trackId and AppDB.userWhereClause(c,identifier))
+          groupBy a.id
+          compute countDistinct(t.id)
+      ).toList.sortBy(_.measures)(Ordering[PrimitiveTypeMode.LongType].reverse)
+    }
   }
 }
