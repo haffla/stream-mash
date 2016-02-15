@@ -1,7 +1,7 @@
 package models
 
 import models.auth.MessageDigest
-import models.database.alias.AppDB
+import models.database.AppDB
 import models.database.facade.api.Services
 import models.util.Constants
 import play.api.cache.Cache

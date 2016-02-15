@@ -1,5 +1,6 @@
-package models.database.alias
+package models.database
 
+import models.database.alias._
 import models.database.alias.service._
 import org.squeryl.PrimitiveTypeMode._
 import org.squeryl.Schema

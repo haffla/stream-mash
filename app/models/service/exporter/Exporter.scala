@@ -8,7 +8,7 @@ object Exporter {
     * Transforms the collection coming from the database to a Json Array of Json Objects
     */
   def prepareCollectionForFrontend(data:List[(Album,Artist,Track,UserCollection,UserArtistLiking,Long)]):JsValue = {
-    val converted = convert(data)
+    val converted = convertToArtistMap(data)
     val jsObjects = converted.map { case (artistData,albumData) =>
       val (artistName,artistPic,artistRating,artistTrackCount) = artistData
       val albumObjects = albumData.map { album =>
@@ -35,17 +35,14 @@ object Exporter {
     Json.toJson(jsObjects)
   }
 
-  private def convert(data:List[(Album,Artist,Track,UserCollection,UserArtistLiking,Long)]):Map[(String,String,Double,Long), Map[String,Set[(String,Int)]]] = {
+  private def convertToArtistMap(data:List[(Album,Artist,Track,UserCollection,UserArtistLiking,Long)]):Map[(String,String,Double,Long), Map[String,Set[(String,Int)]]] = {
     data.foldLeft(Map[(String,String,Double,Long), Map[String,Set[(String,Int)]]]()) { (prev, curr) =>
       val artistName = curr._2.name
       val artistPic = curr._2.pic.getOrElse("")
       val artistTrackCount = curr._6
-      /**
-        * If not rating is available it means the user has not rated the artist, we assume 1.0
-        */
       val userArtistRating = curr._5.score
       /*
-       * The artist is now a 3-Tuple of Name:String,PictureUrl:String,Rating:Double
+       * The artist is now a 4-Tuple of Name:String,PictureUrl:String,Rating:Double,TrackCount:Long
        * Use this as the map key
       */
       val artist:(String,String,Double,Long) = (artistName,artistPic,userArtistRating,artistTrackCount)

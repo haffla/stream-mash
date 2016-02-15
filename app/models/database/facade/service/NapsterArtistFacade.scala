@@ -1,5 +1,6 @@
 package models.database.facade.service
 
+import models.database.AppDB
 import models.database.alias._
 import models.database.alias.service.NapsterArtist
 import models.util.Constants

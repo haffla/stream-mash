@@ -1,5 +1,6 @@
 package models.database.facade
 
+import models.database.AppDB
 import models.database.alias._
 import models.util.GroupMeasureConversion
 import org.squeryl.PrimitiveTypeMode._

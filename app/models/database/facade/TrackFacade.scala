@@ -1,6 +1,7 @@
 package models.database.facade
 
-import models.database.alias.{Track, AppDB}
+import models.database.AppDB
+import models.database.alias.Track
 import org.squeryl.PrimitiveTypeMode._
 
 object TrackFacade {

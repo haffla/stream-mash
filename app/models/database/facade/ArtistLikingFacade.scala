@@ -1,6 +1,7 @@
 package models.database.facade
 
-import models.database.alias.{UserArtistLiking, AppDB}
+import models.database.AppDB
+import models.database.alias.UserArtistLiking
 import org.squeryl.PrimitiveTypeMode._
 
 class ArtistLikingFacade(identifier:Either[Int,String]) extends Facade {

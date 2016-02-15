@@ -1,6 +1,6 @@
 package models.database.facade.service
 
-import models.database.alias.AppDB
+import models.database.AppDB
 import models.database.alias.service.DeezerAlbum
 import org.squeryl.PrimitiveTypeMode._
 

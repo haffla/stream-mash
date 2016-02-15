@@ -1,6 +1,7 @@
 package models.database.facade
 
-import models.database.alias.{AppDB, Artist}
+import models.database.AppDB
+import models.database.alias.Artist
 import models.util.{Constants, GroupMeasureConversion}
 import org.squeryl.PrimitiveTypeMode
 import org.squeryl.PrimitiveTypeMode._

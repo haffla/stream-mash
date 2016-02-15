@@ -1,6 +1,7 @@
 package models.database.facade
 
-import models.database.alias.{AppDB, ServiceArtistAbsence}
+import models.database.AppDB
+import models.database.alias.ServiceArtistAbsence
 import org.squeryl.PrimitiveTypeMode._
 
 object ServiceArtistAbsenceFacade extends Facade {

@@ -1,6 +1,7 @@
 package models.database.facade.service
 
-import models.database.alias.{Album, AppDB}
+import models.database.AppDB
+import models.database.alias.Album
 import org.squeryl.PrimitiveTypeMode._
 
 trait ServiceAlbumFacade {
