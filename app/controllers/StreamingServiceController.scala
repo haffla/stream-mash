@@ -1,17 +1,18 @@
 package controllers
 
 import models.auth.{Helper, IdentifiedBySession}
-import models.service.oauth.OauthRouting
+import models.service.oauth.{ApiDataRequest, OAuthRouting}
 import models.util.{Constants, TextWrangler}
 import play.api.mvc.{Controller, Cookie}
 
 abstract class StreamingServiceController extends Controller {
-  val redirectionService:OauthRouting
+  val redirectionService:OAuthRouting
   val serviceName:String
   val keyCode:String = "code"
   val serviceSupportsCSRFProtection:Boolean = true
-  def requestUserData(code:String, identifier:Either[Int,String]):Unit
   val keyState = "state"
+
+  def serviceClass(identifier:Either[Int,String]):ApiDataRequest
 
   def login = IdentifiedBySession { implicit request =>
     val state = TextWrangler.generateRandomString(16)
@@ -30,7 +31,7 @@ abstract class StreamingServiceController extends Controller {
     if(validRequest) {
       request.getQueryString(keyCode) match {
         case Some(code) =>
-          requestUserData(code,identifier)
+          serviceClass(identifier).requestUserData(code)
           Redirect(routes.CollectionController.index(serviceName))
         case None =>
           Redirect(routes.CollectionController.index())

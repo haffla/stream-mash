@@ -12,7 +12,7 @@ import scala.concurrent.Future
 
 class SoundcloudService(identifier: Either[Int, String]) extends ApiDataRequest("soundcloud", identifier) {
 
-  val importer = new SoundcloudImporter(identifier)
+  override val importer = new SoundcloudImporter(identifier)
   val serviceAccessTokenHelper = new ServiceAccessTokenHelper("soundcloud", identifier)
 
   override def doDataRequest(code:String):Future[(Option[String],Option[String])] = {
@@ -26,24 +26,24 @@ class SoundcloudService(identifier: Either[Int, String]) extends ApiDataRequest(
   }
 }
 
-object SoundcloudService extends OAuthStreamingService with OauthRouting {
+object SoundcloudService extends OAuthStreamingService with OAuthRouting {
 
   def apply(identifier: Either[Int, String]) = new SoundcloudService(identifier)
 
-  val clientIdKey = "soundcloud.client.id"
-  val clientSecretKey = "soundcloud.client.secret"
+  override val clientIdKey = "soundcloud.client.id"
+  override val clientSecretKey = "soundcloud.client.secret"
 
-  val redirectUriPath="/soundcloud/callback"
-  val cookieKey = "soundcloud_auth_state"
+  override val redirectUriPath="/soundcloud/callback"
+  override val cookieKey = "soundcloud_auth_state"
 
-  val queryString:Map[String,Seq[String]] = Map(
+  override val queryString:Map[String,Seq[String]] = Map(
     "response_type" -> Seq("code"),
     "client_id" -> Seq(clientId),
     "redirect_uri" -> Seq(redirectUri),
     "scope" -> Seq("non-expiring")
   )
 
-  override def authorizeEndpoint: String = "https://api.soundcloud.com/connect"
+  override val authorizeEndpoint: String = "https://api.soundcloud.com/connect"
 
   val client = Client(clientId, clientSecret, redirectUri)
 

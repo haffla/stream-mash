@@ -3,12 +3,12 @@ package models.service.oauth
 import models.util.Logging
 import play.api.Play
 
-trait OauthRouting {
+trait OAuthRouting {
 
   val cookieKey:String
   val redirectUriPath:String
 
-  def authorizeEndpoint:String
+  val authorizeEndpoint:String
   val queryString:Map[String,Seq[String]]
 
   lazy val redirectUri = Play.current.configuration.getString("current.host") match {

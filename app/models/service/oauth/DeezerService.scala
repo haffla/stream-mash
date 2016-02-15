@@ -14,7 +14,7 @@ import scala.concurrent.Future
 class DeezerService(identifier:Either[Int,String]) extends ApiDataRequest(Constants.serviceDeezer, identifier) {
 
   override val serviceAccessTokenHelper: ServiceAccessTokenHelper = new ServiceAccessTokenHelper(Constants.serviceDeezer, identifier)
-  val importer = new DeezerImporter(identifier)
+  override val importer = new DeezerImporter(identifier)
 
   override def doDataRequest(code: String): Future[(Option[String],Option[String])] = {
     val futureResponse: Future[WSResponse] = WS.url(apiEndpoints.token).withQueryString(
@@ -31,19 +31,17 @@ class DeezerService(identifier:Either[Int,String]) extends ApiDataRequest(Consta
     } yield token
   }
 }
-object DeezerService extends OAuthStreamingService with PlayListRetrieval with FavouriteMusicRetrieval with OauthRouting {
+object DeezerService extends OAuthStreamingService with PlayListRetrieval with FavouriteMusicRetrieval with OAuthRouting {
 
   def apply(identifier:Either[Int,String]) = new DeezerService(identifier)
 
   override val clientIdKey = "deezer.app.id"
   override val clientSecretKey = "deezer.app.secret"
-
   override val redirectUriPath = "/deezer/callback"
   override val cookieKey = "deezer_auth_state"
-
   override lazy val redirectUri = "http://haffla.de"
 
-  val queryString:Map[String,Seq[String]] = Map(
+  override val queryString:Map[String,Seq[String]] = Map(
     "app_id" -> Seq(clientId),
     "redirect_uri" -> Seq(redirectUri),
     "perms" -> Seq("basic_access, listening_history")
@@ -89,7 +87,7 @@ object DeezerService extends OAuthStreamingService with PlayListRetrieval with F
     (false,0)
   }
 
-  override def authorizeEndpoint: String = apiEndpoints.authorize
+  override val authorizeEndpoint: String = apiEndpoints.authorize
 
   override protected def authenticateTrackRetrievalRequest(wsRequest: WSRequest, accessToken: String): WSRequest = {
     wsRequest.withQueryString("access_token" -> accessToken)

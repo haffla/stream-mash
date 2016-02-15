@@ -10,8 +10,6 @@ import scala.concurrent.Future
 
 class Importer(identifier: Either[Int, String], name:String = "baseimporter", persist:Boolean = true) {
 
-  implicit val session = AutoSession
-
   val apiHelper = new RetrievalProcessMonitor(name, identifier)
   val artistLikingFacade = ArtistLikingFacade(identifier)
   val collectionFacade = CollectionFacade(identifier)
@@ -46,7 +44,7 @@ class Importer(identifier: Either[Int, String], name:String = "baseimporter", pe
     result
   }
 
-  def persistItem(artistTuple: (String, Map[String, Set[String]])):Future[Boolean] = Future {
+  private def persistItem(artistTuple: (String, Map[String, Set[String]])):Future[Boolean] = Future {
     val (artist,albums) = artistTuple
     val existingArtistId:Long = ArtistFacade.saveByName(artist, artistLikingFacade)
     for((album,tracks) <- albums) {

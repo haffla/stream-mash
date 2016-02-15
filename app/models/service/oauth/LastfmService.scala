@@ -12,9 +12,9 @@ import play.api.libs.ws.{WS, WSResponse}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class LastfmService(identifier: Either[Int, String]) extends ApiDataRequest  (Constants.serviceLastFm, identifier) {
+class LastfmService(identifier: Either[Int, String]) extends ApiDataRequest(Constants.serviceLastFm, identifier) {
 
-  val importer = new LastfmImporter(identifier)
+  override val importer = new LastfmImporter(identifier)
   override val serviceAccessTokenHelper = new ServiceAccessTokenHelper(Constants.serviceLastFm, identifier)
 
   def generateApiSig(code: String) = {
@@ -41,15 +41,14 @@ class LastfmService(identifier: Either[Int, String]) extends ApiDataRequest  (Co
 
 }
 
-object LastfmService extends OAuthStreamingService with FavouriteMusicRetrieval with OauthRouting {
+object LastfmService extends OAuthStreamingService with FavouriteMusicRetrieval with OAuthRouting {
 
   def apply(identifier: Either[Int, String]) = new LastfmService(identifier)
 
-  val clientIdKey = "lastfm.client.id"
-  val clientSecretKey = "lastfm.client.secret"
-
-  val redirectUriPath = "/lastfm/callback"
-  val cookieKey = "lastfm_auth_state"
+  override val clientIdKey = "lastfm.client.id"
+  override val clientSecretKey = "lastfm.client.secret"
+  override val redirectUriPath = "/lastfm/callback"
+  override val cookieKey = "lastfm_auth_state"
 
   override val queryString:Map[String,Seq[String]] = Map(
     "api_key" -> Seq(clientId),
@@ -100,5 +99,5 @@ object LastfmService extends OAuthStreamingService with FavouriteMusicRetrieval 
     (page < total, page + 1)
   }
 
-  override def authorizeEndpoint: String = apiEndpoints.authorize
+  override val authorizeEndpoint: String = apiEndpoints.authorize
 }

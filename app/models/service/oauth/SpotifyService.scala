@@ -13,7 +13,7 @@ import scala.concurrent.Future
 
 class SpotifyService(identifier: Either[Int, String]) extends ApiDataRequest(Constants.serviceSpotify, identifier) {
 
-  val importer = new SpotifyImporter(identifier)
+  override val importer = new SpotifyImporter(identifier)
   override val serviceAccessTokenHelper = new ServiceAccessTokenHelper(Constants.serviceSpotify, identifier)
 
   override def doDataRequest(code:String):Future[(Option[String],Option[String])] = {
@@ -29,7 +29,7 @@ class SpotifyService(identifier: Either[Int, String]) extends ApiDataRequest(Con
   }
 }
 
-object SpotifyService extends OAuthStreamingService with FavouriteMusicRetrieval with PlayListRetrieval with OauthRouting {
+object SpotifyService extends OAuthStreamingService with FavouriteMusicRetrieval with PlayListRetrieval with OAuthRouting {
 
   def apply(identifier: Either[Int, String]) = new SpotifyService(identifier)
   override val clientIdKey = "spotify.client.id"
@@ -43,9 +43,9 @@ object SpotifyService extends OAuthStreamingService with FavouriteMusicRetrieval
   )
   override val cookieKey = "spotify_auth_state"
 
-  override def authorizeEndpoint: String = apiEndpoints.authorize
+  override val authorizeEndpoint: String = apiEndpoints.authorize
 
-  val queryString:Map[String,Seq[String]] = Map(
+  override val queryString:Map[String,Seq[String]] = Map(
     "response_type" -> Seq("code"),
     "client_id" -> Seq(clientId),
     "scope" -> Seq(scope.mkString(" ")),

@@ -13,7 +13,7 @@ import scala.concurrent.Future
 
 class NapsterService(identifier: Either[Int, String]) extends ApiDataRequest(Constants.serviceNapster, identifier) {
 
-  val importer = new NapsterImporter(identifier)
+  override val importer = new NapsterImporter(identifier)
   override val serviceAccessTokenHelper = new ServiceAccessTokenHelper(Constants.serviceNapster, identifier)
 
   override def doDataRequest(code:String):Future[(Option[String],Option[String])] = {
@@ -29,15 +29,15 @@ class NapsterService(identifier: Either[Int, String]) extends ApiDataRequest(Con
   }
 }
 
-object NapsterService extends OAuthStreamingService with FavouriteMusicRetrieval with PlayListRetrieval with OauthRouting {
+object NapsterService extends OAuthStreamingService with FavouriteMusicRetrieval with PlayListRetrieval with OAuthRouting {
 
   def apply(identifier: Either[Int, String]) = new NapsterService(identifier)
-  val clientIdKey = "napster.client.id"
-  val clientSecretKey = "napster.client.secret"
-  val redirectUriPath = "/napster/callback"
-  val cookieKey = "napster_auth_state"
+  override val clientIdKey = "napster.client.id"
+  override val clientSecretKey = "napster.client.secret"
+  override val redirectUriPath = "/napster/callback"
+  override val cookieKey = "napster_auth_state"
 
-  val queryString:Map[String,Seq[String]] = Map(
+  override val queryString:Map[String,Seq[String]] = Map(
     "response_type" -> Seq("code"),
     "client_id" -> Seq(clientId),
     "redirect_uri" -> Seq(redirectUri)
@@ -77,7 +77,7 @@ object NapsterService extends OAuthStreamingService with FavouriteMusicRetrieval
     (list.nonEmpty, 100)
   }
 
-  override def authorizeEndpoint: String = apiEndpoints.authorize
+  override val authorizeEndpoint: String = apiEndpoints.authorize
 
   override protected def playlistRequest(accessToken: String): Future[WSResponse] = {
     WS.url(apiEndpoints.playlists)
