@@ -67,15 +67,14 @@ CREATE TABLE IF NOT EXISTS user_collection(
     fk_user INT DEFAULT NULL REFERENCES account(id_user) ON DELETE CASCADE,
     fk_track INT NOT NULL REFERENCES track(id_track) ON DELETE CASCADE,
     user_session VARCHAR(32) DEFAULT NULL,
-    times_played INTEGER DEFAULT 1,
     UNIQUE (fk_user, fk_track),
     UNIQUE (user_session, fk_track)
 );
 
-INSERT INTO user_collection(fk_user, fk_track, times_played) VALUES (1, 1, 25);
-INSERT INTO user_collection(fk_user, fk_track, times_played) VALUES (1, 2, 77);
-INSERT INTO user_collection(fk_user, fk_track, times_played) VALUES (1, 3, 46);
-INSERT INTO user_collection(fk_user, fk_track, times_played) VALUES (1, 4, 33);
+INSERT INTO user_collection(fk_user, fk_track) VALUES (1, 1);
+INSERT INTO user_collection(fk_user, fk_track) VALUES (1, 2);
+INSERT INTO user_collection(fk_user, fk_track) VALUES (1, 3);
+INSERT INTO user_collection(fk_user, fk_track) VALUES (1, 4);
 
 CREATE TABLE IF NOT EXISTS user_artist_liking(
     id_user_artist_liking SERIAL PRIMARY KEY,

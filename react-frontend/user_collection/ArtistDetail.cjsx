@@ -32,7 +32,7 @@ ArtistDetail = React.createClass
         }
         style={width: '33%'}>
         <ListItem
-          secondaryText={Helper.getTrackCountProse(@props.selectedArtist.trackCount)} 
+          secondaryText={Helper.getTrackCountProse(@props.selectedArtist.trackCount)}
           primaryText={@props.selectedArtist.name}
           leftAvatar={avatar} />
         <ListItem secondaryText="Rating" rightAvatar={
@@ -66,8 +66,7 @@ ArtistDetail = React.createClass
           _.flatten(tracks).map (track, idx) ->
             <ListItem
               key={idx}
-              primaryText={track.name}
-              rightAvatar={<Avatar>{track.played}</Avatar>} />
+              primaryText={track.name} />
         }
       </List>
     </div>

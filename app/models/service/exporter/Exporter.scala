@@ -15,8 +15,7 @@ object Exporter {
         val albumName:String = album._1
         val tracks:Set[JsObject] = album._2.map { tr =>
           Json.obj(
-            "name" -> tr._1,
-            "played" -> tr._2
+            "name" -> tr
           )
         }
         Json.obj(
@@ -35,8 +34,8 @@ object Exporter {
     Json.toJson(jsObjects)
   }
 
-  private def convertToArtistMap(data:List[(Album,Artist,Track,UserCollection,UserArtistLiking,Long)]):Map[(String,String,Double,Long), Map[String,Set[(String,Int)]]] = {
-    data.foldLeft(Map[(String,String,Double,Long), Map[String,Set[(String,Int)]]]()) { (prev, curr) =>
+  private def convertToArtistMap(data:List[(Album,Artist,Track,UserCollection,UserArtistLiking,Long)]):Map[(String,String,Double,Long), Map[String,Set[String]]] = {
+    data.foldLeft(Map[(String,String,Double,Long), Map[String,Set[String]]]()) { (prev, curr) =>
       val artistName = curr._2.name
       val artistPic = curr._2.pic.getOrElse("")
       val artistTrackCount = curr._6
@@ -48,10 +47,10 @@ object Exporter {
       val artist:(String,String,Double,Long) = (artistName,artistPic,userArtistRating,artistTrackCount)
       val album = curr._1.name
       // Track is a tuple of the name + times played
-      val track:(String,Int) = (curr._3.name, curr._4.played)
-      val albums:Map[String,Set[(String,Int)]] = prev.getOrElse(artist, Map.empty)
-      val tracks:Set[(String,Int)] = albums.getOrElse(album, Set.empty) + track
-      val added:Map[String,Set[(String,Int)]] = albums + (album -> tracks)
+      val track:String = curr._3.name
+      val albums:Map[String,Set[String]] = prev.getOrElse(artist, Map.empty)
+      val tracks:Set[String] = albums.getOrElse(album, Set.empty) + track
+      val added:Map[String,Set[String]] = albums + (album -> tracks)
       prev + (artist -> added)
     }
   }
