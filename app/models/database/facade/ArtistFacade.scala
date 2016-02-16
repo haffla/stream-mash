@@ -60,7 +60,6 @@ class ArtistFacade(identifier:Either[Int,String]) extends Facade with GroupMeasu
 
   /**
     * Get users favourite artists sorted by score in user_artist_liking table
-    * By default get top 50.
     */
   def usersFavouriteArtists(mostListenedToArtists: List[Long]):List[(Artist,Double)] = {
     inTransaction {
