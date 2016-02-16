@@ -29,7 +29,7 @@ GET           /soundcloud/login             controllers.SoundcloudController.log
 
 GET           /collection                   controllers.CollectionController.index(service:String ?= "")
 GET           /overview                     controllers.CollectionController.overview
-POST          /user/analysis                controllers.CollectionController.analysis
+POST          /analysis                     controllers.CollectionController.analysis
 GET           /visualize                    controllers.CollectionController.visualize
 GET           /vidata                       controllers.CollectionController.visualizationData
 GET           /collection/fromdb            controllers.CollectionController.userCollectionFromDb
