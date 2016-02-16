@@ -43,6 +43,7 @@ abstract class ServiceAnalysis(identifier:Either[Int,String],
   }
 
   def analyse():Future[Map[Long, List[(String, String, String)]]] = {
+    println("Starting")
     val artists = filterAlreadyAnalysedArtists(usersFavouriteArtists)
     for {
       accessToken <- testAndGetAccessToken()
@@ -84,7 +85,10 @@ abstract class ServiceAnalysis(identifier:Either[Int,String],
         val js = Json.parse(response.body)
         getNextUrl(js) match {
           case Some(nextUrl) => artistsAlbumsRequest(nextUrl, token, js::jsonResponses)
-          case _ => Future.successful(js::jsonResponses)
+          case _ => {
+            println("Done")
+            Future.successful(js::jsonResponses)
+          }
         }
       }
     }

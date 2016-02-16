@@ -2,9 +2,9 @@ package models.service.analysis
 
 import models.database.facade.ArtistFacade
 import models.database.facade.service._
-import models.util.{Constants, ThreadPools}
-
+import models.util.Constants
 import models.util.ThreadPools.analysisExecutionContext
+
 import scala.concurrent.Future
 
 class ServiceAnalyser(identifier: Either[Int,String]) {
@@ -12,11 +12,20 @@ class ServiceAnalyser(identifier: Either[Int,String]) {
   val spotifyArtistFacade = SpotifyArtistFacade(identifier)
   val deezerArtistFacade = DeezerArtistFacade(identifier)
   val napsterArtistFacade = NapsterArtistFacade(identifier)
+  val analyserList:List[ServiceAnalysisTrait] = List(SpotifyAnalysis, DeezerAnalysis, NapsterAnalysis)
 
   def analyse():Future[Boolean] = {
     val favouriteArtistsIds = ArtistFacade(identifier).mostListenedToArtists().take(Constants.maxArtistCountToAnalyse).map(_.key)
     val artists = ArtistFacade(identifier).usersFavouriteArtists(favouriteArtistsIds).map(_._1)
-    val spotifyResultFuture = SpotifyAnalysis(identifier, artists).analyse()
+    val result:Future[List[Map[Long, List[(String, String, String)]]]] = Future.sequence {
+      analyserList.map(_.apply(identifier, artists).analyse())
+    }
+    for {
+      res <- result
+      mergedMap = mergeMaps(res)((l1,l2) => l1 ++ l2)
+      p <- persistData(mergedMap)
+    } yield p.forall(_ == true)
+   /* val spotifyResultFuture = SpotifyAnalysis(identifier, artists).analyse()
     val deezerResultFuture = DeezerAnalysis(identifier, artists).analyse()
     val napsterResultFuture = NapsterAnalysis(identifier, artists).analyse()
     for {
@@ -24,9 +33,8 @@ class ServiceAnalyser(identifier: Either[Int,String]) {
       deezerResult <- deezerResultFuture
       napsterResult <- napsterResultFuture
       mergedMap:Map[Long, List[(String, String, String)]] = mergeMaps(List(spotifyResult, deezerResult, napsterResult))((l1,l2) => l1 ++ l2)
-      now = System.currentTimeMillis()
       p <- persistData(mergedMap)
-    } yield p.forall(_ == true)
+    } yield p.forall(_ == true)*/
   }
 
   private def mergeMaps[A,B](mapList: List[Map[B, List[A]]])(listOperation: (List[A], List[A]) => List[A]): Map[B, List[A]] = {

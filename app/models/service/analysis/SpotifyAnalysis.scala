@@ -71,7 +71,7 @@ class SpotifyAnalysis(identifier:Either[Int,String],
   }
 }
 
-object SpotifyAnalysis {
+object SpotifyAnalysis extends ServiceAnalysisTrait {
   def apply(identifier:Either[Int,String], userFavouriteArtists: List[Artist])
                 = new SpotifyAnalysis(identifier, userFavouriteArtists)
 }

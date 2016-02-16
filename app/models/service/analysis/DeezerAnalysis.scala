@@ -74,7 +74,7 @@ class DeezerAnalysis(identifier:Either[Int,String],
   }
 }
 
-object DeezerAnalysis {
+object DeezerAnalysis extends ServiceAnalysisTrait {
   def apply(identifier:Either[Int,String], userFavouriteArtists: List[Artist])
               = new DeezerAnalysis(identifier, userFavouriteArtists)
 }

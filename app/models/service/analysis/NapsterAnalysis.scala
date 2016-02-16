@@ -53,7 +53,7 @@ class NapsterAnalysis(identifier:Either[Int,String],
   }
 }
 
-object NapsterAnalysis {
+object NapsterAnalysis extends ServiceAnalysisTrait {
   def apply(identifier:Either[Int,String], userFavouriteArtists: List[Artist])
               = new NapsterAnalysis(identifier, userFavouriteArtists)
 }
