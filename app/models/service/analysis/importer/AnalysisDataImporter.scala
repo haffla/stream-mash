@@ -6,7 +6,7 @@ import models.util.Constants
 import scala.concurrent.Future
 import models.util.ThreadPools.analysisExecutionContext
 
-object ServiceDataImporter {
+object AnalysisDataImporter {
 
   def persist(data: List[Map[Long, List[(String, String, String)]]]):Future[List[Boolean]] = {
     val merged = mergeData(data)((l1,l2) => l1 ++ l2)

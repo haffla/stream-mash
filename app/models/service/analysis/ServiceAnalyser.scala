@@ -1,7 +1,7 @@
 package models.service.analysis
 
 import models.database.facade.ArtistFacade
-import models.service.analysis.importer.ServiceDataImporter
+import models.service.analysis.importer.AnalysisDataImporter
 import models.util.Constants
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -19,7 +19,7 @@ class ServiceAnalyser(identifier: Either[Int,String]) {
     }
     for {
       res <- result
-      p <- ServiceDataImporter.persist(res)
+      p <- AnalysisDataImporter.persist(res)
     } yield p.forall(_ == true)
   }
 }
