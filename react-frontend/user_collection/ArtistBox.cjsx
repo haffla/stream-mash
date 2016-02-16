@@ -119,7 +119,7 @@ ArtistBox = React.createClass
 
   handleAnalyseClick: () ->
     @setState analysing: true
-    $.ajax '/user/analysis',
+    $.ajax '/analysis',
       type: 'POST'
       dataType: 'json'
       success: (data) =>

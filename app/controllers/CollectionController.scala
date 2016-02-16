@@ -1,18 +1,17 @@
 package controllers
 
 import models.User
-import models.auth.{Authenticated, AdminAccess, Helper, IdentifiedBySession}
+import models.auth.{AdminAccess, Authenticated, Helper, IdentifiedBySession}
 import models.database.facade.CollectionFacade
 import models.service.analysis.ServiceAnalyser
 import models.service.exporter.Exporter
-import models.service.importer.Importer
 import models.service.visualization.ServiceData
 import models.util.Constants
 import play.api.libs.json.Json
 import play.api.mvc.Controller
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Failure, Success, Try}
+import scala.util.{Success, Try}
 
 class CollectionController extends Controller {
 
@@ -60,11 +59,12 @@ class CollectionController extends Controller {
   }
 
   private def deleteCollection(userId:Int) = {
-    Try {
+    val success = Try {
       User(Left(userId)).deleteUsersCollection()
     } match {
-      case Success(_) => Ok(Json.toJson(Map("success" -> true)))
-      case Failure(e) => Ok(Json.toJson(Map("success" -> false)))
+      case Success(_) => true
+      case _ => false
     }
+    Ok(Json.toJson(Map("success" -> success)))
   }
 }
