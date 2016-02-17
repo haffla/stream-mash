@@ -33,7 +33,7 @@ class DeezerArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFac
 
 object DeezerArtistFacade extends ServiceArtistTrait {
 
-  def apply(identifier: Either[Int,String]) = new DeezerArtistFacade(identifier)
+  override def apply(identifier: Either[Int,String]) = new DeezerArtistFacade(identifier)
 
   override protected def setArtistAnalysed(id: Long) = {
     update(AppDB.deezerArtists)(d =>

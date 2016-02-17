@@ -1,23 +1,24 @@
 package controllers
 
 import models.auth.{Helper, IdentifiedBySession}
-import models.service.api.{SpotifyApiFacade, ApiFacade}
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, Controller}
+import models.database.facade.service.ServiceArtistTrait
+import models.service.api.ApiFacade
+import play.api.libs.json.Json
+import play.api.mvc.Controller
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait AnalysisController extends Controller {
 
   val serviceName:String
   val apiFacade:ApiFacade
-  def artistsAndAlbumsForOverview(identifier:Either[Int,String]):Future[JsValue]
+  val serviceArtistFacade: ServiceArtistTrait
 
   def getArtistsForAnalysis = IdentifiedBySession.async { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
-    artistsAndAlbumsForOverview(identifier) map { jsonResult =>
-      Ok(Json.obj("data" -> jsonResult))
+    serviceArtistFacade.apply(identifier).getArtistsAndAlbumsForOverview map { jsResult =>
+      Ok(Json.obj("data" -> jsResult))
     }
   }
 

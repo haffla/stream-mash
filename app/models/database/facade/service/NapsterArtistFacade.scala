@@ -33,7 +33,7 @@ class NapsterArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFa
 
 object NapsterArtistFacade extends ServiceArtistTrait {
 
-  def apply(identifier: Either[Int,String]) = new NapsterArtistFacade(identifier)
+  override def apply(identifier: Either[Int,String]) = new NapsterArtistFacade(identifier)
 
   override protected def setArtistAnalysed(id: Long) = {
     update(AppDB.napsterArtists)(na =>

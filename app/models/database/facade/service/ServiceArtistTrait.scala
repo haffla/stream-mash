@@ -6,6 +6,7 @@ import play.api.libs.json.JsValue
 
 trait ServiceArtistTrait {
 
+  def apply(identifier:Either[Int,String]):ServiceArtistFacade
   protected def insertOrUpdate(id:Long):Long
   protected def insert(id:Long):Long
   protected def setArtistAnalysed(id: Long)

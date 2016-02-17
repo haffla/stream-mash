@@ -38,7 +38,7 @@ class SpotifyArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFa
 
 object SpotifyArtistFacade extends ServiceArtistTrait {
 
-  def apply(identifier: Either[Int,String]) = new SpotifyArtistFacade(identifier)
+  override def apply(identifier: Either[Int,String]) = new SpotifyArtistFacade(identifier)
 
   override protected def setArtistAnalysed(id: Long) = {
     update(AppDB.spotifyArtists)(s =>
