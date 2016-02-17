@@ -1,12 +1,12 @@
 package models.service.analysis
 
 import models.database.alias.Artist
-import models.database.facade.service.{DeezerAlbumFacade, DeezerArtistFacade}
+import models.database.facade.service.DeezerArtistFacade
 import models.service.api.DeezerApiFacade
 import models.service.oauth.DeezerService
 import models.util.{Constants, Logging}
 import play.api.Play.current
-import play.api.libs.json.{Json, JsValue}
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WS, WSRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -18,7 +18,6 @@ class DeezerAnalysis(identifier:Either[Int,String],
 
   override val searchEndpoint = DeezerService.apiEndpoints.artists
   override val serviceArtistFacade = DeezerArtistFacade
-  override val serviceAlbumFacade = DeezerAlbumFacade
   override val apiFacade = DeezerApiFacade
 
   protected def urlForRequest(artistId:String):String = searchEndpoint + "/" + artistId + "/albums?output=json"

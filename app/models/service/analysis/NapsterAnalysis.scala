@@ -1,7 +1,7 @@
 package models.service.analysis
 
 import models.database.alias.Artist
-import models.database.facade.service.{NapsterArtistFacade, NapsterAlbumFacade}
+import models.database.facade.service.NapsterArtistFacade
 import models.service.api.NapsterApiFacade
 import models.service.oauth.NapsterService
 import models.util.Constants
@@ -19,7 +19,6 @@ class NapsterAnalysis(identifier:Either[Int,String],
 
   override val searchEndpoint = NapsterService.apiEndpoints.artists
   override val serviceArtistFacade = NapsterArtistFacade
-  override val serviceAlbumFacade = NapsterAlbumFacade
   override val apiFacade = NapsterApiFacade
 
   protected def urlForRequest(artistId:String):String = searchEndpoint + "/" + artistId + "/albums?limit=200"

@@ -10,17 +10,18 @@ import scala.concurrent.Future
 class ServiceAnalyser(identifier: Either[Int,String]) {
 
   val analyserList:List[ServiceAnalysisTrait] = List(SpotifyAnalysis, DeezerAnalysis, NapsterAnalysis)
+  val importer = AnalysisDataImporter
 
   def analyse():Future[Boolean] = {
     val favouriteArtistsIds = ArtistFacade(identifier).mostListenedToArtists().take(Constants.maxArtistCountToAnalyse).map(_.key)
-    val artists = ArtistFacade(identifier).usersFavouriteArtists(favouriteArtistsIds).map(_._1)
+    val favouriteArtists = ArtistFacade(identifier).usersFavouriteArtists(favouriteArtistsIds).map(_._1)
     val result:Future[List[Map[Long, List[(String, String, String)]]]] = Future.sequence {
-      analyserList.map(_.apply(identifier, artists).analyse())
+      analyserList.map(_.apply(identifier, favouriteArtists).analyse())
     }
     for {
       res <- result
-      p <- AnalysisDataImporter.persist(res)
-    } yield p.forall(_ == true)
+      successList <- importer.persist(res)
+    } yield successList.forall(_ == true)
   }
 }
 

@@ -1,14 +1,14 @@
 package models.service.analysis
 
 import models.database.alias.Artist
-import models.database.facade.service.{SpotifyAlbumFacade, SpotifyArtistFacade}
+import models.database.facade.service.SpotifyArtistFacade
 import models.service.api.SpotifyApiFacade
 import models.service.api.refresh.SpotifyRefresh
 import models.service.oauth.SpotifyService
 import models.util.Constants
-import play.api.libs.json.JsValue
-import play.api.libs.ws.{WSRequest, WS}
 import play.api.Play.current
+import play.api.libs.json.JsValue
+import play.api.libs.ws.{WS, WSRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -19,7 +19,6 @@ class SpotifyAnalysis(identifier:Either[Int,String],
 
   override val searchEndpoint = SpotifyService.apiEndpoints.artists
   override val serviceArtistFacade = SpotifyArtistFacade
-  override val serviceAlbumFacade = SpotifyAlbumFacade
   override val apiFacade = SpotifyApiFacade
   val market = "DE"
   val limit = "50"

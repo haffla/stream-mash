@@ -36,15 +36,6 @@ object AnalysisDataImporter {
     }
   }
 
-  private def serviceArtistFacade(service:String):ServiceArtistTrait = {
-    service match {
-      case Constants.serviceSpotify => SpotifyArtistFacade
-      case Constants.serviceDeezer => DeezerArtistFacade
-      case Constants.serviceNapster => NapsterArtistFacade
-      case _ => throw new Exception("Unknown service " + service)
-    }
-  }
-
   private def serviceAlbumFacade(service:String):ServiceAlbumFacade = {
     service match {
       case Constants.serviceSpotify => SpotifyAlbumFacade
@@ -67,9 +58,8 @@ object AnalysisDataImporter {
       val (artistDbId, albumList) = artistItem
       val groupedByService:Map[String, List[(String, String, String)]] = albumList.groupBy { case (_,_,service) => service}
       groupedByService.foreach { case (service, grpAlbList) =>
-        val serviceArtistId:Long = serviceArtistFacade(service).saveArtist(artistDbId)
         grpAlbList.foreach { case (albumName,albumServiceId,_) =>
-          serviceAlbumFacade(service).saveAlbumWithNameAndId(albumName, serviceArtistId, albumServiceId)
+          serviceAlbumFacade(service).saveAlbumWithNameAndId(albumName, artistDbId, albumServiceId)
         }
       }
       true

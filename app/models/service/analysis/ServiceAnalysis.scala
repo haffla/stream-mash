@@ -1,7 +1,7 @@
 package models.service.analysis
 
 import models.database.alias.Artist
-import models.database.facade.service.{ServiceAlbumFacade, ServiceArtistTrait}
+import models.database.facade.service.ServiceArtistTrait
 import models.service.api.ApiFacade
 import models.service.util.ServiceAccessTokenHelper
 import models.util.Logging
@@ -20,7 +20,6 @@ abstract class ServiceAnalysis(identifier:Either[Int,String],
   protected val serviceAccessTokenHelper = new ServiceAccessTokenHelper(service, identifier)
   val searchEndpoint:String
   val serviceArtistFacade:ServiceArtistTrait
-  val serviceAlbumFacade:ServiceAlbumFacade
   val apiFacade:ApiFacade
 
   protected def testAndGetAccessToken():Future[Option[String]]
