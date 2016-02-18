@@ -15,7 +15,7 @@ trait AnalysisController extends Controller {
   val apiFacade:ApiFacade
   val serviceArtistFacade: ServiceArtistTrait
 
-  def getArtistsForAnalysis = IdentifiedBySession.async { implicit request =>
+  def getArtistsForOverview = IdentifiedBySession.async { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
     serviceArtistFacade.apply(identifier).getArtistsAndAlbumsForOverview map { jsResult =>
       Ok(Json.obj("data" -> jsResult))
@@ -23,8 +23,8 @@ trait AnalysisController extends Controller {
   }
 
   def getArtistDetail = IdentifiedBySession.async { implicit request =>
-    request.getQueryString("id").map { spId =>
-      apiFacade.getArtistInfoForFrontend(spId).map { response => Ok(response) }
+    request.getQueryString("id").map { id =>
+      apiFacade.getArtistInfoForFrontend(id).map { response => Ok(response) }
     }.getOrElse(
       Future.successful(BadRequest(s"Missing parameter 'id', e.g. ${serviceName.toUpperCase} ID of the artist"))
     )

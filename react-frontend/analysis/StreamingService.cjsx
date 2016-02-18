@@ -14,7 +14,7 @@ List = require 'material-ui/lib/lists/list'
 ListItem = require 'material-ui/lib/lists/list-item'
 RaisedButton = require 'material-ui/lib/raised-button'
 
-StreamingServiceBox = React.createClass
+StreamingService = React.createClass
 
   getInitialState: () ->
     artists: [], selectedArtist: {albums: []}, missingAlbumsDialogOpen: false, loaded: false
@@ -155,4 +155,4 @@ StreamingServiceBox = React.createClass
         <LinearProgress mode="indeterminate"/>
 
 
-module.exports = StreamingServiceBox
+module.exports = StreamingService

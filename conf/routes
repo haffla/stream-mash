@@ -13,14 +13,14 @@ POST          /register                     controllers.AuthController.register
 ### Spotify
 GET           /spotify/login                controllers.SpotifyController.login
 GET           /spotify/callback             controllers.SpotifyController.callback
-GET           /spotify/artists              controllers.SpotifyController.getArtistsForAnalysis
+GET           /spotify/artists              controllers.SpotifyController.getArtistsForOverview
 GET           /spotify/artist-detail        controllers.SpotifyController.getArtistDetail
 GET           /spotify/album-detail         controllers.SpotifyController.getAlbumDetail
 
 ### Napster
 GET           /napster/login                controllers.NapsterController.login
 GET           /napster/callback             controllers.NapsterController.callback
-GET           /napster/artists              controllers.NapsterController.getArtistsForAnalysis
+GET           /napster/artists              controllers.NapsterController.getArtistsForOverview
 GET           /napster/album-detail         controllers.NapsterController.getAlbumDetail
 
 ### Soundcloud
@@ -41,7 +41,7 @@ POST          /itunes                       controllers.ItunesController.fileUpl
 ### Deezer
 GET           /deezer/login                 controllers.DeezerController.login
 GET           /deezer/callback              controllers.DeezerController.callback
-GET           /deezer/artists               controllers.DeezerController.getArtistsForAnalysis
+GET           /deezer/artists               controllers.DeezerController.getArtistsForOverview
 GET           /deezer/artist-detail         controllers.DeezerController.getArtistDetail
 GET           /deezer/album-detail          controllers.DeezerController.getAlbumDetail
 

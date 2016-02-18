@@ -15,7 +15,7 @@ class ServiceAnalysisControllerTest extends PlaySpec with OneServerPerSuite with
   "A Service controller" must {
     "return valid JSON for a user with user_session" in {
       val con = new SpoCtrl
-      val result = con.getArtistsForAnalysis().apply(FakeRequest().withSession(Constants.userSessionKey -> "asdafhnsuiohsfnjk3"))
+      val result = con.getArtistsForOverview().apply(FakeRequest().withSession(Constants.userSessionKey -> "asdafhnsuiohsfnjk3"))
       status(result) must be(OK)
       val bodyText: JsValue = contentAsJson(result)
       (bodyText \ "data" \ Constants.jsonKeyArtists).as[List[JsValue]].length must be(0)
@@ -26,7 +26,7 @@ class ServiceAnalysisControllerTest extends PlaySpec with OneServerPerSuite with
   "A Service controller" must {
     "deny a user who is trying to fake a request" in {
       val con = new DeeCtrl
-      val result = con.getArtistsForAnalysis().apply(FakeRequest().withSession(Constants.userId -> "1"))
+      val result = con.getArtistsForOverview().apply(FakeRequest().withSession(Constants.userId -> "1"))
       status(result) must be(SEE_OTHER)
       contentAsString(result) must be("")
     }

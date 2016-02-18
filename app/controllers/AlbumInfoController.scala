@@ -14,10 +14,10 @@ trait AlbumInfoController extends Controller {
 
   def getAlbumDetail = IdentifiedBySession.async { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
-    request.getQueryString("id").map { spId =>
+    request.getQueryString("id").map { id =>
       val usersTracks = TrackFacade(identifier).getUsersTracks
-      apiFacade.getAlbumInfoForFrontend(spId,usersTracks).map { spotifyResponse =>
-        Ok(spotifyResponse)
+      apiFacade.getAlbumInfoForFrontend(id,usersTracks).map { response =>
+        Ok(response)
       }
     }.getOrElse(
       Future.successful(BadRequest(s"Missing parameter 'id', e.g. ${serviceName.toUpperCase} ID of the album"))

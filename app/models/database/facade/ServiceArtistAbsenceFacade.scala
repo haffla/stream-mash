@@ -1,10 +1,10 @@
 package models.database.facade
 
 import models.database.AppDB
-import models.database.alias.ServiceArtistAbsence
+import models.database.alias.{Artist, ServiceArtistAbsence}
 import org.squeryl.PrimitiveTypeMode._
 
-object ServiceArtistAbsenceFacade extends Facade {
+object ServiceArtistAbsenceFacade {
 
   def insertIfNotExists(id:Long, service:String) = {
     inTransaction {
@@ -23,6 +23,15 @@ object ServiceArtistAbsenceFacade extends Facade {
           }
         case _ =>
       }
+    }
+  }
+
+  def absentArtists(service:String, artistIds:List[Long]):List[Artist] = {
+    inTransaction {
+      from(AppDB.artists, AppDB.serviceArtistAbsence)( (a, saa) =>
+        where(a.id === saa.artistId and saa.service === service and saa.artistId.in(artistIds))
+          select a
+      ).distinct.toList
     }
   }
 }

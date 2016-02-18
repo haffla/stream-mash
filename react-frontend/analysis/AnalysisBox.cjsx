@@ -1,5 +1,5 @@
 React = require 'react'
-StreamingServiceBox = require './StreamingServiceBox'
+StreamingService = require './StreamingService'
 SpotifyHelper = require '../util/SpotifyHelper'
 DeezerHelper = require '../util/DeezerHelper'
 NapsterHelper = require '../util/NapsterHelper'
@@ -17,7 +17,7 @@ AnalysisBox = React.createClass
     <Tabs>
       <Tab label="Spotify" style=@tabButtonStyle>
         <div style=@tabStyle>
-          <StreamingServiceBox
+          <StreamingService
             name="Spotify"
             showPlayer={true}
             artistEndpoint="/spotify/artists"
@@ -28,7 +28,7 @@ AnalysisBox = React.createClass
       </Tab>
       <Tab label="Deezer" style=@tabButtonStyle>
         <div style=@tabStyle>
-          <StreamingServiceBox
+          <StreamingService
             name="Deezer"
             showPlayer={false}
             artistEndpoint="/deezer/artists"
@@ -39,7 +39,7 @@ AnalysisBox = React.createClass
       </Tab>
       <Tab label="Napster" style=@tabButtonStyle>
         <div style=@tabStyle>
-          <StreamingServiceBox
+          <StreamingService
             name="Napster"
             showPlayer={false}
             artistEndpoint="/napster/artists"

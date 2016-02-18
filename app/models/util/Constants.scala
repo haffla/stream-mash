@@ -36,6 +36,7 @@ object Constants {
   val jsonKeyAccessToken = "access_token"
   val jsonKeyRefreshToken = "refresh_token"
   val jsonKeyAlbumsOnlyInUserCollection = "albumsOnlyInUserCollection"
+  val absentArtists = "absentArtists"
   val jsonKeyArtists = "artists"
   val jsonKeyStats = "stats"
   val jsonKeyNrUserAlbs = "nrUserAlbums"
