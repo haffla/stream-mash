@@ -108,7 +108,7 @@ ChartsBox = React.createClass
                 displayNote = if displayChart is 'block' then 'none' else 'block'
                 <div style={display: 'relative'}>
                   <div style={display: displayChart}>
-                    <span style={boxDescriptionStyle}>Number of albums by <b>{@state.selectedArtist.name}</b></span>
+                    <span style={boxDescriptionStyle}>{"N° of albums by "}<b>{@state.selectedArtist.name}</b></span>
                     <svg className='simple-chart'></svg>
                   </div>
                   <span style={display: displayNote, left: 10, top: 10, position: 'absolute', color: Colors.yellow800}>{"Select an artist to display this chart"}</span>
@@ -116,7 +116,7 @@ ChartsBox = React.createClass
               }
             </div>
             <div id='missing-album-chartbox' style={@innerBoxStyle}>
-              <span style={boxDescriptionStyle}>{"Number of missing albums per service"}</span>
+              <span style={boxDescriptionStyle}>{"N° of missing albums per service"}</span>
               <svg className='missing-albumchart'></svg>
             </div>
           </div>
@@ -131,10 +131,10 @@ ChartsBox = React.createClass
               <FlatButton backgroundColor={Colors.grey300} onClick={@handleServiceButtonClick.bind(null, 'napster')} label='Napster' secondary={true} />
             </div>
             <svg id='service-chart'></svg>
-            <span style={boxDescriptionStyle}>{"Number of albums per service and artist: " + @state.totalAlbumCount}</span>
+            <span style={boxDescriptionStyle}>{"N° of albums per service and artist. Total: " + @state.totalAlbumCount}</span>
           </div>
           <div style={@boxStyle}>
-            <span style={boxDescriptionStyle}>{"Number of tracks in your collection per artist: " + @nrTotalTracks() || 0}</span>
+            <span style={boxDescriptionStyle}>{"N° of tracks in your collection per artist. Total: " + @nrTotalTracks() || 0}</span>
             <div id='trackcount-chartbox' style={width: '100%', height: '100%', marginTop: 27}>
               <svg className='trackcount-chart'></svg>
             </div>

@@ -4,15 +4,10 @@ _ = require 'lodash'
 
 LeftView = require './LeftView'
 MidView = require './MidView'
+RightView = require './RightView'
 MissingItemsDialog = require './MissingItemsDialog'
 
-Avatar = require 'material-ui/lib/avatar'
-Colors = require 'material-ui/lib/styles/colors'
-Dialog = require 'material-ui/lib/dialog'
-FontIcon = require 'material-ui/lib/font-icon'
 LinearProgress = require 'material-ui/lib/linear-progress'
-List = require 'material-ui/lib/lists/list'
-ListItem = require 'material-ui/lib/lists/list-item'
 RaisedButton = require 'material-ui/lib/raised-button'
 
 StreamingService = React.createClass
@@ -114,29 +109,7 @@ StreamingService = React.createClass
     @setState missingItemsDialog: {open: open, title: title, items: items}
 
   render: () ->
-    artists = @state.artists.map (artist, idx) =>
-      initials = Helper.getInitials artist.name
-      color = if artist.name == @state.selectedArtist.name then Colors.amber500 else 'white'
-      <ListItem
-        style={backgroundColor: color}
-        key={idx}
-        primaryText={artist.name}
-        onTouchTap={@handleArtistClick.bind(null, idx)}
-        leftAvatar={<Avatar>{initials}</Avatar>}/>
-
-    selectedAlbums = @state.selectedArtist.albums.map (album, idx) =>
-      icon = if album.inCollection then "check_box" else "check_box_outline_blank"
-      isSelected = _.has(@state, 'selectedAlbum') && album.name == @state.selectedAlbum.name
-      color = if isSelected then Colors.amber500 else 'white'
-      <ListItem
-        key={idx}
-        style={backgroundColor: color}
-        onTouchTap={@handleAlbumClick.bind(null, idx)}
-        primaryText={album.name}
-        rightAvatar={<FontIcon color="#455a64" className="material-icons" >{icon}</FontIcon>}
-        />
-
-    if artists.length > 0
+    if @state.artists.length > 0
       <div style={display: 'flex', justifyContent: 'space-between'}>
         <MissingItemsDialog
           title={@state.missingItemsDialog.title}
@@ -145,9 +118,10 @@ StreamingService = React.createClass
           items={@state.missingItemsDialog.items} />
         <LeftView
           name={@props.name}
-          artists={artists}
+          artists={@state.artists}
           nrArtists={@state.artists.length}
           nrAlbumsTotal={@state.nrAlbums}
+          handleArtistClick={@handleArtistClick}
           nrAbsentArtist={@state.absentArtists.length}
           openMissingItemsDialog={@openMissingItemsDialog}
           nrAlbumsInUserCollection={@state.nrUserAlbums}
@@ -160,12 +134,12 @@ StreamingService = React.createClass
           name={@props.name}
           />
 
-        {#Right View}
-        <div style={width: '33%'}>
-          <List subheader={@state.selectedArtist.name + "'s " + "Albums on " + @props.name}>
-            {selectedAlbums}
-          </List>
-        </div>
+        <RightView
+          artist={@state.selectedArtist.name}
+          handleAlbumClick={@handleAlbumClick}
+          selectedArtist={@state.selectedArtist.name}
+          name={@props.name}
+          selectedAlbums={@state.selectedArtist.albums} />
       </div>
     else
       if @state.loaded
