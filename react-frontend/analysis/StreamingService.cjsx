@@ -4,6 +4,7 @@ _ = require 'lodash'
 
 LeftView = require './LeftView'
 MidView = require './MidView'
+MissingItemsDialog = require './MissingItemsDialog'
 
 Avatar = require 'material-ui/lib/avatar'
 Colors = require 'material-ui/lib/styles/colors'
@@ -17,7 +18,20 @@ RaisedButton = require 'material-ui/lib/raised-button'
 StreamingService = React.createClass
 
   getInitialState: () ->
-    artists: [], selectedArtist: {albums: []}, missingAlbumsDialogOpen: false, loaded: false
+    artists: [], selectedArtist: {albums: []}, missingItemsDialog: {open: false, title: 'Missing Albums', items: []}, loaded: false
+
+  getServiceLinkForArtistId: (id, service) ->
+    if _.isEmpty(id)
+      content = '-'
+    else
+      if service is 'Spotify'
+        link = 'https://play.spotify.com/artist/' + id
+      else if service is 'Deezer'
+        link = 'http://www.deezer.com/artist/' + id
+      else if service is 'Napster'
+        link = 'http://app.napster.com/artist/' + id
+      content = <a href={link} target="_blank">{service}</a>
+    <span>{content}</span>
 
   componentDidMount: () ->
     $.ajax @props.artistEndpoint,
@@ -26,12 +40,25 @@ StreamingService = React.createClass
       success: (result) =>
         console.log result
         unless _.isEmpty(result.data.artists)
+          missingAlbums = result.data.stats.albumsOnlyInUserCollection.map (alb,idx) ->
+            <tr key={idx}>
+              <td>{alb.album}</td><td>{alb.artist.name}</td>
+            </tr>
+          missingArtists = result.data.stats.absentArtists.map (art,idx) =>
+            <tr key={idx}>
+              <td>{art.name}</td>
+              <td>{@getServiceLinkForArtistId(art.spotifyId, "Spotify")}</td>
+              <td>{@getServiceLinkForArtistId(art.deezerId, "Deezer")}</td>
+              <td>{@getServiceLinkForArtistId(art.napsterId, "Napster")}</td>
+            </tr>
           @setState {
                       artists: result.data.artists
                       selectedArtist: result.data.artists[0]
                       nrArtists: result.data.stats.nrArtists
                       nrAlbums: result.data.stats.nrAlbums
                       nrUserAlbums: result.data.stats.nrUserAlbums
+                      absentArtists: missingArtists
+                      missingAlbums: missingAlbums
                       albumsOnlyInUserCollection: result.data.stats.albumsOnlyInUserCollection
                       loaded: true
                     }
@@ -72,12 +99,21 @@ StreamingService = React.createClass
     else
       @setState selectedAlbum: @state.selectedArtist.albums[idx]
 
-  closeMissingAlbumsDialog: () ->
-    @setState missingAlbumsDialogOpen: false
+  closeMissingItemsDialog: () ->
+    @setState missingItemsDialog: {open: false}
 
-  openMissingAlbumsDialog: () ->
-    open = @state.albumsOnlyInUserCollection.length > 0
-    @setState missingAlbumsDialogOpen: open
+  openMissingItemsDialog: (type) ->
+    console.log(type)
+    if type is 'album'
+      open = @state.missingAlbums.length > 0
+      title = 'Missing Albums'
+      items = @state.missingAlbums
+    else
+      open = @state.absentArtists.length > 0
+      title = 'Missing Artists'
+      items = @state.absentArtists
+    console.log(open)
+    @setState missingItemsDialog: {open: open, title: title, items: items}
 
   render: () ->
     artists = @state.artists.map (artist, idx) =>
@@ -96,7 +132,6 @@ StreamingService = React.createClass
       color = if isSelected then Colors.amber500 else 'white'
       <ListItem
         key={idx}
-        missingAlbumsDialogOpen={@state.missingAlbumsDialogOpen}
         style={backgroundColor: color}
         onTouchTap={@handleAlbumClick.bind(null, idx)}
         primaryText={album.name}
@@ -104,46 +139,35 @@ StreamingService = React.createClass
         />
 
     if artists.length > 0
-      missingAlbums = @state.albumsOnlyInUserCollection.map (alb,idx) ->
-        <tr key={idx}>
-          <td>{alb.album}</td><td>{alb.artist.name}</td>
-        </tr>
       <div style={display: 'flex', justifyContent: 'space-between'}>
-        <Dialog
-          title="Missing Albums"
-          modal={false}
-          open={@state.missingAlbumsDialogOpen}
-          onRequestClose={@closeMissingAlbumsDialog}>
-          <div style={overflowY: 'auto', maxHeight: 500}>
-            <table className="table">
-              <tbody>
-                {missingAlbums}
-              </tbody>
-            </table>
-          </div>
-        </Dialog>
-         <LeftView
-            name={@props.name}
-            artists={artists}
-            nrArtists={@state.artists.length}
-            nrAlbumsTotal={@state.nrAlbums}
-            openMissingAlbumsDialog={@openMissingAlbumsDialog}
-            nrAlbumsInUserCollection={@state.nrUserAlbums}
-            albumsOnlyInUserCollection={@state.albumsOnlyInUserCollection} />
+        <MissingItemsDialog
+          title={@state.missingItemsDialog.title}
+          open={@state.missingItemsDialog.open}
+          onRequestClose={@closeMissingItemsDialog}
+          items={@state.missingItemsDialog.items} />
+        <LeftView
+          name={@props.name}
+          artists={artists}
+          nrArtists={@state.artists.length}
+          nrAlbumsTotal={@state.nrAlbums}
+          nrAbsentArtist={@state.absentArtists.length}
+          openMissingItemsDialog={@openMissingItemsDialog}
+          nrAlbumsInUserCollection={@state.nrUserAlbums}
+          nrMissingAlbums={@state.missingAlbums.length} />
 
-         <MidView
+        <MidView
           showPlayer={@props.showPlayer}
           selectedAlbum={@state.selectedAlbum}
           selectedArtist={@state.selectedArtist}
           name={@props.name}
           />
 
-         {#Right View}
-         <div style={width: '33%'}>
-            <List subheader={@state.selectedArtist.name + "'s " + "Albums on " + @props.name}>
-             {selectedAlbums}
-            </List>
-         </div>
+        {#Right View}
+        <div style={width: '33%'}>
+          <List subheader={@state.selectedArtist.name + "'s " + "Albums on " + @props.name}>
+            {selectedAlbums}
+          </List>
+        </div>
       </div>
     else
       if @state.loaded

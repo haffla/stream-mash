@@ -22,6 +22,13 @@ LeftView = React.createClass
            <tr>
              <td>Artists</td>
              <td>{@props.nrArtists}</td>
+             <td></td>
+             <td>
+               <span style={textDecoration: 'underline', color: Colors.blue500, cursor: 'pointer'}
+                     onClick={@props.openMissingItemsDialog.bind(null, 'artist')}>
+                 {@props.nrAbsentArtist}
+               </span>
+             </td>
            </tr>
            <tr>
              <td>Albums</td>
@@ -29,8 +36,8 @@ LeftView = React.createClass
              <td>{@props.nrAlbumsInUserCollection}</td>
              <td>
               <span style={textDecoration: 'underline', color: Colors.blue500, cursor: 'pointer'}
-                    onClick={@props.openMissingAlbumsDialog}>
-                {@props.albumsOnlyInUserCollection.length}
+                    onClick={@props.openMissingItemsDialog.bind(null, 'album')}>
+                {@props.nrMissingAlbums}
               </span>
              </td>
            </tr>

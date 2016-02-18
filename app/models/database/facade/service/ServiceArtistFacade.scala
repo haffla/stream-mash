@@ -10,9 +10,8 @@ import play.api.libs.json.JsValue
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-abstract class ServiceArtistFacade(identifier:Either[Int,String]) {
+abstract class ServiceArtistFacade(identifier:Either[Int,String], serviceName:String) {
 
-  val serviceName:String
   val exporter = new ServiceArtistExporter(serviceName)
 
   def artistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)]

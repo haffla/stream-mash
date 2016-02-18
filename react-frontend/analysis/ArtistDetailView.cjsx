@@ -17,7 +17,10 @@ ArtistDetailView = React.createClass
        <CardTitle
          title={@props.selectedArtist.name}
          subtitle={
-           nrAlbumsOnSpotify + " Albums on " + @props.name + " of which you have " + nrAlbumsInUserCollection + " in your Collection"
+           <div>
+             <p>{nrAlbumsOnSpotify + " Albums on " + @props.name}</p>
+             <p>{"In Your Collection: " + nrAlbumsInUserCollection}</p>
+           </div>
            } />
      </Card>
     </div>

@@ -9,9 +9,7 @@ import org.squeryl.PrimitiveTypeMode._
 import org.squeryl.dsl.GroupWithMeasures
 import play.api.libs.json.JsValue
 
-class SpotifyArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFacade(identifier) {
-
-  val serviceName = Constants.serviceSpotify
+class SpotifyArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFacade(identifier, Constants.serviceSpotify) {
 
   /**
     * Each streaming artist facade needs to implement this method. Join artists and albums

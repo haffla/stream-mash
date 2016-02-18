@@ -9,9 +9,7 @@ import org.squeryl.PrimitiveTypeMode._
 import org.squeryl.dsl.GroupWithMeasures
 import play.api.libs.json.JsValue
 
-class DeezerArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFacade(identifier) {
-
-  val serviceName = Constants.serviceDeezer
+class DeezerArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFacade(identifier, Constants.serviceDeezer) {
 
   override def artistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)] = {
     join(AppDB.albums,

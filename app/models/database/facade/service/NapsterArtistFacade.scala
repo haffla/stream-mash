@@ -8,9 +8,7 @@ import org.squeryl.PrimitiveTypeMode._
 import org.squeryl.dsl.GroupWithMeasures
 import play.api.libs.json.JsValue
 
-class NapsterArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFacade(identifier) {
-
-  val serviceName = Constants.serviceNapster
+class NapsterArtistFacade(identifier:Either[Int,String]) extends ServiceArtistFacade(identifier, Constants.serviceNapster) {
 
   override def artistsAndAlbums(usersArtists:List[Long]):List[(Album,Artist,String)] = {
     join(AppDB.albums,
