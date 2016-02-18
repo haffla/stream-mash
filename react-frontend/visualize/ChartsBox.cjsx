@@ -5,7 +5,7 @@ React = require 'react'
 BarChartSimple = require './d3/BarChartSimple'
 BubbleChart = require './d3/BubbleChart'
 BarChart = require './d3/BarChart'
-ServiceChart = require './d3/ServiceChart'
+RedrawableBarChart = require './d3/RedrawableBarChart'
 
 Colors = require 'material-ui/lib/styles/colors'
 Dialog = require 'material-ui/lib/dialog'
@@ -42,12 +42,28 @@ ChartsBox = React.createClass
         console.log(data)
         @setState data: data, totalAlbumCount: Helper.calculateNrOfServiceAlbums(data.total), loaded: true
         bubble = new BubbleChart(@state.data, @handleBubbleClick)
-        bar = new BarChart(@state.data.user)
+        #bar = new BarChart(@state.data.user)
+        names = @state.data.user.map (a) -> a.name
+        bar = new BarChart(
+          @state.data.user,
+          names,
+          '#trackcount-chartbox',
+          '.trackcount-chart',
+          'trackCount'
+        )
         @barChartSimple = new BarChartSimple '#simple-chartbox', '.simple-chart'
-        @serviceChart = new ServiceChart({
-          artists: @state.data.user
-          totals: @state.data.total
-          })
+        d = @state.data.user.map (a) =>
+          id = a.id
+          total = @state.data.total[id] || 0
+          a.total = total
+          a
+        names = @state.data.user.map (a) -> a.name
+        @serviceChart = new RedrawableBarChart(
+          d,
+          names,
+          '#service-chart-box',
+          '#service-chart',
+          'total')
         missingAlbumChart = new BarChartSimple '#missing-album-chartbox', '.missing-albumchart'
         missingAlbumChart.makeBarChart(
           [@state.data.missing.spotify, @state.data.missing.deezer, @state.data.missing.napster]
@@ -90,7 +106,7 @@ ChartsBox = React.createClass
       when 'napster' then @state.data.napster
       else @state.data.total
     @setState totalAlbumCount: Helper.calculateNrOfServiceAlbums data
-    @serviceChart.redraw data, @state.selectedArtist.id
+    @serviceChart.redraw data, @state.selectedArtist.id, @state.data.user
   render: () ->
     boxDescriptionStyle = {padding: 8, color: Colors.grey500, position: 'absolute', right: 0, top: 0}
 
@@ -123,7 +139,7 @@ ChartsBox = React.createClass
         </div>
 
         <div style={display: 'flex', justifyContent: 'space-between', marginTop: 20}>
-          <div style={@boxStyle}>
+          <div style={@boxStyle} id='service-chart-box'>
             <div style={height: 20}>
               <FlatButton backgroundColor={Colors.grey300} onClick={@handleServiceButtonClick.bind(null, 'all')} label='All' />
               <FlatButton backgroundColor={Colors.grey300} onClick={@handleServiceButtonClick.bind(null, 'spotify')} label='Spotify' secondary={true} />
