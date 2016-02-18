@@ -6,7 +6,7 @@ BarChart = require './BarChart'
 class RedrawableBarChart extends BarChart
 
   redraw: (totals, selectedItemId, data) ->
-    data.map (a) =>
+    data.map (a) ->
       id = a.id
       total = totals[id] || 0
       a.total = total
