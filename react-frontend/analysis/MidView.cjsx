@@ -13,8 +13,7 @@ MidView = React.createClass
     else if @props.selectedArtist and !_.isEmpty(@props.selectedArtist)
       <ArtistDetailView
        name={@props.name}
-       selectedArtist={@props.selectedArtist}
-       />
+       selectedArtist={@props.selectedArtist} />
 
 
 module.exports = MidView

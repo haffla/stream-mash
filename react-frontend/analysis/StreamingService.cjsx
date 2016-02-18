@@ -103,7 +103,6 @@ StreamingService = React.createClass
     @setState missingItemsDialog: {open: false}
 
   openMissingItemsDialog: (type) ->
-    console.log(type)
     if type is 'album'
       open = @state.missingAlbums.length > 0
       title = 'Missing Albums'
@@ -112,7 +111,6 @@ StreamingService = React.createClass
       open = @state.absentArtists.length > 0
       title = 'Missing Artists'
       items = @state.absentArtists
-    console.log(open)
     @setState missingItemsDialog: {open: open, title: title, items: items}
 
   render: () ->
