@@ -3,7 +3,7 @@ package models.service.visualization
 import models.database.alias.Artist
 import models.database.facade.ArtistFacade
 import models.database.facade.service._
-import models.util.{Constants, GroupMeasureConversion}
+import models.util.GroupMeasureConversion
 import play.api.libs.json.{JsValue, Json}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -11,7 +11,6 @@ import scala.concurrent.Future
 
 class ServiceData(identifier:Either[Int,String]) extends GroupMeasureConversion {
 
-  val services:List[String] = List(Constants.serviceSpotify, Constants.serviceDeezer, Constants.serviceNapster)
   val albumFacadesList:List[ServiceAlbumFacade] = List(SpotifyAlbumFacade, DeezerAlbumFacade, NapsterAlbumFacade)
   val serviceArtistFacadeList: List[ServiceArtistTrait] = List(SpotifyArtistFacade, DeezerArtistFacade, NapsterArtistFacade)
 
@@ -31,21 +30,14 @@ class ServiceData(identifier:Either[Int,String]) extends GroupMeasureConversion 
       missingCounts <- Future(missingAlbumCounts(artistIds))
     } yield {
       val totals = mergeMaps(albumCounts.map(_._2))
-      val serviceCountJson = services.foldLeft(Json.obj()) { (accumulated,curr) =>
-        accumulated + (curr, countsForServiceFromList(albumCounts, Constants.serviceSpotify))
+      val serviceCountJson = albumCounts.foldLeft(Json.obj()) { (accumulated,albumCount) =>
+        accumulated + (albumCount._1, toJson(albumCount._2))
       }
       Json.obj(
         "user" -> artistsToJson(usersArtists),
         "total" -> toJson(totals),
         "missing" -> missingCounts
       ) ++ serviceCountJson
-    }
-  }
-
-  private def countsForServiceFromList(counts: List[(String,Map[Long,Long])], serviceId: String): JsValue = {
-    counts.find(_._1 == serviceId) match {
-      case Some(elem) => toJson(elem._2)
-      case _ => throw new Exception(s"Did not find stats for service $serviceId in result list")
     }
   }
 
