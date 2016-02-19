@@ -49,9 +49,11 @@ class BarChart
 
     bar.append('text')
       .attr('x', x.rangeBand() / 2)
-      .attr('y', (d) => y(d[@totalKey]) + 5)
+      .attr('y', (d) =>
+        adjustment = if d[@totalKey] == 0 then -30 else 5
+        y(d[@totalKey]) + adjustment)
       .attr('dy', '.75em')
-      .attr('fill', 'white')
+      .attr('fill', (d) => unless d[@totalKey] == 0 then 'white' else Colors.red900)
       .attr('text-anchor', 'middle')
       .text((d) => d[@totalKey])
 

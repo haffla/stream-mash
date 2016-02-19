@@ -31,6 +31,8 @@ ChartsBox = React.createClass
     @setState selectedArtist: d
     id = d.id
     $('.artist').attr('fill', Colors.amber700)
+    $('.artist-circle').attr('class', 'artist-circle').attr('stroke-width', '1px')
+    $(event.target).attr('class', 'artist-circle bordered-circle').attr('stroke-width', '2px')
     $('.artist' + id).attr('fill', Colors.purple600)
     @barChartSimple.makeBarChart [@state.data.spotify[id], @state.data.deezer[id], @state.data.napster[id]]
 

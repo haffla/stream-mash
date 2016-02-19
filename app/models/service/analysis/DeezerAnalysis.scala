@@ -23,13 +23,19 @@ class DeezerAnalysis(identifier:Either[Int,String],
   protected def urlForRequest(artistId:String):String = searchEndpoint + "/" + artistId + "/albums?output=json"
 
   protected override def handleJsonResponse(jsResp:JsValue):List[(String,String)] = {
-    val items = (jsResp \ "data").as[List[JsValue]]
-    items.map {
-      item =>
-        val albumName = (item \ "title").as[String]
-        val id = (item \ "id").as[Int]
-        (albumName, id.toString)
+    (jsResp \ "data").asOpt[List[JsValue]] match {
+      case Some(data) =>
+        data.map {
+          item =>
+            val albumName = (item \ "title").as[String]
+            val id = (item \ "id").as[Int]
+            (albumName, id.toString)
+        }
+      case _ =>
+        println(jsResp)
+        Nil
     }
+
   }
 
   protected override def getServiceFieldFromArtist(artist: Artist): Option[String] = artist.deezerId

@@ -49,6 +49,7 @@ class BubbleChart
       .attr('fill', @decideWhichColor)
       .attr('stroke-width', 1)
       .attr('stroke', Colors.grey500)
+      .attr('class', 'artist-circle')
 
     @elements.append('text')
       .attr('text-anchor', 'middle')
