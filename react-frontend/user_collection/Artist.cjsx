@@ -16,7 +16,7 @@ Artist = React.createClass
             min={0}
             onChange={@props.onArtistSlideChange.bind(null, @props.idx)}
             max={3}
-            step={1}
+            step={0.5}
             value={@props.artist.rating}/>
         </div>
       </div>

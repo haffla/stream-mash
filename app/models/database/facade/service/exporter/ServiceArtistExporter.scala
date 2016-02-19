@@ -10,13 +10,13 @@ class ServiceArtistExporter(serviceName: String) {
   def convertToJson(albumCollection:List[(Album,Artist,String)],
                     albumsInUserCollection:List[Album],
                     absentArtists:List[Artist]): JsValue = {
-    val convertedToMap = albumCollection.foldLeft(Map[Artist,Set[(String,String,Boolean)]]()) { (prev, curr) =>
+    val convertedToMap = albumCollection.foldLeft(Map[Artist,List[(String,String,Boolean)]]()) { (prev, curr) =>
       val artist = curr._2
       val currentAlbum = curr._1.name
       val albumServiceId = curr._3
       val userHasAlbumInCollection = albumsInUserCollection.contains(curr._1)
       val aggregatedAlbums = prev.getOrElse(artist, Set.empty) ++ Set((currentAlbum,albumServiceId,userHasAlbumInCollection))
-      prev + (artist -> aggregatedAlbums)
+      prev + (artist -> aggregatedAlbums.toList.sortBy(_._1))
     }
     doJsonConversion(convertedToMap,albumCollection.length,
       albumsOnlyInUserCollection(albumCollection,albumsInUserCollection),
@@ -52,12 +52,13 @@ class ServiceArtistExporter(serviceName: String) {
     }
   }
 
-  private def doJsonConversion(artistAlbumMap: Map[Artist,Set[(String,String,Boolean)]],
+  private def doJsonConversion(artistAlbumMap: Map[Artist,List[(String,String,Boolean)]],
                                nrAlbums:Int,
                                albumsOnlyInUserCollection:List[JsValue],
                                absentArtist:List[JsValue],
                                nrAlbumsInUserCollection:Int): JsValue = {
     val list = artistAlbumMap.map { elem =>
+      val x = elem._2
       val albums = elem._2.map { album =>
         Json.obj(
           "name" -> album._1,

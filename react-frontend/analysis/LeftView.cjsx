@@ -18,7 +18,7 @@ LeftView = React.createClass
         style={backgroundColor: color}
         key={idx}
         primaryText={artist.name}
-        onTouchTap={@props.handleArtistClick}
+        onTouchTap={@props.handleArtistClick.bind(null, idx)}
         leftAvatar={<Avatar>{initials}</Avatar>} />
     children =
       <div>

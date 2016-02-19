@@ -21,6 +21,7 @@ GET           /spotify/album-detail         controllers.SpotifyController.getAlb
 GET           /napster/login                controllers.NapsterController.login
 GET           /napster/callback             controllers.NapsterController.callback
 GET           /napster/artists              controllers.NapsterController.getArtistsForOverview
+GET           /napster/artist-detail        controllers.NapsterController.getArtistDetail
 GET           /napster/album-detail         controllers.NapsterController.getAlbumDetail
 
 ### Soundcloud

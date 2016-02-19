@@ -11,7 +11,7 @@ import scala.concurrent.Future
 
 class ServiceData(identifier:Either[Int,String]) extends GroupMeasureConversion {
 
-  val albumFacadesList:List[ServiceAlbumFacade] = List(SpotifyAlbumFacade, DeezerAlbumFacade, NapsterAlbumFacade)
+  val serviceAlbumFacadeList:List[ServiceAlbumFacade] = List(SpotifyAlbumFacade, DeezerAlbumFacade, NapsterAlbumFacade)
   val serviceArtistFacadeList: List[ServiceArtistTrait] = List(SpotifyArtistFacade, DeezerArtistFacade, NapsterArtistFacade)
 
   def retrieve() = {
@@ -54,7 +54,7 @@ class ServiceData(identifier:Either[Int,String]) extends GroupMeasureConversion 
   }
 
   private def missingAlbumCounts(artistIds: List[Long]): JsValue = {
-    albumFacadesList.foldLeft(Json.obj()) { (accumulated, albumFacade) =>
+    serviceAlbumFacadeList.foldLeft(Json.obj()) { (accumulated, albumFacade) =>
       accumulated + (albumFacade.serviceId, Json.toJson(albumFacade(identifier).countMissingUserAlbums(artistIds)))
     }
   }

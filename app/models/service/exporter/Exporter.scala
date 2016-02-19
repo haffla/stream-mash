@@ -8,7 +8,7 @@ object Exporter {
     * Transforms the collection coming from the database to a Json Array of Json Objects
     */
   def prepareCollectionForFrontend(data:List[(Album,Artist,Track,UserCollection,UserArtistLiking,Long)]):JsValue = {
-    val converted = convertToArtistMap(data)
+    val converted = convertToArtistMap(data.sortBy(_._5.score)(Ordering.Double.reverse))
     val jsObjects = converted.map { case (artistData,albumData) =>
       val (artistName,artistPic,artistRating,artistTrackCount) = artistData
       val albumObjects = albumData.map { album =>

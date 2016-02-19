@@ -20,9 +20,9 @@ abstract class ServiceArtistFacade(identifier:Either[Int,String], serviceName:St
     val favouriteArtistsIds = ArtistFacade(identifier).mostListenedToArtists().take(Constants.maxArtistCountToAnalyse).map(_.key)
     for {
       albumsInUserCollection <- Future { AlbumFacade(identifier).getUsersFavouriteAlbums(favouriteArtistsIds) }
-      serviceAlbums <- Future { getUserRelatedServiceAlbums(favouriteArtistsIds) }
+      albumCollection <- Future { getUserRelatedServiceAlbums(favouriteArtistsIds) }
       absentArtists <- Future { ServiceArtistAbsenceFacade.absentArtists(serviceName, favouriteArtistsIds)}
-    } yield exporter.convertToJson(serviceAlbums,albumsInUserCollection,absentArtists)
+    } yield exporter.convertToJson(albumCollection,albumsInUserCollection,absentArtists)
   }
 
   /**

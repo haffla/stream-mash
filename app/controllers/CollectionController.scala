@@ -37,6 +37,7 @@ class CollectionController extends Controller {
   def visualizationData = IdentifiedBySession.async { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
     new ServiceData(identifier).retrieve().map { res =>
+      println(res)
       Ok(res)
     }
   }
