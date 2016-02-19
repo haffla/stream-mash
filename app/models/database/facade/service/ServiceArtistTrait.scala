@@ -13,7 +13,7 @@ trait ServiceArtistTrait {
   def saveInfoAboutArtist(js:JsValue):Unit
   def analysedArtistIds(artistIds: List[Long]):List[Long]
   def saveArtist(id:Long):Long = inTransaction(insertOrUpdate(id))
-  def artistsAlbumCount(artistId:List[Long]):List[GroupWithMeasures[Long,Long]]
+  def artistsAlbumCount(artistId:List[Long]): (String, List[GroupWithMeasures[Long,Long]])
 
   def countArtistsAlbums(artistId:List[Long]) = {
     inTransaction {

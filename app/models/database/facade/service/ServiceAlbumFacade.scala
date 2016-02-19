@@ -6,6 +6,10 @@ import org.squeryl.PrimitiveTypeMode._
 
 trait ServiceAlbumFacade {
 
+  val id:String
+
+  def apply(identifier: Either[Int,String]): ServiceAlbumTrait
+
   def insertServiceAlbumIfNotExists(id:Long, serviceId:String):Long
   def insertAlbum(id:Long, serviceId:String):Long
 

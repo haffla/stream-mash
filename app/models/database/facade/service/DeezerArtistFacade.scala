@@ -77,12 +77,14 @@ object DeezerArtistFacade extends ServiceArtistTrait {
     }
   }
 
-  override def artistsAlbumCount(artistId:List[Long]):List[GroupWithMeasures[Long,Long]] = {
-    from(AppDB.deezerArtists, AppDB.deezerAlbums, AppDB.albums)((deArt,deAlb,alb) =>
+  override def artistsAlbumCount(artistId:List[Long]): (String, List[GroupWithMeasures[Long,Long]]) = {
+    val res = from(AppDB.deezerArtists, AppDB.deezerAlbums, AppDB.albums)((deArt,deAlb,alb) =>
       where(deArt.id in artistId and alb.id === deAlb.id and alb.artistId === deArt.id)
         groupBy deArt.id
         compute countDistinct(alb.id)
     ).toList
+
+    (Constants.serviceDeezer, res)
   }
 }
 
