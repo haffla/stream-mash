@@ -90,11 +90,13 @@ object SpotifyArtistFacade extends ServiceArtistTrait {
     }
   }
 
-  override def artistsAlbumCount(artistId:List[Long]):List[GroupWithMeasures[Long,Long]] = {
-    from(AppDB.albums, AppDB.spotifyArtists, AppDB.spotifyAlbums)((alb,spArt,spAlb) =>
+  override def artistsAlbumCount(artistId:List[Long]): (String, List[GroupWithMeasures[Long,Long]]) = {
+    val res = from(AppDB.albums, AppDB.spotifyArtists, AppDB.spotifyAlbums)((alb,spArt,spAlb) =>
       where(spArt.id in artistId and alb.id === spAlb.id and alb.artistId === spArt.id)
         groupBy spArt.id
         compute countDistinct(alb.id)
       ).toList
+
+    (Constants.serviceSpotify, res)
   }
 }

@@ -83,7 +83,7 @@ class ArtistFacade(identifier:Either[Int,String]) extends Facade with GroupMeasu
   def usersFavouriteArtistsWithTrackCountAndScore():List[(Artist,Long,Double)] = {
     inTransaction {
       val mlta = toMap(mostListenedToArtists().take(Constants.maxArtistCountToAnalyse))
-      val mltaIds = mlta.keys
+      val mltaIds = mlta.keys.toList
       join(
         AppDB.artists,
         AppDB.tracks,

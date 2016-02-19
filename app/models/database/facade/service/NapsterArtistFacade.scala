@@ -70,12 +70,14 @@ object NapsterArtistFacade extends ServiceArtistTrait {
     }
   }
 
-  override def artistsAlbumCount(artistId:List[Long]):List[GroupWithMeasures[Long,Long]] = {
-    from(AppDB.napsterArtists, AppDB.napsterAlbums, AppDB.albums)((napsArt,napsAlb,alb) =>
+  override def artistsAlbumCount(artistId:List[Long]): (String, List[GroupWithMeasures[Long,Long]]) = {
+    val res = from(AppDB.napsterArtists, AppDB.napsterAlbums, AppDB.albums)((napsArt,napsAlb,alb) =>
       where(napsArt.id in artistId and alb.id === napsAlb.id and alb.artistId === napsArt.id)
         groupBy napsArt.id
         compute countDistinct(alb.id)
     ).toList
+
+    (Constants.serviceNapster, res)
   }
 }
 

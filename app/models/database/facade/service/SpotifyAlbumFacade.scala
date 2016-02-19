@@ -2,6 +2,7 @@ package models.database.facade.service
 
 import models.database.AppDB
 import models.database.alias.service.SpotifyAlbum
+import models.util.Constants
 import org.squeryl.PrimitiveTypeMode._
 
 object SpotifyAlbumFacade extends ServiceAlbumFacade {
@@ -19,11 +20,15 @@ object SpotifyAlbumFacade extends ServiceAlbumFacade {
   override def insertAlbum(id: Long, serviceId: String): Long = {
     AppDB.spotifyAlbums.insert(SpotifyAlbum(id, serviceId)).id
   }
+
+  override def apply(identifier: Either[Int, String]): ServiceAlbumTrait = new SpotifyAlbumFacade(identifier)
+
+  override val id: String = Constants.serviceSpotify
 }
 
-class SpotifyAlbumFacade(identifier:Either[Int,String]) {
+class SpotifyAlbumFacade(identifier:Either[Int,String]) extends ServiceAlbumTrait {
 
-  def countMissingUserAlbums(artistIds:List[Long]):Long = {
+  def countMissingUserAlbums(artistIds:List[Long]): Long = {
     inTransaction {
       join(AppDB.albums, AppDB.tracks, AppDB.collections, AppDB.spotifyAlbums.leftOuter)((alb,tr,col,spAlb) =>
         where(alb.artistId.in(artistIds) and AppDB.userWhereClause(col, identifier) and spAlb.map(_.id).isNull)

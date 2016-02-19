@@ -2,6 +2,7 @@ package models.database.facade.service
 
 import models.database.AppDB
 import models.database.alias.service.DeezerAlbum
+import models.util.Constants
 import org.squeryl.PrimitiveTypeMode._
 
 object DeezerAlbumFacade extends ServiceAlbumFacade {
@@ -19,9 +20,13 @@ object DeezerAlbumFacade extends ServiceAlbumFacade {
   override def insertAlbum(id: Long, serviceId: String): Long = {
     AppDB.deezerAlbums.insert(DeezerAlbum(id, serviceId)).id
   }
+
+  override def apply(identifier: Either[Int, String]): ServiceAlbumTrait = new DeezerAlbumFacade(identifier)
+
+  override val id: String = Constants.serviceDeezer
 }
 
-class DeezerAlbumFacade(identifier:Either[Int,String]) {
+class DeezerAlbumFacade(identifier:Either[Int,String]) extends ServiceAlbumTrait {
 
   def countMissingUserAlbums(artistIds:List[Long]):Long = {
     inTransaction {

@@ -2,6 +2,7 @@ package models.database.facade.service
 
 import models.database.AppDB
 import models.database.alias.service.NapsterAlbum
+import models.util.Constants
 import org.squeryl.PrimitiveTypeMode._
 
 object NapsterAlbumFacade extends ServiceAlbumFacade {
@@ -19,9 +20,13 @@ object NapsterAlbumFacade extends ServiceAlbumFacade {
   override def insertAlbum(id: Long, serviceId: String): Long = {
     AppDB.napsterAlbums.insert(NapsterAlbum(id, serviceId)).id
   }
+
+  override def apply(identifier: Either[Int, String]): ServiceAlbumTrait = new NapsterAlbumFacade(identifier)
+
+  override val id: String = Constants.serviceNapster
 }
 
-class NapsterAlbumFacade(identifier:Either[Int,String]) {
+class NapsterAlbumFacade(identifier:Either[Int,String]) extends ServiceAlbumTrait {
 
   def countMissingUserAlbums(artistIds:List[Long]):Long = {
     inTransaction {
