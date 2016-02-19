@@ -21,7 +21,7 @@ object NapsterAlbumFacade extends ServiceAlbumFacade {
     AppDB.napsterAlbums.insert(NapsterAlbum(id, serviceId)).id
   }
 
-  override def apply(identifier: Either[Int, String]): ServiceAlbumTrait = NapsterAlbumFacade(identifier)
+  override def apply(identifier: Either[Int, String]): ServiceAlbumTrait = new NapsterAlbumFacade(identifier)
 
   override val id: String = Constants.serviceNapster
 }

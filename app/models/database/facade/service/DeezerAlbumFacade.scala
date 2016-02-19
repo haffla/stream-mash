@@ -21,7 +21,7 @@ object DeezerAlbumFacade extends ServiceAlbumFacade {
     AppDB.deezerAlbums.insert(DeezerAlbum(id, serviceId)).id
   }
 
-  override def apply(identifier: Either[Int, String]): ServiceAlbumTrait = DeezerAlbumFacade(identifier)
+  override def apply(identifier: Either[Int, String]): ServiceAlbumTrait = new DeezerAlbumFacade(identifier)
 
   override val id: String = Constants.serviceDeezer
 }

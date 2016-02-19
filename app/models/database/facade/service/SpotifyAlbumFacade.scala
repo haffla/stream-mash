@@ -21,7 +21,7 @@ object SpotifyAlbumFacade extends ServiceAlbumFacade {
     AppDB.spotifyAlbums.insert(SpotifyAlbum(id, serviceId)).id
   }
 
-  override def apply(identifier: Either[Int, String]): ServiceAlbumTrait = SpotifyAlbumFacade(identifier)
+  override def apply(identifier: Either[Int, String]): ServiceAlbumTrait = new SpotifyAlbumFacade(identifier)
 
   override val id: String = Constants.serviceSpotify
 }
