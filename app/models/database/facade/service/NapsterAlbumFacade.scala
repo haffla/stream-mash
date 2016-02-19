@@ -23,7 +23,7 @@ object NapsterAlbumFacade extends ServiceAlbumFacade {
 
   override def apply(identifier: Either[Int, String]): ServiceAlbumTrait = new NapsterAlbumFacade(identifier)
 
-  override val id: String = Constants.serviceNapster
+  override val serviceId: String = Constants.serviceNapster
 }
 
 class NapsterAlbumFacade(identifier:Either[Int,String]) extends ServiceAlbumTrait {

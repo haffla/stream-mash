@@ -23,7 +23,7 @@ object DeezerAlbumFacade extends ServiceAlbumFacade {
 
   override def apply(identifier: Either[Int, String]): ServiceAlbumTrait = new DeezerAlbumFacade(identifier)
 
-  override val id: String = Constants.serviceDeezer
+  override val serviceId: String = Constants.serviceDeezer
 }
 
 class DeezerAlbumFacade(identifier:Either[Int,String]) extends ServiceAlbumTrait {

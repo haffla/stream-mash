@@ -63,7 +63,7 @@ class ServiceData(identifier:Either[Int,String]) extends GroupMeasureConversion 
 
   private def missingAlbumCounts(artistIds: List[Long]): JsValue = {
     albumFacadesList.foldLeft(Json.obj()) { (accumulated, albumFacade) =>
-      accumulated + (albumFacade.id, Json.toJson(albumFacade(identifier).countMissingUserAlbums(artistIds)))
+      accumulated + (albumFacade.serviceId, Json.toJson(albumFacade(identifier).countMissingUserAlbums(artistIds)))
     }
   }
 }

@@ -6,7 +6,7 @@ import org.squeryl.PrimitiveTypeMode._
 
 trait ServiceAlbumFacade {
 
-  val id:String
+  val serviceId:String
 
   def apply(identifier: Either[Int,String]): ServiceAlbumTrait
 

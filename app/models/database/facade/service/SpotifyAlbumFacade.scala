@@ -23,7 +23,7 @@ object SpotifyAlbumFacade extends ServiceAlbumFacade {
 
   override def apply(identifier: Either[Int, String]): ServiceAlbumTrait = new SpotifyAlbumFacade(identifier)
 
-  override val id: String = Constants.serviceSpotify
+  override val serviceId: String = Constants.serviceSpotify
 }
 
 class SpotifyAlbumFacade(identifier:Either[Int,String]) extends ServiceAlbumTrait {
