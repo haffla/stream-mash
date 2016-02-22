@@ -1,6 +1,7 @@
 React = require 'react'
 _ = require 'lodash'
 
+Colors = require 'material-ui/lib/styles/colors'
 FontIcon = require 'material-ui/lib/font-icon'
 List = require 'material-ui/lib/lists/list'
 ListItem = require 'material-ui/lib/lists/list-item'
@@ -10,8 +11,7 @@ RightView = React.createClass
   render: () ->
     selectedAlbums = @props.selectedAlbums.map (album, idx) =>
       icon = if album.inCollection then "check_box" else "check_box_outline_blank"
-      isSelected = _.has(@state, 'selectedAlbum') && album.name == @state.selectedAlbum.name
-      color = if isSelected then Colors.amber500 else 'white'
+      color = if album.name == @props.selectedAlbum then Colors.amber500 else 'white'
       <ListItem
         key={idx}
         style={backgroundColor: color}

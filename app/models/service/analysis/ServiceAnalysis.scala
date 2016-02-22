@@ -94,9 +94,8 @@ abstract class ServiceAnalysis(identifier:Either[Int,String],
   private def artistAlbumsFromService(
                                   ids: List[Option[(Long,String)]],
                                   accessToken:Option[String]):Future[List[(Long,List[JsValue])]] = {
-    val searchList:List[(Long,String)] = ids.filter(_.isDefined).map(_.get)
     Future.sequence {
-      searchList map { artist =>
+      ids.flatten.map { artist =>
         val artistDbId = artist._1
         val artistServiceId = artist._2
         val url = urlForRequest(artistServiceId)

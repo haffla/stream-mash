@@ -25,15 +25,15 @@ class DeezerAnalysis(identifier:Either[Int,String],
   protected override def handleJsonResponse(jsResp:JsValue):List[(String,String)] = {
     (jsResp \ "data").asOpt[List[JsValue]] match {
       case Some(data) =>
-        data.map {
+        data.flatMap {
           item =>
             val albumName = (item \ "title").as[String]
             val id = (item \ "id").as[Int]
-            (albumName, id.toString)
+            val recordType = (item \ "record_type").as[String]
+            if (recordType == "album" || recordType == "single") Some((albumName, id.toString))
+            else None
         }
-      case _ =>
-        println(jsResp)
-        Nil
+      case _ => Nil
     }
 
   }
@@ -44,10 +44,6 @@ class DeezerAnalysis(identifier:Either[Int,String],
     WS.url(url).withQueryString("access_token" -> accessToken)
   }
 
-  /**
-    * Before we get started, test the access token with some random request
-    * If we get a 401 we need to refresh the token
-    */
   protected override def testAndGetAccessToken():Future[Option[String]] = {
     serviceAccessTokenHelper.getAccessToken match {
       case Some(accessTkn) =>

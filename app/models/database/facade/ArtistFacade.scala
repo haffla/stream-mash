@@ -26,7 +26,7 @@ object ArtistFacade {
   }
 
   private def byName(artist:String) = {
-    AppDB.artists.where(a => a.name === artist).headOption
+    AppDB.artists.where(a => lower(a.name) === artist.toLowerCase).headOption
   }
 
   def apply(identifier:Either[Int,String]) = new ArtistFacade(identifier)

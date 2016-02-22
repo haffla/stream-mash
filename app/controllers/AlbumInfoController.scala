@@ -5,8 +5,8 @@ import models.database.facade.TrackFacade
 import models.service.api.{ApiFacade, DeezerApiFacade}
 import play.api.mvc.Controller
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait AlbumInfoController extends Controller {
   val apiFacade: ApiFacade = DeezerApiFacade
@@ -14,13 +14,16 @@ trait AlbumInfoController extends Controller {
 
   def getAlbumDetail = IdentifiedBySession.async { implicit request =>
     val identifier = Helper.getUserIdentifier(request.session)
-    request.getQueryString("id").map { id =>
-      val usersTracks = TrackFacade(identifier).getUsersTracks
-      apiFacade.getAlbumInfoForFrontend(id,usersTracks).map { response =>
-        Ok(response)
-      }
-    }.getOrElse(
-      Future.successful(BadRequest(s"Missing parameter 'id', e.g. ${serviceName.toUpperCase} ID of the album"))
-    )
+    val albumName = request.getQueryString("name")
+    val albumId = request.getQueryString("id")
+    (albumName,albumId) match {
+      case (Some(name),Some(id)) =>
+        val usersTracks = TrackFacade(identifier).getUsersTracksForAlbum(name)
+        apiFacade.getAlbumInfoForFrontend(id,usersTracks).map { response =>
+          Ok(response)
+        }
+      case _ =>
+        Future.successful(BadRequest(s"Missing parameter 'id' or 'name' for service $serviceName"))
+    }
   }
 }

@@ -13,7 +13,7 @@ RaisedButton = require 'material-ui/lib/raised-button'
 StreamingService = React.createClass
 
   getInitialState: () ->
-    artists: [], selectedArtist: {albums: []}, missingItemsDialog: {open: false, title: 'Missing Albums', items: []}, loaded: false
+    artists: [], selectedArtist: {albums: []}, selectedAlbum: {}, missingItemsDialog: {open: false, title: 'Missing Albums', items: []}, loaded: false
 
   getServiceLinkForArtistId: (id, service) ->
     if _.isEmpty(id)
@@ -82,7 +82,7 @@ StreamingService = React.createClass
     unless _.has(@state.selectedArtist.albums[idx], 'img')
       $.ajax @props.albumDetailEndpoint,
         type: 'GET'
-        data: {'id': @state.selectedArtist.albums[idx].id}
+        data: {'id': @state.selectedArtist.albums[idx].id, 'name': @state.selectedArtist.albums[idx].name}
         dataType: 'json'
         success: (data) =>
           img = @props.helper.getImage data
@@ -121,6 +121,7 @@ StreamingService = React.createClass
           artists={@state.artists}
           nrArtists={@state.artists.length}
           nrAlbumsTotal={@state.nrAlbums}
+          selectedArtist={@state.selectedArtist.name}
           handleArtistClick={@handleArtistClick}
           nrAbsentArtist={@state.absentArtists.length}
           openMissingItemsDialog={@openMissingItemsDialog}
@@ -137,7 +138,7 @@ StreamingService = React.createClass
         <RightView
           artist={@state.selectedArtist.name}
           handleAlbumClick={@handleAlbumClick}
-          selectedArtist={@state.selectedArtist.name}
+          selectedAlbum={@state.selectedAlbum.name}
           name={@props.name}
           selectedAlbums={@state.selectedArtist.albums} />
       </div>

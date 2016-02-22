@@ -32,11 +32,11 @@ class NapsterAnalysis(identifier:Either[Int,String],
         if(typeOfAlbum == 0 || typeOfAlbum == 1) {
           val albumName = (item \ "name").as[String]
           val id = (item \ "id").as[String]
-          (albumName, id)
+          Some((albumName, id))
         }
-        else ("","")
+        else None
     }
-    raw.filter(_._1.nonEmpty)
+    raw.flatten
   }
 
   protected override def getServiceFieldFromArtist(artist: Artist): Option[String] = artist.napsterId

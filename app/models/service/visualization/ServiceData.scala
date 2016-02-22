@@ -46,7 +46,6 @@ class ServiceData(identifier:Either[Int,String]) extends GroupMeasureConversion 
       Json.obj(
         "id" -> artist.id,
         "name" -> artist.name,
-        "pic" -> artist.pic,
         "trackCount" -> trackCount,
         "score" -> score
       )

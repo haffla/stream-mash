@@ -21,7 +21,7 @@ object TrackFacade {
 
   def byNameAndArtistIdAndAlbumId(track:String, artistId:Long, albumId:Long):Option[Track] = {
     from(AppDB.tracks)(t =>
-      where(t.name === track and t.artistId === artistId and t.albumId === albumId)
+      where(lower(t.name) === track.toLowerCase and t.artistId === artistId and t.albumId === albumId)
         select t
     ).headOption
   }
@@ -30,12 +30,16 @@ object TrackFacade {
 }
 
 class TrackFacade(identifier:Either[Int,String]) extends Facade {
-  def getUsersTracks:List[String] = {
+  def getUsersTracksForAlbum(albumName:String):List[String] = {
     transaction {
-      from(AppDB.collections, AppDB.tracks)((coll,tr) =>
-        where(tr.id === coll.trackId and AppDB.userWhereClause(coll,identifier))
+      join(AppDB.tracks, AppDB.albums, AppDB.collections)((tr,alb,coll) =>
+        where(alb.name === albumName and AppDB.userWhereClause(coll, identifier))
           select tr.name
-      ).distinct.toList
+          on(
+          tr.albumId === alb.id,
+          tr.id === coll.trackId
+          )
+      ).toList
     }
   }
 }

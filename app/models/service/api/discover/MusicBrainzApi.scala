@@ -37,9 +37,8 @@ object MusicBrainzApi {
             Some(Map(keyAlbum -> album, keyArtist -> artist))
           }
           else None
-        } filter(_.isDefined)
-
-        res map(_.get)
+        }
+        res.flatten
       }
       else {
         println(url)

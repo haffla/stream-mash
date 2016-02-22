@@ -5,7 +5,7 @@ import models.database.alias.Album
 import org.squeryl.PrimitiveTypeMode._
 
 object AlbumFacade {
-  def saveByNameAndArtistId(album: String, artistId: Long) = {
+  def saveByNameAndArtistId(album: String, artistId: Long):Long = {
     inTransaction {
       byNameAndArtistId(album, artistId) match {
         case Some(alb) => alb.id
@@ -19,7 +19,7 @@ object AlbumFacade {
   }
 
   def byNameAndArtistId(name:String, artistId:Long) = {
-    from(AppDB.albums)(a => where(a.name === name and a.artistId === artistId)
+    from(AppDB.albums)(a => where(lower(a.name) === name.toLowerCase and a.artistId === artistId)
       select a
     ).headOption
   }
