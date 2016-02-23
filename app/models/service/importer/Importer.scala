@@ -4,7 +4,6 @@ import models.database.facade._
 import models.service.api.discover.RetrievalProcessMonitor
 import models.util.Constants
 import models.util.ThreadPools.importExecutionContext
-import scalikejdbc._
 
 import scala.concurrent.Future
 
@@ -60,11 +59,9 @@ class Importer(identifier: Either[Int, String], name:String = "baseimporter", pe
   def persist(collection: Map[String, Map[String,Set[String]]]):Future[List[Boolean]] = {
     val totalLength = collection.size
     val mapList = collection.toList
-    var position = 1.0
     Future.sequence {
-      mapList.map { case grp =>
-        apiHelper.setRetrievalProcessProgress(0.66 + position / totalLength / 3)
-        position += 1.0
+      mapList.zipWithIndex.map { case (grp,i) =>
+        apiHelper.setRetrievalProcessProgress(0.66 + (i+1) / totalLength / 3)
         persistItem(grp).recover {
           case e:Exception => false
         }

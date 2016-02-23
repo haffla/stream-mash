@@ -1,7 +1,7 @@
 class TagReader
 
   @readFiles: (files) ->
-    promises = (idx for idx in [0...files.length]).map (i) =>
+    promises = (idx for idx in [0...files.length]).map (i) ->
       file = files[i]
       if file.type.match(/audio\/*/)
         TagReader.readFile(files[i])

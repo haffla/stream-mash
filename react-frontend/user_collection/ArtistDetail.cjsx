@@ -26,7 +26,7 @@ ArtistDetail = React.createClass
         <AutoComplete
           style={width: '80%', marginLeft: 10}
           floatingLabelText="Select Artist"
-          filter={AutoComplete.caseInsensitiveFilter}
+          filter={(searchText, key) -> searchText isnt '' and key.toLowerCase().includes(searchText.toLowerCase())}
           onNewRequest={@props.onNewRequest}
           dataSource={@props.autoCompleteSource}/>
         }
