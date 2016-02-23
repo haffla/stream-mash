@@ -1,6 +1,6 @@
-name := "Stream Mashup"
+name := "Stream Compare"
 
-organization := "org.haffla"
+organization := "com.github.haffla"
 
 version := "0.1-SNAPSHOT"
 
