@@ -17,38 +17,6 @@ object MusicBrainzApi {
   val keyAlbum = "album"
 
   /**
-   * Search for title and artist to find out to what album the recording belongs to.
-   * Only return pairs with a certain similarity score
-   */
-  def findAlbumOfTrack(titleSearch:String, artistSearch:String, minScore:Int = 80):Future[Seq[Map[String,String]]] = synchronized {
-    val t = TextWrangler.cleanupString(titleSearch)
-    val a = TextWrangler.cleanupString(artistSearch)
-    val query = s""""$t" AND artist:$a&limit=$limit"""
-    val url = root + "recording/?query=" + query
-    WS.url(url).get() map { response =>
-      if(response.status == 200) {
-        val res = scala.xml.parsing.XhtmlParser(scala.io.Source.fromString(response.body)) \ "recording-list" \ "recording" map { rec =>
-          //val title = rec \ "title" text
-          val album = rec \ "release-list" \ "release" \ "title" text
-          val artist = rec \ "artist-credit" \ "name-credit" \ "artist" \ "name" text
-          val score = (rec \\ s"@{$extNs}score").text
-
-          if(score.toInt > minScore) {
-            Some(Map(keyAlbum -> album, keyArtist -> artist))
-          }
-          else None
-        }
-        res.flatten
-      }
-      else {
-        println(url)
-        println(response.status, response.body)
-        Nil
-      }
-    }
-  }
-
-  /**
    * Look for the artist on MusicBrainz and return the standard name if found
    */
   def isKnownArtist(artistSearch:String):Future[Option[String]] = {
@@ -64,6 +32,9 @@ object MusicBrainzApi {
           }
           else None
         }.getOrElse(None)
+      }
+      else if(response.status == 503) {
+        Some("unavailable")
       }
       else {
         println(url)
