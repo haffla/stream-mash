@@ -2,7 +2,7 @@
   "name": "stream-mashup-react-frontend",
   "version": "1.0.0",
   "scripts": {
-    "start": "node dev-server.js"
+    "start": "node_modules/coffee-script/bin/coffee dev-server.coffee -n"
   },
   "devDependencies": {
     "babel-core": "^6.4.0",
