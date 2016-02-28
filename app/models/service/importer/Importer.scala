@@ -27,7 +27,7 @@ class Importer(identifier: Either[Int, String], name:String = "baseimporter", pe
     val result = grpByArtist.foldLeft(Map[String, Map[String,Set[String]]]()) { (prev, curr) =>
       val artist = curr._1
       val grpByAlbum:Map[String, Seq[Map[String, String]]]
-        = curr._2.groupBy(_.getOrElse(keyAlbum, Constants.mapKeyUnknownAlbum))
+        = curr._2.groupBy(_.getOrElse(keyAlbum, Constants.unknownAlbum))
       val albumsWithTracks = grpByAlbum.foldLeft(Map[String,Set[String]]()) { (p, c) =>
         val album = c._1
         val tracks = c._2.map(_(keyTrack)).toSet

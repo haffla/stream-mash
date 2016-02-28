@@ -31,7 +31,7 @@ class SpotifyAlbumFacade(identifier:Either[Int,String]) extends ServiceAlbumTrai
   def countMissingUserAlbums(artistIds:List[Long]): Long = {
     inTransaction {
       join(AppDB.albums, AppDB.tracks, AppDB.collections, AppDB.spotifyAlbums.leftOuter)((alb,tr,col,spAlb) =>
-        where(alb.artistId.in(artistIds) and AppDB.userWhereClause(col, identifier) and spAlb.map(_.id).isNull)
+        where(alb.artistId.in(artistIds) and alb.name <> Constants.unknownAlbum and AppDB.userWhereClause(col, identifier) and spAlb.map(_.id).isNull)
           compute countDistinct(alb.id)
           on(
           tr.albumId === alb.id,

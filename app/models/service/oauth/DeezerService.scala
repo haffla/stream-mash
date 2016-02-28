@@ -39,7 +39,6 @@ object DeezerService extends OAuthStreamingService with PlayListRetrieval with F
   override val clientSecretKey = "deezer.app.secret"
   override val redirectUriPath = "/deezer/callback"
   override val cookieKey = "deezer_auth_state"
-  override lazy val redirectUri = "http://haffla.de"
 
   override val queryString:Map[String,Seq[String]] = Map(
     "app_id" -> Seq(clientId),

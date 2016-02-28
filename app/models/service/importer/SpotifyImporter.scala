@@ -24,7 +24,7 @@ class SpotifyImporter(identifier: Either[Int, String]) extends Importer(identifi
             case _ =>
           }
           artist
-        case None => Constants.mapKeyUnknownArtist
+        case None => Constants.unknownArtist
       }
       val track = (trackEntity \ "name").as[String]
       Map(

@@ -39,7 +39,7 @@ class SoundcloudImporter(identifier: Either[Int, String]) extends Importer(ident
               SoundcloudFacade.saveArtistWithServiceId(art.name, id.toString)
               Future.successful(Some(Map(
                 Constants.mapKeyArtist -> art.name,
-                Constants.mapKeyAlbum -> Constants.mapKeyUnknownAlbum,
+                Constants.mapKeyAlbum -> Constants.unknownAlbum,
                 Constants.mapKeyTrack -> title
               )))
             case None =>
@@ -50,7 +50,7 @@ class SoundcloudImporter(identifier: Either[Int, String]) extends Importer(ident
                 musicBrainzResult match {
                   case Some(artistName) =>
                     SoundcloudFacade.saveArtistWithServiceId(artistName, id.toString)
-                    Some(Map(Constants.mapKeyArtist -> artistName, Constants.mapKeyAlbum -> Constants.mapKeyUnknownAlbum, Constants.mapKeyTrack -> title))
+                    Some(Map(Constants.mapKeyArtist -> artistName, Constants.mapKeyAlbum -> Constants.unknownAlbum, Constants.mapKeyTrack -> title))
                   case None => None
                 }
               }

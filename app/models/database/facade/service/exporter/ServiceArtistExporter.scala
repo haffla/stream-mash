@@ -37,7 +37,7 @@ class ServiceArtistExporter(serviceName: String) {
 
   private def albumsOnlyInUserCollection(albums:List[(Album,Artist,String)], albumsInUserCollection:List[Album]):List[JsValue] = {
     val serviceAlbums = albums.map(_._1)
-    albumsInUserCollection.filter(alb => !serviceAlbums.contains(alb)).map { alb =>
+    albumsInUserCollection.filter(alb => !serviceAlbums.contains(alb) && alb.name != Constants.unknownAlbum).map { alb =>
       val art = ArtistFacade.artistById(alb.artistId)
       //TODO get album id from other services
       Json.obj(

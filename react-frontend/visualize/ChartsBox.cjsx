@@ -149,7 +149,7 @@ ChartsBox = React.createClass
               <FlatButton backgroundColor={Colors.grey300} onClick={@handleServiceButtonClick.bind(null, 'napster')} label='Napster' secondary={true} />
             </div>
             <svg id='service-chart'></svg>
-            <span style={boxDescriptionStyle}>{"N° of albums per service and artist. Total: " + @state.totalAlbumCount}</span>
+            <span style={boxDescriptionStyle}>{@state.totalAlbumCount}</span>
           </div>
           <div style={@boxStyle}>
             <span style={boxDescriptionStyle}>{"N° of tracks in your collection per artist. Total: " + @nrTotalTracks() || 0}</span>

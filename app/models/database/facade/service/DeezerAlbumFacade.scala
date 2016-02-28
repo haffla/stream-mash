@@ -31,7 +31,7 @@ class DeezerAlbumFacade(identifier:Either[Int,String]) extends ServiceAlbumTrait
   def countMissingUserAlbums(artistIds:List[Long]):Long = {
     inTransaction {
       join(AppDB.albums, AppDB.tracks, AppDB.collections, AppDB.deezerAlbums.leftOuter)((alb,tr,col,spAlb) =>
-        where(alb.id.in(artistIds) and AppDB.userWhereClause(col, identifier) and spAlb.map(_.id).isNull)
+        where(alb.id.in(artistIds) and alb.name <> Constants.unknownAlbum and AppDB.userWhereClause(col, identifier) and spAlb.map(_.id).isNull)
           compute countDistinct(alb.id)
           on(
           tr.albumId === alb.id,

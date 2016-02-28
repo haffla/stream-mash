@@ -31,7 +31,7 @@ class NapsterAlbumFacade(identifier:Either[Int,String]) extends ServiceAlbumTrai
   def countMissingUserAlbums(artistIds:List[Long]):Long = {
     inTransaction {
       join(AppDB.albums, AppDB.tracks, AppDB.collections, AppDB.napsterAlbums.leftOuter)((alb,tr,col,napsAlb) =>
-        where(alb.id.in(artistIds:List[Long]) and AppDB.userWhereClause(col, identifier) and napsAlb.map(_.id).isNull)
+        where(alb.id.in(artistIds) and alb.name <> Constants.unknownAlbum and AppDB.userWhereClause(col, identifier) and napsAlb.map(_.id).isNull)
           compute countDistinct(alb.id)
           on(
           tr.albumId === alb.id,
